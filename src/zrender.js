@@ -17,6 +17,11 @@ import Painter from './Painter';
 import Animation from './animation/Animation';
 import HandlerProxy from './dom/HandlerProxy';
 
+//Custom version, canvas only, vml and svg are not supported.
+if(!env.canvasSupported){
+    throw new Error("Need Canvas Environments.");
+}
+
 var useVML = !env.canvasSupported;
 
 var painterCtors = {
