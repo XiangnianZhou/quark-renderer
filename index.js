@@ -15,7 +15,3 @@ var _export = require("./lib/export");
     exports[key] = _export[key];
   }
 })();
-
-require("./lib/svg/svg");
-
-require("./lib/vml/vml");
