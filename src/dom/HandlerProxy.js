@@ -1,6 +1,9 @@
-
-/* global document */
-
+/**
+ * HandlerProxy 的主要功能是：把原生的 DOM 事件代理（转发）到 ZRender 实例上，
+ * 在 Handler 类中会把事件进一步分发给 canvas 中绘制的图元。
+ * 
+ * TODO: 这里的实现只代理了鼠标和触摸屏相关的事件，需要把基本的键盘事件也代理进去，如 keydown/keyup/keypress
+ */
 import {
     addEventListener,
     removeEventListener,
@@ -57,8 +60,6 @@ var pageEventSupported = env.domSupported;
  * triggered just after `mousexxx` triggered and sharing the same event object. Those bad
  * cases only happen when the pointer is out of zrender area.
  */
-
-
 var localNativeListenerNames = (function () {
     var mouseHandlerNames = [
         'click', 'dblclick', 'mousewheel', 'mouseout',
@@ -87,7 +88,6 @@ var globalNativeListenerNames = {
     touch: ['touchmove', 'touchend'],
     pointer: ['pointermove', 'pointerup']
 };
-
 
 function eventNameFix(name) {
     return (name === 'mousewheel' && env.browser.firefox) ? 'DOMMouseScroll' : name;
@@ -156,6 +156,7 @@ function markTouch(event) {
 // ----------------------------
 
 /**
+ * Local 指的是 Canvas 内部的区域。
  * Local DOM Handlers
  * @this {HandlerProxy}
  */
@@ -176,6 +177,8 @@ var localDOMHandlers = {
             }
         }
 
+        // 这里的 trigger() 方法是从 Eventful 里面的 mixin 进来的，调用这个 trigger() 方法的时候，是在 ZRender 内部，也就是 canvas 里面触发事件。
+        // 这里实现的目的是：把接受到的 HTML 事件转发到了 canvas 内部。
         this.trigger('mouseout', event);
     },
 
@@ -273,6 +276,7 @@ var localDOMHandlers = {
 
 /**
  * Othere DOM UI Event handlers for zr dom.
+ * ZRender 内部的 DOM 结构默认支持以下7个事件。
  * @this {HandlerProxy}
  */
 zrUtil.each(['click', 'mousemove', 'mousedown', 'mouseup', 'mousewheel', 'dblclick', 'contextmenu'], function (name) {
@@ -288,8 +292,11 @@ zrUtil.each(['click', 'mousemove', 'mousedown', 'mouseup', 'mousewheel', 'dblcli
     };
 });
 
-
 /**
+ * 这里用来监听外层 HTML 里面的 DOM 事件。监听这些事件的目的是为了方便实现拖拽功能，因为
+ * 一旦鼠标离开 Canvas 的区域，就无法触发 Canvas 内部的 mousemove 和 mouseup 事件，这里直接
+ * 监听外层 HTML 上的 mousemove 和 mouseup，绕开这种问题。
+ * 
  * Page DOM UI Event handlers for global page.
  * @this {HandlerProxy}
  */
@@ -460,6 +467,7 @@ function HandlerDomProxy(dom) {
 
     this._pageEventEnabled = false;
 
+    //在构造 HandlerDomProxy 实例的时候，挂载 DOM 事件监听器。
     mountDOMEventListeners(this, this._localHandlerScope, localNativeListenerNames, true);
 }
 
@@ -495,6 +503,7 @@ handlerDomProxyProto.togglePageEvent = function (enableOrDisable) {
     }
 };
 
+//注意，HandlerDomProxy 也混入了 Eventful 里面提供的事件处理工具。
 zrUtil.mixin(HandlerDomProxy, Eventful);
 
 export default HandlerDomProxy;

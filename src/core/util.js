@@ -254,6 +254,7 @@ export function inherits(clazz, baseClazz) {
 }
 
 /**
+ * 这里的 mixin 只拷贝 prototype 上的属性。
  * @memberOf module:zrender/core/util
  * @param {Object|Function} target
  * @param {Object|Function} sorce

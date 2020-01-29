@@ -1,8 +1,8 @@
 /**
  * Base class of all displayable graphic objects
+ * 所有可见对象的根类，抽象类。
  * @module zrender/graphic/Displayable
  */
-
 
 import * as zrUtil from '../core/util';
 import Style from './Style';
@@ -52,7 +52,8 @@ Displayable.prototype = {
     type: 'displayable',
 
     /**
-     * Dirty flag. From which painter will determine if this displayable object needs brush.
+     * Dirty flag. From which painter will determine if this displayable object needs to be repainted.
+     * 这是一个非常重要的标志位，在绘制大量对象的时候，把 __dirty 标记为 false 可以节省大量操作。
      * @name module:zrender/graphic/Displayable#__dirty
      * @type {boolean}
      */

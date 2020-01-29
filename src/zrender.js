@@ -17,6 +17,9 @@ import Painter from './Painter';
 import Animation from './animation/Animation';
 import HandlerProxy from './dom/HandlerProxy';
 
+/**
+ * ZRender 是全局入口，同一个浏览器 window 中可以有多个 ZRender 实例，每个 ZRender 实例有自己唯一的 ID。
+ */
 //Custom version, canvas only, vml and svg are not supported.
 if(!env.canvasSupported){
     throw new Error("Need Canvas Environments.");
@@ -28,7 +31,8 @@ var painterCtors = {
     canvas: Painter
 };
 
-var instances = {};    // ZRender实例map索引
+// ZRender实例map索引，浏览器中同一个 window 下的 ZRender 实例都存在这里。
+var instances = {};
 
 /**
  * @type {string}
@@ -36,6 +40,7 @@ var instances = {};    // ZRender实例map索引
 export var version = '4.1.2';
 
 /**
+ * 全局总入口，创建 ZRender 的实例。
  * Initializing a zrender instance
  * @param {HTMLElement} dom
  * @param {Object} [opts]
@@ -52,6 +57,7 @@ export function init(dom, opts) {
 }
 
 /**
+ * TODO: 不要export这个全局函数看起来也没有问题。
  * Dispose zrender instance
  * @param {module:zrender/ZRender} zr
  */
@@ -82,10 +88,6 @@ export function getInstance(id) {
 
 export function registerPainter(name, Ctor) {
     painterCtors[name] = Ctor;
-}
-
-function delInstance(id) {
-    delete instances[id];
 }
 
 /**
@@ -135,10 +137,25 @@ var ZRender = function (id, dom, opts) {
     this.storage = storage;
     this.painter = painter;
 
+    //把DOM事件代理出来
     var handerProxy = (!env.node && !env.worker) ? new HandlerProxy(painter.getViewportRoot()) : null;
+    //ZRender 自己封装的事件机制
     this.handler = new Handler(storage, painter, handerProxy, painter.root);
 
     /**
+     * 利用 Animation 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
+     * FROM MDN：
+     * The window.requestAnimationFrame() method tells the browser that you wish 
+     * to perform an animation and requests that the browser calls a specified 
+     * function to update an animation before the next repaint. The method takes 
+     * a callback as an argument to be invoked before the repaint.
+     * 
+     * https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+     * 
+     * NOTE: 这里有潜在的性能限制，由于 requestAnimationFrame 方法每秒回调60次，每次执行时间约 16ms
+     * 如果在 16ms 的时间内无法渲染完一帧画面，会出现卡顿。也就是说，ZRender 引擎在同一张 canvas 上
+     * 能够渲染的图形元素数量有上限。本机在 Chrome 浏览器中 Benchmark 的结果大约为 100 万个矩形会出现
+     * 明显的卡顿。
      * @type {module:zrender/animation/Animation}
      */
     this.animation = new Animation({
@@ -256,15 +273,16 @@ ZRender.prototype = {
 
     /**
      * Perform all refresh
+     * 刷新 canvas 画面，此方法会在 window.requestAnimationFrame 方法中被不断调用。
      */
     flush: function () {
         var triggerRendered;
 
-        if (this._needsRefresh) {
+        if (this._needsRefresh) {      //是否需要全部重绘
             triggerRendered = true;
             this.refreshImmediately();
         }
-        if (this._needsRefreshHover) {
+        if (this._needsRefreshHover) { //只重绘特定的图元，提升性能
             triggerRendered = true;
             this.refreshHoverImmediately();
         }
@@ -273,6 +291,11 @@ ZRender.prototype = {
     },
 
     /**
+     * 与 Hover 相关的6个方法用来处理浮动层，当鼠标悬停在 canvas 中的图元上方时，可能会需要
+     * 显示一些浮动的层来展现一些特殊的数据。
+     * TODO:这里可能有点问题，Hover 一词可能指的是遮罩层，而不是浮动层，如果确认是遮罩，考虑
+     * 把这里的 API 单词重构成 Mask。
+     * 
      * Add element to hover layer
      * @param  {module:zrender/Element} el
      * @param {Object} style
@@ -286,7 +309,7 @@ ZRender.prototype = {
     },
 
     /**
-     * Add element from hover layer
+     * Remove element from hover layer
      * @param  {module:zrender/Element} el
      */
     removeHover: function (el) {
@@ -294,6 +317,16 @@ ZRender.prototype = {
             this.painter.removeHover(el);
             this.refreshHover();
         }
+    },
+
+    /**
+     * Find hovered element
+     * @param {number} x
+     * @param {number} y
+     * @return {Object} {target, topTarget}
+     */
+    findHover: function (x, y) {
+        return this.handler.findHover(x, y);
     },
 
     /**
@@ -388,16 +421,6 @@ ZRender.prototype = {
     },
 
     /**
-     * Find hovered element
-     * @param {number} x
-     * @param {number} y
-     * @return {Object} {target, topTarget}
-     */
-    findHover: function (x, y) {
-        return this.handler.findHover(x, y);
-    },
-
-    /**
      * Bind event
      *
      * @param {string} eventName Event name
@@ -427,7 +450,6 @@ ZRender.prototype = {
         this.handler.trigger(eventName, event);
     },
 
-
     /**
      * Clear all objects and the canvas.
      */
@@ -452,7 +474,6 @@ ZRender.prototype = {
         this.painter =
         this.handler = null;
 
-        delInstance(this.id);
+        delete instances[this.id];
     }
 };
-

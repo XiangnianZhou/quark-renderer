@@ -449,6 +449,7 @@ function inherits(clazz, baseClazz) {
 }
 
 /**
+ * 这里的 mixin 只拷贝 prototype 上的属性。
  * @memberOf module:zrender/core/util
  * @param {Object|Function} target
  * @param {Object|Function} sorce
@@ -1241,7 +1242,7 @@ Draggable.prototype = {
             this._x = e.offsetX;
             this._y = e.offsetY;
 
-            this.on('pagemousemove', this._drag, this);
+            this.on('pagemousemove', this._drag, this);//这里监听的是 pagemousemove，对象会实时跟随鼠标移动
             this.on('pagemouseup', this._dragEnd, this);
 
             this.dispatchToElement(param(draggingTarget, e), 'dragstart', e.event);
@@ -1260,6 +1261,7 @@ Draggable.prototype = {
             this._x = x;
             this._y = y;
 
+            //调用 drift 方法真正开始移动对象，在基类 Element 上定义了 drift 接口。
             draggingTarget.drift(dx, dy, e);
             this.dispatchToElement(param(draggingTarget, e), 'drag', e.event);
 
@@ -1305,6 +1307,8 @@ function param(target, e) {
 }
 
 /**
+ * Canvas 内部绘制的对象默认不支持事件，这里提供对事件的封装。
+ * 
  * Event Mixin
  * @module zrender/mixin/Eventful
  * @author Kener (@Kener-林峰, kener.linfeng@gmail.com)
@@ -1319,7 +1323,7 @@ var arrySlice = Array.prototype.slice;
  * @alias module:zrender/mixin/Eventful
  * @constructor
  * @param {Object} [eventProcessor] The object eventProcessor is the scope when
- *        `eventProcessor.xxx` called.
+ *        `eventProcessor.xxx` called. 事件处理者，也就是当前事件处理函数执行时的作用域。
  * @param {Function} [eventProcessor.normalizeQuery]
  *        param: {string|Object} Raw query.
  *        return: {string|Object} Normalized query.
@@ -2129,6 +2133,11 @@ var recognizers = {
     // Only pinch currently.
 };
 
+/**
+ * Canvas 内置的API只在 canvas 实例本身上面触发事件，对画布内部的画出来的元素没有提供事件支持。
+ * Handler.js 用来封装画布内部元素的事件处理逻辑，核心思路是，在 canvas 收到事件之后，派发给指定的元素，
+ * 然后再进行冒泡，从而模拟出原生 DOM 事件的行为。
+ */
 var SILENT = 'silent';
 
 function makeEventPacket(eveType, targetInfo, event) {
@@ -2161,12 +2170,45 @@ function stopEvent(event) {
 function EmptyProxy() {}
 EmptyProxy.prototype.dispose = function () {};
 
-
 var handlerNames = [
     'click', 'dblclick', 'mousewheel', 'mouseout',
     'mouseup', 'mousedown', 'mousemove', 'contextmenu',
     'pagemousemove', 'pagemouseup'
 ];
+
+//处理整个页面上的事件
+function pageEventHandler(pageEventName, event) {
+    this.trigger(pageEventName, makeEventPacket(pageEventName, {}, event));
+}
+
+function isHover(displayable, x, y) {
+    if (displayable[displayable.rectHover ? 'rectContain' : 'contain'](x, y)) {
+        var el = displayable;
+        var isSilent;
+        while (el) {
+            // If clipped by ancestor.
+            // FIXME: If clipPath has neither stroke nor fill,
+            // el.clipPath.contain(x, y) will always return false.
+            if (el.clipPath && !el.clipPath.contain(x, y)) {
+                return false;
+            }
+            if (el.silent) {
+                isSilent = true;
+            }
+            el = el.parent;
+        }
+        return isSilent ? SILENT : true;
+    }
+
+    return false;
+}
+
+function afterListenerChanged(handlerInstance) {
+    var allSilent = handlerInstance.isSilent('pagemousemove')
+        && handlerInstance.isSilent('pagemouseup');
+    var proxy = handlerInstance.proxy;
+    proxy && proxy.togglePageEvent && proxy.togglePageEvent(!allSilent);
+}
 
 /**
  * @alias module:zrender/Handler
@@ -2226,7 +2268,6 @@ var Handler = function (storage, painter, proxy, painterRoot) {
      */
     this._gestureMgr;
 
-
     Draggable.call(this);
 
     this.setHandlerProxy(proxy);
@@ -2243,6 +2284,7 @@ Handler.prototype = {
 
         if (proxy) {
             each(handlerNames, function (name) {
+                // 监听 Proxy 上面派发的原生DOM事件，转发给本类的处理方法。
                 proxy.on && proxy.on(name, this[name], this);
             }, this);
             // Attach handler
@@ -2350,7 +2392,7 @@ Handler.prototype = {
     },
 
     /**
-     * 事件分发代理
+     * 事件分发代理，把事件分发给 canvas 中绘制的元素。
      *
      * @private
      * @param {Object} targetInfo {target, topTarget} 目标图形元素
@@ -2366,6 +2408,7 @@ Handler.prototype = {
         var eventHandler = 'on' + eventName;
         var eventPacket = makeEventPacket(eventName, targetInfo, event);
 
+        //模拟DOM中的事件冒泡行为，事件一直向上层传播，直到没有父层节点为止。
         while (el) {
             el[eventHandler]
                 && (eventPacket.cancelBubble = el[eventHandler].call(el, eventPacket));
@@ -2407,6 +2450,7 @@ Handler.prototype = {
         var list = this.storage.getDisplayList();
         var out = {x: x, y: y};
 
+        //NOTE: 在图元数量非常庞大的时候，如 100 万个图元，这里的 for 循环会很慢，基本不能响应鼠标事件。
         for (var i = list.length - 1; i >= 0; i--) {
             var hoverCheckResult;
             if (list[i] !== exclude
@@ -2452,7 +2496,8 @@ Handler.prototype = {
 };
 
 // Common handlers
-each(['click', 'mousedown', 'mouseup', 'mousewheel', 'dblclick', 'contextmenu'], function (name) {
+each(['click', 'mousedown', 'mouseup', 'mousewheel', 
+    'dblclick', 'contextmenu'], function (name) {
     Handler.prototype[name] = function (event) {
         // Find hover again to avoid click event is dispatched manually. Or click is triggered without mouseover
         var hovered = this.findHover(event.zrX, event.zrY);
@@ -2482,43 +2527,12 @@ each(['click', 'mousedown', 'mouseup', 'mousewheel', 'dblclick', 'contextmenu'],
             this._downPoint = null;
         }
 
+        //把事件派发给目标图元
         this.dispatchToElement(hovered, name, event);
     };
 });
 
-function pageEventHandler(pageEventName, event) {
-    this.trigger(pageEventName, makeEventPacket(pageEventName, {}, event));
-}
-
-function isHover(displayable, x, y) {
-    if (displayable[displayable.rectHover ? 'rectContain' : 'contain'](x, y)) {
-        var el = displayable;
-        var isSilent;
-        while (el) {
-            // If clipped by ancestor.
-            // FIXME: If clipPath has neither stroke nor fill,
-            // el.clipPath.contain(x, y) will always return false.
-            if (el.clipPath && !el.clipPath.contain(x, y)) {
-                return false;
-            }
-            if (el.silent) {
-                isSilent = true;
-            }
-            el = el.parent;
-        }
-        return isSilent ? SILENT : true;
-    }
-
-    return false;
-}
-
-function afterListenerChanged(handlerInstance) {
-    var allSilent = handlerInstance.isSilent('pagemousemove')
-        && handlerInstance.isSilent('pagemouseup');
-    var proxy = handlerInstance.proxy;
-    proxy && proxy.togglePageEvent && proxy.togglePageEvent(!allSilent);
-}
-
+//注意，Handler 里面混入了 Eventful 里面提供的事件处理工具。
 mixin(Handler, Eventful);
 mixin(Handler, Draggable);
 
@@ -5174,6 +5188,11 @@ function setAttrByPath(el, path, name, value) {
 }
 
 /**
+ * @class Element 
+ * 抽象类，直接子类是 graphic/Displayable 。
+ * Dispalyable 的直接子类是 graphic/Path，graphic 包中的所有形状对象都是 Path 的子类。
+ */
+/**
  * @alias module:zrender/Element
  * @constructor
  * @extends {module:zrender/mixin/Animatable}
@@ -5325,6 +5344,7 @@ Element.prototype = {
     },
 
     /**
+     * 修改对象上的属性。
      * @param {string|Object} key
      * @param {*} value
      */
@@ -5363,6 +5383,9 @@ Element.prototype = {
         clipPath.__zr = zr;
         clipPath.__clipTarget = this;
 
+        //TODO: FIX this，需要重写一下，考虑把 Element 类和 Displayable 类合并起来。
+        //dirty() 方法定义在子类 Displayable 中，这里似乎不应该直接调用，作为父类的 Element 不应该了解子类的实现，否则不易理解和维护。
+        //另，Displayable 中的 dirty() 方法没有参数，而孙类 Path 中有参数。
         this.dirty(false);
     },
 
@@ -5384,7 +5407,7 @@ Element.prototype = {
     },
 
     /**
-     * Add self from zrender instance.
+     * Add self to zrender instance.
      * Not recursively because it will be invoked when element added to storage.
      * @param {module:zrender/ZRender} zr
      */
@@ -5658,11 +5681,11 @@ var Group = function (opts) {
         }
     }
 
-    this._children = [];
+    this._children = [];//Group 可以嵌套子节点，其它对象不能
 
     this.__storage = null;
 
-    this.__dirty = true;
+    this.__dirty = true;//Group 继承自 Element，在 Displayable 中的一些属性这里需要重新写一遍。
 };
 
 Group.prototype = {
@@ -5762,7 +5785,7 @@ Group.prototype = {
             child.parent.remove(child);
         }
 
-        child.parent = this;
+        child.parent = this;//把子节点的 parent 属性指向自己，在事件冒泡的时候会使用 parent 属性。
 
         var storage = this.__storage;
         var zr = this.__zr;
@@ -6596,6 +6619,14 @@ function sort(array, compare, lo, hi) {
     ts.forceMergeRuns();
 }
 
+/**
+ * @class Storage
+ * 内容仓库 (M)，用来存储和管理画布上的所有对象，同时提供绘制和更新队列的功能。
+ * 需要绘制的对象首先存储在 Storage 中，然后 Painter 类会从 Storage 中依次取出进行绘图。
+ * 利用 Storage 作为内存中转站，对于不需要刷新的对象可以不进行绘制，从而可以提升整体性能。
+ * @alias module:zrender/Storage
+ */
+
 // Use timsort because in most case elements are partially sorted
 // https://jsfiddle.net/pissang/jr4x7mdm/8/
 function shapeCompareFunc(a, b) {
@@ -6613,13 +6644,12 @@ function shapeCompareFunc(a, b) {
     }
     return a.zlevel - b.zlevel;
 }
+
 /**
- * 内容仓库 (M)
- * @alias module:zrender/Storage
  * @constructor
  */
 var Storage = function () { // jshint ignore:line
-    this._roots = [];
+    this._roots = [];//直接放在画布上的对象为根对象
 
     this._displayList = [];
 
@@ -7369,6 +7399,14 @@ Pattern.prototype.getCanvasPattern = function (ctx) {
  * @author pissang(https://www.github.com/pissang)
  */
 
+/**
+ * 由于 canvas 标签不能嵌套使用，比如下面这样是不行的：
+ * <canvas>
+ *      <canvas>
+ *      </canvas>
+ * </canvas>
+ * 但是可以通过样式进行层叠放置，Layer 类用来动态创建这些层。
+ */
 function returnFalse() {
     return false;
 }
@@ -7609,7 +7647,7 @@ var requestAnimationFrame = (
         || window.webkitRequestAnimationFrame
     )
 ) || function (func) {
-    setTimeout(func, 16);
+    setTimeout(func, 16);// 1000ms/60，每秒60帧，每帧约16ms
 };
 
 var globalImageCache = new LRU(50);
@@ -9127,9 +9165,9 @@ RectText.prototype = {
 
 /**
  * Base class of all displayable graphic objects
+ * 所有可见对象的根类，抽象类。
  * @module zrender/graphic/Displayable
  */
-
 
 /**
  * @alias module:zrender/graphic/Displayable
@@ -9174,7 +9212,8 @@ Displayable.prototype = {
     type: 'displayable',
 
     /**
-     * Dirty flag. From which painter will determine if this displayable object needs brush.
+     * Dirty flag. From which painter will determine if this displayable object needs to be repainted.
+     * 这是一个非常重要的标志位，在绘制大量对象的时候，把 __dirty 标记为 false 可以节省大量操作。
      * @name module:zrender/graphic/Displayable#__dirty
      * @type {boolean}
      */
@@ -9516,6 +9555,11 @@ ZImage.prototype = {
 
 inherits(ZImage, Displayable);
 
+/**
+ * 这是基于 canvas 接口的 Painter 类
+ * @see 基于 SVG 接口的 Painter 类在 svg 目录下
+ * @see 基于 VML 接口的 Painter 类在 vml 目录下
+ */
 var HOVER_LAYER_ZLEVEL = 1e5;
 var CANVAS_ZLEVEL = 314159;
 
@@ -9585,6 +9629,9 @@ function doClip(clipPaths, ctx) {
     }
 }
 
+/**
+ * 不会直接在传入的 dom 节点内部创建 canvas 标签，而是再套一层div，目的是加上一些必须的 CSS 样式，方便实现特定的功能。
+ */
 function createRoot(width, height) {
     var domRoot = document.createElement('div');
 
@@ -9612,7 +9659,7 @@ function createRoot(width, height) {
 /**
  * @alias module:zrender/Painter
  * @constructor
- * @param {HTMLElement} root 绘图容器
+ * @param {HTMLElement} root 绘图容器  @type {HTMLElement}
  * @param {module:zrender/Storage} storage
  * @param {Object} opts
  */
@@ -10039,6 +10086,9 @@ Painter.prototype = {
                     scope.prevElClipPaths = clipPaths;
                 }
             }
+
+            //开始绘制元素，beforeBrush/brush/afterBrush 3个方法定义在基类 Displayable 中。
+            //每个元素自己知道如何绘制自身的形状。
             el.beforeBrush && el.beforeBrush(ctx);
 
             el.brush(ctx, scope.prevEl || null);
@@ -10715,7 +10765,7 @@ Animation.prototype = {
         // 'frame' should be triggered before stage, because upper application
         // depends on the sequence (e.g., echarts-stream and finish
         // event judge)
-        this.trigger('frame', delta);
+        this.trigger('frame', delta);//不断触发 frame 事件
 
         if (this.stage.update) {
             this.stage.update();
@@ -10727,16 +10777,17 @@ Animation.prototype = {
 
         this._running = true;
 
+        
         function step() {
             if (self._running) {
 
-                requestAnimationFrame(step);
+                requestAnimationFrame(step);//这里开始递归执行，TODO:需要确认在大量节点下的性能问题。
 
                 !self._paused && self._update();
             }
         }
 
-        requestAnimationFrame(step);
+        requestAnimationFrame(step);//触发第一次动作
     },
 
     /**
@@ -10820,8 +10871,12 @@ Animation.prototype = {
 
 mixin(Animation, Eventful);
 
-/* global document */
-
+/**
+ * HandlerProxy 的主要功能是：把原生的 DOM 事件代理（转发）到 ZRender 实例上，
+ * 在 Handler 类中会把事件进一步分发给 canvas 中绘制的图元。
+ * 
+ * TODO: 这里的实现只代理了鼠标和触摸屏相关的事件，需要把基本的键盘事件也代理进去，如 keydown/keyup/keypress
+ */
 var TOUCH_CLICK_DELAY = 300;
 // "page event" is defined in the comment of `[Page Event]`.
 var pageEventSupported = env$1.domSupported;
@@ -10868,8 +10923,6 @@ var pageEventSupported = env$1.domSupported;
  * triggered just after `mousexxx` triggered and sharing the same event object. Those bad
  * cases only happen when the pointer is out of zrender area.
  */
-
-
 var localNativeListenerNames = (function () {
     var mouseHandlerNames = [
         'click', 'dblclick', 'mousewheel', 'mouseout',
@@ -10898,7 +10951,6 @@ var globalNativeListenerNames = {
     touch: ['touchmove', 'touchend'],
     pointer: ['pointermove', 'pointerup']
 };
-
 
 function eventNameFix(name) {
     return (name === 'mousewheel' && env$1.browser.firefox) ? 'DOMMouseScroll' : name;
@@ -10967,6 +11019,7 @@ function markTouch(event) {
 // ----------------------------
 
 /**
+ * Local 指的是 Canvas 内部的区域。
  * Local DOM Handlers
  * @this {HandlerProxy}
  */
@@ -10987,6 +11040,8 @@ var localDOMHandlers = {
             }
         }
 
+        // 这里的 trigger() 方法是从 Eventful 里面的 mixin 进来的，调用这个 trigger() 方法的时候，是在 ZRender 内部，也就是 canvas 里面触发事件。
+        // 这里实现的目的是：把接受到的 HTML 事件转发到了 canvas 内部。
         this.trigger('mouseout', event);
     },
 
@@ -11084,6 +11139,7 @@ var localDOMHandlers = {
 
 /**
  * Othere DOM UI Event handlers for zr dom.
+ * ZRender 内部的 DOM 结构默认支持以下7个事件。
  * @this {HandlerProxy}
  */
 each(['click', 'mousemove', 'mousedown', 'mouseup', 'mousewheel', 'dblclick', 'contextmenu'], function (name) {
@@ -11099,8 +11155,11 @@ each(['click', 'mousemove', 'mousedown', 'mouseup', 'mousewheel', 'dblclick', 'c
     };
 });
 
-
 /**
+ * 这里用来监听外层 HTML 里面的 DOM 事件。监听这些事件的目的是为了方便实现拖拽功能，因为
+ * 一旦鼠标离开 Canvas 的区域，就无法触发 Canvas 内部的 mousemove 和 mouseup 事件，这里直接
+ * 监听外层 HTML 上的 mousemove 和 mouseup，绕开这种问题。
+ * 
  * Page DOM UI Event handlers for global page.
  * @this {HandlerProxy}
  */
@@ -11271,6 +11330,7 @@ function HandlerDomProxy(dom) {
 
     this._pageEventEnabled = false;
 
+    //在构造 HandlerDomProxy 实例的时候，挂载 DOM 事件监听器。
     mountDOMEventListeners(this, this._localHandlerScope, localNativeListenerNames, true);
 }
 
@@ -11306,6 +11366,7 @@ handlerDomProxyProto.togglePageEvent = function (enableOrDisable) {
     }
 };
 
+//注意，HandlerDomProxy 也混入了 Eventful 里面提供的事件处理工具。
 mixin(HandlerDomProxy, Eventful);
 
 /*!
@@ -11318,13 +11379,22 @@ mixin(HandlerDomProxy, Eventful);
 * https://github.com/ecomfe/zrender/blob/master/LICENSE.txt
 */
 
+/**
+ * ZRender 是全局入口，同一个浏览器 window 中可以有多个 ZRender 实例，每个 ZRender 实例有自己唯一的 ID。
+ */
+//Custom version, canvas only, vml and svg are not supported.
+if(!env$1.canvasSupported){
+    throw new Error("Need Canvas Environments.");
+}
+
 var useVML = !env$1.canvasSupported;
 
 var painterCtors = {
     canvas: Painter
 };
 
-var instances = {};    // ZRender实例map索引
+// ZRender实例map索引，浏览器中同一个 window 下的 ZRender 实例都存在这里。
+var instances = {};
 
 /**
  * @type {string}
@@ -11332,6 +11402,7 @@ var instances = {};    // ZRender实例map索引
 var version = '4.1.2';
 
 /**
+ * 全局总入口，创建 ZRender 的实例。
  * Initializing a zrender instance
  * @param {HTMLElement} dom
  * @param {Object} [opts]
@@ -11348,6 +11419,7 @@ function init(dom, opts) {
 }
 
 /**
+ * TODO: 不要export这个全局函数看起来也没有问题。
  * Dispose zrender instance
  * @param {module:zrender/ZRender} zr
  */
@@ -11378,10 +11450,6 @@ function getInstance(id) {
 
 function registerPainter(name, Ctor) {
     painterCtors[name] = Ctor;
-}
-
-function delInstance(id) {
-    delete instances[id];
 }
 
 /**
@@ -11431,10 +11499,25 @@ var ZRender = function (id, dom, opts) {
     this.storage = storage;
     this.painter = painter;
 
+    //把DOM事件代理出来
     var handerProxy = (!env$1.node && !env$1.worker) ? new HandlerDomProxy(painter.getViewportRoot()) : null;
+    //ZRender 自己封装的事件机制
     this.handler = new Handler(storage, painter, handerProxy, painter.root);
 
     /**
+     * 利用 Animation 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
+     * FROM MDN：
+     * The window.requestAnimationFrame() method tells the browser that you wish 
+     * to perform an animation and requests that the browser calls a specified 
+     * function to update an animation before the next repaint. The method takes 
+     * a callback as an argument to be invoked before the repaint.
+     * 
+     * https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+     * 
+     * NOTE: 这里有潜在的性能限制，由于 requestAnimationFrame 方法每秒回调60次，每次执行时间约 16ms
+     * 如果在 16ms 的时间内无法渲染完一帧画面，会出现卡顿。也就是说，ZRender 引擎在同一张 canvas 上
+     * 能够渲染的图形元素数量有上限。本机在 Chrome 浏览器中 Benchmark 的结果大约为 100 万个矩形会出现
+     * 明显的卡顿。
      * @type {module:zrender/animation/Animation}
      */
     this.animation = new Animation({
@@ -11552,15 +11635,16 @@ ZRender.prototype = {
 
     /**
      * Perform all refresh
+     * 刷新 canvas 画面，此方法会在 window.requestAnimationFrame 方法中被不断调用。
      */
     flush: function () {
         var triggerRendered;
 
-        if (this._needsRefresh) {
+        if (this._needsRefresh) {      //是否需要全部重绘
             triggerRendered = true;
             this.refreshImmediately();
         }
-        if (this._needsRefreshHover) {
+        if (this._needsRefreshHover) { //只重绘特定的图元，提升性能
             triggerRendered = true;
             this.refreshHoverImmediately();
         }
@@ -11569,6 +11653,11 @@ ZRender.prototype = {
     },
 
     /**
+     * 与 Hover 相关的6个方法用来处理浮动层，当鼠标悬停在 canvas 中的图元上方时，可能会需要
+     * 显示一些浮动的层来展现一些特殊的数据。
+     * TODO:这里可能有点问题，Hover 一词可能指的是遮罩层，而不是浮动层，如果确认是遮罩，考虑
+     * 把这里的 API 单词重构成 Mask。
+     * 
      * Add element to hover layer
      * @param  {module:zrender/Element} el
      * @param {Object} style
@@ -11582,7 +11671,7 @@ ZRender.prototype = {
     },
 
     /**
-     * Add element from hover layer
+     * Remove element from hover layer
      * @param  {module:zrender/Element} el
      */
     removeHover: function (el) {
@@ -11590,6 +11679,16 @@ ZRender.prototype = {
             this.painter.removeHover(el);
             this.refreshHover();
         }
+    },
+
+    /**
+     * Find hovered element
+     * @param {number} x
+     * @param {number} y
+     * @return {Object} {target, topTarget}
+     */
+    findHover: function (x, y) {
+        return this.handler.findHover(x, y);
     },
 
     /**
@@ -11684,16 +11783,6 @@ ZRender.prototype = {
     },
 
     /**
-     * Find hovered element
-     * @param {number} x
-     * @param {number} y
-     * @return {Object} {target, topTarget}
-     */
-    findHover: function (x, y) {
-        return this.handler.findHover(x, y);
-    },
-
-    /**
      * Bind event
      *
      * @param {string} eventName Event name
@@ -11723,7 +11812,6 @@ ZRender.prototype = {
         this.handler.trigger(eventName, event);
     },
 
-
     /**
      * Clear all objects and the canvas.
      */
@@ -11748,7 +11836,7 @@ ZRender.prototype = {
         this.painter =
         this.handler = null;
 
-        delInstance(this.id);
+        delete instances[this.id];
     }
 };
 

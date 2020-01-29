@@ -39,11 +39,11 @@ var Group = function (opts) {
         }
     }
 
-    this._children = [];
+    this._children = [];//Group 可以嵌套子节点，其它对象不能
 
     this.__storage = null;
 
-    this.__dirty = true;
+    this.__dirty = true;//Group 继承自 Element，在 Displayable 中的一些属性这里需要重新写一遍。
 };
 
 Group.prototype = {
@@ -143,7 +143,7 @@ Group.prototype = {
             child.parent.remove(child);
         }
 
-        child.parent = this;
+        child.parent = this;//把子节点的 parent 属性指向自己，在事件冒泡的时候会使用 parent 属性。
 
         var storage = this.__storage;
         var zr = this.__zr;

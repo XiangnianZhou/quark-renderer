@@ -26,7 +26,7 @@ Draggable.prototype = {
             this._x = e.offsetX;
             this._y = e.offsetY;
 
-            this.on('pagemousemove', this._drag, this);
+            this.on('pagemousemove', this._drag, this);//这里监听的是 pagemousemove，对象会实时跟随鼠标移动
             this.on('pagemouseup', this._dragEnd, this);
 
             this.dispatchToElement(param(draggingTarget, e), 'dragstart', e.event);
@@ -45,6 +45,7 @@ Draggable.prototype = {
             this._x = x;
             this._y = y;
 
+            //调用 drift 方法真正开始移动对象，在基类 Element 上定义了 drift 接口。
             draggingTarget.drift(dx, dy, e);
             this.dispatchToElement(param(draggingTarget, e), 'drag', e.event);
 

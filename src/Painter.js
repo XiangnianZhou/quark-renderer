@@ -1,3 +1,8 @@
+/**
+ * 这是基于 canvas 接口的 Painter 类
+ * @see 基于 SVG 接口的 Painter 类在 svg 目录下
+ * @see 基于 VML 接口的 Painter 类在 vml 目录下
+ */
 import {devicePixelRatio} from './config';
 import * as util from './core/util';
 import logError from './core/log';
@@ -77,6 +82,9 @@ function doClip(clipPaths, ctx) {
     }
 }
 
+/**
+ * 不会直接在传入的 dom 节点内部创建 canvas 标签，而是再套一层div，目的是加上一些必须的 CSS 样式，方便实现特定的功能。
+ */
 function createRoot(width, height) {
     var domRoot = document.createElement('div');
 
@@ -104,7 +112,7 @@ function createRoot(width, height) {
 /**
  * @alias module:zrender/Painter
  * @constructor
- * @param {HTMLElement} root 绘图容器
+ * @param {HTMLElement} root 绘图容器  @type {HTMLElement}
  * @param {module:zrender/Storage} storage
  * @param {Object} opts
  */
@@ -531,6 +539,9 @@ Painter.prototype = {
                     scope.prevElClipPaths = clipPaths;
                 }
             }
+
+            //开始绘制元素，beforeBrush/brush/afterBrush 3个方法定义在基类 Displayable 中。
+            //每个元素自己知道如何绘制自身的形状。
             el.beforeBrush && el.beforeBrush(ctx);
 
             el.brush(ctx, scope.prevEl || null);

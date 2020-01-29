@@ -152,7 +152,7 @@ Animation.prototype = {
         // 'frame' should be triggered before stage, because upper application
         // depends on the sequence (e.g., echarts-stream and finish
         // event judge)
-        this.trigger('frame', delta);
+        this.trigger('frame', delta);//不断触发 frame 事件
 
         if (this.stage.update) {
             this.stage.update();
@@ -164,16 +164,17 @@ Animation.prototype = {
 
         this._running = true;
 
+        
         function step() {
             if (self._running) {
 
-                requestAnimationFrame(step);
+                requestAnimationFrame(step);//这里开始递归执行，TODO:需要确认在大量节点下的性能问题。
 
                 !self._paused && self._update();
             }
         }
 
-        requestAnimationFrame(step);
+        requestAnimationFrame(step);//触发第一次动作
     },
 
     /**

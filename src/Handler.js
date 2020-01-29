@@ -1,3 +1,8 @@
+/**
+ * Canvas 内置的API只在 canvas 实例本身上面触发事件，对画布内部的画出来的元素没有提供事件支持。
+ * Handler.js 用来封装画布内部元素的事件处理逻辑，核心思路是，在 canvas 收到事件之后，派发给指定的元素，
+ * 然后再进行冒泡，从而模拟出原生 DOM 事件的行为。
+ */
 import * as util from './core/util';
 import * as vec2 from './core/vector';
 import Draggable from './mixin/Draggable';
@@ -37,12 +42,45 @@ function stopEvent(event) {
 function EmptyProxy() {}
 EmptyProxy.prototype.dispose = function () {};
 
-
 var handlerNames = [
     'click', 'dblclick', 'mousewheel', 'mouseout',
     'mouseup', 'mousedown', 'mousemove', 'contextmenu',
     'pagemousemove', 'pagemouseup'
 ];
+
+//处理整个页面上的事件
+function pageEventHandler(pageEventName, event) {
+    this.trigger(pageEventName, makeEventPacket(pageEventName, {}, event));
+}
+
+function isHover(displayable, x, y) {
+    if (displayable[displayable.rectHover ? 'rectContain' : 'contain'](x, y)) {
+        var el = displayable;
+        var isSilent;
+        while (el) {
+            // If clipped by ancestor.
+            // FIXME: If clipPath has neither stroke nor fill,
+            // el.clipPath.contain(x, y) will always return false.
+            if (el.clipPath && !el.clipPath.contain(x, y)) {
+                return false;
+            }
+            if (el.silent) {
+                isSilent = true;
+            }
+            el = el.parent;
+        }
+        return isSilent ? SILENT : true;
+    }
+
+    return false;
+}
+
+function afterListenerChanged(handlerInstance) {
+    var allSilent = handlerInstance.isSilent('pagemousemove')
+        && handlerInstance.isSilent('pagemouseup');
+    var proxy = handlerInstance.proxy;
+    proxy && proxy.togglePageEvent && proxy.togglePageEvent(!allSilent);
+}
 
 /**
  * @alias module:zrender/Handler
@@ -102,7 +140,6 @@ var Handler = function (storage, painter, proxy, painterRoot) {
      */
     this._gestureMgr;
 
-
     Draggable.call(this);
 
     this.setHandlerProxy(proxy);
@@ -119,6 +156,7 @@ Handler.prototype = {
 
         if (proxy) {
             util.each(handlerNames, function (name) {
+                // 监听 Proxy 上面派发的原生DOM事件，转发给本类的处理方法。
                 proxy.on && proxy.on(name, this[name], this);
             }, this);
             // Attach handler
@@ -226,7 +264,7 @@ Handler.prototype = {
     },
 
     /**
-     * 事件分发代理
+     * 事件分发代理，把事件分发给 canvas 中绘制的元素。
      *
      * @private
      * @param {Object} targetInfo {target, topTarget} 目标图形元素
@@ -242,6 +280,7 @@ Handler.prototype = {
         var eventHandler = 'on' + eventName;
         var eventPacket = makeEventPacket(eventName, targetInfo, event);
 
+        //模拟DOM中的事件冒泡行为，事件一直向上层传播，直到没有父层节点为止。
         while (el) {
             el[eventHandler]
                 && (eventPacket.cancelBubble = el[eventHandler].call(el, eventPacket));
@@ -283,6 +322,7 @@ Handler.prototype = {
         var list = this.storage.getDisplayList();
         var out = {x: x, y: y};
 
+        //NOTE: 在图元数量非常庞大的时候，如 100 万个图元，这里的 for 循环会很慢，基本不能响应鼠标事件。
         for (var i = list.length - 1; i >= 0; i--) {
             var hoverCheckResult;
             if (list[i] !== exclude
@@ -328,7 +368,8 @@ Handler.prototype = {
 };
 
 // Common handlers
-util.each(['click', 'mousedown', 'mouseup', 'mousewheel', 'dblclick', 'contextmenu'], function (name) {
+util.each(['click', 'mousedown', 'mouseup', 'mousewheel', 
+    'dblclick', 'contextmenu'], function (name) {
     Handler.prototype[name] = function (event) {
         // Find hover again to avoid click event is dispatched manually. Or click is triggered without mouseover
         var hovered = this.findHover(event.zrX, event.zrY);
@@ -358,43 +399,12 @@ util.each(['click', 'mousedown', 'mouseup', 'mousewheel', 'dblclick', 'contextme
             this._downPoint = null;
         }
 
+        //把事件派发给目标图元
         this.dispatchToElement(hovered, name, event);
     };
 });
 
-function pageEventHandler(pageEventName, event) {
-    this.trigger(pageEventName, makeEventPacket(pageEventName, {}, event));
-}
-
-function isHover(displayable, x, y) {
-    if (displayable[displayable.rectHover ? 'rectContain' : 'contain'](x, y)) {
-        var el = displayable;
-        var isSilent;
-        while (el) {
-            // If clipped by ancestor.
-            // FIXME: If clipPath has neither stroke nor fill,
-            // el.clipPath.contain(x, y) will always return false.
-            if (el.clipPath && !el.clipPath.contain(x, y)) {
-                return false;
-            }
-            if (el.silent) {
-                isSilent = true;
-            }
-            el = el.parent;
-        }
-        return isSilent ? SILENT : true;
-    }
-
-    return false;
-}
-
-function afterListenerChanged(handlerInstance) {
-    var allSilent = handlerInstance.isSilent('pagemousemove')
-        && handlerInstance.isSilent('pagemouseup');
-    var proxy = handlerInstance.proxy;
-    proxy && proxy.togglePageEvent && proxy.togglePageEvent(!allSilent);
-}
-
+//注意，Handler 里面混入了 Eventful 里面提供的事件处理工具。
 util.mixin(Handler, Eventful);
 util.mixin(Handler, Draggable);
 

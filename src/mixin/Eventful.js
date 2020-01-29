@@ -1,4 +1,6 @@
 /**
+ * Canvas 内部绘制的对象默认不支持事件，这里提供对事件的封装。
+ * 
  * Event Mixin
  * @module zrender/mixin/Eventful
  * @author Kener (@Kener-林峰, kener.linfeng@gmail.com)
@@ -13,7 +15,7 @@ var arrySlice = Array.prototype.slice;
  * @alias module:zrender/mixin/Eventful
  * @constructor
  * @param {Object} [eventProcessor] The object eventProcessor is the scope when
- *        `eventProcessor.xxx` called.
+ *        `eventProcessor.xxx` called. 事件处理者，也就是当前事件处理函数执行时的作用域。
  * @param {Function} [eventProcessor.normalizeQuery]
  *        param: {string|Object} Raw query.
  *        return: {string|Object} Normalized query.

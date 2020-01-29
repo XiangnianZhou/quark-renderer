@@ -9,5 +9,5 @@ export default (
         || window.webkitRequestAnimationFrame
     )
 ) || function (func) {
-    setTimeout(func, 16);
+    setTimeout(func, 16);// 1000ms/60，每秒60帧，每帧约16ms
 };

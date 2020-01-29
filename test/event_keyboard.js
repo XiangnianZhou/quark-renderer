@@ -30,4 +30,8 @@ circle1.on('keypress', function (event) {
     console.log(event);
 });
 
+zr.on("keydown",function(event){
+    console.log("keydown listener on zrender instance...");
+});
+
 zr.add(circle1);

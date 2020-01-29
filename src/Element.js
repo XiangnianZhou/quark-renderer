@@ -1,3 +1,8 @@
+/**
+ * @class Element 
+ * 抽象类，直接子类是 graphic/Displayable 。
+ * Dispalyable 的直接子类是 graphic/Path，graphic 包中的所有形状对象都是 Path 的子类。
+ */
 import guid from './core/guid';
 import Eventful from './mixin/Eventful';
 import Transformable from './mixin/Transformable';
@@ -156,6 +161,7 @@ Element.prototype = {
     },
 
     /**
+     * 修改对象上的属性。
      * @param {string|Object} key
      * @param {*} value
      */
@@ -194,6 +200,9 @@ Element.prototype = {
         clipPath.__zr = zr;
         clipPath.__clipTarget = this;
 
+        //TODO: FIX this，需要重写一下，考虑把 Element 类和 Displayable 类合并起来。
+        //dirty() 方法定义在子类 Displayable 中，这里似乎不应该直接调用，作为父类的 Element 不应该了解子类的实现，否则不易理解和维护。
+        //另，Displayable 中的 dirty() 方法没有参数，而孙类 Path 中有参数。
         this.dirty(false);
     },
 
@@ -215,7 +224,7 @@ Element.prototype = {
     },
 
     /**
-     * Add self from zrender instance.
+     * Add self to zrender instance.
      * Not recursively because it will be invoked when element added to storage.
      * @param {module:zrender/ZRender} zr
      */

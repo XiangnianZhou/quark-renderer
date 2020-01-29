@@ -7,7 +7,14 @@ import * as util from './core/util';
 import {devicePixelRatio} from './config';
 import Style from './graphic/Style';
 import Pattern from './graphic/Pattern';
-
+/**
+ * 由于 canvas 标签不能嵌套使用，比如下面这样是不行的：
+ * <canvas>
+ *      <canvas>
+ *      </canvas>
+ * </canvas>
+ * 但是可以通过样式进行层叠放置，Layer 类用来动态创建这些层。
+ */
 function returnFalse() {
     return false;
 }
