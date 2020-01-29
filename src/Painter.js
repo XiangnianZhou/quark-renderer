@@ -105,6 +105,9 @@ function createRoot(width, height) {
         'border-width:0'
     ].join(';') + ';';
 
+    //为了让div能够响应键盘事件，这个属性是必须的
+    // domRoot.setAttribute("tabindex","0");
+
     return domRoot;
 }
 

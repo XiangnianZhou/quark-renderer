@@ -26,7 +26,8 @@ Draggable.prototype = {
             this._x = e.offsetX;
             this._y = e.offsetY;
 
-            this.on('pagemousemove', this._drag, this);//这里监听的是 pagemousemove，对象会实时跟随鼠标移动
+            //这里监听的是 pagemousemove，对象会实时跟随鼠标移动
+            this.on('pagemousemove', this._drag, this);
             this.on('pagemouseup', this._dragEnd, this);
 
             this.dispatchToElement(param(draggingTarget, e), 'dragstart', e.event);

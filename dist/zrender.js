@@ -1242,7 +1242,8 @@ Draggable.prototype = {
             this._x = e.offsetX;
             this._y = e.offsetY;
 
-            this.on('pagemousemove', this._drag, this);//这里监听的是 pagemousemove，对象会实时跟随鼠标移动
+            //这里监听的是 pagemousemove，对象会实时跟随鼠标移动
+            this.on('pagemousemove', this._drag, this);
             this.on('pagemouseup', this._dragEnd, this);
 
             this.dispatchToElement(param(draggingTarget, e), 'dragstart', e.event);
@@ -2173,10 +2174,11 @@ EmptyProxy.prototype.dispose = function () {};
 var handlerNames = [
     'click', 'dblclick', 'mousewheel', 'mouseout',
     'mouseup', 'mousedown', 'mousemove', 'contextmenu',
-    'pagemousemove', 'pagemouseup'
+    'pagemousemove', 'pagemouseup',
+    'pagekeydown','pagekeyup'
 ];
 
-//处理整个页面上的事件
+//监听页面上触发的事件，转换成当前实例自己触发的事件
 function pageEventHandler(pageEventName, event) {
     this.trigger(pageEventName, makeEventPacket(pageEventName, {}, event));
 }
@@ -2204,8 +2206,11 @@ function isHover(displayable, x, y) {
 }
 
 function afterListenerChanged(handlerInstance) {
+    //监听整个页面上的事件
     var allSilent = handlerInstance.isSilent('pagemousemove')
-        && handlerInstance.isSilent('pagemouseup');
+        && handlerInstance.isSilent('pagemouseup')
+        && handlerInstance.isSilent('pagekeydown')
+        && handlerInstance.isSilent('pagekeyup');
     var proxy = handlerInstance.proxy;
     proxy && proxy.togglePageEvent && proxy.togglePageEvent(!allSilent);
 }
@@ -2352,6 +2357,9 @@ Handler.prototype = {
     pagemousemove: curry(pageEventHandler, 'pagemousemove'),
 
     pagemouseup: curry(pageEventHandler, 'pagemouseup'),
+
+    pagekeydown: curry(pageEventHandler, 'pagekeydown'),
+    pagekeyup: curry(pageEventHandler, 'pagekeyup'),
 
     /**
      * Resize
@@ -9652,6 +9660,9 @@ function createRoot(width, height) {
         'border-width:0'
     ].join(';') + ';';
 
+    //为了让div能够响应键盘事件，这个属性是必须的
+    // domRoot.setAttribute("tabindex","0");
+
     return domRoot;
 }
 
@@ -10874,8 +10885,9 @@ mixin(Animation, Eventful);
 /**
  * HandlerProxy 的主要功能是：把原生的 DOM 事件代理（转发）到 ZRender 实例上，
  * 在 Handler 类中会把事件进一步分发给 canvas 中绘制的图元。
+ * 大部分事件挂载在 canvas 的外层容器 div 上面，少部分事件挂载在全局的 document 对象上，因为
+ * 在实现拖拽和键盘交互的过程中，鼠标指针可能已经脱离了 canvas 所在的区域。
  * 
- * TODO: 这里的实现只代理了鼠标和触摸屏相关的事件，需要把基本的键盘事件也代理进去，如 keydown/keyup/keypress
  */
 var TOUCH_CLICK_DELAY = 300;
 // "page event" is defined in the comment of `[Page Event]`.
@@ -10947,6 +10959,7 @@ var localNativeListenerNames = (function () {
 })();
 
 var globalNativeListenerNames = {
+    keyboard:['keydown','keyup'],
     mouse: ['mousemove', 'mouseup'],
     touch: ['touchmove', 'touchend'],
     pointer: ['pointermove', 'pointerup']
@@ -11198,6 +11211,16 @@ var globalDOMHandlers = {
     mouseup: function (event) {
         event = normalizeEvent(this.dom, event, true);
         this.trigger('pagemouseup', event);
+    },
+
+    keyup: function (event) {
+        event = normalizeEvent(this.dom, event, true);
+        this.trigger('pagekeyup', event);
+    },
+
+    keydown: function (event) {
+        event = normalizeEvent(this.dom, event, true);
+        this.trigger('pagekeydown', event);
     }
 };
 
@@ -11278,8 +11301,22 @@ function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlo
                 }
             });
         });
+
+        //挂载键盘事件
+        each(nativeListenerNames.keyboard,function(nativeEventName){
+            mountSingle(nativeEventName, function (event) {
+                console.log(event);
+                console.log(domTarget);
+                if (localOrGlobal || !isTriggeredFromLocal(event)) {
+                    localOrGlobal && markTriggeredFromLocal(event);
+                    console.log(domHandlers[nativeEventName]);
+                    domHandlers[nativeEventName].call(instance, event);
+                }
+            });
+        });
     }
 
+    //用来监听原生 DOM 事件
     function mountSingle(nativeEventName, listener) {
         scope.mounted[nativeEventName] = listener;
         addEventListener(domTarget, eventNameFix(nativeEventName), listener);
@@ -11325,7 +11362,7 @@ function HandlerDomProxy(dom) {
     this._localHandlerScope = new DOMHandlerScope(dom, localDOMHandlers);
 
     if (pageEventSupported) {
-        this._globalHandlerScope = new DOMHandlerScope(document, globalDOMHandlers);
+        this._globalHandlerScope = new DOMHandlerScope(document, globalDOMHandlers);//注意，这里直接监听 document 上的事件
     }
 
     this._pageEventEnabled = false;

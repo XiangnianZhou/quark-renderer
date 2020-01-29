@@ -45,10 +45,11 @@ EmptyProxy.prototype.dispose = function () {};
 var handlerNames = [
     'click', 'dblclick', 'mousewheel', 'mouseout',
     'mouseup', 'mousedown', 'mousemove', 'contextmenu',
-    'pagemousemove', 'pagemouseup'
+    'pagemousemove', 'pagemouseup',
+    'pagekeydown','pagekeyup'
 ];
 
-//处理整个页面上的事件
+//监听页面上触发的事件，转换成当前实例自己触发的事件
 function pageEventHandler(pageEventName, event) {
     this.trigger(pageEventName, makeEventPacket(pageEventName, {}, event));
 }
@@ -76,8 +77,11 @@ function isHover(displayable, x, y) {
 }
 
 function afterListenerChanged(handlerInstance) {
+    //监听整个页面上的事件
     var allSilent = handlerInstance.isSilent('pagemousemove')
-        && handlerInstance.isSilent('pagemouseup');
+        && handlerInstance.isSilent('pagemouseup')
+        && handlerInstance.isSilent('pagekeydown')
+        && handlerInstance.isSilent('pagekeyup');
     var proxy = handlerInstance.proxy;
     proxy && proxy.togglePageEvent && proxy.togglePageEvent(!allSilent);
 }
@@ -224,6 +228,9 @@ Handler.prototype = {
     pagemousemove: util.curry(pageEventHandler, 'pagemousemove'),
 
     pagemouseup: util.curry(pageEventHandler, 'pagemouseup'),
+
+    pagekeydown: util.curry(pageEventHandler, 'pagekeydown'),
+    pagekeyup: util.curry(pageEventHandler, 'pagekeyup'),
 
     /**
      * Resize
