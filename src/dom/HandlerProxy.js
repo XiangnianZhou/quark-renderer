@@ -431,11 +431,8 @@ function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlo
         //挂载键盘事件
         zrUtil.each(nativeListenerNames.keyboard,function(nativeEventName){
             mountSingle(nativeEventName, function (event) {
-                console.log(event);
-                console.log(domTarget);
                 if (localOrGlobal || !isTriggeredFromLocal(event)) {
                     localOrGlobal && markTriggeredFromLocal(event);
-                    console.log(domHandlers[nativeEventName]);
                     domHandlers[nativeEventName].call(instance, event);
                 }
             });

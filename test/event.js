@@ -11,12 +11,25 @@ var circle1 = new zrender.Circle({
     draggable: true
 });
 
+var circle3 = new zrender.Circle({
+    shape: {
+        cx: 70,
+        cy: 70,
+        r: 30
+    },
+    style: {
+        fill: '#ccc'
+    },
+    draggable: true
+});
+
 var circle2 = new zrender.Circle({
     shape: {
         cx: 300,
         cy: 300,
         r: 100
-    }
+    },
+    draggable: true
 });
 
 circle1.on('mouseover', function () {
@@ -36,6 +49,7 @@ circle2.on('dragenter', function () {
 
 zr.add(circle2);
 zr.add(circle1);
+zr.add(circle3);
 
 circle2.attr('shape', {
     r: 50 

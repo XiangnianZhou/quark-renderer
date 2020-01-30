@@ -1214,97 +1214,101 @@ var vector = (Object.freeze || Object)({
 	max: max
 });
 
-// TODO Draggable for group
-// FIXME Draggable on element which has parent rotation or scale
-function Draggable() {
-
-    this.on('mousedown', this._dragStart, this);
-    // this.on('mousemove', this._drag, this);
-    // this.on('mouseup', this._dragEnd, this);
-    // this.on('globalout', this._dragEnd, this);
-
-    // this._dropTarget = null;
-    // this._draggingTarget = null;
-
-    // this._x = 0;
-    // this._y = 0;
-}
-
-Draggable.prototype = {
-
-    constructor: Draggable,
-
-    _dragStart: function (e) {
-        var draggingTarget = e.target;
-        if (draggingTarget && draggingTarget.draggable) {
-            this._draggingTarget = draggingTarget;
-            draggingTarget.dragging = true;
-            this._x = e.offsetX;
-            this._y = e.offsetY;
-
-            //这里监听的是 pagemousemove，对象会实时跟随鼠标移动
-            this.on('pagemousemove', this._drag, this);
-            this.on('pagemouseup', this._dragEnd, this);
-
-            this.dispatchToElement(param(draggingTarget, e), 'dragstart', e.event);
-        }
-    },
-
-    _drag: function (e) {
-        var draggingTarget = this._draggingTarget;
-        if (draggingTarget) {
-
-            var x = e.offsetX;
-            var y = e.offsetY;
-
-            var dx = x - this._x;
-            var dy = y - this._y;
-            this._x = x;
-            this._y = y;
-
-            //调用 drift 方法真正开始移动对象，在基类 Element 上定义了 drift 接口。
-            draggingTarget.drift(dx, dy, e);
-            this.dispatchToElement(param(draggingTarget, e), 'drag', e.event);
-
-            var dropTarget = this.findHover(x, y, draggingTarget).target;
-            var lastDropTarget = this._dropTarget;
-            this._dropTarget = dropTarget;
-
-            if (draggingTarget !== dropTarget) {
-                if (lastDropTarget && dropTarget !== lastDropTarget) {
-                    this.dispatchToElement(param(lastDropTarget, e), 'dragleave', e.event);
-                }
-                if (dropTarget && dropTarget !== lastDropTarget) {
-                    this.dispatchToElement(param(dropTarget, e), 'dragenter', e.event);
-                }
-            }
-        }
-    },
-
-    _dragEnd: function (e) {
-        var draggingTarget = this._draggingTarget;
-
-        if (draggingTarget) {
-            draggingTarget.dragging = false;
-        }
-
-        this.off('pagemousemove', this._drag);
-        this.off('pagemouseup', this._dragEnd);
-
-        this.dispatchToElement(param(draggingTarget, e), 'dragend', e.event);
-
-        if (this._dropTarget) {
-            this.dispatchToElement(param(this._dropTarget, e), 'drop', e.event);
-        }
-
-        this._draggingTarget = null;
-        this._dropTarget = null;
+/**
+ * 支持同时拖拽多个图元，按住 Ctrl 键可以多选。
+ */
+class MultiDragDrop{
+    constructor(handler){
+        this.selectionMap=new Map();
+        this.handler=handler;
+        this.handler.on('mousedown', this._dragStart, this);
     }
 
-};
+    param(target, e) {
+        return {target: target, topTarget: e && e.topTarget};
+    }
 
-function param(target, e) {
-    return {target: target, topTarget: e && e.topTarget};
+    getSelectionMap(){
+        return this.selectionMap;
+    }
+
+    clearSelectionMap(){
+        this.selectionMap.forEach((el,key)=>{el.dragging=false;});
+        this.selectionMap.clear();
+    }
+
+    _dragStart(e) {
+        let el = e.target;
+        let event = e.event;
+        this._draggingItem=el;
+
+        if(!el){
+            this.clearSelectionMap();
+            return;
+        }
+
+        if(!el.draggable){
+            return;
+        }
+
+        if(!event.ctrlKey&&!this.selectionMap.get(el.id)){
+            this.clearSelectionMap();
+        }
+        el.dragging=true;
+        this.selectionMap.set(el.id,el);
+
+        this._x = e.offsetX;
+        this._y = e.offsetY;
+        this.handler.on('pagemousemove', this._drag, this);
+        this.handler.on('pagemouseup', this._dragEnd, this);
+
+        this.selectionMap.forEach((el,key)=>{
+            console.log(el);
+            this.handler.dispatchToElement(this.param(el, e), 'dragstart', e.event);
+        });
+    }
+
+    _drag(e) {
+        let x = e.offsetX;
+        let y = e.offsetY;
+        let dx = x - this._x;
+        let dy = y - this._y;
+        this._x = x;
+        this._y = y;
+
+        this.selectionMap.forEach((el,key)=>{
+            el.drift(dx, dy, e);
+            this.handler.dispatchToElement(this.param(el, e), 'drag', e.event);
+        });
+
+        let dropTarget = this.handler.findHover(x, y, this._draggingItem).target;
+        let lastDropTarget = this._dropTarget;
+        this._dropTarget = dropTarget;
+
+        if (this._draggingItem !== dropTarget) {
+            if (lastDropTarget && dropTarget !== lastDropTarget) {
+                this.handler.dispatchToElement(this.param(lastDropTarget, e), 'dragleave', e.event);
+            }
+            if (dropTarget && dropTarget !== lastDropTarget) {
+                this.handler.dispatchToElement(this.param(dropTarget, e), 'dragenter', e.event);
+            }
+        }
+    }
+
+    _dragEnd(e) {
+        this.selectionMap.forEach((el,key)=>{
+            el.dragging=false;
+            this.handler.dispatchToElement(this.param(el, e), 'dragend', e.event);
+        });
+        this.handler.off('pagemousemove', this._drag);
+        this.handler.off('pagemouseup', this._dragEnd);
+
+        if (this._dropTarget) {
+            this.handler.dispatchToElement(this.param(this._dropTarget, e), 'drop', e.event);
+        }
+
+        this._dropTarget = null;
+    }
 }
 
 /**
@@ -2273,7 +2277,7 @@ var Handler = function (storage, painter, proxy, painterRoot) {
      */
     this._gestureMgr;
 
-    Draggable.call(this);
+    new MultiDragDrop(this);
 
     this.setHandlerProxy(proxy);
 };
@@ -2542,7 +2546,6 @@ each(['click', 'mousedown', 'mouseup', 'mousewheel',
 
 //注意，Handler 里面混入了 Eventful 里面提供的事件处理工具。
 mixin(Handler, Eventful);
-mixin(Handler, Draggable);
 
 /**
  * 3x2矩阵操作类
@@ -11305,11 +11308,8 @@ function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlo
         //挂载键盘事件
         each(nativeListenerNames.keyboard,function(nativeEventName){
             mountSingle(nativeEventName, function (event) {
-                console.log(event);
-                console.log(domTarget);
                 if (localOrGlobal || !isTriggeredFromLocal(event)) {
                     localOrGlobal && markTriggeredFromLocal(event);
-                    console.log(domHandlers[nativeEventName]);
                     domHandlers[nativeEventName].call(instance, event);
                 }
             });
@@ -11522,6 +11522,7 @@ var ZRender = function (id, dom, opts) {
 
     var rendererType = opts.renderer;
     // TODO WebGL
+    // TODO: remove vml
     if (useVML) {
         if (!painterCtors.vml) {
             throw new Error('You need to require \'zrender/vml/vml\' to support IE8');

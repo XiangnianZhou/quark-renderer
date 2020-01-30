@@ -5,7 +5,7 @@
  */
 import * as util from './core/util';
 import * as vec2 from './core/vector';
-import Draggable from './mixin/Draggable';
+import MultiDragDrop from './mixin/MultiDragDrop';
 import Eventful from './mixin/Eventful';
 import * as eventTool from './core/event';
 import GestureMgr from './core/GestureMgr';
@@ -144,7 +144,7 @@ var Handler = function (storage, painter, proxy, painterRoot) {
      */
     this._gestureMgr;
 
-    Draggable.call(this);
+    new MultiDragDrop(this);
 
     this.setHandlerProxy(proxy);
 };
@@ -413,6 +413,5 @@ util.each(['click', 'mousedown', 'mouseup', 'mousewheel',
 
 //注意，Handler 里面混入了 Eventful 里面提供的事件处理工具。
 util.mixin(Handler, Eventful);
-util.mixin(Handler, Draggable);
 
 export default Handler;

@@ -1,4 +1,4 @@
-const uglifyPlugin = require('rollup-plugin-uglify');
+const uglifyPlugin = require('rollup-plugin-uglify-es');
 const {resolve} = require('path');
 
 // Based on echarts/

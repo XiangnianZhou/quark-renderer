@@ -11,6 +11,18 @@ var circle1 = new zrender.Circle({
     draggable: true
 });
 
+var circle2 = new zrender.Circle({
+    shape: {
+        cx: 60,
+        cy: 60,
+        r: 30
+    },
+    style: {
+        fill: 'blue'
+    },
+    draggable: true
+});
+
 circle1.on('mouseover', function () {
     zr.dom.style.cursor = 'move';
 });
@@ -30,8 +42,9 @@ circle1.on('keypress', function (event) {
     console.log(event);
 });
 
-zr.on("pagekeydown",function(event){
-    console.log("zr pagekeydown...");
-});
+// zr.on("pagekeydown",function(event){
+//     console.log("zr pagekeydown...");
+// });
 
 zr.add(circle1);
+zr.add(circle2);
