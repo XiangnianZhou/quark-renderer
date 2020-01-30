@@ -123,6 +123,7 @@ var ZRender = function (id, dom, opts) {
 
     var rendererType = opts.renderer;
     // TODO WebGL
+    // TODO: remove vml
     if (useVML) {
         if (!painterCtors.vml) {
             throw new Error('You need to require \'zrender/vml/vml\' to support IE8');
