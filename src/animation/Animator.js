@@ -1,4 +1,6 @@
 /**
+ * Animator 是动画片段 Clip 的管理器，负责创建、维护 Clip。
+ * 
  * @module echarts/animation/Animator
  */
 
@@ -471,6 +473,7 @@ Animator.prototype = {
      */
     when: function (time /* ms */, props) {
         var tracks = this._tracks;
+        //为每一种属性创建一条动画轨道，并在轨道上添加片段 clip 实例。
         for (var propName in props) {
             if (!props.hasOwnProperty(propName)) {
                 continue;
