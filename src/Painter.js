@@ -3,13 +3,12 @@
  * @see 基于 SVG 接口的 Painter 类在 svg 目录下
  * @see 基于 VML 接口的 Painter 类在 vml 目录下
  */
+import requestAnimationFrame from './animation/requestAnimationFrame';
 import {devicePixelRatio} from './config';
-import * as util from './core/util';
-import logError from './core/log';
+import * as util from './core/dataUtil';
 import BoundingRect from './core/BoundingRect';
 import timsort from './core/timsort';
-import Layer from './Layer';
-import requestAnimationFrame from './animation/requestAnimationFrame';
+import Layer from './CanvasLayer';
 import Image from './graphic/Image';
 import env from './core/env';
 
@@ -83,7 +82,8 @@ function doClip(clipPaths, ctx) {
 }
 
 /**
- * 不会直接在传入的 dom 节点内部创建 canvas 标签，而是再套一层div，目的是加上一些必须的 CSS 样式，方便实现特定的功能。
+ * 不会直接在传入的 dom 节点内部创建 canvas 标签，而是再套一层div
+ * 目的是加上一些必须的 CSS 样式，方便实现特定的功能。
  */
 function createRoot(width, height) {
     var domRoot = document.createElement('div');
@@ -110,7 +110,6 @@ function createRoot(width, height) {
 
     return domRoot;
 }
-
 
 /**
  * @alias module:zrender/Painter
@@ -599,12 +598,12 @@ Painter.prototype = {
         var domRoot = this._domRoot;
 
         if (layersMap[zlevel]) {
-            logError('ZLevel ' + zlevel + ' has been used already');
+            console.log('ZLevel ' + zlevel + ' has been used already');
             return;
         }
         // Check if is a valid layer
         if (!isLayerValid(layer)) {
-            logError('Layer of zlevel ' + zlevel + ' is not valid');
+            console.log('Layer of zlevel ' + zlevel + ' is not valid');
             return;
         }
 
@@ -745,7 +744,7 @@ Painter.prototype = {
             }
 
             if (!layer.__builtin__) {
-                logError('ZLevel ' + zlevel + ' has been used by unkown layer ' + layer.id);
+                console.log('ZLevel ' + zlevel + ' has been used by unkown layer ' + layer.id);
             }
 
             if (layer !== prevLayer) {

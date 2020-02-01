@@ -4,8 +4,7 @@
  */
 
 import {createElement} from './core';
-import * as util from '../core/util';
-import logError from '../core/log';
+import * as util from '../core/dataUtil';
 import Path from '../graphic/Path';
 import ZImage from '../graphic/Image';
 import ZText from '../graphic/Text';
@@ -402,7 +401,7 @@ SVGPainter.prototype = {
 // Not supported methods
 function createMethodNotSupport(method) {
     return function () {
-        logError('In SVG mode painter not support method "' + method + '"');
+        console.log('In SVG mode painter not support method "' + method + '"');
     };
 }
 

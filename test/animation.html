@@ -24,7 +24,7 @@
         gradient.addColorStop(1, 'black');
 
         var circle = new zrender.Circle({
-            position: [100, 100],
+            position: [0, 0],
             scale: [1, 1],
             shape: {
                 cx: 50,
@@ -39,24 +39,23 @@
             }
         });
         zr.add(circle);
-
-        circle.animate('')
-            .when(200, {
-                position: [200, 0]
-            })
-            .start();
+        
         circle.animate('', true)
             .when(1000, {
-                position: [200, 0]
+                position: [200, 0],
+                scale: [2, 2]
             })
             .when(2000, {
-                position: [200, 200]
+                position: [200, 200],
+                scale: [1, 1]
             })
             .when(3000, {
-                position: [0, 200]
+                position: [0, 200],
+                scale: [1, 1]
             })
             .when(4000, {
-                position: [100, 100]
+                position: [0, 0],
+                scale: [1, 1]
             })
             .start();
     </script>

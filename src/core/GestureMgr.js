@@ -2,7 +2,7 @@
  * Only implements needed gestures for mobile.
  */
 
-import * as eventUtil from './event';
+import * as eventUtil from './eventUtil';
 
 var GestureMgr = function () {
 

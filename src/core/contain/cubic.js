@@ -1,5 +1,5 @@
 
-import * as curve from '../core/curve';
+import * as curve from '../curveUtil';
 
 /**
  * 三次贝塞尔曲线描边包含判断

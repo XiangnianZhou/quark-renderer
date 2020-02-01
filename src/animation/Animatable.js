@@ -1,19 +1,20 @@
+/**
+ * 动画工具类，在 Element 类中 mixin 此工具类提供的功能，为图元提供动画功能。
+ */
 import Animator from '../animation/Animator';
-import logError from '../core/log';
 import {
     isString,
     isFunction,
     isObject,
     isArrayLike,
     indexOf
-} from '../core/util';
+} from '../core/dataUtil';
 
 /**
- * @alias modue:zrender/mixin/Animatable
+ * @alias modue:zrender/animation/Animatable
  * @constructor
  */
 var Animatable = function () {
-
     /**
      * @type {Array.<module:zrender/animation/Animator>}
      * @readOnly
@@ -62,7 +63,7 @@ Animatable.prototype = {
         }
 
         if (!target) {
-            logError(
+            console.log(
                 'Property "'
                 + path
                 + '" is not existed in element '

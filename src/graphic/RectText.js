@@ -3,9 +3,9 @@
  * @module zrender/mixin/RectText
  */
 
-import * as textHelper from '../helper/text';
-import BoundingRect from '../../core/BoundingRect';
-import {WILL_BE_RESTORED} from '../constant';
+import * as textHelper from './helper/text';
+import BoundingRect from '../core/BoundingRect';
+import {WILL_BE_RESTORED} from './constant';
 
 var tmpRect = new BoundingRect();
 

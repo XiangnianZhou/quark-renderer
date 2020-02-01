@@ -1,4 +1,4 @@
-import LRU from '../core/LRU';
+import LRU from './LRU';
 
 var kCSSColorTable = {
     'transparent': [0, 0, 0, 0], 'aliceblue': [240, 248, 255, 1],

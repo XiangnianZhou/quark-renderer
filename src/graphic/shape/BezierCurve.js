@@ -12,7 +12,7 @@ import {
     cubicAt,
     quadraticDerivativeAt,
     cubicDerivativeAt
-} from '../../core/curve';
+} from '../../core/curveUtil';
 
 var out = [];
 

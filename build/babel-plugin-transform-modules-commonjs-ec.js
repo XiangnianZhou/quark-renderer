@@ -568,7 +568,7 @@ function buildRequireStatements(types, source, metadata) {
 
         if (!localImportDefaultName) {
             // src:
-            //      import {someInZrUtil1 as someInZrUtil1Alias, zz} from 'zrender/core/util';
+            //      import {someInZrUtil1 as someInZrUtil1Alias, zz} from 'zrender/core/dataUtil';
             // metadata.imports:
             //      Map { 'someInZrUtil1Alias' => 'someInZrUtil1', 'zz' => 'zz' }
             for (const importEntry of metadata.imports) {

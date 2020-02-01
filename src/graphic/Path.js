@@ -1,7 +1,7 @@
 import Displayable from './Displayable';
-import * as zrUtil from '../core/util';
+import * as zrUtil from '../core/dataUtil';
 import PathProxy from '../core/PathProxy';
-import * as pathContain from '../contain/path';
+import * as pathContain from '../core/contain/path';
 import Pattern from './Pattern';
 
 var getCanvasPattern = Pattern.prototype.getCanvasPattern;

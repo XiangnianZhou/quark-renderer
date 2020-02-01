@@ -4,10 +4,10 @@
  * @module zrender/graphic/Displayable
  */
 
-import * as zrUtil from '../core/util';
+import * as zrUtil from '../core/dataUtil';
 import Style from './Style';
-import Element from '../Element';
-import RectText from './mixin/RectText';
+import Element from './Element';
+import RectText from './RectText';
 
 /**
  * @alias module:zrender/graphic/Displayable

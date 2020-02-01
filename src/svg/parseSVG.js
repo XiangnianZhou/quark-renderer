@@ -1,4 +1,4 @@
-import Group from '../container/Group';
+import Group from '../graphic/Group';
 import ZImage from '../graphic/Image';
 import Text from '../graphic/Text';
 import Circle from '../graphic/shape/Circle';
@@ -9,13 +9,10 @@ import Path from '../graphic/Path';
 import Polygon from '../graphic/shape/Polygon';
 import Polyline from '../graphic/shape/Polyline';
 import LinearGradient from '../graphic/LinearGradient';
-// import RadialGradient from '../graphic/RadialGradient';
-// import Pattern from '../graphic/Pattern';
 import Style from '../graphic/Style';
-// import * as vector from '../core/vector';
 import * as matrix from '../core/matrix';
-import { createFromString } from './path';
-import { isString, extend, defaults, trim, each } from '../core/util';
+import { createFromString } from '../core/pathUtil';
+import { isString, extend, defaults, trim, each } from '../core/dataUtil';
 
 // Most of the values can be separated by comma and/or white space.
 var DILIMITER_REG = /[\s,]+/;

@@ -3,8 +3,8 @@
  */
 
 import Clip from './Clip';
-import * as color from '../tool/color';
-import {isArrayLike} from '../core/util';
+import * as color from '../core/colorUtil';
+import {isArrayLike} from '../core/dataUtil';
 
 var arraySlice = Array.prototype.slice;
 
@@ -437,8 +437,8 @@ function createTrackClip(animator, easing, oneTrackDone, keyframes, propName, fo
 /**
  * @alias module:zrender/animation/Animator
  * @constructor
- * @param {Object} target
- * @param {boolean} loop
+ * @param {Object} target 需要进行动画的图元
+ * @param {boolean} loop 动画是否循环播放
  * @param {Function} getter
  * @param {Function} setter
  */

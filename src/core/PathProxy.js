@@ -10,9 +10,9 @@
 
 /* global Float32Array */
 
-import * as curve from './curve';
+import * as curve from './curveUtil';
 import * as vec2 from './vector';
-import * as bbox from './bbox';
+import * as bbox from './bboxUtil';
 import BoundingRect from './BoundingRect';
 import {devicePixelRatio as dpr} from '../config';
 

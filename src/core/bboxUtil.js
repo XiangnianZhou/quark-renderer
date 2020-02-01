@@ -3,7 +3,7 @@
  */
 
 import * as vec2 from './vector';
-import * as curve from './curve';
+import * as curve from './curveUtil';
 
 var mathMin = Math.min;
 var mathMax = Math.max;
@@ -17,7 +17,7 @@ var extremity = vec2.create();
 
 /**
  * 从顶点数组中计算出最小包围盒，写入`min`和`max`中
- * @module zrender/core/bbox
+ * @module zrender/core/bboxUtil
  * @param {Array<Object>} points 顶点数组
  * @param {number} min
  * @param {number} max
@@ -48,7 +48,7 @@ export function fromPoints(points, min, max) {
 }
 
 /**
- * @memberOf module:zrender/core/bbox
+ * @memberOf module:zrender/core/bboxUtil
  * @param {number} x0
  * @param {number} y0
  * @param {number} x1
@@ -67,7 +67,7 @@ var xDim = [];
 var yDim = [];
 /**
  * 从三阶贝塞尔曲线(p0, p1, p2, p3)中计算出最小包围盒，写入`min`和`max`中
- * @memberOf module:zrender/core/bbox
+ * @memberOf module:zrender/core/bboxUtil
  * @param {number} x0
  * @param {number} y0
  * @param {number} x1
@@ -116,7 +116,7 @@ export function fromCubic(
 
 /**
  * 从二阶贝塞尔曲线(p0, p1, p2)中计算出最小包围盒，写入`min`和`max`中
- * @memberOf module:zrender/core/bbox
+ * @memberOf module:zrender/core/bboxUtil
  * @param {number} x0
  * @param {number} y0
  * @param {number} x1
@@ -151,7 +151,7 @@ export function fromQuadratic(x0, y0, x1, y1, x2, y2, min, max) {
 /**
  * 从圆弧中计算出最小包围盒，写入`min`和`max`中
  * @method
- * @memberOf module:zrender/core/bbox
+ * @memberOf module:zrender/core/bboxUtil
  * @param {number} x
  * @param {number} y
  * @param {number} rx

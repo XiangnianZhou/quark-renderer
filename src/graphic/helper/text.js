@@ -6,8 +6,8 @@ import {
     normalizeCssArray,
     isString,
     isObject
-} from '../../core/util';
-import * as textContain from '../../contain/text';
+} from '../../core/dataUtil';
+import * as textContain from '../../core/contain/text';
 import * as roundRectHelper from './roundRect';
 import * as imageHelper from './image';
 import fixShadow from './fixShadow';

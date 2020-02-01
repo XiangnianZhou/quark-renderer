@@ -4,9 +4,8 @@
  */
 
 import Definable from './Definable';
-import * as zrUtil from '../../core/util';
-import logError from '../../core/log';
-import * as colorTool from '../../tool/color';
+import * as zrUtil from '../../core/dataUtil';
+import * as colorTool from '../../core/colorUtil';
 
 /**
  * Manages SVG gradient elements.
@@ -92,7 +91,7 @@ GradientManager.prototype.add = function (gradient) {
         dom = this.createElement('radialGradient');
     }
     else {
-        logError('Illegal gradient type.');
+        console.log('Illegal gradient type.');
         return null;
     }
 
@@ -157,7 +156,7 @@ GradientManager.prototype.updateDom = function (gradient, dom) {
         dom.setAttribute('r', gradient.r);
     }
     else {
-        logError('Illegal gradient type.');
+        console.log('Illegal gradient type.');
         return;
     }
 

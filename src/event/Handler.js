@@ -3,12 +3,12 @@
  * Handler.js 用来封装画布内部元素的事件处理逻辑，核心思路是，在 canvas 收到事件之后，派发给指定的元素，
  * 然后再进行冒泡，从而模拟出原生 DOM 事件的行为。
  */
-import * as util from './core/util';
-import * as vec2 from './core/vector';
-import MultiDragDrop from './mixin/MultiDragDrop';
-import Eventful from './mixin/Eventful';
-import * as eventTool from './core/event';
-import GestureMgr from './core/GestureMgr';
+import * as util from '../core/dataUtil';
+import * as vec2 from '../core/vector';
+import MultiDragDrop from './MultiDragDrop';
+import Eventful from './Eventful';
+import * as eventTool from '../core/eventUtil';
+import GestureMgr from '../core/GestureMgr';
 
 var SILENT = 'silent';
 
@@ -92,7 +92,7 @@ function afterListenerChanged(handlerInstance) {
  * @extends module:zrender/mixin/Eventful
  * @param {module:zrender/Storage} storage Storage instance.
  * @param {module:zrender/Painter} painter Painter instance.
- * @param {module:zrender/dom/HandlerProxy} proxy HandlerProxy instance.
+ * @param {module:zrender/event/HandlerProxy} proxy HandlerProxy instance.
  * @param {HTMLElement} painterRoot painter.root (not painter.getViewportRoot()).
  */
 var Handler = function (storage, painter, proxy, painterRoot) {

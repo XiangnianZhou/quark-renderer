@@ -6,9 +6,9 @@
  * @alias module:zrender/Storage
  */
 
-import * as util from './core/util';
+import * as util from './core/dataUtil';
 import env from './core/env';
-import Group from './container/Group';
+import Group from './graphic/Group';
 
 // Use timsort because in most case elements are partially sorted
 // https://jsfiddle.net/pissang/jr4x7mdm/8/

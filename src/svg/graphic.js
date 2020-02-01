@@ -6,7 +6,7 @@ import {createElement} from './core';
 import PathProxy from '../core/PathProxy';
 import BoundingRect from '../core/BoundingRect';
 import * as matrix from '../core/matrix';
-import * as textContain from '../contain/text';
+import * as textContain from '../core/contain/text';
 import * as textHelper from '../graphic/helper/text';
 import Text from '../graphic/Text';
 

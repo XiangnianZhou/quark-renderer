@@ -18,7 +18,7 @@
  *           Transition object or a string descriptor like '* 30 0 Linear'
  */
 
-import * as zrUtil from '../core/util';
+import * as zrUtil from '../core/dataUtil';
 import Style from './Style';
 import {copy as vec2Copy} from '../core/vector';
 
@@ -94,7 +94,7 @@ var GraphicStates = function (opts) {
 
     /**
      * Target element
-     * @type {zrender/graphic/Displayable|zrender/container/Group}
+     * @type {zrender/graphic/Displayable|zrender/Group}
      */
     this._el = opts.el;
 

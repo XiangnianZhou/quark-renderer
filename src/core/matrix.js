@@ -1,6 +1,6 @@
 /**
  * 3x2矩阵操作类
- * @exports zrender/tool/matrix
+ * @exports zrender/core/matrix
  */
 
 /* global Float32Array */

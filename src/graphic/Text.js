@@ -1,6 +1,6 @@
 import Displayable from './Displayable';
-import * as zrUtil from '../core/util';
-import * as textContain from '../contain/text';
+import * as zrUtil from '../core/dataUtil';
+import * as textContain from '../core/contain/text';
 import * as textHelper from './helper/text';
 import {ContextCachedBy} from './constant';
 

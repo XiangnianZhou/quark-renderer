@@ -2,7 +2,7 @@
  * Stateful mixin for graphic object
  */
 
-import States from '../States';
+import States from './States';
 
 var Stateful = function (opts) {
 

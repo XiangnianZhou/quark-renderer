@@ -2,7 +2,7 @@
  * Group是一个容器，可以插入子节点，Group的变换也会被应用到子节点上
  * @module zrender/graphic/Group
  * @example
- *     var Group = require('zrender/container/Group');
+ *     var Group = require('zrender/Group');
  *     var Circle = require('zrender/graphic/shape/Circle');
  *     var g = new Group();
  *     g.position[0] = 100;
@@ -17,8 +17,8 @@
  *     zr.add(g);
  */
 
-import * as zrUtil from '../core/util';
-import Element from '../Element';
+import * as zrUtil from '../core/dataUtil';
+import Element from './Element';
 import BoundingRect from '../core/BoundingRect';
 
 /**
@@ -59,7 +59,7 @@ Group.prototype = {
 
     /**
      * 所有子孙元素是否响应鼠标事件
-     * @name module:/zrender/container/Group#silent
+     * @name module:/zrender/Group#silent
      * @type {boolean}
      * @default false
      */

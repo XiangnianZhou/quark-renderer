@@ -10,9 +10,9 @@ import {
     removeEventListener,
     normalizeEvent,
     getNativeEvent
-} from '../core/event';
-import * as zrUtil from '../core/util';
-import Eventful from '../mixin/Eventful';
+} from '../core/eventUtil';
+import * as zrUtil from '../core/dataUtil';
+import Eventful from './Eventful';
 import env from '../core/env';
 
 var TOUCH_CLICK_DELAY = 300;

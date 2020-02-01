@@ -4,8 +4,8 @@
 import env from '../core/env';
 import {applyTransform} from '../core/vector';
 import BoundingRect from '../core/BoundingRect';
-import * as colorTool from '../tool/color';
-import * as textContain from '../contain/text';
+import * as colorTool from '../core/colorUtil';
+import * as textContain from '../core/contain/text';
 import * as textHelper from '../graphic/helper/text';
 import RectText from '../graphic/mixin/RectText';
 import Displayable from '../graphic/Displayable';

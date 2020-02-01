@@ -1,5 +1,5 @@
-import PathProxy from '../core/PathProxy';
-import {applyTransform as v2ApplyTransform} from '../core/vector';
+import PathProxy from './PathProxy';
+import {applyTransform as v2ApplyTransform} from './vector';
 
 var CMD = PathProxy.CMD;
 

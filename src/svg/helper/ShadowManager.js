@@ -4,7 +4,7 @@
  */
 
 import Definable from './Definable';
-import * as zrUtil from '../../core/util';
+import * as zrUtil from '../../core/dataUtil';
 
 /**
  * Manages SVG shadow elements.

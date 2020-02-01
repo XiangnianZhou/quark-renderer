@@ -2,7 +2,7 @@
  * Utilities for mouse or touch events.
  */
 
-import Eventful from '../mixin/Eventful';
+import Eventful from '../event/Eventful';
 import env from './env';
 import {buildTransformer} from './fourPointsTransform';
 

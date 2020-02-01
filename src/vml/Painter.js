@@ -3,10 +3,8 @@
  *
  * @module zrender/vml/Painter
  */
-
-import logError from '../core/log';
 import * as vmlCore from './core';
-import {each} from '../core/util';
+import {each} from '../core/dataUtil';
 
 function parseInt10(val) {
     return parseInt(val, 10);
@@ -187,7 +185,7 @@ VMLPainter.prototype = {
 // Not supported methods
 function createMethodNotSupport(method) {
     return function () {
-        logError('In IE8.0 VML mode painter not support method "' + method + '"');
+        console.log('In IE8.0 VML mode painter not support method "' + method + '"');
     };
 }
 

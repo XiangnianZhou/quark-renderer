@@ -1,18 +1,18 @@
 /**
  * @class Element 
- * 抽象类，直接子类是 graphic/Displayable 。
+ * 图形顶级抽象类，直接子类是 graphic/Displayable 。
  * Dispalyable 的直接子类是 graphic/Path，graphic 包中的所有形状对象都是 Path 的子类。
  */
-import guid from './core/guid';
-import Eventful from './mixin/Eventful';
-import Transformable from './mixin/Transformable';
-import Animatable from './mixin/Animatable';
-import * as zrUtil from './core/util';
+import guid from '../core/guid';
+import Eventful from '../event/Eventful';
+import Transformable from './Transformable';
+import Animatable from '../animation/Animatable';
+import * as zrUtil from '../core/dataUtil';
 
 /**
  * @alias module:zrender/Element
  * @constructor
- * @extends {module:zrender/mixin/Animatable}
+ * @extends {module:zrender/animation/Animatable}
  * @extends {module:zrender/mixin/Transformable}
  * @extends {module:zrender/mixin/Eventful}
  */

@@ -5,7 +5,7 @@
  */
 
 import {createElement} from '../core';
-import * as zrUtil from '../../core/util';
+import * as zrUtil from '../../core/dataUtil';
 import Path from '../../graphic/Path';
 import ZImage from '../../graphic/Image';
 import ZText from '../../graphic/Text';

@@ -1,12 +1,12 @@
-import BoundingRect from '../core/BoundingRect';
-import * as imageHelper from '../graphic/helper/image';
+import BoundingRect from '../BoundingRect';
+import * as imageHelper from '../../graphic/helper/image';
 import {
     getContext,
     extend,
     retrieve2,
     retrieve3,
     trim
-} from '../core/util';
+} from '../dataUtil';
 
 var textWidthCache = {};
 var textWidthCacheCounter = 0;

@@ -8,8 +8,8 @@
 // http://iosoteric.com/additive-animations-animatewithduration-in-ios-8/
 // https://developer.apple.com/videos/wwdc2014/#236
 
-import * as util from '../core/util';
-import {Dispatcher} from '../core/event';
+import * as util from '../core/dataUtil';
+import {Dispatcher} from '../core/eventUtil';
 import requestAnimationFrame from './requestAnimationFrame';
 import Animator from './Animator';
 
@@ -114,7 +114,6 @@ Animation.prototype = {
         var delta = time - this._time;
         var clips = this._clips;
         var len = clips.length;
-
         var deferredEvents = [];
         var deferredClips = [];
         for (var i = 0; i < len; i++) {
@@ -155,7 +154,8 @@ Animation.prototype = {
         this.trigger('frame', delta);//不断触发 frame 事件
 
         if (this.stage.update) {
-            this.stage.update();
+            //在 zrender.js 中，创建 Animation 对象时绑定了 zrender.flush 方法，flush 方法会刷新所有图元
+            this.stage.update(); 
         }
     },
 
@@ -168,7 +168,8 @@ Animation.prototype = {
         function step() {
             if (self._running) {
 
-                requestAnimationFrame(step);//这里开始递归执行，TODO:需要确认在大量节点下的性能问题。
+                //这里开始递归执行，TODO:需要确认在大量节点下的性能问题。
+                requestAnimationFrame(step);
 
                 !self._paused && self._update();
             }

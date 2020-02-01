@@ -1,4 +1,5 @@
 /**
+ * 片段
  * 动画主控制器
  * @config target 动画对象，可以是数组，如果是数组的话会批量分发onframe等事件
  * @config life(1000) 动画时长

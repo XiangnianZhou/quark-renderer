@@ -1,16 +1,14 @@
 /**
  * Do not mount those modules on 'src/zrender' for better tree shaking.
  */
-
-import * as zrUtil from './core/util';
+import * as zrUtil from './core/dataUtil';
 import * as matrix from './core/matrix';
 import * as vector from './core/vector';
-import * as colorTool from './tool/color';
-import * as pathTool from './tool/path';
-import {parseSVG} from './tool/parseSVG';
+import * as colorTool from './core/colorUtil';
+import * as pathTool from './core/pathUtil';
+import {parseSVG} from './svg/parseSVG';
 
-
-export {default as Group} from './container/Group';
+export {default as Group} from './graphic/Group';
 export {default as Path} from './graphic/Path';
 export {default as Image} from './graphic/Image';
 export {default as CompoundPath} from './graphic/CompoundPath';

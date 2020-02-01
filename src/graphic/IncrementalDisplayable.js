@@ -5,7 +5,7 @@
  *
  * It use a not clearFlag to tell the painter don't clear the layer if it's the first element.
  */
-import { inherits } from '../core/util';
+import { inherits } from '../core/dataUtil';
 import Displayble from './Displayable';
 import BoundingRect from '../core/BoundingRect';
 

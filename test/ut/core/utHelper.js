@@ -11,8 +11,8 @@
     /**
      * Usage:
      * var testCase = helper.prepare([
-     *     'zrender/core/util'
-     *     'zrender/tool/color'
+     *     'zrender/core/dataUtil'
+     *     'zrender/core/colorUtil'
      * ])
      *
      * testCase('test_case_1', function (util, colorTool) {
@@ -20,7 +20,7 @@
      *     // this.zrender can be visited.
      * });
      *
-     * testCase.requireId(['zrender/tool/path'])('test_case_2', function (path) {
+     * testCase.requireId(['zrender/core/pathUtil'])('test_case_2', function (path) {
      *     // Real test case.
      *     // this.zrender can be visited.
      * });

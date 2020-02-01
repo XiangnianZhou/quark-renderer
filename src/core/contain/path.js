@@ -1,10 +1,10 @@
-import PathProxy from '../core/PathProxy';
+import PathProxy from '../PathProxy';
 import * as line from './line';
 import * as cubic from './cubic';
 import * as quadratic from './quadratic';
 import * as arc from './arc';
-import {normalizeRadian} from './util';
-import * as curve from '../core/curve';
+import {normalizeRadian} from './radianUtil';
+import * as curve from '../curveUtil';
 import windingLine from './windingLine';
 
 var CMD = PathProxy.CMD;

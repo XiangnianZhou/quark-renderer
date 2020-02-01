@@ -7,15 +7,14 @@
 * LICENSE
 * https://github.com/ecomfe/zrender/blob/master/LICENSE.txt
 */
-
 import guid from './core/guid';
 import env from './core/env';
-import * as zrUtil from './core/util';
-import Handler from './Handler';
+import * as zrUtil from './core/dataUtil';
+import Handler from './event/Handler';
 import Storage from './Storage';
 import Painter from './Painter';
 import Animation from './animation/Animation';
-import HandlerProxy from './dom/HandlerProxy';
+import HandlerDomProxy from './event/HandlerDomProxy';
 
 /**
  * ZRender 是全局入口，同一个浏览器 window 中可以有多个 ZRender 实例，每个 ZRender 实例有自己唯一的 ID。
@@ -139,7 +138,7 @@ var ZRender = function (id, dom, opts) {
     this.painter = painter;
 
     //把DOM事件代理出来
-    var handerProxy = (!env.node && !env.worker) ? new HandlerProxy(painter.getViewportRoot()) : null;
+    var handerProxy = (!env.node && !env.worker) ? new HandlerDomProxy(painter.getViewportRoot()) : null;
     //ZRender 自己封装的事件机制
     this.handler = new Handler(storage, painter, handerProxy, painter.root);
 

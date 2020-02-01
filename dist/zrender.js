@@ -194,7 +194,8 @@ function detect(ua) {
 // }
 
 /**
- * @module zrender/core/util
+ * 用来操作数据的一些工具函数。
+ * @module zrender/core/dataUtil
  */
 
 // 用于处理merge时无法遍历Date等对象的问题
@@ -302,7 +303,7 @@ function clone(source) {
 }
 
 /**
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {*} target
  * @param {*} source
  * @param {boolean} [overwrite=false]
@@ -360,7 +361,7 @@ function mergeAll(targetAndSources, overwrite) {
 /**
  * @param {*} target
  * @param {*} source
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  */
 function extend(target, source) {
     for (var key in source) {
@@ -375,7 +376,7 @@ function extend(target, source) {
  * @param {*} target
  * @param {*} source
  * @param {boolean} [overlay=false]
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  */
 function defaults(target, source, overlay) {
     for (var key in source) {
@@ -410,7 +411,7 @@ function getContext() {
 
 /**
  * 查询数组中元素的index
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  */
 function indexOf(array, value) {
     if (array) {
@@ -429,7 +430,7 @@ function indexOf(array, value) {
 /**
  * 构造类继承关系
  *
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {Function} clazz 源类
  * @param {Function} baseClazz 基类
  */
@@ -450,7 +451,7 @@ function inherits(clazz, baseClazz) {
 
 /**
  * 这里的 mixin 只拷贝 prototype 上的属性。
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {Object|Function} target
  * @param {Object|Function} sorce
  * @param {boolean} overlay
@@ -478,7 +479,7 @@ function isArrayLike(data) {
 
 /**
  * 数组或对象遍历
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {Object|Array} obj
  * @param {Function} cb
  * @param {*} [context]
@@ -506,7 +507,7 @@ function each(obj, cb, context) {
 
 /**
  * 数组映射
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {Array} obj
  * @param {Function} cb
  * @param {*} [context]
@@ -529,7 +530,7 @@ function map(obj, cb, context) {
 }
 
 /**
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {Array} obj
  * @param {Function} cb
  * @param {Object} [memo]
@@ -553,7 +554,7 @@ function reduce(obj, cb, memo, context) {
 
 /**
  * 数组过滤
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {Array} obj
  * @param {Function} cb
  * @param {*} [context]
@@ -579,7 +580,7 @@ function filter(obj, cb, context) {
 
 /**
  * 数组项查找
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {Array} obj
  * @param {Function} cb
  * @param {*} [context]
@@ -597,7 +598,7 @@ function find(obj, cb, context) {
 }
 
 /**
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {Function} func
  * @param {*} context
  * @return {Function}
@@ -610,7 +611,7 @@ function bind(func, context) {
 }
 
 /**
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {Function} func
  * @return {Function}
  */
@@ -622,7 +623,7 @@ function curry(func) {
 }
 
 /**
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -631,7 +632,7 @@ function isArray(value) {
 }
 
 /**
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -640,7 +641,7 @@ function isFunction(value) {
 }
 
 /**
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -649,7 +650,7 @@ function isString(value) {
 }
 
 /**
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -661,7 +662,7 @@ function isObject(value) {
 }
 
 /**
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -670,7 +671,7 @@ function isBuiltInObject(value) {
 }
 
 /**
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -679,7 +680,7 @@ function isTypedArray(value) {
 }
 
 /**
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -702,7 +703,7 @@ function eqNaN(value) {
 /**
  * If value1 is not null, then return value1, otherwise judget rest of values.
  * Low performance.
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @return {*} Final value
  */
 function retrieve(values) {
@@ -728,7 +729,7 @@ function retrieve3(value0, value1, value2) {
 }
 
 /**
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {Array} arr
  * @param {number} startIndex
  * @param {number} endIndex
@@ -764,7 +765,7 @@ function normalizeCssArray(val) {
 }
 
 /**
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {boolean} condition
  * @param {string} message
  */
@@ -775,7 +776,7 @@ function assert(condition, message) {
 }
 
 /**
- * @memberOf module:zrender/core/util
+ * @memberOf module:zrender/core/dataUtil
  * @param {string} str string to be trimed
  * @return {string} trimed string
  */
@@ -872,7 +873,7 @@ function concatArray(a, b) {
 function noop() {}
 
 
-var util = (Object.freeze || Object)({
+var dataUtil = (Object.freeze || Object)({
 	$override: $override,
 	clone: clone,
 	merge: merge,
@@ -1228,7 +1229,7 @@ class MultiDragDrop{
         return {target: target, topTarget: e && e.topTarget};
     }
 
-    getSelectionMap(){
+    getSelectedItems(){
         return this.selectionMap;
     }
 
@@ -2225,7 +2226,7 @@ function afterListenerChanged(handlerInstance) {
  * @extends module:zrender/mixin/Eventful
  * @param {module:zrender/Storage} storage Storage instance.
  * @param {module:zrender/Painter} painter Painter instance.
- * @param {module:zrender/dom/HandlerProxy} proxy HandlerProxy instance.
+ * @param {module:zrender/event/HandlerProxy} proxy HandlerProxy instance.
  * @param {HTMLElement} painterRoot painter.root (not painter.getViewportRoot()).
  */
 var Handler = function (storage, painter, proxy, painterRoot) {
@@ -2549,7 +2550,7 @@ mixin(Handler, Eventful);
 
 /**
  * 3x2矩阵操作类
- * @exports zrender/tool/matrix
+ * @exports zrender/core/matrix
  */
 
 /* global Float32Array */
@@ -3028,6 +3029,7 @@ Transformable.getLocalTransform = function (target, m) {
 
 /**
  * 缓动代码来自 https://github.com/sole/tween.js/blob/master/src/Tween.js
+ * 这里的缓动主要是一些数学计算公式，这些公式可以用来计算对象的坐标。
  * @see http://sole.github.io/tween.js/examples/03_graphs.html
  * @exports zrender/animation/easing
  */
@@ -3371,6 +3373,7 @@ var easing = {
 };
 
 /**
+ * 片段
  * 动画主控制器
  * @config target 动画对象，可以是数组，如果是数组的话会批量分发onframe等事件
  * @config life(1000) 动画时长
@@ -4223,7 +4226,7 @@ function stringify(arrColor, type) {
 }
 
 
-var color = (Object.freeze || Object)({
+var colorUtil = (Object.freeze || Object)({
 	parse: parse,
 	lift: lift,
 	toHex: toHex,
@@ -4671,8 +4674,8 @@ function createTrackClip(animator, easing, oneTrackDone, keyframes, propName, fo
 /**
  * @alias module:zrender/animation/Animator
  * @constructor
- * @param {Object} target
- * @param {boolean} loop
+ * @param {Object} target 需要进行动画的图元
+ * @param {boolean} loop 动画是否循环播放
  * @param {Function} getter
  * @param {Function} setter
  */
@@ -4883,44 +4886,14 @@ Animator.prototype = {
     }
 };
 
-var dpr = 1;
-
-// If in browser environment
-if (typeof window !== 'undefined') {
-    dpr = Math.max(window.devicePixelRatio || 1, 1);
-}
-
 /**
- * config默认配置项
- * @exports zrender/config
- * @author Kener (@Kener-林峰, kener.linfeng@gmail.com)
+ * 动画工具类，在 Element 类中 mixin 此工具类提供的功能，为图元提供动画功能。
  */
-
 /**
- * Debug log mode:
- * 0: Do nothing, for release.
- * 1: console.error, for debug.
- */
-var debugMode = 0;
-
-// retina 屏幕优化
-var devicePixelRatio = dpr;
-
-var logError = function () {
-};
-
-if (debugMode === 1) {
-    logError = console.error;
-}
-
-var logError$1 = logError;
-
-/**
- * @alias modue:zrender/mixin/Animatable
+ * @alias modue:zrender/animation/Animatable
  * @constructor
  */
 var Animatable = function () {
-
     /**
      * @type {Array.<module:zrender/animation/Animator>}
      * @readOnly
@@ -4969,7 +4942,7 @@ Animatable.prototype = {
         }
 
         if (!target) {
-            logError$1(
+            console.log(
                 'Property "'
                 + path
                 + '" is not existed in element '
@@ -5200,13 +5173,13 @@ function setAttrByPath(el, path, name, value) {
 
 /**
  * @class Element 
- * 抽象类，直接子类是 graphic/Displayable 。
+ * 图形顶级抽象类，直接子类是 graphic/Displayable 。
  * Dispalyable 的直接子类是 graphic/Path，graphic 包中的所有形状对象都是 Path 的子类。
  */
 /**
  * @alias module:zrender/Element
  * @constructor
- * @extends {module:zrender/mixin/Animatable}
+ * @extends {module:zrender/animation/Animatable}
  * @extends {module:zrender/mixin/Transformable}
  * @extends {module:zrender/mixin/Eventful}
  */
@@ -5659,7 +5632,7 @@ BoundingRect.create = function (rect) {
  * Group是一个容器，可以插入子节点，Group的变换也会被应用到子节点上
  * @module zrender/graphic/Group
  * @example
- *     var Group = require('zrender/container/Group');
+ *     var Group = require('zrender/Group');
  *     var Circle = require('zrender/graphic/shape/Circle');
  *     var g = new Group();
  *     g.position[0] = 100;
@@ -5712,7 +5685,7 @@ Group.prototype = {
 
     /**
      * 所有子孙元素是否响应鼠标事件
-     * @name module:/zrender/container/Group#silent
+     * @name module:/zrender/Group#silent
      * @type {boolean}
      * @default false
      */
@@ -6868,6 +6841,48 @@ Storage.prototype = {
     displayableSortFunc: shapeCompareFunc
 };
 
+/**
+ * 兼容多种运行环境的 requestAnimationFrame 方法。
+ * 有两个重要的地方会依赖此方法：
+ * - 图元的渲染机制，在 Painter 类中会调用
+ * - 图元的动画效果，在 Animation 类中会调用
+ */
+var requestAnimationFrame = (
+    typeof window !== 'undefined'
+    && (
+        (window.requestAnimationFrame && window.requestAnimationFrame.bind(window))
+        // https://github.com/ecomfe/zrender/issues/189#issuecomment-224919809
+        || (window.msRequestAnimationFrame && window.msRequestAnimationFrame.bind(window))
+        || window.mozRequestAnimationFrame
+        || window.webkitRequestAnimationFrame
+    )
+) || function (func) {
+    setTimeout(func, 16);// 1000ms/60，每秒60帧，每帧约16ms
+};
+
+var dpr = 1;
+
+// If in browser environment
+if (typeof window !== 'undefined') {
+    dpr = Math.max(window.devicePixelRatio || 1, 1);
+}
+
+/**
+ * config默认配置项
+ * @exports zrender/config
+ * @author Kener (@Kener-林峰, kener.linfeng@gmail.com)
+ */
+
+/**
+ * Debug log mode:
+ * 0: Do nothing, for release.
+ * 1: console.error, for debug.
+ */
+
+
+// retina 屏幕优化
+var devicePixelRatio = dpr;
+
 var SHADOW_PROPS = {
     'shadowBlur': 1,
     'shadowOffsetX': 1,
@@ -7409,14 +7424,8 @@ Pattern.prototype.getCanvasPattern = function (ctx) {
  * @module zrender/Layer
  * @author pissang(https://www.github.com/pissang)
  */
-
 /**
- * 由于 canvas 标签不能嵌套使用，比如下面这样是不行的：
- * <canvas>
- *      <canvas>
- *      </canvas>
- * </canvas>
- * 但是可以通过样式进行层叠放置，Layer 类用来动态创建这些层。
+ * 用来创建 canvas 层，在 ./Painter 类中会引用此类。
  */
 function returnFalse() {
     return false;
@@ -7646,19 +7655,6 @@ Layer.prototype = {
             ctx.restore();
         }
     }
-};
-
-var requestAnimationFrame = (
-    typeof window !== 'undefined'
-    && (
-        (window.requestAnimationFrame && window.requestAnimationFrame.bind(window))
-        // https://github.com/ecomfe/zrender/issues/189#issuecomment-224919809
-        || (window.msRequestAnimationFrame && window.msRequestAnimationFrame.bind(window))
-        || window.mozRequestAnimationFrame
-        || window.webkitRequestAnimationFrame
-    )
-) || function (func) {
-    setTimeout(func, 16);// 1000ms/60，每秒60帧，每帧约16ms
 };
 
 var globalImageCache = new LRU(50);
@@ -9641,7 +9637,8 @@ function doClip(clipPaths, ctx) {
 }
 
 /**
- * 不会直接在传入的 dom 节点内部创建 canvas 标签，而是再套一层div，目的是加上一些必须的 CSS 样式，方便实现特定的功能。
+ * 不会直接在传入的 dom 节点内部创建 canvas 标签，而是再套一层div
+ * 目的是加上一些必须的 CSS 样式，方便实现特定的功能。
  */
 function createRoot(width, height) {
     var domRoot = document.createElement('div');
@@ -9668,7 +9665,6 @@ function createRoot(width, height) {
 
     return domRoot;
 }
-
 
 /**
  * @alias module:zrender/Painter
@@ -10157,12 +10153,12 @@ Painter.prototype = {
         var domRoot = this._domRoot;
 
         if (layersMap[zlevel]) {
-            logError$1('ZLevel ' + zlevel + ' has been used already');
+            console.log('ZLevel ' + zlevel + ' has been used already');
             return;
         }
         // Check if is a valid layer
         if (!isLayerValid(layer)) {
-            logError$1('Layer of zlevel ' + zlevel + ' is not valid');
+            console.log('Layer of zlevel ' + zlevel + ' is not valid');
             return;
         }
 
@@ -10303,7 +10299,7 @@ Painter.prototype = {
             }
 
             if (!layer.__builtin__) {
-                logError$1('ZLevel ' + zlevel + ' has been used by unkown layer ' + layer.id);
+                console.log('ZLevel ' + zlevel + ' has been used by unkown layer ' + layer.id);
             }
 
             if (layer !== prevLayer) {
@@ -10741,7 +10737,6 @@ Animation.prototype = {
         var delta = time - this._time;
         var clips = this._clips;
         var len = clips.length;
-
         var deferredEvents = [];
         var deferredClips = [];
         for (var i = 0; i < len; i++) {
@@ -10782,7 +10777,8 @@ Animation.prototype = {
         this.trigger('frame', delta);//不断触发 frame 事件
 
         if (this.stage.update) {
-            this.stage.update();
+            //在 zrender.js 中，创建 Animation 对象时绑定了 zrender.flush 方法，flush 方法会刷新所有图元
+            this.stage.update(); 
         }
     },
 
@@ -10795,7 +10791,8 @@ Animation.prototype = {
         function step() {
             if (self._running) {
 
-                requestAnimationFrame(step);//这里开始递归执行，TODO:需要确认在大量节点下的性能问题。
+                //这里开始递归执行，TODO:需要确认在大量节点下的性能问题。
+                requestAnimationFrame(step);
 
                 !self._paused && self._update();
             }
@@ -11415,7 +11412,6 @@ mixin(HandlerDomProxy, Eventful);
 * LICENSE
 * https://github.com/ecomfe/zrender/blob/master/LICENSE.txt
 */
-
 /**
  * ZRender 是全局入口，同一个浏览器 window 中可以有多个 ZRender 实例，每个 ZRender 实例有自己唯一的 ID。
  */
@@ -11880,7 +11876,7 @@ ZRender.prototype = {
 
 /**
  * 曲线辅助模块
- * @module zrender/core/curve
+ * @module zrender/core/curveUtil
  * @author pissang(https://www.github.com/pissang)
  */
 
@@ -11906,7 +11902,7 @@ function isNotAroundZero$1(val) {
 }
 /**
  * 计算三次贝塞尔值
- * @memberOf module:zrender/core/curve
+ * @memberOf module:zrender/core/curveUtil
  * @param  {number} p0
  * @param  {number} p1
  * @param  {number} p2
@@ -11922,7 +11918,7 @@ function cubicAt(p0, p1, p2, p3, t) {
 
 /**
  * 计算三次贝塞尔导数值
- * @memberOf module:zrender/core/curve
+ * @memberOf module:zrender/core/curveUtil
  * @param  {number} p0
  * @param  {number} p1
  * @param  {number} p2
@@ -11940,7 +11936,7 @@ function cubicDerivativeAt(p0, p1, p2, p3, t) {
 
 /**
  * 计算三次贝塞尔方程根，使用盛金公式
- * @memberOf module:zrender/core/curve
+ * @memberOf module:zrender/core/curveUtil
  * @param  {number} p0
  * @param  {number} p1
  * @param  {number} p2
@@ -12033,7 +12029,7 @@ function cubicRootAt(p0, p1, p2, p3, val, roots) {
 
 /**
  * 计算三次贝塞尔方程极限值的位置
- * @memberOf module:zrender/core/curve
+ * @memberOf module:zrender/core/curveUtil
  * @param  {number} p0
  * @param  {number} p1
  * @param  {number} p2
@@ -12077,7 +12073,7 @@ function cubicExtrema(p0, p1, p2, p3, extrema) {
 
 /**
  * 细分三次贝塞尔曲线
- * @memberOf module:zrender/core/curve
+ * @memberOf module:zrender/core/curveUtil
  * @param  {number} p0
  * @param  {number} p1
  * @param  {number} p2
@@ -12265,7 +12261,7 @@ function quadraticRootAt(p0, p1, p2, val, roots) {
 
 /**
  * 计算二次贝塞尔方程极限值
- * @memberOf module:zrender/core/curve
+ * @memberOf module:zrender/core/curveUtil
  * @param  {number} p0
  * @param  {number} p1
  * @param  {number} p2
@@ -12284,7 +12280,7 @@ function quadraticExtremum(p0, p1, p2) {
 
 /**
  * 细分二次贝塞尔曲线
- * @memberOf module:zrender/core/curve
+ * @memberOf module:zrender/core/curveUtil
  * @param  {number} p0
  * @param  {number} p1
  * @param  {number} p2
@@ -12402,7 +12398,7 @@ var extremity = create();
 
 /**
  * 从顶点数组中计算出最小包围盒，写入`min`和`max`中
- * @module zrender/core/bbox
+ * @module zrender/core/bboxUtil
  * @param {Array<Object>} points 顶点数组
  * @param {number} min
  * @param {number} max
@@ -12410,7 +12406,7 @@ var extremity = create();
 
 
 /**
- * @memberOf module:zrender/core/bbox
+ * @memberOf module:zrender/core/bboxUtil
  * @param {number} x0
  * @param {number} y0
  * @param {number} x1
@@ -12429,7 +12425,7 @@ var xDim = [];
 var yDim = [];
 /**
  * 从三阶贝塞尔曲线(p0, p1, p2, p3)中计算出最小包围盒，写入`min`和`max`中
- * @memberOf module:zrender/core/bbox
+ * @memberOf module:zrender/core/bboxUtil
  * @param {number} x0
  * @param {number} y0
  * @param {number} x1
@@ -12478,7 +12474,7 @@ function fromCubic(
 
 /**
  * 从二阶贝塞尔曲线(p0, p1, p2)中计算出最小包围盒，写入`min`和`max`中
- * @memberOf module:zrender/core/bbox
+ * @memberOf module:zrender/core/bboxUtil
  * @param {number} x0
  * @param {number} y0
  * @param {number} x1
@@ -12513,7 +12509,7 @@ function fromQuadratic(x0, y0, x1, y1, x2, y2, min$$1, max$$1) {
 /**
  * 从圆弧中计算出最小包围盒，写入`min`和`max`中
  * @method
- * @memberOf module:zrender/core/bbox
+ * @memberOf module:zrender/core/bboxUtil
  * @param {number} x
  * @param {number} y
  * @param {number} rx
@@ -14871,7 +14867,7 @@ function mergePath(pathEls, opts) {
     return pathBundle;
 }
 
-var path = (Object.freeze || Object)({
+var pathUtil = (Object.freeze || Object)({
 	createFromString: createFromString,
 	extendFromString: extendFromString,
 	mergePath: mergePath
@@ -15581,9 +15577,6 @@ LinearGradient.prototype = {
 
 inherits(LinearGradient, Gradient);
 
-// import RadialGradient from '../graphic/RadialGradient';
-// import Pattern from '../graphic/Pattern';
-// import * as vector from '../core/vector';
 // Most of the values can be separated by comma and/or white space.
 var DILIMITER_REG = /[\s,]+/;
 
@@ -17127,9 +17120,9 @@ exports.getInstance = getInstance;
 exports.registerPainter = registerPainter;
 exports.matrix = matrix;
 exports.vector = vector;
-exports.color = color;
-exports.path = path;
-exports.util = util;
+exports.color = colorUtil;
+exports.path = pathUtil;
+exports.util = dataUtil;
 exports.parseSVG = parseSVG;
 exports.Group = Group;
 exports.Path = Path;

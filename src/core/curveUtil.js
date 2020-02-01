@@ -1,6 +1,6 @@
 /**
  * 曲线辅助模块
- * @module zrender/core/curve
+ * @module zrender/core/curveUtil
  * @author pissang(https://www.github.com/pissang)
  */
 
@@ -31,7 +31,7 @@ function isNotAroundZero(val) {
 }
 /**
  * 计算三次贝塞尔值
- * @memberOf module:zrender/core/curve
+ * @memberOf module:zrender/core/curveUtil
  * @param  {number} p0
  * @param  {number} p1
  * @param  {number} p2
@@ -47,7 +47,7 @@ export function cubicAt(p0, p1, p2, p3, t) {
 
 /**
  * 计算三次贝塞尔导数值
- * @memberOf module:zrender/core/curve
+ * @memberOf module:zrender/core/curveUtil
  * @param  {number} p0
  * @param  {number} p1
  * @param  {number} p2
@@ -65,7 +65,7 @@ export function cubicDerivativeAt(p0, p1, p2, p3, t) {
 
 /**
  * 计算三次贝塞尔方程根，使用盛金公式
- * @memberOf module:zrender/core/curve
+ * @memberOf module:zrender/core/curveUtil
  * @param  {number} p0
  * @param  {number} p1
  * @param  {number} p2
@@ -158,7 +158,7 @@ export function cubicRootAt(p0, p1, p2, p3, val, roots) {
 
 /**
  * 计算三次贝塞尔方程极限值的位置
- * @memberOf module:zrender/core/curve
+ * @memberOf module:zrender/core/curveUtil
  * @param  {number} p0
  * @param  {number} p1
  * @param  {number} p2
@@ -202,7 +202,7 @@ export function cubicExtrema(p0, p1, p2, p3, extrema) {
 
 /**
  * 细分三次贝塞尔曲线
- * @memberOf module:zrender/core/curve
+ * @memberOf module:zrender/core/curveUtil
  * @param  {number} p0
  * @param  {number} p1
  * @param  {number} p2
@@ -390,7 +390,7 @@ export function quadraticRootAt(p0, p1, p2, val, roots) {
 
 /**
  * 计算二次贝塞尔方程极限值
- * @memberOf module:zrender/core/curve
+ * @memberOf module:zrender/core/curveUtil
  * @param  {number} p0
  * @param  {number} p1
  * @param  {number} p2
@@ -409,7 +409,7 @@ export function quadraticExtremum(p0, p1, p2) {
 
 /**
  * 细分二次贝塞尔曲线
- * @memberOf module:zrender/core/curve
+ * @memberOf module:zrender/core/curveUtil
  * @param  {number} p0
  * @param  {number} p1
  * @param  {number} p2

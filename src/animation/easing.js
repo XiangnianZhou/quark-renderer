@@ -1,5 +1,6 @@
 /**
  * 缓动代码来自 https://github.com/sole/tween.js/blob/master/src/Tween.js
+ * 这里的缓动主要是一些数学计算公式，这些公式可以用来计算对象的坐标。
  * @see http://sole.github.io/tween.js/examples/03_graphs.html
  * @exports zrender/animation/easing
  */
