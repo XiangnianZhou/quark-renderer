@@ -154,7 +154,7 @@ Animation.prototype = {
         this.trigger('frame', delta);//不断触发 frame 事件
 
         if (this.stage.update) {
-            //在 zrender.js 中，创建 Animation 对象时绑定了 zrender.flush 方法，flush 方法会刷新所有图元
+            //在 zrender.js 中，创建 Animation 对象时绑定了 zrender.flush 方法，flush 方法会根据不同的条件刷新画布
             this.stage.update(); 
         }
     },
@@ -164,11 +164,13 @@ Animation.prototype = {
 
         this._running = true;
 
-        
+        //按照 W3C 的推荐标准 60fps，这里的 step 函数大约 16ms 被调用一次
+        //@see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
         function step() {
             if (self._running) {
 
                 //这里开始递归执行，TODO:需要确认在大量节点下的性能问题。
+                //如果这里的 _update() 不能在16ms的时间内完成一轮刷新，就会出现明显的卡顿。
                 requestAnimationFrame(step);
 
                 !self._paused && self._update();

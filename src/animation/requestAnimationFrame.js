@@ -3,6 +3,8 @@
  * 有两个重要的地方会依赖此方法：
  * - 图元的渲染机制，在 Painter 类中会调用
  * - 图元的动画效果，在 Animation 类中会调用
+ * 
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
  */
 export default (
     typeof window !== 'undefined'

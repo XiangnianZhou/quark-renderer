@@ -190,8 +190,7 @@ var Painter = function (root, storage, opts) {
             this._width, this._height
         );
         root.appendChild(domRoot);
-    }
-    else {
+    }else {
         var width = root.width;
         var height = root.height;
 
@@ -400,7 +399,7 @@ Painter.prototype = {
             this._compositeManually();
         }
 
-        if (!finished) {
+        if (!finished) {//如果在一帧的时间内没有绘制完，在下一帧继续绘制
             var self = this;
             requestAnimationFrame(function () {
                 self._paintList(list, paintAll, redrawId);
@@ -452,17 +451,18 @@ Painter.prototype = {
             // All elements in this layer are cleared.
             if (layer.__startIndex === layer.__endIndex) {
                 layer.clear(false, clearColor);
-            }
-            else if (start === layer.__startIndex) {
+            }else if (start === layer.__startIndex) {
                 var firstEl = list[start];
                 if (!firstEl.incremental || !firstEl.notClear || paintAll) {
                     layer.clear(false, clearColor);
                 }
             }
+
             if (start === -1) {
                 console.error('For some unknown reason. drawIndex is -1');
                 start = layer.__startIndex;
             }
+
             for (var i = start; i < layer.__endIndex; i++) {
                 var el = list[i];
                 this._doPaintEl(el, layer, paintAll, scope);
@@ -473,6 +473,9 @@ Painter.prototype = {
                     var dTime = Date.now() - startTime;
                     // Give 15 millisecond to draw.
                     // The rest elements will be drawn in the next frame.
+                    // 这里的时间计算非常重要，如果 15ms 的时间内没有能绘制完所有图元，则跳出，等待下一帧继续绘制
+                    // 但是 15ms 的时间依然是有限的，如果图元的数量非常巨大，例如有 1000 万个，还是会卡顿。
+                    // TODO: 这里需要实际 benchmark 一个数值出来。
                     if (dTime > 15) {
                         break;
                     }
@@ -505,6 +508,13 @@ Painter.prototype = {
         return finished;
     },
 
+    /**
+     * 绘制一个图元
+     * @param {*} el 
+     * @param {*} currentLayer 
+     * @param {*} forcePaint 
+     * @param {*} scope 
+     */
     _doPaintEl: function (el, currentLayer, forcePaint, scope) {
         var ctx = currentLayer.ctx;
         var m = el.transform;

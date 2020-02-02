@@ -4242,7 +4242,7 @@ var colorUtil = (Object.freeze || Object)({
 });
 
 /**
- * Animator 是动画片段 Clip 的管理器，负责创建、维护 Clip。
+ * Animator 是动画片段 Clip 的管理器，负责创建、维护 Clip，Animator 可以看成一组 Clip 的集合。
  * 
  * @module echarts/animation/Animator
  */
@@ -4712,6 +4712,7 @@ Animator.prototype = {
      */
     when: function (time /* ms */, props) {
         var tracks = this._tracks;
+        //为每一种属性创建一条动画轨道，并在轨道上添加片段 clip 实例。
         for (var propName in props) {
             if (!props.hasOwnProperty(propName)) {
                 continue;
@@ -6850,6 +6851,8 @@ Storage.prototype = {
  * 有两个重要的地方会依赖此方法：
  * - 图元的渲染机制，在 Painter 类中会调用
  * - 图元的动画效果，在 Animation 类中会调用
+ * 
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
  */
 var requestAnimationFrame = (
     typeof window !== 'undefined'
@@ -9749,8 +9752,7 @@ var Painter = function (root, storage, opts) {
             this._width, this._height
         );
         root.appendChild(domRoot);
-    }
-    else {
+    }else {
         var width = root.width;
         var height = root.height;
 
@@ -10781,7 +10783,7 @@ Animation.prototype = {
         this.trigger('frame', delta);//不断触发 frame 事件
 
         if (this.stage.update) {
-            //在 zrender.js 中，创建 Animation 对象时绑定了 zrender.flush 方法，flush 方法会刷新所有图元
+            //在 zrender.js 中，创建 Animation 对象时绑定了 zrender.flush 方法，flush 方法会根据不同的条件刷新画布
             this.stage.update(); 
         }
     },
@@ -10791,11 +10793,13 @@ Animation.prototype = {
 
         this._running = true;
 
-        
+        //按照 W3C 的推荐标准 60fps，这里的 step 函数大约 16ms 被调用一次
+        //@see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
         function step() {
             if (self._running) {
 
                 //这里开始递归执行，TODO:需要确认在大量节点下的性能问题。
+                //如果这里的 _update() 不能在16ms的时间内完成一轮刷新，就会出现明显的卡顿。
                 requestAnimationFrame(step);
 
                 !self._paused && self._update();

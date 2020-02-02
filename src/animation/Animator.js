@@ -1,5 +1,5 @@
 /**
- * Animator 是动画片段 Clip 的管理器，负责创建、维护 Clip。
+ * Animator 是动画片段 Clip 的管理器，负责创建、维护 Clip，Animator 可以看成一组 Clip 的集合。
  * 
  * @module echarts/animation/Animator
  */
