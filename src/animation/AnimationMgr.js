@@ -1,7 +1,8 @@
 /**
  * 动画主类, 调度和管理所有动画控制器
- *
- * @module zrender/animation/Animation
+ * 每个 zrender 实例中会持有一个 AnimationMgr 实例。
+ * 
+ * @module zrender/animation/AnimationMgr
  * @author pissang(https://github.com/pissang)
  */
 // TODO Additive animation
@@ -19,13 +20,13 @@ import Animator from './Animator';
  */
 
 /**
- * @alias module:zrender/animation/Animation
+ * @alias module:zrender/animation/AnimationMgr
  * @constructor
  * @param {Object} [options]
  * @param {Function} [options.onframe]
  * @param {IZRenderStage} [options.stage]
  * @example
- *     var animation = new Animation();
+ *     var animation = new AnimationMgr();
  *     var obj = {
  *         x: 100,
  *         y: 100
@@ -41,33 +42,24 @@ import Animator from './Animator';
  *         })
  *         .start('spline');
  */
-var Animation = function (options) {
-
+var AnimationMgr = function (options) {
     options = options || {};
-
     this.stage = options.stage || {};
-
     this.onframe = options.onframe || function () {};
 
-    // private properties
     this._clips = [];
-
     this._running = false;
-
     this._time;
-
     this._pausedTime;
-
     this._pauseStart;
-
     this._paused = false;
-
     Dispatcher.call(this);
 };
 
-Animation.prototype = {
+AnimationMgr.prototype = {
 
-    constructor: Animation,
+    constructor: AnimationMgr,
+
     /**
      * 添加 clip
      * @param {module:zrender/animation/Clip} clip
@@ -75,6 +67,7 @@ Animation.prototype = {
     addClip: function (clip) {
         this._clips.push(clip);
     },
+
     /**
      * 添加 animator
      * @param {module:zrender/animation/Animator} animator
@@ -86,6 +79,7 @@ Animation.prototype = {
             this.addClip(clips[i]);
         }
     },
+
     /**
      * 删除动画片段
      * @param {module:zrender/animation/Clip} clip
@@ -154,7 +148,7 @@ Animation.prototype = {
         this.trigger('frame', delta);//不断触发 frame 事件
 
         if (this.stage.update) {
-            //在 zrender.js 中，创建 Animation 对象时绑定了 zrender.flush 方法，flush 方法会根据不同的条件刷新画布
+            //在 zrender.js 中，创建 AnimationMgr 对象时绑定了 zrender.flush 方法，flush 方法会根据不同的条件刷新画布
             this.stage.update(); 
         }
     },
@@ -184,10 +178,8 @@ Animation.prototype = {
      * Start animation.
      */
     start: function () {
-
         this._time = new Date().getTime();
         this._pausedTime = 0;
-
         this._startLoop();
     },
 
@@ -240,25 +232,21 @@ Animation.prototype = {
      * @param  {boolean} [options.loop=false] Whether loop animation.
      * @param  {Function} [options.getter=null] Get value from target.
      * @param  {Function} [options.setter=null] Set value to target.
-     * @return {module:zrender/animation/Animation~Animator}
+     * @return {module:zrender/animation/AnimationMgr~Animator}
      */
     // TODO Gap
     animate: function (target, options) {
         options = options || {};
-
         var animator = new Animator(
             target,
             options.loop,
             options.getter,
             options.setter
         );
-
         this.addAnimator(animator);
-
         return animator;
     }
 };
 
-util.mixin(Animation, Dispatcher);
-
-export default Animation;
+util.mixin(AnimationMgr, Dispatcher);
+export default AnimationMgr;

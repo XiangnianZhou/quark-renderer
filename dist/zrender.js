@@ -10635,8 +10635,9 @@ Painter.prototype = {
 
 /**
  * 动画主类, 调度和管理所有动画控制器
- *
- * @module zrender/animation/Animation
+ * 每个 zrender 实例中会持有一个 AnimationMgr 实例。
+ * 
+ * @module zrender/animation/AnimationMgr
  * @author pissang(https://github.com/pissang)
  */
 // TODO Additive animation
@@ -10649,13 +10650,13 @@ Painter.prototype = {
  */
 
 /**
- * @alias module:zrender/animation/Animation
+ * @alias module:zrender/animation/AnimationMgr
  * @constructor
  * @param {Object} [options]
  * @param {Function} [options.onframe]
  * @param {IZRenderStage} [options.stage]
  * @example
- *     var animation = new Animation();
+ *     var animation = new AnimationMgr();
  *     var obj = {
  *         x: 100,
  *         y: 100
@@ -10671,33 +10672,24 @@ Painter.prototype = {
  *         })
  *         .start('spline');
  */
-var Animation = function (options) {
-
+var AnimationMgr = function (options) {
     options = options || {};
-
     this.stage = options.stage || {};
-
     this.onframe = options.onframe || function () {};
 
-    // private properties
     this._clips = [];
-
     this._running = false;
-
     this._time;
-
     this._pausedTime;
-
     this._pauseStart;
-
     this._paused = false;
-
     Eventful.call(this);
 };
 
-Animation.prototype = {
+AnimationMgr.prototype = {
 
-    constructor: Animation,
+    constructor: AnimationMgr,
+
     /**
      * 添加 clip
      * @param {module:zrender/animation/Clip} clip
@@ -10705,6 +10697,7 @@ Animation.prototype = {
     addClip: function (clip) {
         this._clips.push(clip);
     },
+
     /**
      * 添加 animator
      * @param {module:zrender/animation/Animator} animator
@@ -10716,6 +10709,7 @@ Animation.prototype = {
             this.addClip(clips[i]);
         }
     },
+
     /**
      * 删除动画片段
      * @param {module:zrender/animation/Clip} clip
@@ -10784,7 +10778,7 @@ Animation.prototype = {
         this.trigger('frame', delta);//不断触发 frame 事件
 
         if (this.stage.update) {
-            //在 zrender.js 中，创建 Animation 对象时绑定了 zrender.flush 方法，flush 方法会根据不同的条件刷新画布
+            //在 zrender.js 中，创建 AnimationMgr 对象时绑定了 zrender.flush 方法，flush 方法会根据不同的条件刷新画布
             this.stage.update(); 
         }
     },
@@ -10814,10 +10808,8 @@ Animation.prototype = {
      * Start animation.
      */
     start: function () {
-
         this._time = new Date().getTime();
         this._pausedTime = 0;
-
         this._startLoop();
     },
 
@@ -10870,26 +10862,23 @@ Animation.prototype = {
      * @param  {boolean} [options.loop=false] Whether loop animation.
      * @param  {Function} [options.getter=null] Get value from target.
      * @param  {Function} [options.setter=null] Set value to target.
-     * @return {module:zrender/animation/Animation~Animator}
+     * @return {module:zrender/animation/AnimationMgr~Animator}
      */
     // TODO Gap
     animate: function (target, options) {
         options = options || {};
-
         var animator = new Animator(
             target,
             options.loop,
             options.getter,
             options.setter
         );
-
         this.addAnimator(animator);
-
         return animator;
     }
 };
 
-mixin(Animation, Eventful);
+mixin(AnimationMgr, Eventful);
 
 /**
  * HandlerProxy 的主要功能是：把原生的 DOM 事件代理（转发）到 ZRender 实例上，
@@ -11548,7 +11537,7 @@ var ZRender = function (id, dom, opts) {
     this.handler = new Handler(storage, painter, handerProxy, painter.root);
 
     /**
-     * 利用 Animation 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
+     * 利用 AnimationMgr 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
      * FROM MDN：
      * The window.requestAnimationFrame() method tells the browser that you wish 
      * to perform an animation and requests that the browser calls a specified 
@@ -11561,9 +11550,9 @@ var ZRender = function (id, dom, opts) {
      * 如果在 16ms 的时间内无法渲染完一帧画面，会出现卡顿。也就是说，ZRender 引擎在同一张 canvas 上
      * 能够渲染的图形元素数量有上限。本机在 Chrome 浏览器中 Benchmark 的结果大约为 100 万个矩形会出现
      * 明显的卡顿。
-     * @type {module:zrender/animation/Animation}
+     * @type {module:zrender/animation/AnimationMgr}
      */
-    this.animation = new Animation({
+    this.animation = new AnimationMgr({
         stage: {
             update: bind(this.flush, this)
         }
