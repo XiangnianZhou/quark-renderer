@@ -3391,28 +3391,16 @@ var easing = {
  */
 
 function Clip(options) {
-
     this._target = options.target;
-
-    // 生命周期
-    this._life = options.life || 1000;
-    // 延时
+    this._lifeTime = options.lifeTime || 1000;
     this._delay = options.delay || 0;
-    // 开始时间
-    // this._startTime = new Date().getTime() + this._delay;// 单位毫秒
     this._initialized = false;
-
-    // 是否循环
     this.loop = options.loop == null ? false : options.loop;
-
     this.gap = options.gap || 0;
-
     this.easing = options.easing || 'Linear';
-
     this.onframe = options.onframe;
     this.ondestroy = options.ondestroy;
     this.onrestart = options.onrestart;
-
     this._pausedTime = 0;
     this._paused = false;
 }
@@ -3434,7 +3422,7 @@ Clip.prototype = {
             return;
         }
 
-        var percent = (globalTime - this._startTime - this._pausedTime) / this._life;
+        var percent = (globalTime - this._startTime - this._pausedTime) / this._lifeTime;
 
         // 还没开始
         if (percent < 0) {
@@ -3470,7 +3458,7 @@ Clip.prototype = {
     },
 
     restart: function (globalTime) {
-        var remainder = (globalTime - this._startTime - this._pausedTime) % this._life;
+        var remainder = (globalTime - this._startTime - this._pausedTime) % this._lifeTime;
         this._startTime = globalTime - remainder + this.gap;
         this._pausedTime = 0;
 
@@ -4661,7 +4649,7 @@ function createTrackClip(animator, easing, oneTrackDone, keyframes, propName, fo
 
     var clip = new Clip({
         target: animator._target,
-        life: trackMaxTime,
+        lifeTime: trackMaxTime,
         loop: animator._loop,
         delay: animator._delay,
         onframe: onframe,
@@ -9961,6 +9949,8 @@ Painter.prototype = {
             this._compositeManually();
         }
 
+        //如果在一帧的时间内没有绘制完，在下一帧继续绘制
+        //但是在下一帧的时候，可能还会有另外的动画回调，这里会造成 _paintList 方法被放在 requestAnimationFrame 的回调队列中。
         if (!finished) {
             var self = this;
             requestAnimationFrame(function () {
@@ -10013,17 +10003,18 @@ Painter.prototype = {
             // All elements in this layer are cleared.
             if (layer.__startIndex === layer.__endIndex) {
                 layer.clear(false, clearColor);
-            }
-            else if (start === layer.__startIndex) {
+            }else if (start === layer.__startIndex) {
                 var firstEl = list[start];
                 if (!firstEl.incremental || !firstEl.notClear || paintAll) {
                     layer.clear(false, clearColor);
                 }
             }
+
             if (start === -1) {
                 console.error('For some unknown reason. drawIndex is -1');
                 start = layer.__startIndex;
             }
+
             for (var i = start; i < layer.__endIndex; i++) {
                 var el = list[i];
                 this._doPaintEl(el, layer, paintAll, scope);
@@ -10034,6 +10025,9 @@ Painter.prototype = {
                     var dTime = Date.now() - startTime;
                     // Give 15 millisecond to draw.
                     // The rest elements will be drawn in the next frame.
+                    // 这里的时间计算非常重要，如果 15ms 的时间内没有能绘制完所有图元，则跳出，等待下一帧继续绘制
+                    // 但是 15ms 的时间依然是有限的，如果图元的数量非常巨大，例如有 1000 万个，还是会卡顿。
+                    // TODO: 这里需要实际 benchmark 一个数值出来。
                     if (dTime > 15) {
                         break;
                     }
@@ -10066,6 +10060,13 @@ Painter.prototype = {
         return finished;
     },
 
+    /**
+     * 绘制一个图元
+     * @param {*} el 
+     * @param {*} currentLayer 
+     * @param {*} forcePaint 
+     * @param {*} scope 
+     */
     _doPaintEl: function (el, currentLayer, forcePaint, scope) {
         var ctx = currentLayer.ctx;
         var m = el.transform;

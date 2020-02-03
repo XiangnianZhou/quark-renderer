@@ -19,28 +19,16 @@
 import easingFuncs from './easing';
 
 function Clip(options) {
-
     this._target = options.target;
-
-    // 生命周期
-    this._life = options.life || 1000;
-    // 延时
+    this._lifeTime = options.lifeTime || 1000;
     this._delay = options.delay || 0;
-    // 开始时间
-    // this._startTime = new Date().getTime() + this._delay;// 单位毫秒
     this._initialized = false;
-
-    // 是否循环
     this.loop = options.loop == null ? false : options.loop;
-
     this.gap = options.gap || 0;
-
     this.easing = options.easing || 'Linear';
-
     this.onframe = options.onframe;
     this.ondestroy = options.ondestroy;
     this.onrestart = options.onrestart;
-
     this._pausedTime = 0;
     this._paused = false;
 }
@@ -62,7 +50,7 @@ Clip.prototype = {
             return;
         }
 
-        var percent = (globalTime - this._startTime - this._pausedTime) / this._life;
+        var percent = (globalTime - this._startTime - this._pausedTime) / this._lifeTime;
 
         // 还没开始
         if (percent < 0) {
@@ -98,7 +86,7 @@ Clip.prototype = {
     },
 
     restart: function (globalTime) {
-        var remainder = (globalTime - this._startTime - this._pausedTime) % this._life;
+        var remainder = (globalTime - this._startTime - this._pausedTime) % this._lifeTime;
         this._startTime = globalTime - remainder + this.gap;
         this._pausedTime = 0;
 

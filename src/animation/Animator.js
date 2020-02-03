@@ -422,7 +422,7 @@ function createTrackClip(animator, easing, oneTrackDone, keyframes, propName, fo
 
     var clip = new Clip({
         target: animator._target,
-        life: trackMaxTime,
+        lifeTime: trackMaxTime,
         loop: animator._loop,
         delay: animator._delay,
         onframe: onframe,
