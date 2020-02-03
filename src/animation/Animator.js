@@ -447,20 +447,13 @@ function createTrackClip(animator, easing, oneTrackDone, keyframes, propName, fo
 var Animator = function (target, loop, getter, setter) {
     this._tracks = {};
     this._target = target;
-
     this._loop = loop || false;
-
     this._getter = getter || defaultGetter;
     this._setter = setter || defaultSetter;
-
     this._clipCount = 0;
-
     this._delay = 0;
-
     this._doneList = [];
-
     this._onframeList = [];
-
     this._clipList = [];
 };
 
@@ -505,6 +498,7 @@ Animator.prototype = {
         }
         return this;
     },
+
     /**
      * 添加动画每一帧的回调函数
      * @param  {Function} callback
@@ -606,6 +600,7 @@ Animator.prototype = {
         }
         return this;
     },
+
     /**
      * 停止动画
      * @param {boolean} forwardToLast If move to last frame before stop
@@ -623,6 +618,7 @@ Animator.prototype = {
         }
         clipList.length = 0;
     },
+
     /**
      * 设置动画延迟开始的时间
      * @param  {number} time 单位ms
@@ -632,6 +628,7 @@ Animator.prototype = {
         this._delay = time;
         return this;
     },
+    
     /**
      * 添加动画结束的回调
      * @param  {Function} cb
