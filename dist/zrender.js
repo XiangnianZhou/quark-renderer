@@ -4439,6 +4439,15 @@ var colorUtil = (Object.freeze || Object)({
  * 
  * @module echarts/animation/Animator
  */
+/**
+ * 创建片段
+ * @param {*} animator 
+ * @param {*} easing 
+ * @param {*} oneTrackDone 
+ * @param {*} keyframes 
+ * @param {*} propName 
+ * @param {*} forceAnimate 
+ */
 function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAnimate) {
     var getter = animator._getter;
     var setter = animator._setter;
@@ -4448,6 +4457,7 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
     if (!trackLen) {
         return;
     }
+    
     // Guess data type
     var firstVal = keyframes[0].value;
     var isValueArray = isArrayLike(firstVal);
