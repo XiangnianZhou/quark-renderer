@@ -5,19 +5,7 @@
  */
 import Clip from './Clip';
 import * as color from '../core/colorUtil';
-import { 
-    isArrayLike,
-    interpolateNumber,
-    interpolateString,
-    interpolateArray,
-    fillArr,
-    isArraySame,
-    catmullRomInterpolateArray,
-    catmullRomInterpolate,
-    cloneValue,
-    rgba2String,
-    getArrayDim
-} from '../core/dataStructureUtil';
+import * as dataUtil from '../core/dataStructureUtil';
 
 function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAnimate) {
     var getter = animator._getter;
@@ -30,12 +18,12 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
     }
     // Guess data type
     var firstVal = keyframes[0].value;
-    var isValueArray = isArrayLike(firstVal);
+    var isValueArray = dataUtil.isArrayLike(firstVal);
     var isValueColor = false;
     var isValueString = false;
 
     // For vertices morphing
-    var arrDim = isValueArray ? getArrayDim(keyframes) : 0;
+    var arrDim = isValueArray ? dataUtil.getArrayDim(keyframes) : 0;
 
     var trackMaxTime;
     // Sort keyframe as ascending
@@ -56,7 +44,7 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
         var value = keyframes[i].value;
 
         // Check if value is equal, deep check if value is array
-        if (!((isValueArray && isArraySame(value, prevValue, arrDim))
+        if (!((isValueArray && dataUtil.isArraySame(value, prevValue, arrDim))
             || (!isValueArray && value === prevValue))) {
             isAllValueEqual = false;
         }
@@ -83,7 +71,7 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
     // Polyfill array and NaN value
     for (var i = 0; i < trackLen - 1; i++) {
         if (isValueArray) {
-            fillArr(kfValues[i], lastValue, arrDim);
+            dataUtil.fillArr(kfValues[i], lastValue, arrDim);
         }
         else {
             if (isNaN(kfValues[i]) && !isNaN(lastValue) && !isValueString && !isValueColor) {
@@ -91,7 +79,7 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
             }
         }
     }
-    isValueArray && fillArr(getter(animator._target, propName), lastValue, arrDim);
+    isValueArray && dataUtil.fillArr(getter(animator._target, propName), lastValue, arrDim);
 
     // Cache the key of last frame to speed up when
     // animation playback is sequency
@@ -153,7 +141,7 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
             p2 = kfValues[frame > trackLen - 2 ? trackLen - 1 : frame + 1];
             p3 = kfValues[frame > trackLen - 3 ? trackLen - 1 : frame + 2];
             if (isValueArray) {
-                catmullRomInterpolateArray(
+                dataUtil.catmullRomInterpolateArray(
                     p0, p1, p2, p3, w, w * w, w * w * w,
                     getter(target, propName),
                     arrDim
@@ -162,18 +150,18 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
             else {
                 var value;
                 if (isValueColor) {
-                    value = catmullRomInterpolateArray(
+                    value = dataUtil.catmullRomInterpolateArray(
                         p0, p1, p2, p3, w, w * w, w * w * w,
                         rgba, 1
                     );
-                    value = rgba2String(rgba);
+                    value = dataUtil.rgba2String(rgba);
                 }
                 else if (isValueString) {
                     // String is step(0.5)
-                    return interpolateString(p1, p2, w);
+                    return dataUtil.interpolateString(p1, p2, w);
                 }
                 else {
-                    value = catmullRomInterpolate(
+                    value = dataUtil.catmullRomInterpolate(
                         p0, p1, p2, p3, w, w * w, w * w * w
                     );
                 }
@@ -186,7 +174,7 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
         }
         else {
             if (isValueArray) {
-                interpolateArray(
+                dataUtil.interpolateArray(
                     kfValues[frame], kfValues[frame + 1], w,
                     getter(target, propName),
                     arrDim
@@ -195,18 +183,18 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
             else {
                 var value;
                 if (isValueColor) {
-                    interpolateArray(
+                    dataUtil.interpolateArray(
                         kfValues[frame], kfValues[frame + 1], w,
                         rgba, 1
                     );
-                    value = rgba2String(rgba);
+                    value = dataUtil.rgba2String(rgba);
                 }
                 else if (isValueString) {
                     // String is step(0.5)
-                    return interpolateString(kfValues[frame], kfValues[frame + 1], w);
+                    return dataUtil.interpolateString(kfValues[frame], kfValues[frame + 1], w);
                 }
                 else {
-                    value = interpolateNumber(kfValues[frame], kfValues[frame + 1], w);
+                    value = dataUtil.interpolateNumber(kfValues[frame], kfValues[frame + 1], w);
                 }
                 setter(
                     target,
@@ -289,7 +277,7 @@ Animator.prototype = {
                 if (time !== 0) {
                     tracks[propName].push({
                         time: 0,
-                        value: cloneValue(value)
+                        value: dataUtil.cloneValue(value)
                     });
                 }
             }
