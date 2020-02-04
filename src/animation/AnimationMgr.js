@@ -47,7 +47,7 @@ var AnimationMgr = function (options) {
     this.stage = options.stage || {};
     this.onframe = options.onframe || function () {};
 
-    this._clips = [];
+    this._animators=[];
     this._running = false;
     this._time;
     this._pausedTime;
@@ -61,34 +61,12 @@ AnimationMgr.prototype = {
     constructor: AnimationMgr,
 
     /**
-     * 添加 clip
-     * @param {module:zrender/animation/Clip} clip
-     */
-    addClip: function (clip) {
-        this._clips.push(clip);
-    },
-
-    /**
      * 添加 animator
      * @param {module:zrender/animation/Animator} animator
      */
     addAnimator: function (animator) {
         animator.animation = this;
-        var clips = animator.getClips();
-        for (var i = 0; i < clips.length; i++) {
-            this.addClip(clips[i]);
-        }
-    },
-
-    /**
-     * 删除动画片段
-     * @param {module:zrender/animation/Clip} clip
-     */
-    removeClip: function (clip) {
-        var idx = util.indexOf(this._clips, clip);
-        if (idx >= 0) {
-            this._clips.splice(idx, 1);
-        }
+        this._animators.push(animator);
     },
 
     /**
@@ -96,17 +74,28 @@ AnimationMgr.prototype = {
      * @param {module:zrender/animation/Animator} animator
      */
     removeAnimator: function (animator) {
-        var clips = animator.getClips();
-        for (var i = 0; i < clips.length; i++) {
-            this.removeClip(clips[i]);
-        }
         animator.animation = null;
+        let index=this._animators.findIndex(animator);
+        if(index>=0){
+            this._animators.splice(index,1);
+        }
+    },
+
+    _getAllClips:function(){
+        let clips=[];
+        this._animators.forEach((animator,index)=>{
+            let temp=animator.getClips();
+            if(temp&&temp.length){
+                clips=[...clips,...temp];
+            }
+        });
+        return clips;
     },
 
     _update: function () {
         var time = new Date().getTime() - this._pausedTime;
         var delta = time - this._time;
-        var clips = this._clips;
+        var clips = this._getAllClips();
         var len = clips.length;
         var deferredEvents = [];
         var deferredClips = [];
@@ -118,18 +107,6 @@ AnimationMgr.prototype = {
             if (e) {
                 deferredEvents.push(e);
                 deferredClips.push(clip);
-            }
-        }
-
-        // Remove the finished clip
-        for (var i = 0; i < len;) {
-            if (clips[i]._needsRemove) {
-                clips[i] = clips[len - 1];
-                clips.pop();
-                len--;
-            }
-            else {
-                i++;
             }
         }
 
@@ -214,14 +191,20 @@ AnimationMgr.prototype = {
      * Clear animation.
      */
     clear: function () {
-        this._clips = [];
+        this._animators=[];
     },
 
     /**
-     * Whether animation finished.
+     * Whether all the animations have finished.
      */
-    isFinished: function () {
-        return !this._clips.length;
+    isFinished:function(){
+        let finished=true;
+        this._animators.forEach((animator,index)=>{
+            if(!animator.isFinished()){
+                finished=false;
+            }
+        });
+        return finished;
     },
 
     /**

@@ -3373,10 +3373,10 @@ var easing = {
 };
 
 /**
+ * 动画片段
  * 图元上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，
  * 每一种属性天然成为一条动画轨道，把这些轨道上的变化过程封装在很多 Clip 实例中。
  * 
- * 动画主控制器
  * @config target 动画对象，可以是数组，如果是数组的话会批量分发onframe等事件
  * @config life(1000) 动画时长
  * @config delay(0) 动画延迟时间
@@ -3423,12 +3423,10 @@ Clip.prototype = {
         }
 
         var percent = (globalTime - this._startTime - this._pausedTime) / this._lifeTime;
-
         // 还没开始
         if (percent < 0) {
             return;
         }
-
         percent = Math.min(percent, 1);
 
         var easing$$1 = this.easing;
@@ -3439,21 +3437,16 @@ Clip.prototype = {
 
         this.fire('frame', schedule);
 
-        // 结束
+        // 结束或者重新开始周期
+        // 抛出而不是直接调用事件直到 stage.update 后再统一调用这些事件
+        // why?
         if (percent === 1) {
             if (this.loop) {
                 this.restart(globalTime);
-                // 重新开始周期
-                // 抛出而不是直接调用事件直到 stage.update 后再统一调用这些事件
                 return 'restart';
             }
-
-            // 动画完成将这个控制器标识为待删除
-            // 在Animation.update中进行批量删除
-            this._needsRemove = true;
             return 'destroy';
         }
-
         return null;
     },
 
@@ -3461,8 +3454,6 @@ Clip.prototype = {
         var remainder = (globalTime - this._startTime - this._pausedTime) % this._lifeTime;
         this._startTime = globalTime - remainder + this.gap;
         this._pausedTime = 0;
-
-        this._needsRemove = false;
     },
 
     fire: function (eventType, arg) {
@@ -4449,7 +4440,7 @@ function getArrayDim(keyframes) {
     return isArrayLike(lastValue && lastValue[0]) ? 2 : 1;
 }
 
-function createTrackClip(animator, easing, oneTrackDone, keyframes, propName, forceAnimate) {
+function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAnimate) {
     var getter = animator._getter;
     var setter = animator._setter;
     var useSpline = easing === 'spline';
@@ -4755,17 +4746,19 @@ Animator.prototype = {
     },
 
     _doneCallback: function () {
-        // Clear all tracks
         this._tracks = {};
-        // Clear all clips
         this._clipList.length = 0;
-
         var doneList = this._doneList;
         var len = doneList.length;
         for (var i = 0; i < len; i++) {
             doneList[i].call(this);
         }
     },
+
+    isFinished: function () {
+        return !this._clipList.length;
+    },
+
     /**
      * 开始执行动画
      * @param  {string|Function} [easing]
@@ -4774,7 +4767,6 @@ Animator.prototype = {
      * @return {module:zrender/animation/Animator}
      */
     start: function (easing, forceAnimate) {
-
         var self = this;
         var clipCount = 0;
 
@@ -4790,19 +4782,13 @@ Animator.prototype = {
             if (!this._tracks.hasOwnProperty(propName)) {
                 continue;
             }
-            var clip = createTrackClip(
+            var clip = createClip(
                 this, easing, oneTrackDone,
                 this._tracks[propName], propName, forceAnimate
             );
             if (clip) {
                 this._clipList.push(clip);
                 clipCount++;
-
-                // If start after added to animation
-                if (this.animation) {
-                    this.animation.addClip(clip);
-                }
-
                 lastClip = clip;
             }
         }
@@ -4812,7 +4798,6 @@ Animator.prototype = {
             var oldOnFrame = lastClip.onframe;
             lastClip.onframe = function (target, percent) {
                 oldOnFrame(target, percent);
-
                 for (var i = 0; i < self._onframeList.length; i++) {
                     self._onframeList[i](target, percent);
                 }
@@ -4833,17 +4818,14 @@ Animator.prototype = {
      * @param {boolean} forwardToLast If move to last frame before stop
      */
     stop: function (forwardToLast) {
-        var clipList = this._clipList;
-        var animation = this.animation;
-        for (var i = 0; i < clipList.length; i++) {
-            var clip = clipList[i];
+        for (var i = 0; i < this._clipList.length; i++) {
+            var clip = this._clipList[i];
             if (forwardToLast) {
                 // Move to last frame before stop
                 clip.onframe(this._target, 1);
             }
-            animation && animation.removeClip(clip);
         }
-        clipList.length = 0;
+        this._clipList.length = 0;
     },
 
     /**
@@ -10674,7 +10656,7 @@ var AnimationMgr = function (options) {
     this.stage = options.stage || {};
     this.onframe = options.onframe || function () {};
 
-    this._clips = [];
+    this._animators=[];
     this._running = false;
     this._time;
     this._pausedTime;
@@ -10688,34 +10670,12 @@ AnimationMgr.prototype = {
     constructor: AnimationMgr,
 
     /**
-     * 添加 clip
-     * @param {module:zrender/animation/Clip} clip
-     */
-    addClip: function (clip) {
-        this._clips.push(clip);
-    },
-
-    /**
      * 添加 animator
      * @param {module:zrender/animation/Animator} animator
      */
     addAnimator: function (animator) {
         animator.animation = this;
-        var clips = animator.getClips();
-        for (var i = 0; i < clips.length; i++) {
-            this.addClip(clips[i]);
-        }
-    },
-
-    /**
-     * 删除动画片段
-     * @param {module:zrender/animation/Clip} clip
-     */
-    removeClip: function (clip) {
-        var idx = indexOf(this._clips, clip);
-        if (idx >= 0) {
-            this._clips.splice(idx, 1);
-        }
+        this._animators.push(animator);
     },
 
     /**
@@ -10723,17 +10683,28 @@ AnimationMgr.prototype = {
      * @param {module:zrender/animation/Animator} animator
      */
     removeAnimator: function (animator) {
-        var clips = animator.getClips();
-        for (var i = 0; i < clips.length; i++) {
-            this.removeClip(clips[i]);
-        }
         animator.animation = null;
+        let index=this._animators.findIndex(animator);
+        if(index>=0){
+            this._animators.splice(index,1);
+        }
+    },
+
+    _getAllClips:function(){
+        let clips=[];
+        this._animators.forEach((animator,index)=>{
+            let temp=animator.getClips();
+            if(temp&&temp.length){
+                clips=[...clips,...temp];
+            }
+        });
+        return clips;
     },
 
     _update: function () {
         var time = new Date().getTime() - this._pausedTime;
         var delta = time - this._time;
-        var clips = this._clips;
+        var clips = this._getAllClips();
         var len = clips.length;
         var deferredEvents = [];
         var deferredClips = [];
@@ -10745,18 +10716,6 @@ AnimationMgr.prototype = {
             if (e) {
                 deferredEvents.push(e);
                 deferredClips.push(clip);
-            }
-        }
-
-        // Remove the finished clip
-        for (var i = 0; i < len;) {
-            if (clips[i]._needsRemove) {
-                clips[i] = clips[len - 1];
-                clips.pop();
-                len--;
-            }
-            else {
-                i++;
             }
         }
 
@@ -10841,14 +10800,20 @@ AnimationMgr.prototype = {
      * Clear animation.
      */
     clear: function () {
-        this._clips = [];
+        this._animators=[];
     },
 
     /**
-     * Whether animation finished.
+     * Whether all the animations have finished.
      */
-    isFinished: function () {
-        return !this._clips.length;
+    isFinished:function(){
+        let finished=true;
+        this._animators.forEach((animator,index)=>{
+            if(!animator.isFinished()){
+                finished=false;
+            }
+        });
+        return finished;
     },
 
     /**

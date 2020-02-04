@@ -222,7 +222,7 @@ function getArrayDim(keyframes) {
     return isArrayLike(lastValue && lastValue[0]) ? 2 : 1;
 }
 
-function createTrackClip(animator, easing, oneTrackDone, keyframes, propName, forceAnimate) {
+function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAnimate) {
     var getter = animator._getter;
     var setter = animator._setter;
     var useSpline = easing === 'spline';
@@ -528,17 +528,19 @@ Animator.prototype = {
     },
 
     _doneCallback: function () {
-        // Clear all tracks
         this._tracks = {};
-        // Clear all clips
         this._clipList.length = 0;
-
         var doneList = this._doneList;
         var len = doneList.length;
         for (var i = 0; i < len; i++) {
             doneList[i].call(this);
         }
     },
+
+    isFinished: function () {
+        return !this._clipList.length;
+    },
+
     /**
      * 开始执行动画
      * @param  {string|Function} [easing]
@@ -547,7 +549,6 @@ Animator.prototype = {
      * @return {module:zrender/animation/Animator}
      */
     start: function (easing, forceAnimate) {
-
         var self = this;
         var clipCount = 0;
 
@@ -563,19 +564,13 @@ Animator.prototype = {
             if (!this._tracks.hasOwnProperty(propName)) {
                 continue;
             }
-            var clip = createTrackClip(
+            var clip = createClip(
                 this, easing, oneTrackDone,
                 this._tracks[propName], propName, forceAnimate
             );
             if (clip) {
                 this._clipList.push(clip);
                 clipCount++;
-
-                // If start after added to animation
-                if (this.animation) {
-                    this.animation.addClip(clip);
-                }
-
                 lastClip = clip;
             }
         }
@@ -585,7 +580,6 @@ Animator.prototype = {
             var oldOnFrame = lastClip.onframe;
             lastClip.onframe = function (target, percent) {
                 oldOnFrame(target, percent);
-
                 for (var i = 0; i < self._onframeList.length; i++) {
                     self._onframeList[i](target, percent);
                 }
@@ -606,17 +600,14 @@ Animator.prototype = {
      * @param {boolean} forwardToLast If move to last frame before stop
      */
     stop: function (forwardToLast) {
-        var clipList = this._clipList;
-        var animation = this.animation;
-        for (var i = 0; i < clipList.length; i++) {
-            var clip = clipList[i];
+        for (var i = 0; i < this._clipList.length; i++) {
+            var clip = this._clipList[i];
             if (forwardToLast) {
                 // Move to last frame before stop
                 clip.onframe(this._target, 1);
             }
-            animation && animation.removeClip(clip);
         }
-        clipList.length = 0;
+        this._clipList.length = 0;
     },
 
     /**

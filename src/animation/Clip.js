@@ -65,18 +65,14 @@ Clip.prototype = {
 
         this.fire('frame', schedule);
 
-        // 结束
+        // 结束或者重新开始周期
+        // 抛出而不是直接调用事件直到 stage.update 后再统一调用这些事件
+        // why?
         if (percent === 1) {
             if (this.loop) {
                 this.restart(globalTime);
-                // 重新开始周期
-                // 抛出而不是直接调用事件直到 stage.update 后再统一调用这些事件
                 return 'restart';
             }
-
-            // 动画完成将这个控制器标识为待删除
-            // 在Animation.update中进行批量删除
-            this._needsRemove = true;
             return 'destroy';
         }
         return null;
@@ -86,7 +82,6 @@ Clip.prototype = {
         var remainder = (globalTime - this._startTime - this._pausedTime) % this._lifeTime;
         this._startTime = globalTime - remainder + this.gap;
         this._pausedTime = 0;
-        this._needsRemove = false;
     },
 
     fire: function (eventType, arg) {
