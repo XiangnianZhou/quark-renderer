@@ -1,8 +1,8 @@
 /**
+ * 动画片段
  * 图元上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，
  * 每一种属性天然成为一条动画轨道，把这些轨道上的变化过程封装在很多 Clip 实例中。
  * 
- * 动画主控制器
  * @config target 动画对象，可以是数组，如果是数组的话会批量分发onframe等事件
  * @config life(1000) 动画时长
  * @config delay(0) 动画延迟时间
@@ -51,12 +51,10 @@ Clip.prototype = {
         }
 
         var percent = (globalTime - this._startTime - this._pausedTime) / this._lifeTime;
-
         // 还没开始
         if (percent < 0) {
             return;
         }
-
         percent = Math.min(percent, 1);
 
         var easing = this.easing;
@@ -81,7 +79,6 @@ Clip.prototype = {
             this._needsRemove = true;
             return 'destroy';
         }
-
         return null;
     },
 
@@ -89,7 +86,6 @@ Clip.prototype = {
         var remainder = (globalTime - this._startTime - this._pausedTime) % this._lifeTime;
         this._startTime = globalTime - remainder + this.gap;
         this._pausedTime = 0;
-
         this._needsRemove = false;
     },
 
