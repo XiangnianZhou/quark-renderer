@@ -9,7 +9,7 @@
 // http://iosoteric.com/additive-animations-animatewithduration-in-ios-8/
 // https://developer.apple.com/videos/wwdc2014/#236
 
-import * as util from '../core/dataUtil';
+import * as util from '../core/dataStructureUtil';
 import {Dispatcher} from '../core/eventUtil';
 import requestAnimationFrame from './requestAnimationFrame';
 import Animator from './Animator';

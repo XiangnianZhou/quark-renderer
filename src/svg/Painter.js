@@ -4,7 +4,7 @@
  */
 
 import {createElement} from './core';
-import * as util from '../core/dataUtil';
+import * as util from '../core/dataStructureUtil';
 import Path from '../graphic/Path';
 import ZImage from '../graphic/Image';
 import ZText from '../graphic/Text';

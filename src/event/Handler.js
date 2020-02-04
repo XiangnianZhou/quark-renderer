@@ -3,7 +3,7 @@
  * Handler.js 用来封装画布内部元素的事件处理逻辑，核心思路是，在 canvas 收到事件之后，派发给指定的元素，
  * 然后再进行冒泡，从而模拟出原生 DOM 事件的行为。
  */
-import * as util from '../core/dataUtil';
+import * as util from '../core/dataStructureUtil';
 import * as vec2 from '../core/vector';
 import MultiDragDrop from './MultiDragDrop';
 import Eventful from './Eventful';

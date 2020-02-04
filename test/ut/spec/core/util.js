@@ -2,7 +2,7 @@ describe('zrUtil', function() {
 
     var utHelper = window.utHelper;
 
-    var testCase = utHelper.prepare(['zrender/src/core/dataUtil']);
+    var testCase = utHelper.prepare(['zrender/src/core/dataStructureUtil']);
 
     describe('merge', function () {
 

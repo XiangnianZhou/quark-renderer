@@ -11,7 +11,7 @@
     /**
      * Usage:
      * var testCase = helper.prepare([
-     *     'zrender/core/dataUtil'
+     *     'zrender/core/dataStructureUtil'
      *     'zrender/core/colorUtil'
      * ])
      *

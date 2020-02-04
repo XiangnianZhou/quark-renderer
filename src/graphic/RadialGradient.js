@@ -1,4 +1,4 @@
-import * as zrUtil from '../core/dataUtil';
+import * as zrUtil from '../core/dataStructureUtil';
 import Gradient from './Gradient';
 
 /**

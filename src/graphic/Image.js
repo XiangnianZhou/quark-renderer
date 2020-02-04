@@ -1,6 +1,6 @@
 import Displayable from './Displayable';
 import BoundingRect from '../core/BoundingRect';
-import * as zrUtil from '../core/dataUtil';
+import * as zrUtil from '../core/dataStructureUtil';
 import * as imageHelper from './helper/image';
 
 /**

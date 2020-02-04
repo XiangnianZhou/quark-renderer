@@ -1,7 +1,7 @@
 /**
  * Do not mount those modules on 'src/zrender' for better tree shaking.
  */
-import * as zrUtil from './core/dataUtil';
+import * as zrUtil from './core/dataStructureUtil';
 import * as matrix from './core/matrix';
 import * as vector from './core/vector';
 import * as colorTool from './core/colorUtil';

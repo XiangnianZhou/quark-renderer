@@ -195,7 +195,7 @@ function detect(ua) {
 
 /**
  * 用来操作数据的一些工具函数。
- * @module zrender/core/dataUtil
+ * @module zrender/core/dataStructureUtil
  */
 
 // 用于处理merge时无法遍历Date等对象的问题
@@ -303,7 +303,7 @@ function clone(source) {
 }
 
 /**
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} target
  * @param {*} source
  * @param {boolean} [overwrite=false]
@@ -361,7 +361,7 @@ function mergeAll(targetAndSources, overwrite) {
 /**
  * @param {*} target
  * @param {*} source
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  */
 function extend(target, source) {
     for (var key in source) {
@@ -376,7 +376,7 @@ function extend(target, source) {
  * @param {*} target
  * @param {*} source
  * @param {boolean} [overlay=false]
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  */
 function defaults(target, source, overlay) {
     for (var key in source) {
@@ -411,7 +411,7 @@ function getContext() {
 
 /**
  * 查询数组中元素的index
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  */
 function indexOf(array, value) {
     if (array) {
@@ -430,7 +430,7 @@ function indexOf(array, value) {
 /**
  * 构造类继承关系
  *
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {Function} clazz 源类
  * @param {Function} baseClazz 基类
  */
@@ -451,7 +451,7 @@ function inherits(clazz, baseClazz) {
 
 /**
  * 这里的 mixin 只拷贝 prototype 上的属性。
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {Object|Function} target
  * @param {Object|Function} sorce
  * @param {boolean} overlay
@@ -479,7 +479,7 @@ function isArrayLike(data) {
 
 /**
  * 数组或对象遍历
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {Object|Array} obj
  * @param {Function} cb
  * @param {*} [context]
@@ -507,7 +507,7 @@ function each(obj, cb, context) {
 
 /**
  * 数组映射
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {Array} obj
  * @param {Function} cb
  * @param {*} [context]
@@ -530,7 +530,7 @@ function map(obj, cb, context) {
 }
 
 /**
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {Array} obj
  * @param {Function} cb
  * @param {Object} [memo]
@@ -554,7 +554,7 @@ function reduce(obj, cb, memo, context) {
 
 /**
  * 数组过滤
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {Array} obj
  * @param {Function} cb
  * @param {*} [context]
@@ -580,7 +580,7 @@ function filter(obj, cb, context) {
 
 /**
  * 数组项查找
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {Array} obj
  * @param {Function} cb
  * @param {*} [context]
@@ -598,7 +598,7 @@ function find(obj, cb, context) {
 }
 
 /**
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {Function} func
  * @param {*} context
  * @return {Function}
@@ -611,7 +611,7 @@ function bind(func, context) {
 }
 
 /**
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {Function} func
  * @return {Function}
  */
@@ -623,7 +623,7 @@ function curry(func) {
 }
 
 /**
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -632,7 +632,7 @@ function isArray(value) {
 }
 
 /**
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -641,7 +641,7 @@ function isFunction(value) {
 }
 
 /**
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -650,7 +650,7 @@ function isString(value) {
 }
 
 /**
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -662,7 +662,7 @@ function isObject(value) {
 }
 
 /**
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -671,7 +671,7 @@ function isBuiltInObject(value) {
 }
 
 /**
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -680,7 +680,7 @@ function isTypedArray(value) {
 }
 
 /**
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -703,7 +703,7 @@ function eqNaN(value) {
 /**
  * If value1 is not null, then return value1, otherwise judget rest of values.
  * Low performance.
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @return {*} Final value
  */
 function retrieve(values) {
@@ -729,7 +729,7 @@ function retrieve3(value0, value1, value2) {
 }
 
 /**
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {Array} arr
  * @param {number} startIndex
  * @param {number} endIndex
@@ -765,7 +765,7 @@ function normalizeCssArray(val) {
 }
 
 /**
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {boolean} condition
  * @param {string} message
  */
@@ -776,7 +776,7 @@ function assert(condition, message) {
 }
 
 /**
- * @memberOf module:zrender/core/dataUtil
+ * @memberOf module:zrender/core/dataStructureUtil
  * @param {string} str string to be trimed
  * @return {string} trimed string
  */
@@ -872,8 +872,212 @@ function concatArray(a, b) {
 
 function noop() {}
 
+/**
+ * @param  {number} p0
+ * @param  {number} p1
+ * @param  {number} percent
+ * @return {number}
+ */
+function interpolateNumber(p0, p1, percent) {
+    return (p1 - p0) * percent + p0;
+}
 
-var dataUtil = (Object.freeze || Object)({
+/**
+ * @param  {string} p0
+ * @param  {string} p1
+ * @param  {number} percent
+ * @return {string}
+ */
+function interpolateString(p0, p1, percent) {
+    return percent > 0.5 ? p1 : p0;
+}
+
+/**
+ * @param  {Array} p0
+ * @param  {Array} p1
+ * @param  {number} percent
+ * @param  {Array} out
+ * @param  {number} arrDim
+ */
+function interpolateArray(p0, p1, percent, out, arrDim) {
+    var len = p0.length;
+    if (arrDim === 1) {
+        for (var i = 0; i < len; i++) {
+            out[i] = interpolateNumber(p0[i], p1[i], percent);
+        }
+    }
+    else {
+        var len2 = len && p0[0].length;
+        for (var i = 0; i < len; i++) {
+            for (var j = 0; j < len2; j++) {
+                out[i][j] = interpolateNumber(
+                    p0[i][j], p1[i][j], percent
+                );
+            }
+        }
+    }
+}
+
+// arr0 is source array, arr1 is target array.
+// Do some preprocess to avoid error happened when interpolating from arr0 to arr1
+function fillArr(arr0, arr1, arrDim) {
+    var arr0Len = arr0.length;
+    var arr1Len = arr1.length;
+    if (arr0Len !== arr1Len) {
+        // FIXME Not work for TypedArray
+        var isPreviousLarger = arr0Len > arr1Len;
+        if (isPreviousLarger) {
+            // Cut the previous
+            arr0.length = arr1Len;
+        }
+        else {
+            // Fill the previous
+            for (var i = arr0Len; i < arr1Len; i++) {
+                arr0.push(
+                    arrDim === 1 ? arr1[i] : Array.prototype.slice.call(arr1[i])
+                );
+            }
+        }
+    }
+    // Handling NaN value
+    var len2 = arr0[0] && arr0[0].length;
+    for (var i = 0; i < arr0.length; i++) {
+        if (arrDim === 1) {
+            if (isNaN(arr0[i])) {
+                arr0[i] = arr1[i];
+            }
+        }
+        else {
+            for (var j = 0; j < len2; j++) {
+                if (isNaN(arr0[i][j])) {
+                    arr0[i][j] = arr1[i][j];
+                }
+            }
+        }
+    }
+}
+
+
+/**
+ * @param  {Array} arr0
+ * @param  {Array} arr1
+ * @param  {number} arrDim
+ * @return {boolean}
+ */
+function isArraySame(arr0, arr1, arrDim) {
+    if (arr0 === arr1) {
+        return true;
+    }
+    var len = arr0.length;
+    if (len !== arr1.length) {
+        return false;
+    }
+    if (arrDim === 1) {
+        for (var i = 0; i < len; i++) {
+            if (arr0[i] !== arr1[i]) {
+                return false;
+            }
+        }
+    }
+    else {
+        var len2 = arr0[0].length;
+        for (var i = 0; i < len; i++) {
+            for (var j = 0; j < len2; j++) {
+                if (arr0[i][j] !== arr1[i][j]) {
+                    return false;
+                }
+            }
+        }
+    }
+    return true;
+}
+
+/**
+ * Catmull Rom interpolate array
+ * @param  {Array} p0
+ * @param  {Array} p1
+ * @param  {Array} p2
+ * @param  {Array} p3
+ * @param  {number} t
+ * @param  {number} t2
+ * @param  {number} t3
+ * @param  {Array} out
+ * @param  {number} arrDim
+ */
+function catmullRomInterpolateArray(
+    p0, p1, p2, p3, t, t2, t3, out, arrDim
+) {
+    var len = p0.length;
+    if (arrDim === 1) {
+        for (var i = 0; i < len; i++) {
+            out[i] = catmullRomInterpolate(
+                p0[i], p1[i], p2[i], p3[i], t, t2, t3
+            );
+        }
+    }
+    else {
+        var len2 = p0[0].length;
+        for (var i = 0; i < len; i++) {
+            for (var j = 0; j < len2; j++) {
+                out[i][j] = catmullRomInterpolate(
+                    p0[i][j], p1[i][j], p2[i][j], p3[i][j],
+                    t, t2, t3
+                );
+            }
+        }
+    }
+}
+
+/**
+ * Catmull Rom interpolate number
+ * @param  {number} p0
+ * @param  {number} p1
+ * @param  {number} p2
+ * @param  {number} p3
+ * @param  {number} t
+ * @param  {number} t2
+ * @param  {number} t3
+ * @return {number}
+ */
+function catmullRomInterpolate(p0, p1, p2, p3, t, t2, t3) {
+    var v0 = (p2 - p0) * 0.5;
+    var v1 = (p3 - p1) * 0.5;
+    return (2 * (p1 - p2) + v0 + v1) * t3
+            + (-3 * (p1 - p2) - 2 * v0 - v1) * t2
+            + v0 * t + p1;
+}
+
+function cloneValue(value) {
+    if (isArrayLike(value)) {
+        var len = value.length;
+        if (isArrayLike(value[0])) {
+            var ret = [];
+            for (var i = 0; i < len; i++) {
+                ret.push(Array.prototype.slice.call(value[i]));
+            }
+            return ret;
+        }
+
+        return Array.prototype.slice.call(value);
+    }
+
+    return value;
+}
+
+function rgba2String(rgba) {
+    rgba[0] = Math.floor(rgba[0]);
+    rgba[1] = Math.floor(rgba[1]);
+    rgba[2] = Math.floor(rgba[2]);
+
+    return 'rgba(' + rgba.join(',') + ')';
+}
+
+function getArrayDim(keyframes) {
+    var lastValue = keyframes[keyframes.length - 1].value;
+    return isArrayLike(lastValue && lastValue[0]) ? 2 : 1;
+}
+
+var dataStructureUtil = (Object.freeze || Object)({
 	$override: $override,
 	clone: clone,
 	merge: merge,
@@ -912,7 +1116,17 @@ var dataUtil = (Object.freeze || Object)({
 	isPrimitive: isPrimitive,
 	createHashMap: createHashMap,
 	concatArray: concatArray,
-	noop: noop
+	noop: noop,
+	interpolateNumber: interpolateNumber,
+	interpolateString: interpolateString,
+	interpolateArray: interpolateArray,
+	fillArr: fillArr,
+	isArraySame: isArraySame,
+	catmullRomInterpolateArray: catmullRomInterpolateArray,
+	catmullRomInterpolate: catmullRomInterpolate,
+	cloneValue: cloneValue,
+	rgba2String: rgba2String,
+	getArrayDim: getArrayDim
 });
 
 /* global Float32Array */
@@ -4225,221 +4439,6 @@ var colorUtil = (Object.freeze || Object)({
  * 
  * @module echarts/animation/Animator
  */
-
-var arraySlice = Array.prototype.slice;
-
-function defaultGetter(target, key) {
-    return target[key];
-}
-
-function defaultSetter(target, key, value) {
-    target[key] = value;
-}
-
-/**
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} percent
- * @return {number}
- */
-function interpolateNumber(p0, p1, percent) {
-    return (p1 - p0) * percent + p0;
-}
-
-/**
- * @param  {string} p0
- * @param  {string} p1
- * @param  {number} percent
- * @return {string}
- */
-function interpolateString(p0, p1, percent) {
-    return percent > 0.5 ? p1 : p0;
-}
-
-/**
- * @param  {Array} p0
- * @param  {Array} p1
- * @param  {number} percent
- * @param  {Array} out
- * @param  {number} arrDim
- */
-function interpolateArray(p0, p1, percent, out, arrDim) {
-    var len = p0.length;
-    if (arrDim === 1) {
-        for (var i = 0; i < len; i++) {
-            out[i] = interpolateNumber(p0[i], p1[i], percent);
-        }
-    }
-    else {
-        var len2 = len && p0[0].length;
-        for (var i = 0; i < len; i++) {
-            for (var j = 0; j < len2; j++) {
-                out[i][j] = interpolateNumber(
-                    p0[i][j], p1[i][j], percent
-                );
-            }
-        }
-    }
-}
-
-// arr0 is source array, arr1 is target array.
-// Do some preprocess to avoid error happened when interpolating from arr0 to arr1
-function fillArr(arr0, arr1, arrDim) {
-    var arr0Len = arr0.length;
-    var arr1Len = arr1.length;
-    if (arr0Len !== arr1Len) {
-        // FIXME Not work for TypedArray
-        var isPreviousLarger = arr0Len > arr1Len;
-        if (isPreviousLarger) {
-            // Cut the previous
-            arr0.length = arr1Len;
-        }
-        else {
-            // Fill the previous
-            for (var i = arr0Len; i < arr1Len; i++) {
-                arr0.push(
-                    arrDim === 1 ? arr1[i] : arraySlice.call(arr1[i])
-                );
-            }
-        }
-    }
-    // Handling NaN value
-    var len2 = arr0[0] && arr0[0].length;
-    for (var i = 0; i < arr0.length; i++) {
-        if (arrDim === 1) {
-            if (isNaN(arr0[i])) {
-                arr0[i] = arr1[i];
-            }
-        }
-        else {
-            for (var j = 0; j < len2; j++) {
-                if (isNaN(arr0[i][j])) {
-                    arr0[i][j] = arr1[i][j];
-                }
-            }
-        }
-    }
-}
-
-/**
- * @param  {Array} arr0
- * @param  {Array} arr1
- * @param  {number} arrDim
- * @return {boolean}
- */
-function isArraySame(arr0, arr1, arrDim) {
-    if (arr0 === arr1) {
-        return true;
-    }
-    var len = arr0.length;
-    if (len !== arr1.length) {
-        return false;
-    }
-    if (arrDim === 1) {
-        for (var i = 0; i < len; i++) {
-            if (arr0[i] !== arr1[i]) {
-                return false;
-            }
-        }
-    }
-    else {
-        var len2 = arr0[0].length;
-        for (var i = 0; i < len; i++) {
-            for (var j = 0; j < len2; j++) {
-                if (arr0[i][j] !== arr1[i][j]) {
-                    return false;
-                }
-            }
-        }
-    }
-    return true;
-}
-
-/**
- * Catmull Rom interpolate array
- * @param  {Array} p0
- * @param  {Array} p1
- * @param  {Array} p2
- * @param  {Array} p3
- * @param  {number} t
- * @param  {number} t2
- * @param  {number} t3
- * @param  {Array} out
- * @param  {number} arrDim
- */
-function catmullRomInterpolateArray(
-    p0, p1, p2, p3, t, t2, t3, out, arrDim
-) {
-    var len = p0.length;
-    if (arrDim === 1) {
-        for (var i = 0; i < len; i++) {
-            out[i] = catmullRomInterpolate(
-                p0[i], p1[i], p2[i], p3[i], t, t2, t3
-            );
-        }
-    }
-    else {
-        var len2 = p0[0].length;
-        for (var i = 0; i < len; i++) {
-            for (var j = 0; j < len2; j++) {
-                out[i][j] = catmullRomInterpolate(
-                    p0[i][j], p1[i][j], p2[i][j], p3[i][j],
-                    t, t2, t3
-                );
-            }
-        }
-    }
-}
-
-/**
- * Catmull Rom interpolate number
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {number} t
- * @param  {number} t2
- * @param  {number} t3
- * @return {number}
- */
-function catmullRomInterpolate(p0, p1, p2, p3, t, t2, t3) {
-    var v0 = (p2 - p0) * 0.5;
-    var v1 = (p3 - p1) * 0.5;
-    return (2 * (p1 - p2) + v0 + v1) * t3
-            + (-3 * (p1 - p2) - 2 * v0 - v1) * t2
-            + v0 * t + p1;
-}
-
-function cloneValue(value) {
-    if (isArrayLike(value)) {
-        var len = value.length;
-        if (isArrayLike(value[0])) {
-            var ret = [];
-            for (var i = 0; i < len; i++) {
-                ret.push(arraySlice.call(value[i]));
-            }
-            return ret;
-        }
-
-        return arraySlice.call(value);
-    }
-
-    return value;
-}
-
-function rgba2String(rgba) {
-    rgba[0] = Math.floor(rgba[0]);
-    rgba[1] = Math.floor(rgba[1]);
-    rgba[2] = Math.floor(rgba[2]);
-
-    return 'rgba(' + rgba.join(',') + ')';
-}
-
-function getArrayDim(keyframes) {
-    var lastValue = keyframes[keyframes.length - 1].value;
-    return isArrayLike(lastValue && lastValue[0]) ? 2 : 1;
-}
-
 function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAnimate) {
     var getter = animator._getter;
     var setter = animator._setter;
@@ -4666,8 +4665,12 @@ var Animator = function (target, loop, getter, setter) {
     this._tracks = {};
     this._target = target;
     this._loop = loop || false;
-    this._getter = getter || defaultGetter;
-    this._setter = setter || defaultSetter;
+    this._getter = getter || function(target, key) {
+        return target[key];
+    };
+    this._setter = setter || function(target, key, value) {
+        target[key] = value;
+    };
     this._clipCount = 0;
     this._delay = 0;
     this._doneList = [];
@@ -4683,8 +4686,9 @@ Animator.prototype = {
      * @return {module:zrender/animation/Animator}
      */
     when: function (time /* ms */, props) {
+        //TODO:validate argument props
+        //为每一种属性创建一条轨道
         var tracks = this._tracks;
-        //为每一种属性创建一条动画轨道，并在轨道上添加片段 clip 实例。
         for (var propName in props) {
             if (!props.hasOwnProperty(propName)) {
                 continue;
@@ -17082,7 +17086,7 @@ exports.matrix = matrix;
 exports.vector = vector;
 exports.color = colorUtil;
 exports.path = pathUtil;
-exports.util = dataUtil;
+exports.util = dataStructureUtil;
 exports.parseSVG = parseSVG;
 exports.Group = Group;
 exports.Path = Path;

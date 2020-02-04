@@ -11,7 +11,7 @@ import {
     normalizeEvent,
     getNativeEvent
 } from '../core/eventUtil';
-import * as zrUtil from '../core/dataUtil';
+import * as zrUtil from '../core/dataStructureUtil';
 import Eventful from './Eventful';
 import env from '../core/env';
 

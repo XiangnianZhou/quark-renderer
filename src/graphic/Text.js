@@ -1,5 +1,5 @@
 import Displayable from './Displayable';
-import * as zrUtil from '../core/dataUtil';
+import * as zrUtil from '../core/dataStructureUtil';
 import * as textContain from '../core/contain/text';
 import * as textHelper from './helper/text';
 import {ContextCachedBy} from './constant';

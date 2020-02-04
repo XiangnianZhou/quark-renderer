@@ -6,7 +6,7 @@
  * @alias module:zrender/Storage
  */
 
-import * as util from './core/dataUtil';
+import * as util from './core/dataStructureUtil';
 import env from './core/env';
 import Group from './graphic/Group';
 

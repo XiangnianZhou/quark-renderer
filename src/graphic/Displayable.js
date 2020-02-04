@@ -4,7 +4,7 @@
  * @module zrender/graphic/Displayable
  */
 
-import * as zrUtil from '../core/dataUtil';
+import * as zrUtil from '../core/dataStructureUtil';
 import Style from './Style';
 import Element from './Element';
 import RectText from './RectText';

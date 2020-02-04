@@ -8,7 +8,7 @@ import {
     isObject,
     isArrayLike,
     indexOf
-} from '../core/dataUtil';
+} from '../core/dataStructureUtil';
 
 /**
  * @alias modue:zrender/animation/Animatable

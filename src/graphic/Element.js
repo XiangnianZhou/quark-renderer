@@ -7,7 +7,7 @@ import guid from '../core/guid';
 import Eventful from '../event/Eventful';
 import Transformable from './Transformable';
 import Animatable from '../animation/Animatable';
-import * as zrUtil from '../core/dataUtil';
+import * as zrUtil from '../core/dataStructureUtil';
 
 /**
  * @alias module:zrender/Element

@@ -6,7 +6,7 @@ import {
     retrieve2,
     retrieve3,
     trim
-} from '../dataUtil';
+} from '../dataStructureUtil';
 
 var textWidthCache = {};
 var textWidthCacheCounter = 0;

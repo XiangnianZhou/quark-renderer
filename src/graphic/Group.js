@@ -17,7 +17,7 @@
  *     zr.add(g);
  */
 
-import * as zrUtil from '../core/dataUtil';
+import * as zrUtil from '../core/dataStructureUtil';
 import Element from './Element';
 import BoundingRect from '../core/BoundingRect';
 

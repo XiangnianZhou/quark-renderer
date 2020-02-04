@@ -12,7 +12,7 @@ import LinearGradient from '../graphic/LinearGradient';
 import Style from '../graphic/Style';
 import * as matrix from '../core/matrix';
 import { createFromString } from '../core/pathUtil';
-import { isString, extend, defaults, trim, each } from '../core/dataUtil';
+import { isString, extend, defaults, trim, each } from '../core/dataStructureUtil';
 
 // Most of the values can be separated by comma and/or white space.
 var DILIMITER_REG = /[\s,]+/;

@@ -18,7 +18,7 @@
  *           Transition object or a string descriptor like '* 30 0 Linear'
  */
 
-import * as zrUtil from '../core/dataUtil';
+import * as zrUtil from '../core/dataStructureUtil';
 import Style from './Style';
 import {copy as vec2Copy} from '../core/vector';
 

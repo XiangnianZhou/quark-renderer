@@ -4,7 +4,7 @@
  */
 
 import Definable from './Definable';
-import * as zrUtil from '../../core/dataUtil';
+import * as zrUtil from '../../core/dataStructureUtil';
 import * as colorTool from '../../core/colorUtil';
 
 /**

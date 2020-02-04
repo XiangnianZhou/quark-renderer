@@ -2,7 +2,7 @@
  * @module zrender/Layer
  * @author pissang(https://www.github.com/pissang)
  */
-import * as util from './core/dataUtil';
+import * as util from './core/dataStructureUtil';
 import {devicePixelRatio} from './config';
 import Style from './graphic/Style';
 import Pattern from './graphic/Pattern';
