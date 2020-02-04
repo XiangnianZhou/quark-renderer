@@ -240,7 +240,7 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
  * @param {Function} setter
  */
 var Animator = function (target, loop, getter, setter) {
-    this._tracks = {};
+    this._tracks = new Map();
     this._target = target;
     this._loop = loop || false;
     this._getter = getter || function(target, key) {
@@ -266,14 +266,13 @@ Animator.prototype = {
     when: function (time /* ms */, props) {
         //TODO:validate argument props
         //为每一种属性创建一条轨道
-        var tracks = this._tracks;
         for (var propName in props) {
             if (!props.hasOwnProperty(propName)) {
                 continue;
             }
 
-            if (!tracks[propName]) {
-                tracks[propName] = [];
+            if (!this._tracks.get(propName)) {
+                this._tracks.set(propName,[]);
                 // Invalid value
                 var value = this._getter(this._target, propName);
                 if (value == null) {
@@ -285,13 +284,13 @@ Animator.prototype = {
                 // Else
                 //  Initialize value from current prop value
                 if (time !== 0) {
-                    tracks[propName].push({
+                    this._tracks.get(propName).push({
                         time: 0,
                         value: dataUtil.cloneValue(value)
                     });
                 }
             }
-            tracks[propName].push({
+            this._tracks.get(propName).push({
                 time: time,
                 value: props[propName]
             });
@@ -328,7 +327,7 @@ Animator.prototype = {
     },
 
     _doneCallback: function () {
-        this._tracks = {};
+        this._tracks = new Map();
         this._clipList.length = 0;
         var doneList = this._doneList;
         var len = doneList.length;
@@ -360,20 +359,25 @@ Animator.prototype = {
         };
 
         var lastClip;
-        for (var propName in this._tracks) {
-            if (!this._tracks.hasOwnProperty(propName)) {
-                continue;
+        //为 Element 上的每一种属性创建一个 Clip 
+        [...this._tracks.keys()].forEach((propName,index)=>{
+            if (!this._tracks.get(propName)) {
+                return;
             }
             var clip = createClip(
-                this, easing, oneTrackDone,
-                this._tracks[propName], propName, forceAnimate
+                this, 
+                easing, 
+                oneTrackDone,
+                this._tracks.get(propName),
+                propName, 
+                forceAnimate
             );
             if (clip) {
                 this._clipList.push(clip);
                 clipCount++;
                 lastClip = clip;
             }
-        }
+        });
 
         // Add during callback on the last clip
         if (lastClip) {
