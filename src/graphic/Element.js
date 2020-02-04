@@ -234,7 +234,7 @@ Element.prototype = {
         var animators = this.animators;
         if (animators) {
             for (var i = 0; i < animators.length; i++) {
-                zr.animation.addAnimator(animators[i]);
+                zr.animationMgr.addAnimator(animators[i]);
             }
         }
 
@@ -254,7 +254,7 @@ Element.prototype = {
         var animators = this.animators;
         if (animators) {
             for (var i = 0; i < animators.length; i++) {
-                zr.animation.removeAnimator(animators[i]);
+                zr.animationMgr.removeAnimator(animators[i]);
             }
         }
 

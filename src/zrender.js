@@ -158,12 +158,12 @@ var ZRender = function (id, dom, opts) {
      * 明显的卡顿。
      * @type {module:zrender/animation/AnimationMgr}
      */
-    this.animation = new AnimationMgr({
+    this.animationMgr = new AnimationMgr({
         stage: {
             update: zrUtil.bind(this.flush, this)
         }
     });
-    this.animation.start();
+    this.animationMgr.start();
 
     /**
      * @type {boolean}
@@ -372,7 +372,7 @@ ZRender.prototype = {
      * Stop and clear all animation immediately
      */
     clearAnimation: function () {
-        this.animation.clear();
+        this.animationMgr.clear();
     },
 
     /**
@@ -462,14 +462,14 @@ ZRender.prototype = {
      * Dispose self.
      */
     dispose: function () {
-        this.animation.stop();
+        this.animationMgr.stop();
 
         this.clear();
         this.storage.dispose();
         this.painter.dispose();
         this.handler.dispose();
 
-        this.animation =
+        this.animationMgr =
         this.storage =
         this.painter =
         this.handler = null;

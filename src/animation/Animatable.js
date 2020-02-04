@@ -88,7 +88,7 @@ Animatable.prototype = {
 
         // If animate after added to the zrender
         if (zr) {
-            zr.animation.addAnimator(animator);
+            zr.animationMgr.addAnimator(animator);
         }
 
         return animator;
