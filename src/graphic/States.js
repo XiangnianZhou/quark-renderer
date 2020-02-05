@@ -100,7 +100,7 @@ var GraphicStates = function (opts) {
 
     this._subStates = [];
 
-    this._transitionAnimators = [];
+    this._transitionAnimationProcess = [];
 
     if (opts.initialState) {
         this._initialState = opts.initialState;
@@ -365,7 +365,7 @@ GraphicStates.prototype = {
         var availableProp = stateObj && (key in stateObj)
             && elObj && (key in elObj);
 
-        var transitionAnimators = this._transitionAnimators;
+        var taps = this._transitionAnimationProcess;
         if (availableProp) {
             var obj = {};
             if (stateObj[key] === elObj[key]) {
@@ -373,18 +373,18 @@ GraphicStates.prototype = {
             }
             obj[key] = stateObj[key];
 
-            var animator = el.animate(subPropKey)
+            var animationProcess = el.animate(subPropKey)
                 .when(transitionCfg.duration, obj)
                 .delay(transitionCfg.dealy)
                 .done(function () {
-                    var idx = zrUtil.indexOf(transitionAnimators, 1);
+                    var idx = zrUtil.indexOf(taps, 1);
                     if (idx > 0) {
-                        transitionAnimators.splice(idx, 1);
+                        taps.splice(idx, 1);
                     }
                     done();
                 })
                 .start(transitionCfg.easing);
-            transitionAnimators.push(animator);
+            taps.push(animationProcess);
 
             return 1;
         }
@@ -392,15 +392,15 @@ GraphicStates.prototype = {
     },
 
     _stopTransition: function () {
-        var transitionAnimators = this._transitionAnimators;
-        for (var i = 0; i < transitionAnimators.length; i++) {
-            transitionAnimators[i].stop();
+        var taps = this._transitionAnimationProcess;
+        for (var i = 0; i < taps.length; i++) {
+            taps[i].stop();
         }
-        transitionAnimators.length = 0;
+        taps.length = 0;
     },
 
     transiting: function () {
-        return this._transitionAnimators.length > 0;
+        return this._transitionAnimationProcess.length > 0;
     },
 
     addSubStates: function (states) {

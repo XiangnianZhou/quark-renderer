@@ -48,7 +48,7 @@
             });
 
             zr.add(star);
-            var animator = star.animate('', true);
+            var ap = star.animate('', true);
 
             var points = [];
             var point = [
@@ -62,7 +62,7 @@
                     Math.random() * zr.getWidth(),
                     Math.random() * zr.getHeight()
                 ];
-                animator.when(j * 2000, {
+                ap.when(j * 2000, {
                     position: point
                 });
                 points.push(point);
@@ -82,7 +82,7 @@
             });
             // zr.add(polyline);
 
-            animator.start('spline');
+            ap.start('spline');
         }
         zr.configLayer(1, {
             // clearColor: 'rgba(255, 255, 255, 0.1)'

@@ -14,8 +14,8 @@
 
 import * as util from '../core/dataStructureUtil';
 import {Dispatcher} from '../core/eventUtil';
-import requestAnimationFrame from './requestAnimationFrame';
-import Animator from './Animator';
+import requestAnimationFrame from './utils/requestAnimationFrame';
+import AnimationProcess from './AnimationProcess';
 
 /**
  * @typedef {Object} IZRenderStage
@@ -50,7 +50,7 @@ var AnimationMgr = function (options) {
     this.stage = options.stage || {};
     this.onframe = options.onframe || function () {};
 
-    this._animators=[];
+    this._animationProcessList=[];
     this._running = false;
     this._time;
     this._pausedTime;
@@ -64,30 +64,30 @@ AnimationMgr.prototype = {
     constructor: AnimationMgr,
 
     /**
-     * 添加 animator
-     * @param {module:zrender/animation/Animator} animator
+     * 添加 animationProcess
+     * @param {module:zrender/animation/AnimationProcess} animationProcess
      */
-    addAnimator: function (animator) {
-        animator.animation = this;
-        this._animators.push(animator);
+    addAnimationProcess: function (animationProcess) {
+        animationProcess.animation = this;
+        this._animationProcessList.push(animationProcess);
     },
 
     /**
      * 删除动画片段
-     * @param {module:zrender/animation/Animator} animator
+     * @param {module:zrender/animation/AnimationProcess} animationProcess
      */
-    removeAnimator: function (animator) {
-        animator.animation = null;
-        let index=this._animators.findIndex(animator);
+    removeAnimationProcess: function (animationProcess) {
+        animationProcess.animation = null;
+        let index=this._animationProcessList.findIndex(animationProcess);
         if(index>=0){
-            this._animators.splice(index,1);
+            this._animationProcessList.splice(index,1);
         }
     },
 
     _getAllClips:function(){
         let clips=[];
-        this._animators.forEach((animator,index)=>{
-            let temp=animator.getClips();
+        this._animationProcessList.forEach((animationProcess,index)=>{
+            let temp=animationProcess.getClips();
             if(temp&&temp.length){
                 clips=[...clips,...temp];
             }
@@ -194,7 +194,7 @@ AnimationMgr.prototype = {
      * Clear animation.
      */
     clear: function () {
-        this._animators=[];
+        this._animationProcessList=[];
     },
 
     /**
@@ -202,8 +202,8 @@ AnimationMgr.prototype = {
      */
     isFinished:function(){
         let finished=true;
-        this._animators.forEach((animator,index)=>{
-            if(!animator.isFinished()){
+        this._animationProcessList.forEach((animationProcess,index)=>{
+            if(!animationProcess.isFinished()){
                 finished=false;
             }
         });
@@ -211,26 +211,26 @@ AnimationMgr.prototype = {
     },
 
     /**
-     * Creat animator for a target, whose props can be animated.
+     * Creat animationProcess for a target, whose props can be animated.
      *
      * @param  {Object} target
      * @param  {Object} options
      * @param  {boolean} [options.loop=false] Whether loop animation.
      * @param  {Function} [options.getter=null] Get value from target.
      * @param  {Function} [options.setter=null] Set value to target.
-     * @return {module:zrender/animation/AnimationMgr~Animator}
+     * @return {module:zrender/animation/AnimationMgr~AnimationProcess}
      */
     // TODO Gap
     animate: function (target, options) {
         options = options || {};
-        var animator = new Animator(
+        var animationProcess = new AnimationProcess(
             target,
             options.loop,
             options.getter,
             options.setter
         );
-        this.addAnimator(animator);
-        return animator;
+        this.addAnimationProcess(animationProcess);
+        return animationProcess;
     }
 };
 

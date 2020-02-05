@@ -1,20 +1,20 @@
 /**
- * Animator 是动画片段 Clip 的管理器，负责创建、维护 Clip，Animator 可以看成一组 Clip 的集合。
+ * AnimationProcess 表示一次完整的动画过程。
  * 
- * @module echarts/animation/Animator
+ * @module echarts/animation/AnimationProcess
  */
 import Clip from './Clip';
 import * as dataUtil from '../core/dataStructureUtil';
 
 /**
- * @alias module:zrender/animation/Animator
+ * @alias module:zrender/animation/AnimationProcess
  * @constructor
  * @param {Object} target 需要进行动画的图元
  * @param {boolean} loop 动画是否循环播放
  * @param {Function} getter
  * @param {Function} setter
  */
-var Animator = function (target, loop, getter, setter) {
+var AnimationProcess = function (target, loop, getter, setter) {
     this._tracks = new Map();
     this._target = target;
     this._loop = loop || false;
@@ -31,12 +31,14 @@ var Animator = function (target, loop, getter, setter) {
     this._clipList = [];
 };
 
-Animator.prototype = {
+AnimationProcess.prototype = {
+    constructor: AnimationProcess,
+
     /**
      * 设置动画关键帧
      * @param  {number} time 关键帧时间，单位是ms
      * @param  {Object} props 关键帧的属性值，key-value表示
-     * @return {module:zrender/animation/Animator}
+     * @return {module:zrender/animation/AnimationProcess}
      */
     when: function (time /* ms */, props) {
         //TODO:validate argument props
@@ -76,7 +78,7 @@ Animator.prototype = {
     /**
      * 添加动画每一帧的回调函数
      * @param  {Function} callback
-     * @return {module:zrender/animation/Animator}
+     * @return {module:zrender/animation/AnimationProcess}
      */
     during: function (callback) {
         this._onframeList.push(callback);
@@ -120,7 +122,7 @@ Animator.prototype = {
      * @param  {string|Function} [easing]
      *         动画缓动函数，详见{@link module:zrender/animation/easing}
      * @param  {boolean} forceAnimate
-     * @return {module:zrender/animation/Animator}
+     * @return {module:zrender/animation/AnimationProcess}
      */
     start: function (easing, forceAnimate) {
         var self = this;
@@ -190,7 +192,7 @@ Animator.prototype = {
     /**
      * 设置动画延迟开始的时间
      * @param  {number} time 单位ms
-     * @return {module:zrender/animation/Animator}
+     * @return {module:zrender/animation/AnimationProcess}
      */
     delay: function (time) {
         this._delay = time;
@@ -200,7 +202,7 @@ Animator.prototype = {
     /**
      * 添加动画结束的回调
      * @param  {Function} cb
-     * @return {module:zrender/animation/Animator}
+     * @return {module:zrender/animation/AnimationProcess}
      */
     done: function (cb) {
         if (cb) {
@@ -217,4 +219,4 @@ Animator.prototype = {
     }
 };
 
-export default Animator;
+export default AnimationProcess;

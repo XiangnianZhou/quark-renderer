@@ -231,10 +231,10 @@ Element.prototype = {
     addSelfToZr: function (zr) {
         this.__zr = zr;
         // 添加动画
-        var animators = this.animators;
-        if (animators) {
-            for (var i = 0; i < animators.length; i++) {
-                zr.animationMgr.addAnimator(animators[i]);
+        var animationProcessList = this.animationProcessList;
+        if (animationProcessList) {
+            for (var i = 0; i < animationProcessList.length; i++) {
+                zr.animationMgr.addAnimationProcess(animationProcessList[i]);
             }
         }
 
@@ -251,10 +251,10 @@ Element.prototype = {
     removeSelfFromZr: function (zr) {
         this.__zr = null;
         // 移除动画
-        var animators = this.animators;
-        if (animators) {
-            for (var i = 0; i < animators.length; i++) {
-                zr.animationMgr.removeAnimator(animators[i]);
+        var animationProcessList = this.animationProcessList;
+        if (animationProcessList) {
+            for (var i = 0; i < animationProcessList.length; i++) {
+                zr.animationMgr.removeAnimationProcess(animationProcessList[i]);
             }
         }
 

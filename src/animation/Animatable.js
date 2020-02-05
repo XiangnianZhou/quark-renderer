@@ -1,7 +1,7 @@
 /**
- * 动画工具类，在 Element 类中 mixin 此工具类提供的功能，为图元提供动画功能。
+ * 动画接口类，在 Element 类中 mixin 此类提供的功能，为图元提供动画功能。
  */
-import Animator from '../animation/Animator';
+import AnimationProcess from './AnimationProcess';
 import * as dataUtil from '../core/dataStructureUtil';
 
 /**
@@ -10,10 +10,10 @@ import * as dataUtil from '../core/dataStructureUtil';
  */
 var Animatable = function () {
     /**
-     * @type {Array.<module:zrender/animation/Animator>}
+     * @type {Array.<module:zrender/animation/AnimationProcess>}
      * @readOnly
      */
-    this.animators = [];
+    this.animationProcessList = [];
 };
 
 Animatable.prototype = {
@@ -25,7 +25,7 @@ Animatable.prototype = {
      *
      * @param {string} path The path to fetch value from object, like 'a.b.c'.
      * @param {boolean} [loop] Whether to loop animation.
-     * @return {module:zrender/animation/Animator}
+     * @return {module:zrender/animation/AnimationProcess}
      * @example:
      *     el.animate('style', false)
      *         .when(1000, {x: 10} )
@@ -66,26 +66,26 @@ Animatable.prototype = {
             return;
         }
 
-        var animators = el.animators;
+        var animationProcessList = el.animationProcessList;
 
-        var animator = new Animator(target, loop);
+        var animationProcess = new AnimationProcess(target, loop);
 
-        animator.during(function (target) {
+        animationProcess.during(function (target) {
             el.dirty(animatingShape);
         })
         .done(function () {
-            // FIXME Animator will not be removed if use `Animator#stop` to stop animation
-            animators.splice(dataUtil.indexOf(animators, animator), 1);
+            // FIXME AnimationProcess will not be removed if use `AnimationProcess#stop` to stop animation
+            animationProcessList.splice(dataUtil.indexOf(animationProcessList, animationProcess), 1);
         });
 
-        animators.push(animator);
+        animationProcessList.push(animationProcess);
 
         // If animate after added to the zrender
         if (zr) {
-            zr.animationMgr.addAnimator(animator);
+            zr.animationMgr.addAnimationProcess(animationProcess);
         }
 
-        return animator;
+        return animationProcess;
     },
 
     /**
@@ -93,12 +93,12 @@ Animatable.prototype = {
      * @param {boolean} forwardToLast If move to last frame before stop
      */
     stopAnimation: function (forwardToLast) {
-        var animators = this.animators;
-        var len = animators.length;
+        var animationProcessList = this.animationProcessList;
+        var len = animationProcessList.length;
         for (var i = 0; i < len; i++) {
-            animators[i].stop(forwardToLast);
+            animationProcessList[i].stop(forwardToLast);
         }
-        animators.length = 0;
+        animationProcessList.length = 0;
 
         return this;
     },
@@ -177,10 +177,10 @@ function animateTo(animatable, target, time, delay, easing, callback, forceAnima
     animatable.stopAnimation();
     animateToShallow(animatable, '', animatable, target, time, delay, reverse);
 
-    // Animators may be removed immediately after start
+    // AnimationProcess may be removed immediately after start
     // if there is nothing to animate
-    var animators = animatable.animators.slice();
-    var count = animators.length;
+    var animationProcessList = animatable.animationProcessList.slice();
+    var count = animationProcessList.length;
     function done() {
         count--;
         if (!count) {
@@ -188,15 +188,15 @@ function animateTo(animatable, target, time, delay, easing, callback, forceAnima
         }
     }
 
-    // No animators. This should be checked before animators[i].start(),
+    // No animationProcessList. This should be checked before animationProcessList[i].start(),
     // because 'done' may be executed immediately if no need to animate.
     if (!count) {
         callback && callback();
     }
-    // Start after all animators created
-    // Incase any animator is done immediately when all animation properties are not changed
-    for (var i = 0; i < animators.length; i++) {
-        animators[i]
+    // Start after all animationProcessList created
+    // Incase any animationProcess is done immediately when all animation properties are not changed
+    for (var i = 0; i < animationProcessList.length; i++) {
+        animationProcessList[i]
             .done(done)
             .start(easing, forceAnimate);
     }

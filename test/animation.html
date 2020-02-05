@@ -40,7 +40,7 @@
         });
         zr.add(circle);
         
-        let animator=circle.animate('', true)
+        let ap=circle.animate('', true)
             .when(1000, {
                 position: [200, 0],
                 scale: [2, 2]
@@ -60,7 +60,7 @@
             .start();
 
         setTimeout(()=>{
-            animator.stop();
+            ap.stop();
         },5000);
     </script>
 </body>

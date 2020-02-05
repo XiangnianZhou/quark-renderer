@@ -4351,8 +4351,8 @@ var colorUtil = (Object.freeze || Object)({
  *
  */
 
-function Clip(animator, easing$$1, oneTrackDone, keyframes, propName, forceAnimate) {
-    let options=this._calculateParams(animator, easing$$1, oneTrackDone, keyframes, propName, forceAnimate);
+function Clip(animationProcess, easing$$1, oneTrackDone, keyframes, propName, forceAnimate) {
+    let options=this._calculateParams(animationProcess, easing$$1, oneTrackDone, keyframes, propName, forceAnimate);
     //如果传入的参数不正确，则无法构造实例
     if(!options){
         return null;
@@ -4441,16 +4441,16 @@ Clip.prototype = {
 
     /**
      * 创建片段
-     * @param {*} animator 
+     * @param {*} animationProcess 
      * @param {*} easing 
      * @param {*} oneTrackDone 
      * @param {*} keyframes 
      * @param {*} propName 
      * @param {*} forceAnimate 
      */
-    _calculateParams:function(animator, easing$$1, oneTrackDone, keyframes, propName, forceAnimate) {
-        let getter = animator._getter;
-        let setter = animator._setter;
+    _calculateParams:function(animationProcess, easing$$1, oneTrackDone, keyframes, propName, forceAnimate) {
+        let getter = animationProcess._getter;
+        let setter = animationProcess._setter;
         let useSpline = easing$$1 === 'spline';
 
         let kfLength = keyframes.length;
@@ -4516,7 +4516,7 @@ Clip.prototype = {
                 }
             }
         }
-        isValueArray && fillArr(getter(animator._target, propName), lastValue, arrDim);
+        isValueArray && fillArr(getter(animationProcess._target, propName), lastValue, arrDim);
 
         // Cache the key of last frame to speed up when
         // animation playback is sequency
@@ -4631,10 +4631,10 @@ Clip.prototype = {
         };
         
         let options={
-            target: animator._target,
+            target: animationProcess._target,
             lifeTime: trackMaxTime,
-            loop: animator._loop,
-            delay: animator._delay,
+            loop: animationProcess._loop,
+            delay: animationProcess._delay,
             onframe: onframe,
             ondestroy: oneTrackDone,
             easing: (easing$$1 && easing$$1 !== 'spline')?easing$$1:'Linear'
@@ -4644,19 +4644,19 @@ Clip.prototype = {
 };
 
 /**
- * Animator 是动画片段 Clip 的管理器，负责创建、维护 Clip，Animator 可以看成一组 Clip 的集合。
+ * AnimationProcess 表示一次完整的动画过程。
  * 
- * @module echarts/animation/Animator
+ * @module echarts/animation/AnimationProcess
  */
 /**
- * @alias module:zrender/animation/Animator
+ * @alias module:zrender/animation/AnimationProcess
  * @constructor
  * @param {Object} target 需要进行动画的图元
  * @param {boolean} loop 动画是否循环播放
  * @param {Function} getter
  * @param {Function} setter
  */
-var Animator = function (target, loop, getter, setter) {
+var AnimationProcess = function (target, loop, getter, setter) {
     this._tracks = new Map();
     this._target = target;
     this._loop = loop || false;
@@ -4673,12 +4673,14 @@ var Animator = function (target, loop, getter, setter) {
     this._clipList = [];
 };
 
-Animator.prototype = {
+AnimationProcess.prototype = {
+    constructor: AnimationProcess,
+
     /**
      * 设置动画关键帧
      * @param  {number} time 关键帧时间，单位是ms
      * @param  {Object} props 关键帧的属性值，key-value表示
-     * @return {module:zrender/animation/Animator}
+     * @return {module:zrender/animation/AnimationProcess}
      */
     when: function (time /* ms */, props) {
         //TODO:validate argument props
@@ -4718,7 +4720,7 @@ Animator.prototype = {
     /**
      * 添加动画每一帧的回调函数
      * @param  {Function} callback
-     * @return {module:zrender/animation/Animator}
+     * @return {module:zrender/animation/AnimationProcess}
      */
     during: function (callback) {
         this._onframeList.push(callback);
@@ -4762,7 +4764,7 @@ Animator.prototype = {
      * @param  {string|Function} [easing]
      *         动画缓动函数，详见{@link module:zrender/animation/easing}
      * @param  {boolean} forceAnimate
-     * @return {module:zrender/animation/Animator}
+     * @return {module:zrender/animation/AnimationProcess}
      */
     start: function (easing, forceAnimate) {
         var self = this;
@@ -4832,7 +4834,7 @@ Animator.prototype = {
     /**
      * 设置动画延迟开始的时间
      * @param  {number} time 单位ms
-     * @return {module:zrender/animation/Animator}
+     * @return {module:zrender/animation/AnimationProcess}
      */
     delay: function (time) {
         this._delay = time;
@@ -4842,7 +4844,7 @@ Animator.prototype = {
     /**
      * 添加动画结束的回调
      * @param  {Function} cb
-     * @return {module:zrender/animation/Animator}
+     * @return {module:zrender/animation/AnimationProcess}
      */
     done: function (cb) {
         if (cb) {
@@ -4860,7 +4862,7 @@ Animator.prototype = {
 };
 
 /**
- * 动画工具类，在 Element 类中 mixin 此工具类提供的功能，为图元提供动画功能。
+ * 动画接口类，在 Element 类中 mixin 此类提供的功能，为图元提供动画功能。
  */
 /**
  * @alias modue:zrender/animation/Animatable
@@ -4868,10 +4870,10 @@ Animator.prototype = {
  */
 var Animatable = function () {
     /**
-     * @type {Array.<module:zrender/animation/Animator>}
+     * @type {Array.<module:zrender/animation/AnimationProcess>}
      * @readOnly
      */
-    this.animators = [];
+    this.animationProcessList = [];
 };
 
 Animatable.prototype = {
@@ -4883,7 +4885,7 @@ Animatable.prototype = {
      *
      * @param {string} path The path to fetch value from object, like 'a.b.c'.
      * @param {boolean} [loop] Whether to loop animation.
-     * @return {module:zrender/animation/Animator}
+     * @return {module:zrender/animation/AnimationProcess}
      * @example:
      *     el.animate('style', false)
      *         .when(1000, {x: 10} )
@@ -4924,26 +4926,26 @@ Animatable.prototype = {
             return;
         }
 
-        var animators = el.animators;
+        var animationProcessList = el.animationProcessList;
 
-        var animator = new Animator(target, loop);
+        var animationProcess = new AnimationProcess(target, loop);
 
-        animator.during(function (target) {
+        animationProcess.during(function (target) {
             el.dirty(animatingShape);
         })
         .done(function () {
-            // FIXME Animator will not be removed if use `Animator#stop` to stop animation
-            animators.splice(indexOf(animators, animator), 1);
+            // FIXME AnimationProcess will not be removed if use `AnimationProcess#stop` to stop animation
+            animationProcessList.splice(indexOf(animationProcessList, animationProcess), 1);
         });
 
-        animators.push(animator);
+        animationProcessList.push(animationProcess);
 
         // If animate after added to the zrender
         if (zr) {
-            zr.animationMgr.addAnimator(animator);
+            zr.animationMgr.addAnimationProcess(animationProcess);
         }
 
-        return animator;
+        return animationProcess;
     },
 
     /**
@@ -4951,12 +4953,12 @@ Animatable.prototype = {
      * @param {boolean} forwardToLast If move to last frame before stop
      */
     stopAnimation: function (forwardToLast) {
-        var animators = this.animators;
-        var len = animators.length;
+        var animationProcessList = this.animationProcessList;
+        var len = animationProcessList.length;
         for (var i = 0; i < len; i++) {
-            animators[i].stop(forwardToLast);
+            animationProcessList[i].stop(forwardToLast);
         }
-        animators.length = 0;
+        animationProcessList.length = 0;
 
         return this;
     },
@@ -5035,10 +5037,10 @@ function animateTo(animatable, target, time, delay, easing, callback, forceAnima
     animatable.stopAnimation();
     animateToShallow(animatable, '', animatable, target, time, delay, reverse);
 
-    // Animators may be removed immediately after start
+    // AnimationProcess may be removed immediately after start
     // if there is nothing to animate
-    var animators = animatable.animators.slice();
-    var count = animators.length;
+    var animationProcessList = animatable.animationProcessList.slice();
+    var count = animationProcessList.length;
     function done() {
         count--;
         if (!count) {
@@ -5046,15 +5048,15 @@ function animateTo(animatable, target, time, delay, easing, callback, forceAnima
         }
     }
 
-    // No animators. This should be checked before animators[i].start(),
+    // No animationProcessList. This should be checked before animationProcessList[i].start(),
     // because 'done' may be executed immediately if no need to animate.
     if (!count) {
         callback && callback();
     }
-    // Start after all animators created
-    // Incase any animator is done immediately when all animation properties are not changed
-    for (var i = 0; i < animators.length; i++) {
-        animators[i]
+    // Start after all animationProcessList created
+    // Incase any animationProcess is done immediately when all animation properties are not changed
+    for (var i = 0; i < animationProcessList.length; i++) {
+        animationProcessList[i]
             .done(done)
             .start(easing, forceAnimate);
     }
@@ -5371,10 +5373,10 @@ Element.prototype = {
     addSelfToZr: function (zr) {
         this.__zr = zr;
         // 添加动画
-        var animators = this.animators;
-        if (animators) {
-            for (var i = 0; i < animators.length; i++) {
-                zr.animationMgr.addAnimator(animators[i]);
+        var animationProcessList = this.animationProcessList;
+        if (animationProcessList) {
+            for (var i = 0; i < animationProcessList.length; i++) {
+                zr.animationMgr.addAnimationProcess(animationProcessList[i]);
             }
         }
 
@@ -5391,10 +5393,10 @@ Element.prototype = {
     removeSelfFromZr: function (zr) {
         this.__zr = null;
         // 移除动画
-        var animators = this.animators;
-        if (animators) {
-            for (var i = 0; i < animators.length; i++) {
-                zr.animationMgr.removeAnimator(animators[i]);
+        var animationProcessList = this.animationProcessList;
+        if (animationProcessList) {
+            for (var i = 0; i < animationProcessList.length; i++) {
+                zr.animationMgr.removeAnimationProcess(animationProcessList[i]);
             }
         }
 
@@ -10660,7 +10662,7 @@ var AnimationMgr = function (options) {
     this.stage = options.stage || {};
     this.onframe = options.onframe || function () {};
 
-    this._animators=[];
+    this._animationProcessList=[];
     this._running = false;
     this._time;
     this._pausedTime;
@@ -10674,30 +10676,30 @@ AnimationMgr.prototype = {
     constructor: AnimationMgr,
 
     /**
-     * 添加 animator
-     * @param {module:zrender/animation/Animator} animator
+     * 添加 animationProcess
+     * @param {module:zrender/animation/AnimationProcess} animationProcess
      */
-    addAnimator: function (animator) {
-        animator.animation = this;
-        this._animators.push(animator);
+    addAnimationProcess: function (animationProcess) {
+        animationProcess.animation = this;
+        this._animationProcessList.push(animationProcess);
     },
 
     /**
      * 删除动画片段
-     * @param {module:zrender/animation/Animator} animator
+     * @param {module:zrender/animation/AnimationProcess} animationProcess
      */
-    removeAnimator: function (animator) {
-        animator.animation = null;
-        let index=this._animators.findIndex(animator);
+    removeAnimationProcess: function (animationProcess) {
+        animationProcess.animation = null;
+        let index=this._animationProcessList.findIndex(animationProcess);
         if(index>=0){
-            this._animators.splice(index,1);
+            this._animationProcessList.splice(index,1);
         }
     },
 
     _getAllClips:function(){
         let clips=[];
-        this._animators.forEach((animator,index)=>{
-            let temp=animator.getClips();
+        this._animationProcessList.forEach((animationProcess,index)=>{
+            let temp=animationProcess.getClips();
             if(temp&&temp.length){
                 clips=[...clips,...temp];
             }
@@ -10804,7 +10806,7 @@ AnimationMgr.prototype = {
      * Clear animation.
      */
     clear: function () {
-        this._animators=[];
+        this._animationProcessList=[];
     },
 
     /**
@@ -10812,8 +10814,8 @@ AnimationMgr.prototype = {
      */
     isFinished:function(){
         let finished=true;
-        this._animators.forEach((animator,index)=>{
-            if(!animator.isFinished()){
+        this._animationProcessList.forEach((animationProcess,index)=>{
+            if(!animationProcess.isFinished()){
                 finished=false;
             }
         });
@@ -10821,26 +10823,26 @@ AnimationMgr.prototype = {
     },
 
     /**
-     * Creat animator for a target, whose props can be animated.
+     * Creat animationProcess for a target, whose props can be animated.
      *
      * @param  {Object} target
      * @param  {Object} options
      * @param  {boolean} [options.loop=false] Whether loop animation.
      * @param  {Function} [options.getter=null] Get value from target.
      * @param  {Function} [options.setter=null] Set value to target.
-     * @return {module:zrender/animation/AnimationMgr~Animator}
+     * @return {module:zrender/animation/AnimationMgr~AnimationProcess}
      */
     // TODO Gap
     animate: function (target, options) {
         options = options || {};
-        var animator = new Animator(
+        var animationProcess = new AnimationProcess(
             target,
             options.loop,
             options.getter,
             options.setter
         );
-        this.addAnimator(animator);
-        return animator;
+        this.addAnimationProcess(animationProcess);
+        return animationProcess;
     }
 };
 

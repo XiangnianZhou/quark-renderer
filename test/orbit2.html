@@ -26,7 +26,7 @@
             });
 
             zr.add(circleShape);
-            var animator = circleShape.animate('', true);
+            var ap = circleShape.animate('', true);
 
             var points = [];
             var point = [
@@ -40,13 +40,13 @@
                     Math.random() * zr.getWidth(),
                     Math.random() * zr.getHeight()
                 ];
-                animator.when(j * 2000, {
+                ap.when(j * 2000, {
                     position : point
                 });
                 points.push(point);
             }
 
-            animator.start('spline');
+            ap.start('spline');
         }
     </script>
 </body>

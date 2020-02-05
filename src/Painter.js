@@ -3,7 +3,7 @@
  * @see 基于 SVG 接口的 Painter 类在 svg 目录下
  * @see 基于 VML 接口的 Painter 类在 vml 目录下
  */
-import requestAnimationFrame from './animation/requestAnimationFrame';
+import requestAnimationFrame from './animation/utils/requestAnimationFrame';
 import {devicePixelRatio} from './config';
 import * as util from './core/dataStructureUtil';
 import BoundingRect from './core/BoundingRect';

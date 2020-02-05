@@ -15,12 +15,12 @@
  *
  */
 
-import easingFuncs from './easing';
+import easingFuncs from './utils/easing';
 import * as colorUtil from '../core/colorUtil';
 import * as dataUtil from '../core/dataStructureUtil';
 
-function Clip(animator, easing, oneTrackDone, keyframes, propName, forceAnimate) {
-    let options=this._calculateParams(animator, easing, oneTrackDone, keyframes, propName, forceAnimate);
+function Clip(animationProcess, easing, oneTrackDone, keyframes, propName, forceAnimate) {
+    let options=this._calculateParams(animationProcess, easing, oneTrackDone, keyframes, propName, forceAnimate);
     //如果传入的参数不正确，则无法构造实例
     if(!options){
         return null;
@@ -109,16 +109,16 @@ Clip.prototype = {
 
     /**
      * 创建片段
-     * @param {*} animator 
+     * @param {*} animationProcess 
      * @param {*} easing 
      * @param {*} oneTrackDone 
      * @param {*} keyframes 
      * @param {*} propName 
      * @param {*} forceAnimate 
      */
-    _calculateParams:function(animator, easing, oneTrackDone, keyframes, propName, forceAnimate) {
-        let getter = animator._getter;
-        let setter = animator._setter;
+    _calculateParams:function(animationProcess, easing, oneTrackDone, keyframes, propName, forceAnimate) {
+        let getter = animationProcess._getter;
+        let setter = animationProcess._setter;
         let useSpline = easing === 'spline';
 
         let kfLength = keyframes.length;
@@ -184,7 +184,7 @@ Clip.prototype = {
                 }
             }
         }
-        isValueArray && dataUtil.fillArr(getter(animator._target, propName), lastValue, arrDim);
+        isValueArray && dataUtil.fillArr(getter(animationProcess._target, propName), lastValue, arrDim);
 
         // Cache the key of last frame to speed up when
         // animation playback is sequency
@@ -299,10 +299,10 @@ Clip.prototype = {
         };
         
         let options={
-            target: animator._target,
+            target: animationProcess._target,
             lifeTime: trackMaxTime,
-            loop: animator._loop,
-            delay: animator._delay,
+            loop: animationProcess._loop,
+            delay: animationProcess._delay,
             onframe: onframe,
             ondestroy: oneTrackDone,
             easing: (easing && easing !== 'spline')?easing:'Linear'
