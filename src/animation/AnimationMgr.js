@@ -1,5 +1,8 @@
 /**
- * 动画主类, 调度和管理所有动画控制器
+ * Animation manager, global singleton, controls all the animation process.
+ * Each ZRender instance has a AnimationMgr instance.
+ * 
+ * 动画管理器，全局单例，控制和调度所有动画过程。
  * 每个 zrender 实例中会持有一个 AnimationMgr 实例。
  * 
  * @module zrender/animation/AnimationMgr
