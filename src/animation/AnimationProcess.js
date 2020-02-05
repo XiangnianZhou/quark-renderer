@@ -29,6 +29,10 @@ var AnimationProcess = function (target, loop, getter, setter) {
     this._doneList = [];
     this._onframeList = [];
     this._clipList = [];
+
+    this._pausedTime;
+    this._pauseStart;
+    this._paused = false;
 };
 
 AnimationProcess.prototype = {
@@ -83,24 +87,6 @@ AnimationProcess.prototype = {
     during: function (callback) {
         this._onframeList.push(callback);
         return this;
-    },
-
-    pause: function () {
-        for (var i = 0; i < this._clipList.length; i++) {
-            this._clipList[i].pause();
-        }
-        this._paused = true;
-    },
-
-    resume: function () {
-        for (var i = 0; i < this._clipList.length; i++) {
-            this._clipList[i].resume();
-        }
-        this._paused = false;
-    },
-
-    isPaused: function () {
-        return !!this._paused;
     },
 
     _doneCallback: function () {
@@ -187,6 +173,45 @@ AnimationProcess.prototype = {
             }
         }
         this._clipList.length = 0;
+    },
+
+    nextFrame:function(time,delta){
+        var len = this._clipList.length;
+        var deferredEvents = [];
+        var deferredClips = [];
+        for (var i = 0; i < len; i++) {
+            var clip = this._clipList[i];
+            var e = clip.step(time, delta);
+            // Throw out the events need to be called after
+            // stage.update, like destroy
+            if (e) {
+                deferredEvents.push(e);
+                deferredClips.push(clip);
+            }
+        }
+
+        len = deferredEvents.length;
+        for (var i = 0; i < len; i++) {
+            deferredClips[i].fire(deferredEvents[i]);
+        }
+    },
+
+    pause: function () {
+        for (var i = 0; i < this._clipList.length; i++) {
+            this._clipList[i].pause();
+        }
+        this._paused = true;
+    },
+
+    resume: function () {
+        for (var i = 0; i < this._clipList.length; i++) {
+            this._clipList[i].resume();
+        }
+        this._paused = false;
+    },
+
+    isPaused: function () {
+        return !!this._paused;
     },
 
     /**

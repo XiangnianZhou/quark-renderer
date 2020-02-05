@@ -1,18 +1,18 @@
 /**
  * Animation manager, global singleton, controls all the animation process.
- * Each ZRender instance has a AnimationMgr instance.
+ * Each ZRender instance has a GlobalAnimationMgr instance.
  * 
  * 动画管理器，全局单例，控制和调度所有动画过程。
- * 每个 zrender 实例中会持有一个 AnimationMgr 实例。
+ * 每个 zrender 实例中会持有一个 GlobalAnimationMgr 实例。
  * 
- * @module zrender/animation/AnimationMgr
+ * @module zrender/animation/GlobalAnimationMgr
  * @author pissang(https://github.com/pissang)
  */
 // TODO Additive animation
 // http://iosoteric.com/additive-animations-animatewithduration-in-ios-8/
 // https://developer.apple.com/videos/wwdc2014/#236
 
-import * as util from '../core/dataStructureUtil';
+import * as dataUtil from '../core/dataStructureUtil';
 import {Dispatcher} from '../core/eventUtil';
 import requestAnimationFrame from './utils/requestAnimationFrame';
 import AnimationProcess from './AnimationProcess';
@@ -23,13 +23,13 @@ import AnimationProcess from './AnimationProcess';
  */
 
 /**
- * @alias module:zrender/animation/AnimationMgr
+ * @alias module:zrender/animation/GlobalAnimationMgr
  * @constructor
  * @param {Object} [options]
  * @param {Function} [options.onframe]
  * @param {IZRenderStage} [options.stage]
  * @example
- *     var animation = new AnimationMgr();
+ *     var animation = new GlobalAnimationMgr();
  *     var obj = {
  *         x: 100,
  *         y: 100
@@ -45,7 +45,7 @@ import AnimationProcess from './AnimationProcess';
  *         })
  *         .start('spline');
  */
-var AnimationMgr = function (options) {
+function GlobalAnimationMgr(options) {
     options = options || {};
     this.stage = options.stage || {};
     this.onframe = options.onframe || function () {};
@@ -59,9 +59,9 @@ var AnimationMgr = function (options) {
     Dispatcher.call(this);
 };
 
-AnimationMgr.prototype = {
+GlobalAnimationMgr.prototype = {
 
-    constructor: AnimationMgr,
+    constructor: GlobalAnimationMgr,
 
     /**
      * 添加 animationProcess
@@ -84,39 +84,13 @@ AnimationMgr.prototype = {
         }
     },
 
-    _getAllClips:function(){
-        let clips=[];
-        this._animationProcessList.forEach((animationProcess,index)=>{
-            let temp=animationProcess.getClips();
-            if(temp&&temp.length){
-                clips=[...clips,...temp];
-            }
-        });
-        return clips;
-    },
-
     _update: function () {
         var time = new Date().getTime() - this._pausedTime;
         var delta = time - this._time;
-        var clips = this._getAllClips();
-        var len = clips.length;
-        var deferredEvents = [];
-        var deferredClips = [];
-        for (var i = 0; i < len; i++) {
-            var clip = clips[i];
-            var e = clip.step(time, delta);
-            // Throw out the events need to be called after
-            // stage.update, like destroy
-            if (e) {
-                deferredEvents.push(e);
-                deferredClips.push(clip);
-            }
-        }
 
-        len = deferredEvents.length;
-        for (var i = 0; i < len; i++) {
-            deferredClips[i].fire(deferredEvents[i]);
-        }
+        this._animationProcessList.forEach((ap,index)=>{
+            ap.nextFrame(time,delta);
+        });
 
         this._time = time;
 
@@ -128,30 +102,28 @@ AnimationMgr.prototype = {
         this.trigger('frame', delta);//不断触发 frame 事件
 
         if (this.stage.update) {
-            //在 zrender.js 中，创建 AnimationMgr 对象时绑定了 zrender.flush 方法，flush 方法会根据不同的条件刷新画布
+            //在 zrender.js 中，创建 GlobalAnimationMgr 对象时绑定了 zrender.flush 方法，flush 方法会根据不同的条件刷新画布
             this.stage.update(); 
         }
     },
 
+    /**
+     * TODO:需要确认在大量节点下的动画性能问题，比如 100 万个图元同时进行动画
+     * 这里开始利用requestAnimationFrame递归执行
+     * 如果这里的 _update() 不能在16ms的时间内完成一轮刷新，就会出现明显的卡顿。
+     * 按照 W3C 的推荐标准 60fps，这里的 step 函数大约 16ms 被调用一次
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+     */
     _startLoop: function () {
         var self = this;
-
         this._running = true;
-
-        //按照 W3C 的推荐标准 60fps，这里的 step 函数大约 16ms 被调用一次
-        //@see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
         function step() {
             if (self._running) {
-
-                //这里开始递归执行，TODO:需要确认在大量节点下的性能问题。
-                //如果这里的 _update() 不能在16ms的时间内完成一轮刷新，就会出现明显的卡顿。
                 requestAnimationFrame(step);
-
                 !self._paused && self._update();
             }
         }
-
-        requestAnimationFrame(step);//触发第一次动作
+        requestAnimationFrame(step);
     },
 
     /**
@@ -194,7 +166,7 @@ AnimationMgr.prototype = {
      * Clear animation.
      */
     clear: function () {
-        this._animationProcessList=[];
+        this._animationProcessList.length=0;
     },
 
     /**
@@ -218,7 +190,7 @@ AnimationMgr.prototype = {
      * @param  {boolean} [options.loop=false] Whether loop animation.
      * @param  {Function} [options.getter=null] Get value from target.
      * @param  {Function} [options.setter=null] Set value to target.
-     * @return {module:zrender/animation/AnimationMgr~AnimationProcess}
+     * @return {module:zrender/animation/GlobalAnimationMgr~AnimationProcess}
      */
     // TODO Gap
     animate: function (target, options) {
@@ -234,5 +206,5 @@ AnimationMgr.prototype = {
     }
 };
 
-util.mixin(AnimationMgr, Dispatcher);
-export default AnimationMgr;
+dataUtil.mixin(GlobalAnimationMgr, Dispatcher);
+export default GlobalAnimationMgr;

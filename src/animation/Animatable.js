@@ -82,7 +82,7 @@ Animatable.prototype = {
 
         // If animate after added to the zrender
         if (zr) {
-            zr.animationMgr.addAnimationProcess(animationProcess);
+            zr.globalAnimationMgr.addAnimationProcess(animationProcess);
         }
 
         return animationProcess;
@@ -93,13 +93,10 @@ Animatable.prototype = {
      * @param {boolean} forwardToLast If move to last frame before stop
      */
     stopAnimation: function (forwardToLast) {
-        var animationProcessList = this.animationProcessList;
-        var len = animationProcessList.length;
-        for (var i = 0; i < len; i++) {
-            animationProcessList[i].stop(forwardToLast);
-        }
-        animationProcessList.length = 0;
-
+        this.animationProcessList.forEach((ap,index)=>{
+            ap.stop(forwardToLast);
+        });
+        this.animationProcessList.length=0;
         return this;
     },
 

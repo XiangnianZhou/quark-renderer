@@ -38,7 +38,7 @@
         });
         zr.add(countText);
 
-        zr.animationMgr.on('frame', function ()  {
+        zr.globalAnimationMgr.on('frame', function ()  {
             for (var i = 0; i < 2000; i++) {
                 var circleShape = new zrender.Circle({
                     shape: {

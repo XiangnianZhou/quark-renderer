@@ -13,7 +13,7 @@ import * as zrUtil from './core/dataStructureUtil';
 import Handler from './event/Handler';
 import Storage from './Storage';
 import Painter from './Painter';
-import AnimationMgr from './animation/AnimationMgr';
+import GlobalAnimationMgr from './animation/GlobalAnimationMgr';
 import HandlerDomProxy from './event/HandlerDomProxy';
 
 /**
@@ -143,7 +143,7 @@ var ZRender = function (id, dom, opts) {
     this.handler = new Handler(storage, painter, handerProxy, painter.root);
 
     /**
-     * 利用 AnimationMgr 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
+     * 利用 GlobalAnimationMgr 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
      * FROM MDN：
      * The window.requestAnimationFrame() method tells the browser that you wish 
      * to perform an animation and requests that the browser calls a specified 
@@ -156,14 +156,14 @@ var ZRender = function (id, dom, opts) {
      * 如果在 16ms 的时间内无法渲染完一帧画面，会出现卡顿。也就是说，ZRender 引擎在同一张 canvas 上
      * 能够渲染的图形元素数量有上限。本机在 Chrome 浏览器中 Benchmark 的结果大约为 100 万个矩形会出现
      * 明显的卡顿。
-     * @type {module:zrender/animation/AnimationMgr}
+     * @type {module:zrender/animation/GlobalAnimationMgr}
      */
-    this.animationMgr = new AnimationMgr({
+    this.globalAnimationMgr = new GlobalAnimationMgr({
         stage: {
             update: zrUtil.bind(this.flush, this)
         }
     });
-    this.animationMgr.start();
+    this.globalAnimationMgr.start();
 
     /**
      * @type {boolean}
@@ -372,7 +372,7 @@ ZRender.prototype = {
      * Stop and clear all animation immediately
      */
     clearAnimation: function () {
-        this.animationMgr.clear();
+        this.globalAnimationMgr.clear();
     },
 
     /**
@@ -462,14 +462,14 @@ ZRender.prototype = {
      * Dispose self.
      */
     dispose: function () {
-        this.animationMgr.stop();
+        this.globalAnimationMgr.stop();
 
         this.clear();
         this.storage.dispose();
         this.painter.dispose();
         this.handler.dispose();
 
-        this.animationMgr =
+        this.globalAnimationMgr =
         this.storage =
         this.painter =
         this.handler = null;

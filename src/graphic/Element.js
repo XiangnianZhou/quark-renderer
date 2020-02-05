@@ -234,7 +234,7 @@ Element.prototype = {
         var animationProcessList = this.animationProcessList;
         if (animationProcessList) {
             for (var i = 0; i < animationProcessList.length; i++) {
-                zr.animationMgr.addAnimationProcess(animationProcessList[i]);
+                zr.globalAnimationMgr.addAnimationProcess(animationProcessList[i]);
             }
         }
 
@@ -254,7 +254,7 @@ Element.prototype = {
         var animationProcessList = this.animationProcessList;
         if (animationProcessList) {
             for (var i = 0; i < animationProcessList.length; i++) {
-                zr.animationMgr.removeAnimationProcess(animationProcessList[i]);
+                zr.globalAnimationMgr.removeAnimationProcess(animationProcessList[i]);
             }
         }
 

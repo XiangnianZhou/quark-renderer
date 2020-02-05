@@ -4671,6 +4671,10 @@ var AnimationProcess = function (target, loop, getter, setter) {
     this._doneList = [];
     this._onframeList = [];
     this._clipList = [];
+
+    this._pausedTime;
+    this._pauseStart;
+    this._paused = false;
 };
 
 AnimationProcess.prototype = {
@@ -4725,24 +4729,6 @@ AnimationProcess.prototype = {
     during: function (callback) {
         this._onframeList.push(callback);
         return this;
-    },
-
-    pause: function () {
-        for (var i = 0; i < this._clipList.length; i++) {
-            this._clipList[i].pause();
-        }
-        this._paused = true;
-    },
-
-    resume: function () {
-        for (var i = 0; i < this._clipList.length; i++) {
-            this._clipList[i].resume();
-        }
-        this._paused = false;
-    },
-
-    isPaused: function () {
-        return !!this._paused;
     },
 
     _doneCallback: function () {
@@ -4829,6 +4815,45 @@ AnimationProcess.prototype = {
             }
         }
         this._clipList.length = 0;
+    },
+
+    nextFrame:function(time,delta){
+        var len = this._clipList.length;
+        var deferredEvents = [];
+        var deferredClips = [];
+        for (var i = 0; i < len; i++) {
+            var clip = this._clipList[i];
+            var e = clip.step(time, delta);
+            // Throw out the events need to be called after
+            // stage.update, like destroy
+            if (e) {
+                deferredEvents.push(e);
+                deferredClips.push(clip);
+            }
+        }
+
+        len = deferredEvents.length;
+        for (var i = 0; i < len; i++) {
+            deferredClips[i].fire(deferredEvents[i]);
+        }
+    },
+
+    pause: function () {
+        for (var i = 0; i < this._clipList.length; i++) {
+            this._clipList[i].pause();
+        }
+        this._paused = true;
+    },
+
+    resume: function () {
+        for (var i = 0; i < this._clipList.length; i++) {
+            this._clipList[i].resume();
+        }
+        this._paused = false;
+    },
+
+    isPaused: function () {
+        return !!this._paused;
     },
 
     /**
@@ -4942,7 +4967,7 @@ Animatable.prototype = {
 
         // If animate after added to the zrender
         if (zr) {
-            zr.animationMgr.addAnimationProcess(animationProcess);
+            zr.globalAnimationMgr.addAnimationProcess(animationProcess);
         }
 
         return animationProcess;
@@ -4953,13 +4978,10 @@ Animatable.prototype = {
      * @param {boolean} forwardToLast If move to last frame before stop
      */
     stopAnimation: function (forwardToLast) {
-        var animationProcessList = this.animationProcessList;
-        var len = animationProcessList.length;
-        for (var i = 0; i < len; i++) {
-            animationProcessList[i].stop(forwardToLast);
-        }
-        animationProcessList.length = 0;
-
+        this.animationProcessList.forEach((ap,index)=>{
+            ap.stop(forwardToLast);
+        });
+        this.animationProcessList.length=0;
         return this;
     },
 
@@ -5376,7 +5398,7 @@ Element.prototype = {
         var animationProcessList = this.animationProcessList;
         if (animationProcessList) {
             for (var i = 0; i < animationProcessList.length; i++) {
-                zr.animationMgr.addAnimationProcess(animationProcessList[i]);
+                zr.globalAnimationMgr.addAnimationProcess(animationProcessList[i]);
             }
         }
 
@@ -5396,7 +5418,7 @@ Element.prototype = {
         var animationProcessList = this.animationProcessList;
         if (animationProcessList) {
             for (var i = 0; i < animationProcessList.length; i++) {
-                zr.animationMgr.removeAnimationProcess(animationProcessList[i]);
+                zr.globalAnimationMgr.removeAnimationProcess(animationProcessList[i]);
             }
         }
 
@@ -10617,12 +10639,12 @@ Painter.prototype = {
 
 /**
  * Animation manager, global singleton, controls all the animation process.
- * Each ZRender instance has a AnimationMgr instance.
+ * Each ZRender instance has a GlobalAnimationMgr instance.
  * 
  * 动画管理器，全局单例，控制和调度所有动画过程。
- * 每个 zrender 实例中会持有一个 AnimationMgr 实例。
+ * 每个 zrender 实例中会持有一个 GlobalAnimationMgr 实例。
  * 
- * @module zrender/animation/AnimationMgr
+ * @module zrender/animation/GlobalAnimationMgr
  * @author pissang(https://github.com/pissang)
  */
 // TODO Additive animation
@@ -10635,13 +10657,13 @@ Painter.prototype = {
  */
 
 /**
- * @alias module:zrender/animation/AnimationMgr
+ * @alias module:zrender/animation/GlobalAnimationMgr
  * @constructor
  * @param {Object} [options]
  * @param {Function} [options.onframe]
  * @param {IZRenderStage} [options.stage]
  * @example
- *     var animation = new AnimationMgr();
+ *     var animation = new GlobalAnimationMgr();
  *     var obj = {
  *         x: 100,
  *         y: 100
@@ -10657,7 +10679,7 @@ Painter.prototype = {
  *         })
  *         .start('spline');
  */
-var AnimationMgr = function (options) {
+function GlobalAnimationMgr(options) {
     options = options || {};
     this.stage = options.stage || {};
     this.onframe = options.onframe || function () {};
@@ -10669,11 +10691,11 @@ var AnimationMgr = function (options) {
     this._pauseStart;
     this._paused = false;
     Eventful.call(this);
-};
+}
 
-AnimationMgr.prototype = {
+GlobalAnimationMgr.prototype = {
 
-    constructor: AnimationMgr,
+    constructor: GlobalAnimationMgr,
 
     /**
      * 添加 animationProcess
@@ -10696,39 +10718,13 @@ AnimationMgr.prototype = {
         }
     },
 
-    _getAllClips:function(){
-        let clips=[];
-        this._animationProcessList.forEach((animationProcess,index)=>{
-            let temp=animationProcess.getClips();
-            if(temp&&temp.length){
-                clips=[...clips,...temp];
-            }
-        });
-        return clips;
-    },
-
     _update: function () {
         var time = new Date().getTime() - this._pausedTime;
         var delta = time - this._time;
-        var clips = this._getAllClips();
-        var len = clips.length;
-        var deferredEvents = [];
-        var deferredClips = [];
-        for (var i = 0; i < len; i++) {
-            var clip = clips[i];
-            var e = clip.step(time, delta);
-            // Throw out the events need to be called after
-            // stage.update, like destroy
-            if (e) {
-                deferredEvents.push(e);
-                deferredClips.push(clip);
-            }
-        }
 
-        len = deferredEvents.length;
-        for (var i = 0; i < len; i++) {
-            deferredClips[i].fire(deferredEvents[i]);
-        }
+        this._animationProcessList.forEach((ap,index)=>{
+            ap.nextFrame(time,delta);
+        });
 
         this._time = time;
 
@@ -10740,30 +10736,28 @@ AnimationMgr.prototype = {
         this.trigger('frame', delta);//不断触发 frame 事件
 
         if (this.stage.update) {
-            //在 zrender.js 中，创建 AnimationMgr 对象时绑定了 zrender.flush 方法，flush 方法会根据不同的条件刷新画布
+            //在 zrender.js 中，创建 GlobalAnimationMgr 对象时绑定了 zrender.flush 方法，flush 方法会根据不同的条件刷新画布
             this.stage.update(); 
         }
     },
 
+    /**
+     * TODO:需要确认在大量节点下的动画性能问题，比如 100 万个图元同时进行动画
+     * 这里开始利用requestAnimationFrame递归执行
+     * 如果这里的 _update() 不能在16ms的时间内完成一轮刷新，就会出现明显的卡顿。
+     * 按照 W3C 的推荐标准 60fps，这里的 step 函数大约 16ms 被调用一次
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+     */
     _startLoop: function () {
         var self = this;
-
         this._running = true;
-
-        //按照 W3C 的推荐标准 60fps，这里的 step 函数大约 16ms 被调用一次
-        //@see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
         function step() {
             if (self._running) {
-
-                //这里开始递归执行，TODO:需要确认在大量节点下的性能问题。
-                //如果这里的 _update() 不能在16ms的时间内完成一轮刷新，就会出现明显的卡顿。
                 requestAnimationFrame(step);
-
                 !self._paused && self._update();
             }
         }
-
-        requestAnimationFrame(step);//触发第一次动作
+        requestAnimationFrame(step);
     },
 
     /**
@@ -10806,7 +10800,7 @@ AnimationMgr.prototype = {
      * Clear animation.
      */
     clear: function () {
-        this._animationProcessList=[];
+        this._animationProcessList.length=0;
     },
 
     /**
@@ -10830,7 +10824,7 @@ AnimationMgr.prototype = {
      * @param  {boolean} [options.loop=false] Whether loop animation.
      * @param  {Function} [options.getter=null] Get value from target.
      * @param  {Function} [options.setter=null] Set value to target.
-     * @return {module:zrender/animation/AnimationMgr~AnimationProcess}
+     * @return {module:zrender/animation/GlobalAnimationMgr~AnimationProcess}
      */
     // TODO Gap
     animate: function (target, options) {
@@ -10846,7 +10840,7 @@ AnimationMgr.prototype = {
     }
 };
 
-mixin(AnimationMgr, Eventful);
+mixin(GlobalAnimationMgr, Eventful);
 
 /**
  * HandlerProxy 的主要功能是：把原生的 DOM 事件代理（转发）到 ZRender 实例上，
@@ -11505,7 +11499,7 @@ var ZRender = function (id, dom, opts) {
     this.handler = new Handler(storage, painter, handerProxy, painter.root);
 
     /**
-     * 利用 AnimationMgr 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
+     * 利用 GlobalAnimationMgr 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
      * FROM MDN：
      * The window.requestAnimationFrame() method tells the browser that you wish 
      * to perform an animation and requests that the browser calls a specified 
@@ -11518,14 +11512,14 @@ var ZRender = function (id, dom, opts) {
      * 如果在 16ms 的时间内无法渲染完一帧画面，会出现卡顿。也就是说，ZRender 引擎在同一张 canvas 上
      * 能够渲染的图形元素数量有上限。本机在 Chrome 浏览器中 Benchmark 的结果大约为 100 万个矩形会出现
      * 明显的卡顿。
-     * @type {module:zrender/animation/AnimationMgr}
+     * @type {module:zrender/animation/GlobalAnimationMgr}
      */
-    this.animationMgr = new AnimationMgr({
+    this.globalAnimationMgr = new GlobalAnimationMgr({
         stage: {
             update: bind(this.flush, this)
         }
     });
-    this.animationMgr.start();
+    this.globalAnimationMgr.start();
 
     /**
      * @type {boolean}
@@ -11734,7 +11728,7 @@ ZRender.prototype = {
      * Stop and clear all animation immediately
      */
     clearAnimation: function () {
-        this.animationMgr.clear();
+        this.globalAnimationMgr.clear();
     },
 
     /**
@@ -11824,14 +11818,14 @@ ZRender.prototype = {
      * Dispose self.
      */
     dispose: function () {
-        this.animationMgr.stop();
+        this.globalAnimationMgr.stop();
 
         this.clear();
         this.storage.dispose();
         this.painter.dispose();
         this.handler.dispose();
 
-        this.animationMgr =
+        this.globalAnimationMgr =
         this.storage =
         this.painter =
         this.handler = null;
