@@ -132,8 +132,7 @@ Animator.prototype = {
                 self._doneCallback();
             }
         };
-
-        var lastClip;
+        
         //为 Element 上的每一种属性创建一个 Clip 
         [...this._tracks.keys()].forEach((propName,index)=>{
             if (!this._tracks.get(propName)) {
@@ -149,12 +148,11 @@ Animator.prototype = {
             );
             if (clip) {
                 this._clipList.push(clip);
-                clipCount++;
-                lastClip = clip;
             }
         });
 
         // Add during callback on the last clip
+        let lastClip=this._clipList[this._clipList.length-1];
         if (lastClip&&dataUtil.isFunction(lastClip.onframe)) {
             var oldOnFrame = lastClip.onframe;
             lastClip.onframe = function (target, percent) {
@@ -168,7 +166,7 @@ Animator.prototype = {
         // This optimization will help the case that in the upper application
         // the view may be refreshed frequently, where animation will be
         // called repeatly but nothing changed.
-        if (!clipCount) {
+        if (!this._clipList.length) {
             this._doneCallback();
         }
         return this;
