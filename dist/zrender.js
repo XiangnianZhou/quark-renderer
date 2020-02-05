@@ -4453,8 +4453,8 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
     var setter = animator._setter;
     var useSpline = easing === 'spline';
 
-    var trackLen = keyframes.length;
-    if (!trackLen) {
+    var kfLength = keyframes.length;
+    if (!kfLength) {
         return;
     }
     
@@ -4467,20 +4467,19 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
     // For vertices morphing
     var arrDim = isValueArray ? getArrayDim(keyframes) : 0;
 
-    var trackMaxTime;
     // Sort keyframe as ascending
     keyframes.sort(function (a, b) {
         return a.time - b.time;
     });
 
-    trackMaxTime = keyframes[trackLen - 1].time;
-    // Percents of each keyframe
+    let trackMaxTime = keyframes[kfLength - 1].time;
+    // Percentage of each keyframe
     var kfPercents = [];
     // Value of each keyframe
     var kfValues = [];
     var prevValue = keyframes[0].value;
     var isAllValueEqual = true;
-    for (var i = 0; i < trackLen; i++) {
+    for (var i = 0; i < kfLength; i++) {
         kfPercents.push(keyframes[i].time / trackMaxTime);
         // Assume value is a color when it is a string
         var value = keyframes[i].value;
@@ -4498,8 +4497,7 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
             if (colorArray) {
                 value = colorArray;
                 isValueColor = true;
-            }
-            else {
+            }else {
                 isValueString = true;
             }
         }
@@ -4509,13 +4507,12 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
         return;
     }
 
-    var lastValue = kfValues[trackLen - 1];
+    var lastValue = kfValues[kfLength - 1];
     // Polyfill array and NaN value
-    for (var i = 0; i < trackLen - 1; i++) {
+    for (var i = 0; i < kfLength - 1; i++) {
         if (isValueArray) {
             fillArr(kfValues[i], lastValue, arrDim);
-        }
-        else {
+        }else {
             if (isNaN(kfValues[i]) && !isNaN(lastValue) && !isValueString && !isValueColor) {
                 kfValues[i] = lastValue;
             }
@@ -4546,26 +4543,24 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
         // In the easing function like elasticOut, percent may less than 0
         if (percent < 0) {
             frame = 0;
-        }
-        else if (percent < lastFramePercent) {
+        }else if (percent < lastFramePercent) {
             // Start from next key
             // PENDING start from lastFrame ?
-            start = Math.min(lastFrame + 1, trackLen - 1);
+            start = Math.min(lastFrame + 1, kfLength - 1);
             for (frame = start; frame >= 0; frame--) {
                 if (kfPercents[frame] <= percent) {
                     break;
                 }
             }
             // PENDING really need to do this ?
-            frame = Math.min(frame, trackLen - 2);
-        }
-        else {
-            for (frame = lastFrame; frame < trackLen; frame++) {
+            frame = Math.min(frame, kfLength - 2);
+        }else {
+            for (frame = lastFrame; frame < kfLength; frame++) {
                 if (kfPercents[frame] > percent) {
                     break;
                 }
             }
-            frame = Math.min(frame - 1, trackLen - 2);
+            frame = Math.min(frame - 1, kfLength - 2);
         }
         lastFrame = frame;
         lastFramePercent = percent;
@@ -4573,23 +4568,22 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
         var range = (kfPercents[frame + 1] - kfPercents[frame]);
         if (range === 0) {
             return;
-        }
-        else {
+        }else {
             w = (percent - kfPercents[frame]) / range;
         }
+        
         if (useSpline) {
             p1 = kfValues[frame];
             p0 = kfValues[frame === 0 ? frame : frame - 1];
-            p2 = kfValues[frame > trackLen - 2 ? trackLen - 1 : frame + 1];
-            p3 = kfValues[frame > trackLen - 3 ? trackLen - 1 : frame + 2];
+            p2 = kfValues[frame > kfLength - 2 ? kfLength - 1 : frame + 1];
+            p3 = kfValues[frame > kfLength - 3 ? kfLength - 1 : frame + 2];
             if (isValueArray) {
                 catmullRomInterpolateArray(
                     p0, p1, p2, p3, w, w * w, w * w * w,
                     getter(target, propName),
                     arrDim
                 );
-            }
-            else {
+            }else {
                 var value;
                 if (isValueColor) {
                     value = catmullRomInterpolateArray(
@@ -4597,12 +4591,10 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
                         rgba, 1
                     );
                     value = rgba2String(rgba);
-                }
-                else if (isValueString) {
+                }else if (isValueString) {
                     // String is step(0.5)
                     return interpolateString(p1, p2, w);
-                }
-                else {
+                }else {
                     value = catmullRomInterpolate(
                         p0, p1, p2, p3, w, w * w, w * w * w
                     );
@@ -4613,16 +4605,14 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
                     value
                 );
             }
-        }
-        else {
+        }else {
             if (isValueArray) {
                 interpolateArray(
                     kfValues[frame], kfValues[frame + 1], w,
                     getter(target, propName),
                     arrDim
                 );
-            }
-            else {
+            }else {
                 var value;
                 if (isValueColor) {
                     interpolateArray(
@@ -4630,12 +4620,10 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
                         rgba, 1
                     );
                     value = rgba2String(rgba);
-                }
-                else if (isValueString) {
+                }else if (isValueString) {
                     // String is step(0.5)
                     return interpolateString(kfValues[frame], kfValues[frame + 1], w);
-                }
-                else {
+                }else {
                     value = interpolateNumber(kfValues[frame], kfValues[frame + 1], w);
                 }
                 setter(
@@ -4653,12 +4641,9 @@ function createClip(animator, easing, oneTrackDone, keyframes, propName, forceAn
         loop: animator._loop,
         delay: animator._delay,
         onframe: onframe,
-        ondestroy: oneTrackDone
+        ondestroy: oneTrackDone,
+        easing: (easing && easing !== 'spline')?easing:'Linear'
     });
-
-    if (easing && easing !== 'spline') {
-        clip.easing = easing;
-    }
 
     return clip;
 }
@@ -4791,11 +4776,11 @@ Animator.prototype = {
         };
 
         var lastClip;
+        //为 Element 上的每一种属性创建一个 Clip 
         [...this._tracks.keys()].forEach((propName,index)=>{
             if (!this._tracks.get(propName)) {
                 return;
             }
-            //为 Element 上的每一种属性创建一个 Clip 
             var clip = createClip(
                 this, 
                 easing, 

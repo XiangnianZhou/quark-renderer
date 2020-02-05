@@ -2,13 +2,7 @@
  * 动画工具类，在 Element 类中 mixin 此工具类提供的功能，为图元提供动画功能。
  */
 import Animator from '../animation/Animator';
-import {
-    isString,
-    isFunction,
-    isObject,
-    isArrayLike,
-    indexOf
-} from '../core/dataStructureUtil';
+import * as dataUtil from '../core/dataStructureUtil';
 
 /**
  * @alias modue:zrender/animation/Animatable
@@ -81,7 +75,7 @@ Animatable.prototype = {
         })
         .done(function () {
             // FIXME Animator will not be removed if use `Animator#stop` to stop animation
-            animators.splice(indexOf(animators, animator), 1);
+            animators.splice(dataUtil.indexOf(animators, animator), 1);
         });
 
         animators.push(animator);
@@ -154,24 +148,24 @@ Animatable.prototype = {
 
 function animateTo(animatable, target, time, delay, easing, callback, forceAnimate, reverse) {
     // animateTo(target, time, easing, callback);
-    if (isString(delay)) {
+    if (dataUtil.isString(delay)) {
         callback = easing;
         easing = delay;
         delay = 0;
     }
     // animateTo(target, time, delay, callback);
-    else if (isFunction(easing)) {
+    else if (dataUtil.isFunction(easing)) {
         callback = easing;
         easing = 'linear';
         delay = 0;
     }
     // animateTo(target, time, callback);
-    else if (isFunction(delay)) {
+    else if (dataUtil.isFunction(delay)) {
         callback = delay;
         delay = 0;
     }
     // animateTo(target, callback)
-    else if (isFunction(time)) {
+    else if (dataUtil.isFunction(time)) {
         callback = time;
         time = 500;
     }
@@ -243,7 +237,7 @@ function animateToShallow(animatable, path, source, target, time, delay, reverse
         }
 
         if (source[name] != null) {
-            if (isObject(target[name]) && !isArrayLike(target[name])) {
+            if (dataUtil.isObject(target[name]) && !dataUtil.isArrayLike(target[name])) {
                 animateToShallow(
                     animatable,
                     path ? path + '.' + name : name,
