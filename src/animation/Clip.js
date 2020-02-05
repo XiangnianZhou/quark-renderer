@@ -13,238 +13,18 @@
  * @config ondestroy(optional)
  * @config onrestart(optional)
  *
- * TODO pause
  */
 
 import easingFuncs from './easing';
 import * as colorUtil from '../core/colorUtil';
 import * as dataUtil from '../core/dataStructureUtil';
 
-/**
- * 创建片段
- * @param {*} animator 
- * @param {*} easing 
- * @param {*} oneTrackDone 
- * @param {*} keyframes 
- * @param {*} propName 
- * @param {*} forceAnimate 
- */
-function calculateParams(animator, easing, oneTrackDone, keyframes, propName, forceAnimate) {
-    var getter = animator._getter;
-    var setter = animator._setter;
-    var useSpline = easing === 'spline';
-
-    var kfLength = keyframes.length;
-    if (!kfLength) {
-        return;
-    }
-    
-    // Guess data type
-    var firstVal = keyframes[0].value;
-    var isValueArray = dataUtil.isArrayLike(firstVal);
-    var isValueColor = false;
-    var isValueString = false;
-
-    // For vertices morphing
-    var arrDim = isValueArray ? dataUtil.getArrayDim(keyframes) : 0;
-
-    // Sort keyframe as ascending
-    keyframes.sort(function (a, b) {
-        return a.time - b.time;
-    });
-
-    let trackMaxTime = keyframes[kfLength - 1].time;
-    // Percentage of each keyframe
-    var kfPercents = [];
-    // Value of each keyframe
-    var kfValues = [];
-    var prevValue = keyframes[0].value;
-    var isAllValueEqual = true;
-    for (var i = 0; i < kfLength; i++) {
-        kfPercents.push(keyframes[i].time / trackMaxTime);
-        // Assume value is a color when it is a string
-        var value = keyframes[i].value;
-
-        // Check if value is equal, deep check if value is array
-        if (!((isValueArray && dataUtil.isArraySame(value, prevValue, arrDim))
-            || (!isValueArray && value === prevValue))) {
-            isAllValueEqual = false;
-        }
-        prevValue = value;
-
-        // Try converting a string to a color array
-        if (typeof value === 'string') {
-            var colorArray = colorUtil.parse(value);
-            if (colorArray) {
-                value = colorArray;
-                isValueColor = true;
-            }else {
-                isValueString = true;
-            }
-        }
-        kfValues.push(value);
-    }
-    if (!forceAnimate && isAllValueEqual) {
-        return;
-    }
-
-    var lastValue = kfValues[kfLength - 1];
-    // Polyfill array and NaN value
-    for (var i = 0; i < kfLength - 1; i++) {
-        if (isValueArray) {
-            dataUtil.fillArr(kfValues[i], lastValue, arrDim);
-        }else {
-            if (isNaN(kfValues[i]) && !isNaN(lastValue) && !isValueString && !isValueColor) {
-                kfValues[i] = lastValue;
-            }
-        }
-    }
-    isValueArray && dataUtil.fillArr(getter(animator._target, propName), lastValue, arrDim);
-
-    // Cache the key of last frame to speed up when
-    // animation playback is sequency
-    var lastFrame = 0;
-    var lastFramePercent = 0;
-    var start;
-    var w;
-    var p0;
-    var p1;
-    var p2;
-    var p3;
-
-    if (isValueColor) {
-        var rgba = [0, 0, 0, 0];
-    }
-
-    var onframe = function (target, percent) {
-        // Find the range keyframes
-        // kf1-----kf2---------current--------kf3
-        // find kf2 and kf3 and do interpolation
-        var frame;
-        // In the easing function like elasticOut, percent may less than 0
-        if (percent < 0) {
-            frame = 0;
-        }else if (percent < lastFramePercent) {
-            // Start from next key
-            // PENDING start from lastFrame ?
-            start = Math.min(lastFrame + 1, kfLength - 1);
-            for (frame = start; frame >= 0; frame--) {
-                if (kfPercents[frame] <= percent) {
-                    break;
-                }
-            }
-            // PENDING really need to do this ?
-            frame = Math.min(frame, kfLength - 2);
-        }else {
-            for (frame = lastFrame; frame < kfLength; frame++) {
-                if (kfPercents[frame] > percent) {
-                    break;
-                }
-            }
-            frame = Math.min(frame - 1, kfLength - 2);
-        }
-        lastFrame = frame;
-        lastFramePercent = percent;
-
-        var range = (kfPercents[frame + 1] - kfPercents[frame]);
-        if (range === 0) {
-            return;
-        }else {
-            w = (percent - kfPercents[frame]) / range;
-        }
-        
-        if (useSpline) {
-            p1 = kfValues[frame];
-            p0 = kfValues[frame === 0 ? frame : frame - 1];
-            p2 = kfValues[frame > kfLength - 2 ? kfLength - 1 : frame + 1];
-            p3 = kfValues[frame > kfLength - 3 ? kfLength - 1 : frame + 2];
-            if (isValueArray) {
-                dataUtil.catmullRomInterpolateArray(
-                    p0, p1, p2, p3, w, w * w, w * w * w,
-                    getter(target, propName),
-                    arrDim
-                );
-            }else {
-                var value;
-                if (isValueColor) {
-                    value = dataUtil.catmullRomInterpolateArray(
-                        p0, p1, p2, p3, w, w * w, w * w * w,
-                        rgba, 1
-                    );
-                    value = dataUtil.rgba2String(rgba);
-                }else if (isValueString) {
-                    // String is step(0.5)
-                    return dataUtil.interpolateString(p1, p2, w);
-                }else {
-                    value = dataUtil.catmullRomInterpolate(
-                        p0, p1, p2, p3, w, w * w, w * w * w
-                    );
-                }
-                setter(
-                    target,
-                    propName,
-                    value
-                );
-            }
-        }else {
-            if (isValueArray) {
-                dataUtil.interpolateArray(
-                    kfValues[frame], kfValues[frame + 1], w,
-                    getter(target, propName),
-                    arrDim
-                );
-            }else {
-                var value;
-                if (isValueColor) {
-                    dataUtil.interpolateArray(
-                        kfValues[frame], kfValues[frame + 1], w,
-                        rgba, 1
-                    );
-                    value = dataUtil.rgba2String(rgba);
-                }else if (isValueString) {
-                    // String is step(0.5)
-                    return dataUtil.interpolateString(kfValues[frame], kfValues[frame + 1], w);
-                }else {
-                    value = dataUtil.interpolateNumber(kfValues[frame], kfValues[frame + 1], w);
-                }
-                setter(
-                    target,
-                    propName,
-                    value
-                );
-            }
-        }
-    };
-
-    // var clip = new Clip({
-    //     target: animator._target,
-    //     lifeTime: trackMaxTime,
-    //     loop: animator._loop,
-    //     delay: animator._delay,
-    //     onframe: onframe,
-    //     ondestroy: oneTrackDone,
-    //     easing: (easing && easing !== 'spline')?easing:'Linear'
-    // });
-
-    // return clip;
-    let options={
-        target: animator._target,
-        lifeTime: trackMaxTime,
-        loop: animator._loop,
-        delay: animator._delay,
-        onframe: onframe,
-        ondestroy: oneTrackDone,
-        easing: (easing && easing !== 'spline')?easing:'Linear'
-    };
-    return options;
-}
-
 function Clip(animator, easing, oneTrackDone, keyframes, propName, forceAnimate) {
-    let options=calculateParams(animator, easing, oneTrackDone, keyframes, propName, forceAnimate);
+    let options=this._calculateParams(animator, easing, oneTrackDone, keyframes, propName, forceAnimate);
     if(!options){
         return null;
     }
-    
+
     this._target = options.target;
     this._lifeTime = options.lifeTime || 1000;
     this._delay = options.delay || 0;
@@ -324,6 +104,214 @@ Clip.prototype = {
 
     resume: function () {
         this._paused = false;
+    },
+
+    /**
+     * 创建片段
+     * @param {*} animator 
+     * @param {*} easing 
+     * @param {*} oneTrackDone 
+     * @param {*} keyframes 
+     * @param {*} propName 
+     * @param {*} forceAnimate 
+     */
+    _calculateParams:function(animator, easing, oneTrackDone, keyframes, propName, forceAnimate) {
+        var getter = animator._getter;
+        var setter = animator._setter;
+        var useSpline = easing === 'spline';
+
+        var kfLength = keyframes.length;
+        if (!kfLength) {
+            return;
+        }
+        
+        // Guess data type
+        var firstVal = keyframes[0].value;
+        var isValueArray = dataUtil.isArrayLike(firstVal);
+        var isValueColor = false;
+        var isValueString = false;
+
+        // For vertices morphing
+        var arrDim = isValueArray ? dataUtil.getArrayDim(keyframes) : 0;
+
+        // Sort keyframe as ascending
+        keyframes.sort(function (a, b) {
+            return a.time - b.time;
+        });
+
+        let trackMaxTime = keyframes[kfLength - 1].time;
+        // Percentage of each keyframe
+        var kfPercents = [];
+        // Value of each keyframe
+        var kfValues = [];
+        var prevValue = keyframes[0].value;
+        var isAllValueEqual = true;
+        for (var i = 0; i < kfLength; i++) {
+            kfPercents.push(keyframes[i].time / trackMaxTime);
+            // Assume value is a color when it is a string
+            var value = keyframes[i].value;
+
+            // Check if value is equal, deep check if value is array
+            if (!((isValueArray && dataUtil.isArraySame(value, prevValue, arrDim))
+                || (!isValueArray && value === prevValue))) {
+                isAllValueEqual = false;
+            }
+            prevValue = value;
+
+            // Try converting a string to a color array
+            if (typeof value === 'string') {
+                var colorArray = colorUtil.parse(value);
+                if (colorArray) {
+                    value = colorArray;
+                    isValueColor = true;
+                }else {
+                    isValueString = true;
+                }
+            }
+            kfValues.push(value);
+        }
+        if (!forceAnimate && isAllValueEqual) {
+            return;
+        }
+
+        var lastValue = kfValues[kfLength - 1];
+        // Polyfill array and NaN value
+        for (var i = 0; i < kfLength - 1; i++) {
+            if (isValueArray) {
+                dataUtil.fillArr(kfValues[i], lastValue, arrDim);
+            }else {
+                if (isNaN(kfValues[i]) && !isNaN(lastValue) && !isValueString && !isValueColor) {
+                    kfValues[i] = lastValue;
+                }
+            }
+        }
+        isValueArray && dataUtil.fillArr(getter(animator._target, propName), lastValue, arrDim);
+
+        // Cache the key of last frame to speed up when
+        // animation playback is sequency
+        var lastFrame = 0;
+        var lastFramePercent = 0;
+        var start;
+        var w;
+        var p0;
+        var p1;
+        var p2;
+        var p3;
+
+        if (isValueColor) {
+            var rgba = [0, 0, 0, 0];
+        }
+
+        var onframe = function (target, percent) {
+            // Find the range keyframes
+            // kf1-----kf2---------current--------kf3
+            // find kf2 and kf3 and do interpolation
+            var frame;
+            // In the easing function like elasticOut, percent may less than 0
+            if (percent < 0) {
+                frame = 0;
+            }else if (percent < lastFramePercent) {
+                // Start from next key
+                // PENDING start from lastFrame ?
+                start = Math.min(lastFrame + 1, kfLength - 1);
+                for (frame = start; frame >= 0; frame--) {
+                    if (kfPercents[frame] <= percent) {
+                        break;
+                    }
+                }
+                // PENDING really need to do this ?
+                frame = Math.min(frame, kfLength - 2);
+            }else {
+                for (frame = lastFrame; frame < kfLength; frame++) {
+                    if (kfPercents[frame] > percent) {
+                        break;
+                    }
+                }
+                frame = Math.min(frame - 1, kfLength - 2);
+            }
+            lastFrame = frame;
+            lastFramePercent = percent;
+
+            var range = (kfPercents[frame + 1] - kfPercents[frame]);
+            if (range === 0) {
+                return;
+            }else {
+                w = (percent - kfPercents[frame]) / range;
+            }
+            
+            if (useSpline) {
+                p1 = kfValues[frame];
+                p0 = kfValues[frame === 0 ? frame : frame - 1];
+                p2 = kfValues[frame > kfLength - 2 ? kfLength - 1 : frame + 1];
+                p3 = kfValues[frame > kfLength - 3 ? kfLength - 1 : frame + 2];
+                if (isValueArray) {
+                    dataUtil.catmullRomInterpolateArray(
+                        p0, p1, p2, p3, w, w * w, w * w * w,
+                        getter(target, propName),
+                        arrDim
+                    );
+                }else {
+                    var value;
+                    if (isValueColor) {
+                        value = dataUtil.catmullRomInterpolateArray(
+                            p0, p1, p2, p3, w, w * w, w * w * w,
+                            rgba, 1
+                        );
+                        value = dataUtil.rgba2String(rgba);
+                    }else if (isValueString) {
+                        // String is step(0.5)
+                        return dataUtil.interpolateString(p1, p2, w);
+                    }else {
+                        value = dataUtil.catmullRomInterpolate(
+                            p0, p1, p2, p3, w, w * w, w * w * w
+                        );
+                    }
+                    setter(
+                        target,
+                        propName,
+                        value
+                    );
+                }
+            }else {
+                if (isValueArray) {
+                    dataUtil.interpolateArray(
+                        kfValues[frame], kfValues[frame + 1], w,
+                        getter(target, propName),
+                        arrDim
+                    );
+                }else {
+                    var value;
+                    if (isValueColor) {
+                        dataUtil.interpolateArray(
+                            kfValues[frame], kfValues[frame + 1], w,
+                            rgba, 1
+                        );
+                        value = dataUtil.rgba2String(rgba);
+                    }else if (isValueString) {
+                        // String is step(0.5)
+                        return dataUtil.interpolateString(kfValues[frame], kfValues[frame + 1], w);
+                    }else {
+                        value = dataUtil.interpolateNumber(kfValues[frame], kfValues[frame + 1], w);
+                    }
+                    setter(
+                        target,
+                        propName,
+                        value
+                    );
+                }
+            }
+        };
+        
+        let options={
+            target: animator._target,
+            lifeTime: trackMaxTime,
+            loop: animator._loop,
+            delay: animator._delay,
+            onframe: onframe,
+            ondestroy: oneTrackDone,
+            easing: (easing && easing !== 'spline')?easing:'Linear'
+        };
+        return options;
     }
 };
 
