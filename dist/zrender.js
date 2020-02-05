@@ -4353,6 +4353,7 @@ var colorUtil = (Object.freeze || Object)({
 
 function Clip(animator, easing$$1, oneTrackDone, keyframes, propName, forceAnimate) {
     let options=this._calculateParams(animator, easing$$1, oneTrackDone, keyframes, propName, forceAnimate);
+    //如果传入的参数不正确，则无法构造实例
     if(!options){
         return null;
     }
@@ -4389,16 +4390,16 @@ Clip.prototype = {
             return;
         }
 
-        var percent = (globalTime - this._startTime - this._pausedTime) / this._lifeTime;
+        let percent = (globalTime - this._startTime - this._pausedTime) / this._lifeTime;
         // 还没开始
         if (percent < 0) {
             return;
         }
         percent = Math.min(percent, 1);
 
-        var easing$$1 = this.easing;
-        var easingFunc = typeof easing$$1 === 'string' ? easing[easing$$1] : easing$$1;
-        var schedule = typeof easingFunc === 'function'
+        let easing$$1 = this.easing;
+        let easingFunc = typeof easing$$1 === 'string' ? easing[easing$$1] : easing$$1;
+        let schedule = typeof easingFunc === 'function'
             ? easingFunc(percent)
             : percent;
 
@@ -4418,7 +4419,7 @@ Clip.prototype = {
     },
 
     restart: function (globalTime) {
-        var remainder = (globalTime - this._startTime - this._pausedTime) % this._lifeTime;
+        let remainder = (globalTime - this._startTime - this._pausedTime) % this._lifeTime;
         this._startTime = globalTime - remainder + this.gap;
         this._pausedTime = 0;
     },
@@ -4448,23 +4449,23 @@ Clip.prototype = {
      * @param {*} forceAnimate 
      */
     _calculateParams:function(animator, easing$$1, oneTrackDone, keyframes, propName, forceAnimate) {
-        var getter = animator._getter;
-        var setter = animator._setter;
-        var useSpline = easing$$1 === 'spline';
+        let getter = animator._getter;
+        let setter = animator._setter;
+        let useSpline = easing$$1 === 'spline';
 
-        var kfLength = keyframes.length;
+        let kfLength = keyframes.length;
         if (!kfLength) {
             return;
         }
         
         // Guess data type
-        var firstVal = keyframes[0].value;
-        var isValueArray = isArrayLike(firstVal);
-        var isValueColor = false;
-        var isValueString = false;
+        let firstVal = keyframes[0].value;
+        let isValueArray = isArrayLike(firstVal);
+        let isValueColor = false;
+        let isValueString = false;
 
         // For vertices morphing
-        var arrDim = isValueArray ? getArrayDim(keyframes) : 0;
+        let arrDim = isValueArray ? getArrayDim(keyframes) : 0;
 
         // Sort keyframe as ascending
         keyframes.sort(function (a, b) {
@@ -4473,15 +4474,15 @@ Clip.prototype = {
 
         let trackMaxTime = keyframes[kfLength - 1].time;
         // Percentage of each keyframe
-        var kfPercents = [];
+        let kfPercents = [];
         // Value of each keyframe
-        var kfValues = [];
-        var prevValue = keyframes[0].value;
-        var isAllValueEqual = true;
-        for (var i = 0; i < kfLength; i++) {
+        let kfValues = [];
+        let prevValue = keyframes[0].value;
+        let isAllValueEqual = true;
+        for (let i = 0; i < kfLength; i++) {
             kfPercents.push(keyframes[i].time / trackMaxTime);
             // Assume value is a color when it is a string
-            var value = keyframes[i].value;
+            let value = keyframes[i].value;
 
             // Check if value is equal, deep check if value is array
             if (!((isValueArray && isArraySame(value, prevValue, arrDim))
@@ -4492,7 +4493,7 @@ Clip.prototype = {
 
             // Try converting a string to a color array
             if (typeof value === 'string') {
-                var colorArray = parse(value);
+                let colorArray = parse(value);
                 if (colorArray) {
                     value = colorArray;
                     isValueColor = true;
@@ -4506,9 +4507,9 @@ Clip.prototype = {
             return;
         }
 
-        var lastValue = kfValues[kfLength - 1];
+        let lastValue = kfValues[kfLength - 1];
         // Polyfill array and NaN value
-        for (var i = 0; i < kfLength - 1; i++) {
+        for (let i = 0; i < kfLength - 1; i++) {
             if (isValueArray) {
                 fillArr(kfValues[i], lastValue, arrDim);
             }else {
@@ -4521,24 +4522,21 @@ Clip.prototype = {
 
         // Cache the key of last frame to speed up when
         // animation playback is sequency
-        var lastFrame = 0;
-        var lastFramePercent = 0;
-        var start;
-        var w;
-        var p0;
-        var p1;
-        var p2;
-        var p3;
+        let lastFrame = 0;
+        let lastFramePercent = 0;
+        let start;
+        let w;
+        let p0;
+        let p1;
+        let p2;
+        let p3;
+        let rgba = [0, 0, 0, 0];
 
-        if (isValueColor) {
-            var rgba = [0, 0, 0, 0];
-        }
-
-        var onframe = function (target, percent) {
+        let onframe = function (target, percent) {
             // Find the range keyframes
             // kf1-----kf2---------current--------kf3
             // find kf2 and kf3 and do interpolation
-            var frame;
+            let frame;
             // In the easing function like elasticOut, percent may less than 0
             if (percent < 0) {
                 frame = 0;
@@ -4564,7 +4562,7 @@ Clip.prototype = {
             lastFrame = frame;
             lastFramePercent = percent;
 
-            var range = (kfPercents[frame + 1] - kfPercents[frame]);
+            let range = (kfPercents[frame + 1] - kfPercents[frame]);
             if (range === 0) {
                 return;
             }else {
@@ -4583,7 +4581,7 @@ Clip.prototype = {
                         arrDim
                     );
                 }else {
-                    var value;
+                    let value;
                     if (isValueColor) {
                         value = catmullRomInterpolateArray(
                             p0, p1, p2, p3, w, w * w, w * w * w,
@@ -4612,7 +4610,7 @@ Clip.prototype = {
                         arrDim
                     );
                 }else {
-                    var value;
+                    let value;
                     if (isValueColor) {
                         interpolateArray(
                             kfValues[frame], kfValues[frame + 1], w,
