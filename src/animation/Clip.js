@@ -135,18 +135,16 @@ Clip.prototype = {
         // For vertices morphing
         let arrDim = isValueArray ? dataUtil.getArrayDim(keyframes) : 0;
 
-        // Sort keyframe as ascending
-        keyframes.sort(function (a, b) {
+        keyframes.sort((a, b)=>{
             return a.time - b.time;
         });
 
         let trackMaxTime = keyframes[kfLength - 1].time;
-        // Percentage of each keyframe
         let kfPercents = [];
-        // Value of each keyframe
         let kfValues = [];
         let prevValue = keyframes[0].value;
         let isAllValueEqual = true;
+
         for (let i = 0; i < kfLength; i++) {
             kfPercents.push(keyframes[i].time / trackMaxTime);
             // Assume value is a color when it is a string
