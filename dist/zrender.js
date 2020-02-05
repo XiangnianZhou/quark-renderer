@@ -10641,8 +10641,8 @@ Painter.prototype = {
  * Animation manager, global singleton, controls all the animation process.
  * Each ZRender instance has a GlobalAnimationMgr instance.
  * 
- * 动画管理器，全局单例，控制和调度所有动画过程。
- * 每个 zrender 实例中会持有一个 GlobalAnimationMgr 实例。
+ * 动画管理器，全局单例，控制和调度所有动画过程。每个 zrender 实例中会持有一个 
+ * GlobalAnimationMgr 实例。
  * 
  * @module zrender/animation/GlobalAnimationMgr
  * @author pissang(https://github.com/pissang)
@@ -10662,22 +10662,6 @@ Painter.prototype = {
  * @param {Object} [options]
  * @param {Function} [options.onframe]
  * @param {IZRenderStage} [options.stage]
- * @example
- *     var animation = new GlobalAnimationMgr();
- *     var obj = {
- *         x: 100,
- *         y: 100
- *     };
- *     animation.animate(node.position)
- *         .when(1000, {
- *             x: 500,
- *             y: 500
- *         })
- *         .when(2000, {
- *             x: 100,
- *             y: 100
- *         })
- *         .start('spline');
  */
 function GlobalAnimationMgr(options) {
     options = options || {};
@@ -10761,7 +10745,7 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
-     * Start animation.
+     * Start all the animations.
      */
     start: function () {
         this._time = new Date().getTime();
@@ -10770,14 +10754,14 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
-     * Stop animation.
+     * Stop all the animations.
      */
     stop: function () {
         this._running = false;
     },
 
     /**
-     * Pause animation.
+     * Pause all the animations.
      */
     pause: function () {
         if (!this._paused) {
@@ -10787,7 +10771,7 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
-     * Resume animation.
+     * Resume all the animations.
      */
     resume: function () {
         if (this._paused) {
@@ -10797,7 +10781,7 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
-     * Clear animation.
+     * Clear all the animations.
      */
     clear: function () {
         this._animationProcessList.length=0;
@@ -10814,29 +10798,6 @@ GlobalAnimationMgr.prototype = {
             }
         });
         return finished;
-    },
-
-    /**
-     * Creat animationProcess for a target, whose props can be animated.
-     *
-     * @param  {Object} target
-     * @param  {Object} options
-     * @param  {boolean} [options.loop=false] Whether loop animation.
-     * @param  {Function} [options.getter=null] Get value from target.
-     * @param  {Function} [options.setter=null] Set value to target.
-     * @return {module:zrender/animation/GlobalAnimationMgr~AnimationProcess}
-     */
-    // TODO Gap
-    animate: function (target, options) {
-        options = options || {};
-        var animationProcess = new AnimationProcess(
-            target,
-            options.loop,
-            options.getter,
-            options.setter
-        );
-        this.addAnimationProcess(animationProcess);
-        return animationProcess;
     }
 };
 
