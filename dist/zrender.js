@@ -4474,8 +4474,7 @@ class Track{
     }
 
     start(easing,propName, forceAnimate){
-        //createTimeline
-        let options=this.calculateParams(
+        let options=this._parseKeyFrames(
             easing, 
             propName, 
             forceAnimate
@@ -4504,7 +4503,7 @@ class Track{
         this.timeline.resume();
     }
 
-    calculateParams(easing,propName,forceAnimate) {
+    _parseKeyFrames(easing,propName,forceAnimate) {
         let loop=this._loop;
         let delay=this._delay;
         let target=this._target;
