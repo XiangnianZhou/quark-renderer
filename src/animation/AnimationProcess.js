@@ -58,7 +58,9 @@ AnimationProcess.prototype = {
                 track=new Track({
                     _target:this._target,
                     _getter:this._getter,
-                    _setter:this._setter
+                    _setter:this._setter,
+                    _loop:this._loop,
+                    _delay:this._delay
                 });
             }
 

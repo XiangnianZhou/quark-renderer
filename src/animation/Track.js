@@ -10,6 +10,8 @@ export default class Track{
         this._target=options._target;
         this._getter=options._getter;
         this._setter=options._setter;
+        this._loop=options._loop;
+        this._delay=options._delay;
         
         this.isFinished=false;
         this.keyframes=[];
@@ -38,8 +40,6 @@ export default class Track{
     start(animationProcess, easing, ondestroy,  propName, forceAnimate){
         //createTimeline
         let options=this.calculateParams(
-            animationProcess._loop, 
-            animationProcess._delay, 
             easing, 
             ondestroy, 
             propName, 
@@ -69,10 +69,9 @@ export default class Track{
         this.timeline.resume();
     }
 
-    calculateParams(
-        loop,delay,easing, 
-        ondestroy,propName,forceAnimate
-    ) {
+    calculateParams(easing,ondestroy,propName,forceAnimate) {
+        let loop=this._loop;
+        let delay=this._delay;
         let target=this._target;
         let getter=this._getter;
         let setter=this._setter;
