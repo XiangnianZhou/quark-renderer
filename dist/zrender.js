@@ -3652,7 +3652,6 @@ class Timeline{
 
         // 结束或者重新开始周期
         // 抛出而不是直接调用事件直到 stage.update 后再统一调用这些事件
-        // why?
         if (percent === 1) {
             if (this.loop) {
                 this.restart(globalTime);
@@ -4499,7 +4498,7 @@ class Track{
     resume(){
         this.timeline.resume();
     }
-
+    
     _parseKeyFrames(easing,propName,forceAnimate) {
         let loop=this._loop;
         let delay=this._delay;
@@ -4585,6 +4584,7 @@ class Track{
         let p3;
         let rgba = [0, 0, 0, 0];
     
+        //Timeline 每一帧都会回调此方法。
         let onframe = function (target, percent) {
             // Find the range keyframes
             // kf1-----kf2---------current--------kf3
@@ -10685,26 +10685,16 @@ Painter.prototype = {
 // https://developer.apple.com/videos/wwdc2014/#236
 
 /**
- * @typedef {Object} IZRenderStage
- * @property {Function} update
- */
-
-/**
  * @alias module:zrender/animation/GlobalAnimationMgr
  * @constructor
  * @param {Object} [options]
- * @param {Function} [options.onframe]
- * @param {IZRenderStage} [options.stage]
  */
 function GlobalAnimationMgr(options) {
     options = options || {};
-    this.stage = options.stage || {};
-    this.onframe = options.onframe || function () {};
-
     this._animationProcessList=[];
     this._running = false;
-    this._time;
-    this._pausedTime;
+    this._timestamp;
+    this._pausedTime;//ms
     this._pauseStart;
     this._paused = false;
     Eventful.call(this);
@@ -10735,32 +10725,26 @@ GlobalAnimationMgr.prototype = {
 
     _update: function () {
         var time = new Date().getTime() - this._pausedTime;
-        var delta = time - this._time;
+        var delta = time - this._timestamp;
 
         this._animationProcessList.forEach((ap,index)=>{
             ap.nextFrame(time,delta);
         });
 
-        this._time = time;
+        this._timestamp = time;
 
-        this.onframe(delta);
-
+        // TODO:What's going on here?
         // 'frame' should be triggered before stage, because upper application
         // depends on the sequence (e.g., echarts-stream and finish
         // event judge)
-        this.trigger('frame', delta);//不断触发 frame 事件
-
-        if (this.stage.update) {
-            //在 zrender.js 中，创建 GlobalAnimationMgr 对象时绑定了 zrender.flush 方法，flush 方法会根据不同的条件刷新画布
-            this.stage.update(); 
-        }
+        this.trigger('frame', delta);
     },
 
     /**
      * TODO:需要确认在大量节点下的动画性能问题，比如 100 万个图元同时进行动画
      * 这里开始利用requestAnimationFrame递归执行
-     * 如果这里的 _update() 不能在16ms的时间内完成一轮刷新，就会出现明显的卡顿。
-     * 按照 W3C 的推荐标准 60fps，这里的 step 函数大约 16ms 被调用一次
+     * 如果这里的 _update() 不能在16ms的时间内完成一轮动画，就会出现明显的卡顿。
+     * 按照 W3C 的推荐标准 60fps，这里的 step 函数大约每隔 16ms 被调用一次
      * @see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
      */
     _startLoop: function () {
@@ -10779,7 +10763,7 @@ GlobalAnimationMgr.prototype = {
      * Start all the animations.
      */
     start: function () {
-        this._time = new Date().getTime();
+        this._timestamp = new Date().getTime();
         this._pausedTime = 0;
         this._startLoop();
     },
@@ -11506,10 +11490,9 @@ var ZRender = function (id, dom, opts) {
      * 明显的卡顿。
      * @type {module:zrender/animation/GlobalAnimationMgr}
      */
-    this.globalAnimationMgr = new GlobalAnimationMgr({
-        stage: {
-            update: bind(this.flush, this)
-        }
+    this.globalAnimationMgr = new GlobalAnimationMgr();
+    this.globalAnimationMgr.on("frame",function(){
+        self.flush();
     });
     this.globalAnimationMgr.start();
 
@@ -11521,8 +11504,8 @@ var ZRender = function (id, dom, opts) {
 
     // 修改 storage.delFromStorage, 每次删除元素之前删除动画
     // FIXME 有点ugly
-    var oldDelFromStorage = storage.delFromStorage;
-    var oldAddToStorage = storage.addToStorage;
+    let oldDelFromStorage = storage.delFromStorage;
+    let oldAddToStorage = storage.addToStorage;
 
     storage.delFromStorage = function (el) {
         oldDelFromStorage.call(storage, el);

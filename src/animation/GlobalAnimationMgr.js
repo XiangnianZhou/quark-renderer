@@ -18,26 +18,16 @@ import requestAnimationFrame from './utils/requestAnimationFrame';
 import AnimationProcess from './AnimationProcess';
 
 /**
- * @typedef {Object} IZRenderStage
- * @property {Function} update
- */
-
-/**
  * @alias module:zrender/animation/GlobalAnimationMgr
  * @constructor
  * @param {Object} [options]
- * @param {Function} [options.onframe]
- * @param {IZRenderStage} [options.stage]
  */
 function GlobalAnimationMgr(options) {
     options = options || {};
-    this.stage = options.stage || {};
-    this.onframe = options.onframe || function () {};
-
     this._animationProcessList=[];
     this._running = false;
-    this._time;
-    this._pausedTime;
+    this._timestamp;
+    this._pausedTime;//ms
     this._pauseStart;
     this._paused = false;
     Dispatcher.call(this);
@@ -68,32 +58,26 @@ GlobalAnimationMgr.prototype = {
 
     _update: function () {
         var time = new Date().getTime() - this._pausedTime;
-        var delta = time - this._time;
+        var delta = time - this._timestamp;
 
         this._animationProcessList.forEach((ap,index)=>{
             ap.nextFrame(time,delta);
         });
 
-        this._time = time;
+        this._timestamp = time;
 
-        this.onframe(delta);
-
+        // TODO:What's going on here?
         // 'frame' should be triggered before stage, because upper application
         // depends on the sequence (e.g., echarts-stream and finish
         // event judge)
-        this.trigger('frame', delta);//不断触发 frame 事件
-
-        if (this.stage.update) {
-            //在 zrender.js 中，创建 GlobalAnimationMgr 对象时绑定了 zrender.flush 方法，flush 方法会根据不同的条件刷新画布
-            this.stage.update(); 
-        }
+        this.trigger('frame', delta);
     },
 
     /**
      * TODO:需要确认在大量节点下的动画性能问题，比如 100 万个图元同时进行动画
      * 这里开始利用requestAnimationFrame递归执行
-     * 如果这里的 _update() 不能在16ms的时间内完成一轮刷新，就会出现明显的卡顿。
-     * 按照 W3C 的推荐标准 60fps，这里的 step 函数大约 16ms 被调用一次
+     * 如果这里的 _update() 不能在16ms的时间内完成一轮动画，就会出现明显的卡顿。
+     * 按照 W3C 的推荐标准 60fps，这里的 step 函数大约每隔 16ms 被调用一次
      * @see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
      */
     _startLoop: function () {
@@ -112,7 +96,7 @@ GlobalAnimationMgr.prototype = {
      * Start all the animations.
      */
     start: function () {
-        this._time = new Date().getTime();
+        this._timestamp = new Date().getTime();
         this._pausedTime = 0;
         this._startLoop();
     },

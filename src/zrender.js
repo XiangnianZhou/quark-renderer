@@ -158,10 +158,9 @@ var ZRender = function (id, dom, opts) {
      * 明显的卡顿。
      * @type {module:zrender/animation/GlobalAnimationMgr}
      */
-    this.globalAnimationMgr = new GlobalAnimationMgr({
-        stage: {
-            update: zrUtil.bind(this.flush, this)
-        }
+    this.globalAnimationMgr = new GlobalAnimationMgr();
+    this.globalAnimationMgr.on("frame",function(){
+        self.flush();
     });
     this.globalAnimationMgr.start();
 
@@ -173,8 +172,8 @@ var ZRender = function (id, dom, opts) {
 
     // 修改 storage.delFromStorage, 每次删除元素之前删除动画
     // FIXME 有点ugly
-    var oldDelFromStorage = storage.delFromStorage;
-    var oldAddToStorage = storage.addToStorage;
+    let oldDelFromStorage = storage.delFromStorage;
+    let oldAddToStorage = storage.addToStorage;
 
     storage.delFromStorage = function (el) {
         oldDelFromStorage.call(storage, el);

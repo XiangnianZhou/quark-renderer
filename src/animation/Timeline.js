@@ -61,7 +61,6 @@ export default class Timeline{
 
         // 结束或者重新开始周期
         // 抛出而不是直接调用事件直到 stage.update 后再统一调用这些事件
-        // why?
         if (percent === 1) {
             if (this.loop) {
                 this.restart(globalTime);

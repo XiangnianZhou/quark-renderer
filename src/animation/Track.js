@@ -68,7 +68,7 @@ export default class Track{
     resume(){
         this.timeline.resume();
     }
-
+    
     _parseKeyFrames(easing,propName,forceAnimate) {
         let loop=this._loop;
         let delay=this._delay;
@@ -154,6 +154,7 @@ export default class Track{
         let p3;
         let rgba = [0, 0, 0, 0];
     
+        //Timeline 每一帧都会回调此方法。
         let onframe = function (target, percent) {
             // Find the range keyframes
             // kf1-----kf2---------current--------kf3
