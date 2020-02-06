@@ -4474,14 +4474,10 @@ class Track{
     start(animationProcess, easing, ondestroy,  propName, forceAnimate){
         //createTimeline
         let options=this.calculateParams(
-            animationProcess._target, 
-            animationProcess._getter, 
-            animationProcess._setter, 
             animationProcess._loop, 
             animationProcess._delay, 
             easing, 
             ondestroy, 
-            this.keyframes, 
             propName, 
             forceAnimate
         );
@@ -4510,39 +4506,42 @@ class Track{
     }
 
     calculateParams(
-        target,getter,setter,loop,delay,easing, 
-        ondestroy,keyframes,propName,forceAnimate
+        loop,delay,easing, 
+        ondestroy,propName,forceAnimate
     ) {
+        let target=this._target;
+        let getter=this._getter;
+        let setter=this._setter;
         let useSpline = easing === 'spline';
     
-        let kfLength = keyframes.length;
+        let kfLength = this.keyframes.length;
         if (!kfLength) {
             return;
         }
         
         // Guess data type
-        let firstVal = keyframes[0].value;
+        let firstVal = this.keyframes[0].value;
         let isValueArray = isArrayLike(firstVal);
         let isValueColor = false;
         let isValueString = false;
     
         // For vertices morphing
-        let arrDim = isValueArray ? getArrayDim(keyframes) : 0;
+        let arrDim = isValueArray ? getArrayDim(this.keyframes) : 0;
     
-        keyframes.sort((a, b)=>{
+        this.keyframes.sort((a, b)=>{
             return a.time - b.time;
         });
     
-        let trackMaxTime = keyframes[kfLength - 1].time;
+        let trackMaxTime = this.keyframes[kfLength - 1].time;
         let kfPercents = [];
         let kfValues = [];
-        let prevValue = keyframes[0].value;
+        let prevValue = this.keyframes[0].value;
         let isAllValueEqual = true;
     
         for (let i = 0; i < kfLength; i++) {
-            kfPercents.push(keyframes[i].time / trackMaxTime);
+            kfPercents.push(this.keyframes[i].time / trackMaxTime);
             // Assume value is a color when it is a string
-            let value = keyframes[i].value;
+            let value = this.keyframes[i].value;
     
             // Check if value is equal, deep check if value is array
             if (!((isValueArray && isArraySame(value, prevValue, arrDim))
