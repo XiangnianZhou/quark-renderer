@@ -52,7 +52,6 @@ GlobalAnimationMgr.prototype = {
      * @param {module:zrender/animation/AnimationProcess} animationProcess
      */
     addAnimationProcess: function (animationProcess) {
-        animationProcess.animation = this;
         this._animationProcessList.push(animationProcess);
     },
 
@@ -61,7 +60,6 @@ GlobalAnimationMgr.prototype = {
      * @param {module:zrender/animation/AnimationProcess} animationProcess
      */
     removeAnimationProcess: function (animationProcess) {
-        animationProcess.animation = null;
         let index=this._animationProcessList.findIndex(animationProcess);
         if(index>=0){
             this._animationProcessList.splice(index,1);
