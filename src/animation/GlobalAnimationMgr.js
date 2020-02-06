@@ -1,9 +1,11 @@
 /**
  * Animation manager, global singleton, controls all the animation process.
- * Each ZRender instance has a GlobalAnimationMgr instance.
+ * Each ZRender instance has a GlobalAnimationMgr instance. GlobalAnimationMgr 
+ * is designed to manage all the AnimationProcesses inside a zrender instance.
  * 
  * 动画管理器，全局单例，控制和调度所有动画过程。每个 zrender 实例中会持有一个 
- * GlobalAnimationMgr 实例。
+ * GlobalAnimationMgr 实例。GlobalAnimationMgr 会管理 zrender 实例中的所有
+ * AnimationProcess。
  * 
  * @module zrender/animation/GlobalAnimationMgr
  * @author pissang(https://github.com/pissang)
