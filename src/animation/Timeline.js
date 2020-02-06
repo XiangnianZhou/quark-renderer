@@ -1,7 +1,5 @@
 /**
- * 动画片段
- * 图元上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，
- * 每一种属性天然成为一条动画轨道，把这些轨道上的变化过程封装在很多 Timeline 实例中。
+ * Timeline，时间线，用来计算图元上的某个属性在指定时间点的数值。
  * 
  * @config target 动画对象，可以是数组，如果是数组的话会批量分发onframe等事件
  * @config life(1000) 动画时长
@@ -16,27 +14,24 @@
  */
 import easingFuncs from './utils/easing';
 
-function Timeline(options) {
-    this._target = options.target;
-    this._lifeTime = options.lifeTime || 1000;
-    this._delay = options.delay || 0;
-    this._initialized = false;
-    this.loop = options.loop == null ? false : options.loop;
-    this.gap = options.gap || 0;
-    this.easing = options.easing || 'Linear';
-    this.onframe = options.onframe;
-    this.ondestroy = options.ondestroy;
-    this.onrestart = options.onrestart;
+export default class Timeline{
+    constructor(options){
+        this._target = options.target;
+        this._lifeTime = options.lifeTime || 1000;
+        this._delay = options.delay || 0;
+        this._initialized = false;
+        this.loop = options.loop == null ? false : options.loop;
+        this.gap = options.gap || 0;
+        this.easing = options.easing || 'Linear';
+        this.onframe = options.onframe;
+        this.ondestroy = options.ondestroy;
+        this.onrestart = options.onrestart;
+    
+        this._pausedTime = 0;
+        this._paused = false;
+    }
 
-    this._pausedTime = 0;
-    this._paused = false;
-}
-
-Timeline.prototype = {
-
-    constructor: Timeline,
-
-    nextFrame: function (globalTime, deltaTime) {
+    nextFrame(globalTime, deltaTime) {
         // Set startTime on first frame, or _startTime may has milleseconds different between clips
         // PENDING
         if (!this._initialized) {
@@ -75,28 +70,26 @@ Timeline.prototype = {
             return 'destroy';
         }
         return percent;
-    },
+    }
 
-    restart: function (globalTime) {
+    restart(globalTime) {
         let remainder = (globalTime - this._startTime - this._pausedTime) % this._lifeTime;
         this._startTime = globalTime - remainder + this.gap;
         this._pausedTime = 0;
-    },
+    }
 
-    fire: function (eventType, arg) {
+    fire(eventType, arg) {
         eventType = 'on' + eventType;
         if (this[eventType]) {
             this[eventType](this._target, arg);
         }
-    },
+    }
 
-    pause: function () {
+    pause() {
         this._paused = true;
-    },
+    }
 
-    resume: function () {
+    resume() {
         this._paused = false;
     }
-};
-
-export default Timeline;
+}
