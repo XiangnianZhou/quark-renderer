@@ -3,7 +3,7 @@
  * 
  * @module echarts/animation/AnimationProcess
  */
-import Clip from './Clip';
+import Timeline from './Timeline';
 import * as dataUtil from '../core/dataStructureUtil';
 
 /**
@@ -28,7 +28,7 @@ var AnimationProcess = function (target, loop, getter, setter) {
     this._delay = 0;
     this._doneList = [];
     this._onframeList = [];
-    this._clipList = [];
+    this._timelineList = [];
 
     this._pausedTime;
     this._pauseStart;
@@ -91,7 +91,7 @@ AnimationProcess.prototype = {
 
     _doneCallback: function () {
         this._tracks = new Map();
-        this._clipList.length = 0;
+        this._timelineList.length = 0;
         var doneList = this._doneList;
         var len = doneList.length;
         for (var i = 0; i < len; i++) {
@@ -100,7 +100,7 @@ AnimationProcess.prototype = {
     },
 
     isFinished: function () {
-        return !this._clipList.length;
+        return !this._timelineList.length;
     },
 
     /**
@@ -121,12 +121,12 @@ AnimationProcess.prototype = {
             }
         };
         
-        //为 Element 上的每一种属性创建一个 Clip 
+        //为 Element 上的每一种属性创建一个 Timeline 
         [...this._tracks.keys()].forEach((propName,index)=>{
             if (!this._tracks.get(propName)) {
                 return;
             }
-            var clip = new Clip(
+            var timeline = new Timeline(
                 this,
                 easing, 
                 oneTrackDone,
@@ -134,16 +134,16 @@ AnimationProcess.prototype = {
                 propName, 
                 forceAnimate
             );
-            if (clip) {
-                this._clipList.push(clip);
+            if (timeline) {
+                this._timelineList.push(timeline);
             }
         });
 
-        // Add during callback on the last clip
-        let lastClip=this._clipList[this._clipList.length-1];
-        if (lastClip&&dataUtil.isFunction(lastClip.onframe)) {
-            var oldOnFrame = lastClip.onframe;
-            lastClip.onframe = function (target, percent) {
+        // Add during callback on the last timeline
+        let lastTimeline=this._timelineList[this._timelineList.length-1];
+        if (lastTimeline&&dataUtil.isFunction(lastTimeline.onframe)) {
+            var oldOnFrame = lastTimeline.onframe;
+            lastTimeline.onframe = function (target, percent) {
                 oldOnFrame(target, percent);
                 for (var i = 0; i < self._onframeList.length; i++) {
                     self._onframeList[i](target, percent);
@@ -154,7 +154,7 @@ AnimationProcess.prototype = {
         // This optimization will help the case that in the upper application
         // the view may be refreshed frequently, where animation will be
         // called repeatly but nothing changed.
-        if (!this._clipList.length) {
+        if (!this._timelineList.length) {
             this._doneCallback();
         }
         return this;
@@ -165,47 +165,47 @@ AnimationProcess.prototype = {
      * @param {boolean} forwardToLast If move to last frame before stop
      */
     stop: function (forwardToLast) {
-        for (var i = 0; i < this._clipList.length; i++) {
-            var clip = this._clipList[i];
+        for (var i = 0; i < this._timelineList.length; i++) {
+            var timeline = this._timelineList[i];
             if (forwardToLast) {
                 // Move to last frame before stop
-                clip.onframe(this._target, 1);
+                timeline.onframe(this._target, 1);
             }
         }
-        this._clipList.length = 0;
+        this._timelineList.length = 0;
     },
 
     nextFrame:function(time,delta){
-        var len = this._clipList.length;
+        var len = this._timelineList.length;
         var deferredEvents = [];
-        var deferredClips = [];
+        var deferredTimelines = [];
         for (var i = 0; i < len; i++) {
-            var clip = this._clipList[i];
-            var e = clip.step(time, delta);
+            var timeline = this._timelineList[i];
+            var e = timeline.step(time, delta);
             // Throw out the events need to be called after
             // stage.update, like destroy
             if (e) {
                 deferredEvents.push(e);
-                deferredClips.push(clip);
+                deferredTimelines.push(timeline);
             }
         }
 
         len = deferredEvents.length;
         for (var i = 0; i < len; i++) {
-            deferredClips[i].fire(deferredEvents[i]);
+            deferredTimelines[i].fire(deferredEvents[i]);
         }
     },
 
     pause: function () {
-        for (var i = 0; i < this._clipList.length; i++) {
-            this._clipList[i].pause();
+        for (var i = 0; i < this._timelineList.length; i++) {
+            this._timelineList[i].pause();
         }
         this._paused = true;
     },
 
     resume: function () {
-        for (var i = 0; i < this._clipList.length; i++) {
-            this._clipList[i].resume();
+        for (var i = 0; i < this._timelineList.length; i++) {
+            this._timelineList[i].resume();
         }
         this._paused = false;
     },
@@ -237,10 +237,10 @@ AnimationProcess.prototype = {
     },
 
     /**
-     * @return {Array.<module:zrender/animation/Clip>}
+     * @return {Array.<module:zrender/animation/Timeline>}
      */
     getClips: function () {
-        return this._clipList;
+        return this._timelineList;
     }
 };
 

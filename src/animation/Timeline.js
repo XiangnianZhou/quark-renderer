@@ -1,7 +1,7 @@
 /**
  * 动画片段
  * 图元上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，
- * 每一种属性天然成为一条动画轨道，把这些轨道上的变化过程封装在很多 Clip 实例中。
+ * 每一种属性天然成为一条动画轨道，把这些轨道上的变化过程封装在很多 Timeline 实例中。
  * 
  * @config target 动画对象，可以是数组，如果是数组的话会批量分发onframe等事件
  * @config life(1000) 动画时长
@@ -19,7 +19,7 @@ import easingFuncs from './utils/easing';
 import * as colorUtil from '../core/colorUtil';
 import * as dataUtil from '../core/dataStructureUtil';
 
-function Clip(animationProcess, easing, oneTrackDone, keyframes, propName, forceAnimate) {
+function Timeline(animationProcess, easing, oneTrackDone, keyframes, propName, forceAnimate) {
     let options=this._calculateParams(animationProcess, easing, oneTrackDone, keyframes, propName, forceAnimate);
     //如果传入的参数不正确，则无法构造实例
     if(!options){
@@ -41,9 +41,9 @@ function Clip(animationProcess, easing, oneTrackDone, keyframes, propName, force
     this._paused = false;
 }
 
-Clip.prototype = {
+Timeline.prototype = {
 
-    constructor: Clip,
+    constructor: Timeline,
 
     step: function (globalTime, deltaTime) {
         // Set startTime on first step, or _startTime may has milleseconds different between clips
@@ -311,4 +311,4 @@ Clip.prototype = {
     }
 };
 
-export default Clip;
+export default Timeline;
