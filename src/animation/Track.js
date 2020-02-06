@@ -37,11 +37,10 @@ export default class Track{
         this.timeline.fire(eventType, arg);
     }
 
-    start(easing, ondestroy,  propName, forceAnimate){
+    start(easing,propName, forceAnimate){
         //createTimeline
         let options=this.calculateParams(
             easing, 
-            ondestroy, 
             propName, 
             forceAnimate
         );
@@ -69,7 +68,7 @@ export default class Track{
         this.timeline.resume();
     }
 
-    calculateParams(easing,ondestroy,propName,forceAnimate) {
+    calculateParams(easing,propName,forceAnimate) {
         let loop=this._loop;
         let delay=this._delay;
         let target=this._target;
@@ -260,7 +259,6 @@ export default class Track{
             loop:loop,
             delay:delay,
             onframe: onframe,
-            ondestroy: ondestroy,
             easing: (easing && easing !== 'spline')?easing:'Linear'
         };
         return options;
