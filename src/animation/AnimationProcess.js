@@ -129,7 +129,7 @@ AnimationProcess.prototype = {
                 return;
             }
             let track=this._trackCacheMap.get(propName);
-            track.start(this,easing,null,propName,forceAnimate);
+            track.start(easing,null,propName,forceAnimate);
         });
 
         // This optimization will help the case that in the upper application

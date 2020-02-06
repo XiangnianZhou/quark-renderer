@@ -37,7 +37,7 @@ export default class Track{
         this.timeline.fire(eventType, arg);
     }
 
-    start(animationProcess, easing, ondestroy,  propName, forceAnimate){
+    start(easing, ondestroy,  propName, forceAnimate){
         //createTimeline
         let options=this.calculateParams(
             easing, 
