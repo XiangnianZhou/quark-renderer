@@ -3627,8 +3627,8 @@ Timeline.prototype = {
 
     constructor: Timeline,
 
-    step: function (globalTime, deltaTime) {
-        // Set startTime on first step, or _startTime may has milleseconds different between clips
+    nextFrame: function (globalTime, deltaTime) {
+        // Set startTime on first frame, or _startTime may has milleseconds different between clips
         // PENDING
         if (!this._initialized) {
             this._startTime = globalTime + this._delay;
@@ -4462,7 +4462,7 @@ class Track{
         if(!this.timeline){//TODO:fix this, there is something wrong here.
             return;
         }
-        let result=this.timeline.step(time,delta);
+        let result=this.timeline.nextFrame(time,delta);
         if(isNumeric(result)&&result===1){
             this.isFinished=true;
         }
@@ -10770,13 +10770,13 @@ GlobalAnimationMgr.prototype = {
     _startLoop: function () {
         var self = this;
         this._running = true;
-        function step() {
+        function nextFrame() {
             if (self._running) {
-                requestAnimationFrame(step);
+                requestAnimationFrame(nextFrame);
                 !self._paused && self._update();
             }
         }
-        requestAnimationFrame(step);
+        requestAnimationFrame(nextFrame);
     },
 
     /**

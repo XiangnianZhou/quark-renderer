@@ -26,7 +26,7 @@ export default class Track{
         if(!this.timeline){//TODO:fix this, there is something wrong here.
             return;
         }
-        let result=this.timeline.step(time,delta);
+        let result=this.timeline.nextFrame(time,delta);
         if(dataUtil.isNumeric(result)&&result===1){
             this.isFinished=true;
         }

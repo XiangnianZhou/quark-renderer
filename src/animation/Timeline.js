@@ -36,8 +36,8 @@ Timeline.prototype = {
 
     constructor: Timeline,
 
-    step: function (globalTime, deltaTime) {
-        // Set startTime on first step, or _startTime may has milleseconds different between clips
+    nextFrame: function (globalTime, deltaTime) {
+        // Set startTime on first frame, or _startTime may has milleseconds different between clips
         // PENDING
         if (!this._initialized) {
             this._startTime = globalTime + this._delay;

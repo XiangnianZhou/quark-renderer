@@ -99,13 +99,13 @@ GlobalAnimationMgr.prototype = {
     _startLoop: function () {
         var self = this;
         this._running = true;
-        function step() {
+        function nextFrame() {
             if (self._running) {
-                requestAnimationFrame(step);
+                requestAnimationFrame(nextFrame);
                 !self._paused && self._update();
             }
         }
-        requestAnimationFrame(step);
+        requestAnimationFrame(nextFrame);
     },
 
     /**
