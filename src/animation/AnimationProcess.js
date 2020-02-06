@@ -3,8 +3,8 @@
  * 
  * @module echarts/animation/AnimationProcess
  */
-import Timeline from './Timeline';
 import * as dataUtil from '../core/dataStructureUtil';
+import Track from './Track';
 
 /**
  * @alias module:zrender/animation/AnimationProcess
@@ -14,8 +14,8 @@ import * as dataUtil from '../core/dataStructureUtil';
  * @param {Function} getter
  * @param {Function} setter
  */
-var AnimationProcess = function (target, loop, getter, setter) {
-    this._tracks = new Map();
+let AnimationProcess = function (target, loop, getter, setter) {
+    this._trackCacheMap = new Map();
     this._target = target;
     this._loop = loop || false;
     this._getter = getter || function(target, key) {
@@ -24,57 +24,57 @@ var AnimationProcess = function (target, loop, getter, setter) {
     this._setter = setter || function(target, key, value) {
         target[key] = value;
     };
-    this._clipCount = 0;
-    this._delay = 0;
-    this._doneList = [];
-    this._onframeList = [];
-    this._timelineList = [];
 
-    this._pausedTime;
-    this._pauseStart;
+    this._delay = 0;
     this._paused = false;
+    this._doneList = [];    //callback list when the entire animation process is finished
+    this._onframeList = []; //callback list for each frame
 };
 
 AnimationProcess.prototype = {
     constructor: AnimationProcess,
 
     /**
-     * 设置动画关键帧
-     * @param  {number} time 关键帧时间，单位是ms
+     * 为每一种属性创建一条轨道
+     * @param  {number} time 关键帧时间，单位ms
      * @param  {Object} props 关键帧的属性值，key-value表示
      * @return {module:zrender/animation/AnimationProcess}
      */
-    when: function (time /* ms */, props) {
-        //TODO:validate argument props
-        //为每一种属性创建一条轨道
-        for (var propName in props) {
+    when: function (time, props) {
+        for (let propName in props) {
             if (!props.hasOwnProperty(propName)) {
                 continue;
             }
 
-            if (!this._tracks.get(propName)) {
-                this._tracks.set(propName,[]);
-                // Invalid value
-                var value = this._getter(this._target, propName);
-                if (value == null) {
-                    // zrLog('Invalid property ' + propName);
-                    continue;
-                }
-                // If time is 0
-                //  Then props is given initialize value
-                // Else
-                //  Initialize value from current prop value
-                if (time !== 0) {
-                    this._tracks.get(propName).push({
-                        time: 0,
-                        value: dataUtil.cloneValue(value)
-                    });
-                }
+            // Invalid value
+            let value = this._getter(this._target, propName);
+            if (value == null) {
+                // zrLog('Invalid property ' + propName);
+                continue;
             }
-            this._tracks.get(propName).push({
+
+            let track=this._trackCacheMap.get(propName);
+            if(!track){
+                track=new Track({
+                    _target:this._target,
+                    _getter:this._getter,
+                    _setter:this._setter
+                });
+            }
+
+            if (time !== 0) {
+                track.addKeyFrame({
+                    time: 0,
+                    value: dataUtil.cloneValue(value)
+                });
+            }
+
+            track.addKeyFrame({
                 time: time,
                 value: props[propName]
             });
+
+            this._trackCacheMap.set(propName,track);
         }
         return this;
     },
@@ -89,18 +89,27 @@ AnimationProcess.prototype = {
         return this;
     },
 
+    /**
+     * 动画过程整体结束的时候回调此函数
+     */
     _doneCallback: function () {
-        this._tracks = new Map();
-        this._timelineList.length = 0;
-        var doneList = this._doneList;
-        var len = doneList.length;
-        for (var i = 0; i < len; i++) {
-            doneList[i].call(this);
-        }
+        this._doneList.forEach((fn,index)=>{
+            fn.call(this);
+        });
+        this._trackCacheMap = new Map();
     },
 
+    /**
+     * 所有 Track 上的动画都完成则整个动画过程完成
+     */
     isFinished: function () {
-        return !this._timelineList.length;
+        let isFinished=true;
+        [...this._trackCacheMap.values()].forEach((track,index)=>{
+            if(!track.isFinished){
+                isFinished=false;
+            }
+        });
+        return isFinished;
     },
 
     /**
@@ -111,50 +120,20 @@ AnimationProcess.prototype = {
      * @return {module:zrender/animation/AnimationProcess}
      */
     start: function (easing, forceAnimate) {
-        var self = this;
-        var clipCount = 0;
-
-        var oneTrackDone = function () {
-            clipCount--;
-            if (!clipCount) {
-                self._doneCallback();
-            }
-        };
-        
-        //为 Element 上的每一种属性创建一个 Timeline 
-        [...this._tracks.keys()].forEach((propName,index)=>{
-            if (!this._tracks.get(propName)) {
+        let self = this;
+        let keys=[...this._trackCacheMap.keys()];
+        keys.forEach((propName,index)=>{
+            if (!this._trackCacheMap.get(propName)) {
                 return;
             }
-            var timeline = new Timeline(
-                this,
-                easing, 
-                oneTrackDone,
-                this._tracks.get(propName),
-                propName, 
-                forceAnimate
-            );
-            if (timeline) {
-                this._timelineList.push(timeline);
-            }
+            let track=this._trackCacheMap.get(propName);
+            track.start(this,easing,null,propName,forceAnimate);
         });
-
-        // Add during callback on the last timeline
-        let lastTimeline=this._timelineList[this._timelineList.length-1];
-        if (lastTimeline&&dataUtil.isFunction(lastTimeline.onframe)) {
-            var oldOnFrame = lastTimeline.onframe;
-            lastTimeline.onframe = function (target, percent) {
-                oldOnFrame(target, percent);
-                for (var i = 0; i < self._onframeList.length; i++) {
-                    self._onframeList[i](target, percent);
-                }
-            };
-        }
 
         // This optimization will help the case that in the upper application
         // the view may be refreshed frequently, where animation will be
         // called repeatly but nothing changed.
-        if (!this._timelineList.length) {
+        if (!keys.length) {
             this._doneCallback();
         }
         return this;
@@ -165,48 +144,54 @@ AnimationProcess.prototype = {
      * @param {boolean} forwardToLast If move to last frame before stop
      */
     stop: function (forwardToLast) {
-        for (var i = 0; i < this._timelineList.length; i++) {
-            var timeline = this._timelineList[i];
-            if (forwardToLast) {
-                // Move to last frame before stop
-                timeline.onframe(this._target, 1);
-            }
-        }
-        this._timelineList.length = 0;
+        [...this._trackCacheMap.values()].forEach((track,index)=>{
+            track.stop(this._target, 1);
+        });
+        this._trackCacheMap=new Map();
     },
 
     nextFrame:function(time,delta){
-        var len = this._timelineList.length;
-        var deferredEvents = [];
-        var deferredTimelines = [];
-        for (var i = 0; i < len; i++) {
-            var timeline = this._timelineList[i];
-            var e = timeline.step(time, delta);
-            // Throw out the events need to be called after
-            // stage.update, like destroy
-            if (e) {
-                deferredEvents.push(e);
-                deferredTimelines.push(timeline);
+        let deferredEvents = [];
+        let deferredTracks = [];
+        let percent="";
+
+        [...this._trackCacheMap.values()].forEach((track,index)=>{
+            let result = track.nextFrame(time, delta);
+            if (dataUtil.isString(result)) {
+                deferredEvents.push(result);
+                deferredTracks.push(track);
+            }else if(dataUtil.isNumeric(result)){
+                percent=result;
+            }
+        });
+
+        let len = deferredEvents.length;
+        for (let i = 0; i < len; i++) {
+            deferredTracks[i].fire(deferredEvents[i]);
+        }
+
+        if(dataUtil.isNumeric(percent)){
+            for (let i = 0; i < this._onframeList.length; i++) {
+                this._onframeList[i](this._target, percent);
             }
         }
 
-        len = deferredEvents.length;
-        for (var i = 0; i < len; i++) {
-            deferredTimelines[i].fire(deferredEvents[i]);
+        if(this.isFinished()){
+            this._doneCallback();
         }
     },
 
     pause: function () {
-        for (var i = 0; i < this._timelineList.length; i++) {
-            this._timelineList[i].pause();
-        }
+        [...this._trackCacheMap.values()].forEach((track,index)=>{
+            track.pause();
+        });
         this._paused = true;
     },
 
     resume: function () {
-        for (var i = 0; i < this._timelineList.length; i++) {
-            this._timelineList[i].resume();
-        }
+        [...this._trackCacheMap.values()].forEach((track,index)=>{
+            track.resume();
+        });
         this._paused = false;
     },
 
@@ -234,13 +219,6 @@ AnimationProcess.prototype = {
             this._doneList.push(cb);
         }
         return this;
-    },
-
-    /**
-     * @return {Array.<module:zrender/animation/Timeline>}
-     */
-    getClips: function () {
-        return this._timelineList;
     }
 };
 

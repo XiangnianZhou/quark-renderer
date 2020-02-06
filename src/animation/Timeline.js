@@ -19,8 +19,8 @@ import easingFuncs from './utils/easing';
 import * as colorUtil from '../core/colorUtil';
 import * as dataUtil from '../core/dataStructureUtil';
 
-function Timeline(animationProcess, easing, oneTrackDone, keyframes, propName, forceAnimate) {
-    let options=this._calculateParams(animationProcess, easing, oneTrackDone, keyframes, propName, forceAnimate);
+function Timeline(animationProcess, easing, ondestroy, keyframes, propName, forceAnimate) {
+    let options=this._calculateParams(animationProcess, easing, ondestroy, keyframes, propName, forceAnimate);
     //如果传入的参数不正确，则无法构造实例
     if(!options){
         return null;
@@ -83,7 +83,7 @@ Timeline.prototype = {
             }
             return 'destroy';
         }
-        return null;
+        return percent;
     },
 
     restart: function (globalTime) {
@@ -111,12 +111,12 @@ Timeline.prototype = {
      * 创建片段
      * @param {*} animationProcess 
      * @param {*} easing 
-     * @param {*} oneTrackDone 
+     * @param {*} ondestroy 
      * @param {*} keyframes 
      * @param {*} propName 
      * @param {*} forceAnimate 
      */
-    _calculateParams:function(animationProcess, easing, oneTrackDone, keyframes, propName, forceAnimate) {
+    _calculateParams:function(animationProcess, easing, ondestroy, keyframes, propName, forceAnimate) {
         let getter = animationProcess._getter;
         let setter = animationProcess._setter;
         let useSpline = easing === 'spline';
@@ -304,7 +304,7 @@ Timeline.prototype = {
             loop: animationProcess._loop,
             delay: animationProcess._delay,
             onframe: onframe,
-            ondestroy: oneTrackDone,
+            ondestroy: ondestroy,
             easing: (easing && easing !== 'spline')?easing:'Linear'
         };
         return options;

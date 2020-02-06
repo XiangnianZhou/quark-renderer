@@ -454,6 +454,10 @@ export function isString(value) {
     return objToString.call(value) === '[object String]';
 }
 
+export function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
 /**
  * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
