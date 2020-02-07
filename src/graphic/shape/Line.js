@@ -4,7 +4,7 @@
  */
 
 import Path from '../Path';
-import {subPixelOptimizeLine} from '../helper/subPixelOptimize';
+import {subPixelOptimizeLine} from '../utils/subPixelOptimize';
 
 // Avoid create repeatly.
 var subPixelOptimizeOutputShape = {};

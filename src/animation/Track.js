@@ -4,8 +4,8 @@
  * 每一种属性天然成为一条动画轨道，把这些轨道上的变化过程封装在 Timeline 中。
  */
 import Timeline from './Timeline';
-import * as colorUtil from '../core/colorUtil';
-import * as dataUtil from '../core/dataStructureUtil';
+import * as colorUtil from '../core/utils/colorUtil';
+import * as dataUtil from '../core/utils/dataStructureUtil';
 
 export default class Track{
     constructor(options){

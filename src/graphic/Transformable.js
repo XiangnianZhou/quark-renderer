@@ -4,8 +4,8 @@
  * @author pissang (https://www.github.com/pissang)
  */
 
-import * as matrix from '../core/matrix';
-import * as vector from '../core/vector';
+import * as matrix from '../core/utils/matrix';
+import * as vector from '../core/utils/vector';
 
 var mIdentity = matrix.identity;
 

@@ -7,9 +7,9 @@
 * LICENSE
 * https://github.com/ecomfe/zrender/blob/master/LICENSE.txt
 */
-import guid from './core/guid';
+import guid from './core/utils/guid';
 import env from './core/env';
-import * as zrUtil from './core/dataStructureUtil';
+import * as zrUtil from './core/utils/dataStructureUtil';
 import Handler from './event/Handler';
 import Storage from './Storage';
 import Painter from './Painter';

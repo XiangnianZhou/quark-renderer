@@ -4,7 +4,7 @@
  */
 
 import Path from '../Path';
-import * as vec2 from '../../core/vector';
+import * as vec2 from '../../core/utils/vector';
 import {
     quadraticSubdivide,
     cubicSubdivide,
@@ -12,7 +12,7 @@ import {
     cubicAt,
     quadraticDerivativeAt,
     cubicDerivativeAt
-} from '../../core/curveUtil';
+} from '../../core/utils/curveUtil';
 
 var out = [];
 

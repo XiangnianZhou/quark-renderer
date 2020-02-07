@@ -10,8 +10,8 @@ import {
     removeEventListener,
     normalizeEvent,
     getNativeEvent
-} from '../core/eventUtil';
-import * as zrUtil from '../core/dataStructureUtil';
+} from '../core/utils/eventUtil';
+import * as zrUtil from '../core/utils/dataStructureUtil';
 import Eventful from './Eventful';
 import env from '../core/env';
 

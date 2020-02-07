@@ -6,7 +6,7 @@
  *         errorrik (errorrik@gmail.com)
  */
 
-import {distance as v2Distance} from '../../core/vector';
+import {distance as v2Distance} from '../../core/utils/vector';
 
 /**
  * @inner

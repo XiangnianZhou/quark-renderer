@@ -4,8 +4,8 @@
  */
 
 import Path from '../Path';
-import * as roundRectHelper from '../helper/roundRect';
-import {subPixelOptimizeRect} from '../helper/subPixelOptimize';
+import * as roundRectHelper from '../utils/roundRect';
+import {subPixelOptimizeRect} from '../utils/subPixelOptimize';
 
 // Avoid create repeatly.
 var subPixelOptimizeOutputShape = {};

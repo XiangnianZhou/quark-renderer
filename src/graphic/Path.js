@@ -1,5 +1,5 @@
 import Displayable from './Displayable';
-import * as zrUtil from '../core/dataStructureUtil';
+import * as zrUtil from '../core/utils/dataStructureUtil';
 import PathProxy from '../core/PathProxy';
 import * as pathContain from '../core/contain/path';
 import Pattern from './Pattern';

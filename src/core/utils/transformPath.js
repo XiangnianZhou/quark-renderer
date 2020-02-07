@@ -1,4 +1,4 @@
-import PathProxy from './PathProxy';
+import PathProxy from '../PathProxy';
 import {applyTransform as v2ApplyTransform} from './vector';
 
 var CMD = PathProxy.CMD;

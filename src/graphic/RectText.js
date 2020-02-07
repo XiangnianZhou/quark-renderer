@@ -3,7 +3,7 @@
  * @module zrender/mixin/RectText
  */
 
-import * as textHelper from './helper/text';
+import * as textHelper from './utils/text';
 import BoundingRect from '../core/BoundingRect';
 import {WILL_BE_RESTORED} from './constant';
 

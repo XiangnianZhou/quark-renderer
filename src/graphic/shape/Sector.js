@@ -4,7 +4,7 @@
  */
 
 import Path from '../Path';
-import fixClipWithShadow from '../helper/fixClipWithShadow';
+import fixClipWithShadow from '../utils/fixClipWithShadow';
 
 export default Path.extend({
 

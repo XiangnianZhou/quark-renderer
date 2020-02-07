@@ -1,5 +1,5 @@
 
-import fixShadow from './helper/fixShadow';
+import fixShadow from './utils/fixShadow';
 import {ContextCachedBy} from './constant';
 
 var STYLE_COMMON_PROPS = [

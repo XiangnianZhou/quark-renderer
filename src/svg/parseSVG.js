@@ -10,9 +10,9 @@ import Polygon from '../graphic/shape/Polygon';
 import Polyline from '../graphic/shape/Polyline';
 import LinearGradient from '../graphic/LinearGradient';
 import Style from '../graphic/Style';
-import * as matrix from '../core/matrix';
-import { createFromString } from '../core/pathUtil';
-import { isString, extend, defaults, trim, each } from '../core/dataStructureUtil';
+import * as matrix from '../core/utils/matrix';
+import { createFromString } from '../core/utils/pathUtil';
+import { isString, extend, defaults, trim, each } from '../core/utils/dataStructureUtil';
 
 // Most of the values can be separated by comma and/or white space.
 var DILIMITER_REG = /[\s,]+/;

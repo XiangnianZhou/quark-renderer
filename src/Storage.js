@@ -6,13 +6,13 @@
  * @alias module:zrender/Storage
  */
 
-import * as util from './core/dataStructureUtil';
+import * as util from './core/utils/dataStructureUtil';
 import env from './core/env';
 import Group from './graphic/Group';
 
 // Use timsort because in most case elements are partially sorted
 // https://jsfiddle.net/pissang/jr4x7mdm/8/
-import timsort from './core/timsort';
+import timsort from './core/utils/timsort';
 
 function shapeCompareFunc(a, b) {
     if (a.zlevel === b.zlevel) {

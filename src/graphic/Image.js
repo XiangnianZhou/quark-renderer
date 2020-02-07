@@ -1,7 +1,7 @@
 import Displayable from './Displayable';
 import BoundingRect from '../core/BoundingRect';
-import * as zrUtil from '../core/dataStructureUtil';
-import * as imageHelper from './helper/image';
+import * as zrUtil from '../core/utils/dataStructureUtil';
+import * as imageHelper from './utils/image';
 
 /**
  * @alias zrender/graphic/Image

@@ -1,12 +1,12 @@
 import BoundingRect from '../BoundingRect';
-import * as imageHelper from '../../graphic/helper/image';
+import * as imageHelper from '../../graphic/utils/image';
 import {
     getContext,
     extend,
     retrieve2,
     retrieve3,
     trim
-} from '../dataStructureUtil';
+} from '../utils/dataStructureUtil';
 
 var textWidthCache = {};
 var textWidthCacheCounter = 0;

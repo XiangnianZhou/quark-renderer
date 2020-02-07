@@ -3,7 +3,7 @@
  * 
  * @module echarts/animation/AnimationProcess
  */
-import * as dataUtil from '../core/dataStructureUtil';
+import * as dataUtil from '../core/utils/dataStructureUtil';
 import Track from './Track';
 
 /**

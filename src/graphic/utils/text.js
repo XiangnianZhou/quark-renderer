@@ -6,7 +6,7 @@ import {
     normalizeCssArray,
     isString,
     isObject
-} from '../../core/dataStructureUtil';
+} from '../../core/utils/dataStructureUtil';
 import * as textContain from '../../core/contain/text';
 import * as roundRectHelper from './roundRect';
 import * as imageHelper from './image';

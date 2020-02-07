@@ -3,7 +3,7 @@
  */
 
 import Path from '../Path';
-import * as polyHelper from '../helper/poly';
+import * as polyHelper from '../utils/poly';
 
 export default Path.extend({
 

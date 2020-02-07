@@ -4,7 +4,7 @@ import * as cubic from './cubic';
 import * as quadratic from './quadratic';
 import * as arc from './arc';
 import {normalizeRadian} from './radianUtil';
-import * as curve from '../curveUtil';
+import * as curve from '../utils/curveUtil';
 import windingLine from './windingLine';
 
 var CMD = PathProxy.CMD;

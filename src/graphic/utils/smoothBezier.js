@@ -14,7 +14,7 @@ import {
     add as v2Add,
     clone as v2Clone,
     sub as v2Sub
-} from '../../core/vector';
+} from '../../core/utils/vector';
 
 /**
  * 贝塞尔平滑曲线

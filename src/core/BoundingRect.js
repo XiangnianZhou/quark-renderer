@@ -2,8 +2,8 @@
  * @module echarts/core/BoundingRect
  */
 
-import * as vec2 from './vector';
-import * as matrix from './matrix';
+import * as vec2 from './utils/vector';
+import * as matrix from './utils/matrix';
 
 var v2ApplyTransform = vec2.applyTransform;
 var mathMin = Math.min;

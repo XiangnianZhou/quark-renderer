@@ -2,8 +2,8 @@
  * Utilities for mouse or touch events.
  */
 
-import Eventful from '../event/Eventful';
-import env from './env';
+import Eventful from '../../event/Eventful';
+import env from '../env';
 import {buildTransformer} from './fourPointsTransform';
 
 var isDomLevel2 = (typeof window !== 'undefined') && !!window.addEventListener;

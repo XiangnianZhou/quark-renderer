@@ -3,11 +3,11 @@
  * 图形顶级抽象类，直接子类是 graphic/Displayable 。
  * Dispalyable 的直接子类是 graphic/Path，graphic 包中的所有形状对象都是 Path 的子类。
  */
-import guid from '../core/guid';
+import guid from '../core/utils/guid';
 import Eventful from '../event/Eventful';
 import Transformable from './Transformable';
 import Animatable from '../animation/Animatable';
-import * as zrUtil from '../core/dataStructureUtil';
+import * as zrUtil from '../core/utils/dataStructureUtil';
 
 /**
  * @alias module:zrender/Element

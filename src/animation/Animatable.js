@@ -2,7 +2,7 @@
  * 动画接口类，在 Element 类中 mixin 此类提供的功能，为图元提供动画功能。
  */
 import AnimationProcess from './AnimationProcess';
-import * as dataUtil from '../core/dataStructureUtil';
+import * as dataUtil from '../core/utils/dataStructureUtil';
 
 /**
  * @alias modue:zrender/animation/Animatable

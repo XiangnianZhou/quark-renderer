@@ -14,8 +14,8 @@
 // http://iosoteric.com/additive-animations-animatewithduration-in-ios-8/
 // https://developer.apple.com/videos/wwdc2014/#236
 
-import * as dataUtil from '../core/dataStructureUtil';
-import {Dispatcher} from '../core/eventUtil';
+import * as dataUtil from '../core/utils/dataStructureUtil';
+import {Dispatcher} from '../core/utils/eventUtil';
 import requestAnimationFrame from './utils/requestAnimationFrame';
 import AnimationProcess from './AnimationProcess';
 
