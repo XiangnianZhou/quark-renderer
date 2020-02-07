@@ -4,7 +4,7 @@
  */
 
 import Definable from './Definable';
-import * as zrUtil from '../../core/dataStructureUtil';
+import * as dataUtil from '../../core/dataStructureUtil';
 import * as colorTool from '../../core/colorUtil';
 
 /**
@@ -26,7 +26,7 @@ function GradientManager(zrId, svgRoot) {
 }
 
 
-zrUtil.inherits(GradientManager, Definable);
+dataUtil.inherits(GradientManager, Definable);
 
 
 /**
@@ -42,7 +42,7 @@ GradientManager.prototype.addWithoutUpdate = function (
 ) {
     if (displayable && displayable.style) {
         var that = this;
-        zrUtil.each(['fill', 'stroke'], function (fillOrStroke) {
+        dataUtil.each(['fill', 'stroke'], function (fillOrStroke) {
             if (displayable.style[fillOrStroke]
                 && (displayable.style[fillOrStroke].type === 'linear'
                 || displayable.style[fillOrStroke].type === 'radial')

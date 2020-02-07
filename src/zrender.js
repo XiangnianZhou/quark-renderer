@@ -9,7 +9,6 @@
 */
 import guid from './core/utils/guid';
 import env from './core/env';
-import * as zrUtil from './core/utils/dataStructureUtil';
 import Handler from './event/Handler';
 import Storage from './Storage';
 import Painter from './Painter';

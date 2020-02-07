@@ -1,5 +1,5 @@
 import Displayable from './Displayable';
-import * as zrUtil from '../core/utils/dataStructureUtil';
+import * as dataUtil from '../core/utils/dataStructureUtil';
 import PathProxy from '../core/PathProxy';
 import * as pathContain from '../core/contain/path';
 import Pattern from './Pattern';
@@ -312,7 +312,7 @@ Path.prototype = {
         var shape = this.shape;
         // Path from string may not have shape
         if (shape) {
-            if (zrUtil.isObject(key)) {
+            if (dataUtil.isObject(key)) {
                 for (var name in key) {
                     if (key.hasOwnProperty(name)) {
                         shape[name] = key[name];
@@ -376,7 +376,7 @@ Path.extend = function (defaults) {
         defaults.init && defaults.init.call(this, opts);
     };
 
-    zrUtil.inherits(Sub, Path);
+    dataUtil.inherits(Sub, Path);
 
     // FIXME 不能 extend position, rotation 等引用对象
     for (var name in defaults) {
@@ -389,6 +389,6 @@ Path.extend = function (defaults) {
     return Sub;
 };
 
-zrUtil.inherits(Path, Displayable);
+dataUtil.inherits(Path, Displayable);
 
 export default Path;

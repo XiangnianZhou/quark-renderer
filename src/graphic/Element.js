@@ -7,7 +7,7 @@ import guid from '../core/utils/guid';
 import Eventful from '../event/Eventful';
 import Transformable from './Transformable';
 import Animatable from '../animation/Animatable';
-import * as zrUtil from '../core/utils/dataStructureUtil';
+import * as dataUtil from '../core/utils/dataStructureUtil';
 
 /**
  * @alias module:zrender/Element
@@ -169,7 +169,7 @@ Element.prototype = {
         if (typeof key === 'string') {
             this.attrKV(key, value);
         }
-        else if (zrUtil.isObject(key)) {
+        else if (dataUtil.isObject(key)) {
             for (var name in key) {
                 if (key.hasOwnProperty(name)) {
                     this.attrKV(name, key[name]);
@@ -264,8 +264,8 @@ Element.prototype = {
     }
 };
 
-zrUtil.mixin(Element, Animatable);
-zrUtil.mixin(Element, Transformable);
-zrUtil.mixin(Element, Eventful);
+dataUtil.mixin(Element, Animatable);
+dataUtil.mixin(Element, Transformable);
+dataUtil.mixin(Element, Eventful);
 
 export default Element;

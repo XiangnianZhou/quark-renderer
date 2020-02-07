@@ -1,12 +1,5 @@
 
-import {
-    retrieve2,
-    retrieve3,
-    each,
-    normalizeCssArray,
-    isString,
-    isObject
-} from '../../core/utils/dataStructureUtil';
+import * as dataUtil from '../../core/utils/dataStructureUtil';
 import * as textContain from '../../core/contain/text';
 import * as roundRectHelper from './roundRect';
 import * as imageHelper from './image';
@@ -35,7 +28,7 @@ var _tmpBoxPositionResult = {};
  */
 export function normalizeTextStyle(style) {
     normalizeStyle(style);
-    each(style.rich, normalizeStyle);
+    dataUtil.each(style.rich, normalizeStyle);
     return style;
 }
 
@@ -59,7 +52,7 @@ function normalizeStyle(style) {
 
         var textPadding = style.textPadding;
         if (textPadding) {
-            style.textPadding = normalizeCssArray(style.textPadding);
+            style.textPadding = dataUtil.normalizeCssArray(style.textPadding);
         }
     }
 }
@@ -382,10 +375,10 @@ function placeToken(hostEl, ctx, token, style, lineHeight, lineTop, x, textAlign
         y -= token.height / 2 - textPadding[2] - token.textHeight / 2;
     }
 
-    setCtx(ctx, 'shadowBlur', retrieve3(tokenStyle.textShadowBlur, style.textShadowBlur, 0));
+    setCtx(ctx, 'shadowBlur', dataUtil.retrieve3(tokenStyle.textShadowBlur, style.textShadowBlur, 0));
     setCtx(ctx, 'shadowColor', tokenStyle.textShadowColor || style.textShadowColor || 'transparent');
-    setCtx(ctx, 'shadowOffsetX', retrieve3(tokenStyle.textShadowOffsetX, style.textShadowOffsetX, 0));
-    setCtx(ctx, 'shadowOffsetY', retrieve3(tokenStyle.textShadowOffsetY, style.textShadowOffsetY, 0));
+    setCtx(ctx, 'shadowOffsetX', dataUtil.retrieve3(tokenStyle.textShadowOffsetX, style.textShadowOffsetX, 0));
+    setCtx(ctx, 'shadowOffsetY', dataUtil.retrieve3(tokenStyle.textShadowOffsetY, style.textShadowOffsetY, 0));
 
     setCtx(ctx, 'textAlign', textAlign);
     // Force baseline to be "middle". Otherwise, if using "top", the
@@ -396,7 +389,7 @@ function placeToken(hostEl, ctx, token, style, lineHeight, lineTop, x, textAlign
 
     var textStroke = getStroke(tokenStyle.textStroke || style.textStroke, textStrokeWidth);
     var textFill = getFill(tokenStyle.textFill || style.textFill);
-    var textStrokeWidth = retrieve2(tokenStyle.textStrokeWidth, style.textStrokeWidth);
+    var textStrokeWidth = dataUtil.retrieve2(tokenStyle.textStrokeWidth, style.textStrokeWidth);
 
     // Fill after stroke so the outline will not cover the main part.
     if (textStroke) {
@@ -423,7 +416,7 @@ function drawBackground(hostEl, ctx, style, x, y, width, height) {
     var textBackgroundColor = style.textBackgroundColor;
     var textBorderWidth = style.textBorderWidth;
     var textBorderColor = style.textBorderColor;
-    var isPlainBg = isString(textBackgroundColor);
+    var isPlainBg = dataUtil.isString(textBackgroundColor);
 
     setCtx(ctx, 'shadowBlur', style.textBoxShadowBlur || 0);
     setCtx(ctx, 'shadowColor', style.textBoxShadowColor || 'transparent');
@@ -457,7 +450,7 @@ function drawBackground(hostEl, ctx, style, x, y, width, height) {
             ctx.fill();
         }
     }
-    else if (isObject(textBackgroundColor)) {
+    else if (dataUtil.isObject(textBackgroundColor)) {
         var image = textBackgroundColor.image;
 
         image = imageHelper.createOrUpdateImage(

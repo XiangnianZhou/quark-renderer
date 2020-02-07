@@ -4,7 +4,7 @@
  */
 
 import Definable from './Definable';
-import * as zrUtil from '../../core/dataStructureUtil';
+import * as dataUtil from '../../core/dataStructureUtil';
 import * as matrix from '../../core/matrix';
 
 /**
@@ -20,7 +20,7 @@ function ClippathManager(zrId, svgRoot) {
 }
 
 
-zrUtil.inherits(ClippathManager, Definable);
+dataUtil.inherits(ClippathManager, Definable);
 
 
 /**
@@ -158,7 +158,7 @@ ClippathManager.prototype.markUsed = function (displayable) {
     var that = this;
     // displayable.__clipPaths can only be `null`/`undefined` or an non-empty array.
     if (displayable.__clipPaths) {
-        zrUtil.each(displayable.__clipPaths, function (clipPath) {
+        dataUtil.each(displayable.__clipPaths, function (clipPath) {
             if (clipPath._dom) {
                 Definable.prototype.markUsed.call(that, clipPath._dom);
             }

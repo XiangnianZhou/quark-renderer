@@ -11,7 +11,7 @@ import {
     normalizeEvent,
     getNativeEvent
 } from '../core/utils/eventUtil';
-import * as zrUtil from '../core/utils/dataStructureUtil';
+import * as dataUtil from '../core/utils/dataStructureUtil';
 import Eventful from './Eventful';
 import env from '../core/env';
 
@@ -72,7 +72,7 @@ var localNativeListenerNames = (function () {
     var pointerEventNameMap = {
         pointerdown: 1, pointerup: 1, pointermove: 1, pointerout: 1
     };
-    var pointerHandlerNames = zrUtil.map(mouseHandlerNames, function (name) {
+    var pointerHandlerNames = dataUtil.map(mouseHandlerNames, function (name) {
         var nm = name.replace('mouse', 'pointer');
         return pointerEventNameMap.hasOwnProperty(nm) ? nm : name;
     });
@@ -281,7 +281,7 @@ var localDOMHandlers = {
  * ZRender 内部的 DOM 结构默认支持以下7个事件。
  * @this {HandlerProxy}
  */
-zrUtil.each(['click', 'mousemove', 'mousedown', 'mouseup', 'mousewheel', 'dblclick', 'contextmenu'], function (name) {
+dataUtil.each(['click', 'mousemove', 'mousedown', 'mouseup', 'mousewheel', 'dblclick', 'contextmenu'], function (name) {
     localDOMHandlers[name] = function (event) {
         event = normalizeEvent(this.dom, event);
         this.trigger(name, event);
@@ -372,7 +372,7 @@ function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlo
         // 2. On MS Surface, it probablely only trigger mousedown but no mouseup when tap on
         // screen, which do not occurs in pointer event.
         // So we use pointer event to both detect touch gesture and mouse behavior.
-        zrUtil.each(nativeListenerNames.pointer, function (nativeEventName) {
+        dataUtil.each(nativeListenerNames.pointer, function (nativeEventName) {
             mountSingle(nativeEventName, function (event) {
                 if (localOrGlobal || !isTriggeredFromLocal(event)) {
                     localOrGlobal && markTriggeredFromLocal(event);
@@ -398,7 +398,7 @@ function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlo
     }
     else {
         if (env.touchEventsSupported) {
-            zrUtil.each(nativeListenerNames.touch, function (nativeEventName) {
+            dataUtil.each(nativeListenerNames.touch, function (nativeEventName) {
                 mountSingle(nativeEventName, function (event) {
                     if (localOrGlobal || !isTriggeredFromLocal(event)) {
                         localOrGlobal && markTriggeredFromLocal(event);
@@ -416,7 +416,7 @@ function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlo
         // mouse event can not be handle in those devices.
         // 2. On MS Surface, Chrome will trigger both touch event and mouse event. How to prevent
         // mouseevent after touch event triggered, see `setTouchTimer`.
-        zrUtil.each(nativeListenerNames.mouse, function (nativeEventName) {
+        dataUtil.each(nativeListenerNames.mouse, function (nativeEventName) {
             mountSingle(nativeEventName, function (event) {
                 event = getNativeEvent(event);
                 if (!scope.touching
@@ -429,7 +429,7 @@ function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlo
         });
 
         //挂载键盘事件
-        zrUtil.each(nativeListenerNames.keyboard,function(nativeEventName){
+        dataUtil.each(nativeListenerNames.keyboard,function(nativeEventName){
             mountSingle(nativeEventName, function (event) {
                 if (localOrGlobal || !isTriggeredFromLocal(event)) {
                     localOrGlobal && markTriggeredFromLocal(event);
@@ -514,7 +514,7 @@ handlerDomProxyProto.setCursor = function (cursorStyle) {
  * @param {boolean} enableOrDisable `true`: enable page event. `false`: disable page event.
  */
 handlerDomProxyProto.togglePageEvent = function (enableOrDisable) {
-    zrUtil.assert(enableOrDisable != null);
+    dataUtil.assert(enableOrDisable != null);
 
     if (pageEventSupported && (this._pageEventEnabled ^ enableOrDisable)) {
         this._pageEventEnabled = enableOrDisable;
@@ -527,6 +527,6 @@ handlerDomProxyProto.togglePageEvent = function (enableOrDisable) {
 };
 
 //注意，HandlerDomProxy 也混入了 Eventful 里面提供的事件处理工具。
-zrUtil.mixin(HandlerDomProxy, Eventful);
+dataUtil.mixin(HandlerDomProxy, Eventful);
 
 export default HandlerDomProxy;

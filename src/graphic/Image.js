@@ -1,6 +1,6 @@
 import Displayable from './Displayable';
 import BoundingRect from '../core/BoundingRect';
-import * as zrUtil from '../core/utils/dataStructureUtil';
+import * as dataUtil from '../core/utils/dataStructureUtil';
 import * as imageHelper from './utils/image';
 
 /**
@@ -108,6 +108,6 @@ ZImage.prototype = {
     }
 };
 
-zrUtil.inherits(ZImage, Displayable);
+dataUtil.inherits(ZImage, Displayable);
 
 export default ZImage;

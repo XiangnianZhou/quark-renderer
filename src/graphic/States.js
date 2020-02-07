@@ -18,7 +18,7 @@
  *           Transition object or a string descriptor like '* 30 0 Linear'
  */
 
-import * as zrUtil from '../core/dataStructureUtil';
+import * as dataUtil from '../core/dataStructureUtil';
 import Style from './Style';
 import {copy as vec2Copy} from '../core/vector';
 
@@ -156,12 +156,12 @@ GraphicStates.prototype = {
             var el = this._el;
             // setState 的时候自带的 style 和 shape 都会被直接覆盖
             // 所以这边先把自带的 style 和 shape 扩展到初始状态中
-            zrUtil.merge(state.style, el.style, false, false);
+            dataUtil.merge(state.style, el.style, false, false);
             if (state.shape) {
-                zrUtil.merge(state.shape, el.shape, false, true);
+                dataUtil.merge(state.shape, el.shape, false, true);
             }
             else {
-                state.shape = zrUtil.clone(el.shape, true);
+                state.shape = dataUtil.clone(el.shape, true);
             }
 
             for (var name in this._states) {
@@ -175,7 +175,7 @@ GraphicStates.prototype = {
     _extendFromInitial: function (state) {
         var initialState = this._states[this._initialState];
         if (initialState && state !== initialState) {
-            zrUtil.merge(state, initialState, false, true);
+            dataUtil.merge(state, initialState, false, true);
         }
     },
 
@@ -237,7 +237,7 @@ GraphicStates.prototype = {
                     }
                 }
                 if (state.shape) {
-                    el.shape = zrUtil.clone(state.shape, true);
+                    el.shape = dataUtil.clone(state.shape, true);
                 }
 
                 el.dirty();
@@ -377,7 +377,7 @@ GraphicStates.prototype = {
                 .when(transitionCfg.duration, obj)
                 .delay(transitionCfg.dealy)
                 .done(function () {
-                    var idx = zrUtil.indexOf(taps, 1);
+                    var idx = dataUtil.indexOf(taps, 1);
                     if (idx > 0) {
                         taps.splice(idx, 1);
                     }
@@ -408,7 +408,7 @@ GraphicStates.prototype = {
     },
 
     removeSubStates: function (states) {
-        var idx = zrUtil.indexOf(this._subStates, states);
+        var idx = dataUtil.indexOf(this._subStates, states);
         if (idx >= 0) {
             this._subStates.splice(states, 1);
         }

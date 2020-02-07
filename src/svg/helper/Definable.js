@@ -5,7 +5,7 @@
  */
 
 import {createElement} from '../core';
-import * as zrUtil from '../../core/dataStructureUtil';
+import * as dataUtil from '../../core/dataStructureUtil';
 import Path from '../../graphic/Path';
 import ZImage from '../../graphic/Image';
 import ZText from '../../graphic/Text';
@@ -161,7 +161,7 @@ Definable.prototype.getDoms = function () {
     }
 
     var doms = [];
-    zrUtil.each(this._tagNames, function (tagName) {
+    dataUtil.each(this._tagNames, function (tagName) {
         var tags = defs.getElementsByTagName(tagName);
         // Note that tags is HTMLCollection, which is array-like
         // rather than real array.
@@ -180,7 +180,7 @@ Definable.prototype.getDoms = function () {
 Definable.prototype.markAllUnused = function () {
     var doms = this.getDoms();
     var that = this;
-    zrUtil.each(doms, function (dom) {
+    dataUtil.each(doms, function (dom) {
         dom[that._markLabel] = MARK_UNUSED;
     });
 };
@@ -210,7 +210,7 @@ Definable.prototype.removeUnused = function () {
 
     var doms = this.getDoms();
     var that = this;
-    zrUtil.each(doms, function (dom) {
+    dataUtil.each(doms, function (dom) {
         if (dom[that._markLabel] !== MARK_USED) {
             // Remove gradient
             defs.removeChild(dom);

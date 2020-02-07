@@ -1,5 +1,5 @@
 import Displayable from './Displayable';
-import * as zrUtil from '../core/utils/dataStructureUtil';
+import * as dataUtil from '../core/utils/dataStructureUtil';
 import * as textContain from '../core/contain/text';
 import * as textHelper from './utils/text';
 import {ContextCachedBy} from './constant';
@@ -91,6 +91,6 @@ Text.prototype = {
     }
 };
 
-zrUtil.inherits(Text, Displayable);
+dataUtil.inherits(Text, Displayable);
 
 export default Text;

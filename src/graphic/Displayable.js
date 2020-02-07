@@ -4,7 +4,7 @@
  * @module zrender/graphic/Displayable
  */
 
-import * as zrUtil from '../core/utils/dataStructureUtil';
+import * as dataUtil from '../core/utils/dataStructureUtil';
 import Style from './Style';
 import Element from './Element';
 import RectText from './RectText';
@@ -284,9 +284,9 @@ Displayable.prototype = {
     calculateTextPosition: null
 };
 
-zrUtil.inherits(Displayable, Element);
+dataUtil.inherits(Displayable, Element);
 
-zrUtil.mixin(Displayable, RectText);
-// zrUtil.mixin(Displayable, Stateful);
+dataUtil.mixin(Displayable, RectText);
+// dataUtil.mixin(Displayable, Stateful);
 
 export default Displayable;

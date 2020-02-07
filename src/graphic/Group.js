@@ -17,7 +17,7 @@
  *     zr.add(g);
  */
 
-import * as zrUtil from '../core/utils/dataStructureUtil';
+import * as dataUtil from '../core/utils/dataStructureUtil';
 import Element from './Element';
 import BoundingRect from '../core/BoundingRect';
 
@@ -168,7 +168,7 @@ Group.prototype = {
         var storage = this.__storage;
         var children = this._children;
 
-        var idx = zrUtil.indexOf(children, child);
+        var idx = dataUtil.indexOf(children, child);
         if (idx < 0) {
             return this;
         }
@@ -310,6 +310,6 @@ Group.prototype = {
     }
 };
 
-zrUtil.inherits(Group, Element);
+dataUtil.inherits(Group, Element);
 
 export default Group;

@@ -1,4 +1,4 @@
-import * as zrUtil from '../core/utils/dataStructureUtil';
+import * as dataUtil from '../core/utils/dataStructureUtil';
 import Gradient from './Gradient';
 
 /**
@@ -37,6 +37,6 @@ LinearGradient.prototype = {
     constructor: LinearGradient
 };
 
-zrUtil.inherits(LinearGradient, Gradient);
+dataUtil.inherits(LinearGradient, Gradient);
 
 export default LinearGradient;

@@ -4,7 +4,7 @@
  */
 
 import Definable from './Definable';
-import * as zrUtil from '../../core/dataStructureUtil';
+import * as dataUtil from '../../core/dataStructureUtil';
 
 /**
  * Manages SVG shadow elements.
@@ -26,7 +26,7 @@ function ShadowManager(zrId, svgRoot) {
 }
 
 
-zrUtil.inherits(ShadowManager, Definable);
+dataUtil.inherits(ShadowManager, Definable);
 
 
 /**
