@@ -1,0 +1,13 @@
+[
+  {
+    "name": "Fish Desktop V3.11.1",
+    "groups": [
+      {
+        "name": "内核",
+        "classes": [
+          "zrender.core.ZRender"
+        ]
+      }
+    ]
+  }
+]

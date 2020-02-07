@@ -7,6 +7,10 @@
 * LICENSE
 * https://github.com/ecomfe/zrender/blob/master/LICENSE.txt
 */
+/**
+ * ZRender, a high performance 2d drawing library.
+ * @class zrender.core.ZRender
+ */
 import guid from './core/utils/guid';
 import env from './core/env';
 import Handler from './event/Handler';

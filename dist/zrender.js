@@ -9972,6 +9972,7 @@ Painter.prototype = {
     },
 
     _paintList: function (list, paintAll, redrawId) {
+        //如果 redrawId 不一致，说明下一个动画帧已经到来，这里就会直接跳过去，相当于跳过了一帧
         if (this._redrawId !== redrawId) {
             return;
         }
@@ -9987,7 +9988,7 @@ Painter.prototype = {
         }
 
         //如果在一帧的时间内没有绘制完，在下一帧继续绘制
-        //但是在下一帧的时候，可能还会有另外的动画回调，这里会造成 _paintList 方法被放在 requestAnimationFrame 的回调队列中。
+        //TODO:这里需要测试一个极限值出来，在 16ms 的时间里面最多能绘制多少个图元。
         if (!finished) {
             var self = this;
             requestAnimationFrame(function () {
@@ -11350,6 +11351,10 @@ mixin(HandlerDomProxy, Eventful);
 * LICENSE
 * https://github.com/ecomfe/zrender/blob/master/LICENSE.txt
 */
+/**
+ * ZRender, a high performance 2d drawing library.
+ * @class zrender.core.ZRender
+ */
 /**
  * ZRender 是全局入口，同一个浏览器 window 中可以有多个 ZRender 实例，每个 ZRender 实例有自己唯一的 ID。
  */

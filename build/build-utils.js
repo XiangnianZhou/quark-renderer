@@ -28,9 +28,7 @@ const removeDEVPlugin = require('./babel-plugin-transform-remove-dev');
 exports.build = function (configs) {
     return new Promise(function (promiseResolve, promiseReject) {
         let index = 0;
-
-        buildSingle();
-
+        
         function buildSingle() {
             let singleConfig = configs[index++];
 
@@ -65,6 +63,8 @@ exports.build = function (configs) {
                     promiseReject();
                 });
         }
+
+        buildSingle();
     });
 };
 
@@ -165,7 +165,10 @@ exports.prePulishSrc = function ({inputPath, outputPath, preamble, transform, re
     plugins.push(esm2cjsPlugin);
 
     let {code} = babel.transformFileSync(inputPath, {
-        plugins: plugins
+        plugins: plugins,
+        presets: [
+            "@babel/preset-env"
+        ]
     });
 
     !reserveDEV && removeDEVPlugin.recheckDEV(code);

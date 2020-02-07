@@ -4,7 +4,7 @@
 
 const path = require('path');
 const fsExtra = require('fs-extra');
-const {color, travelSrcDir, prePulishSrc} = require('./helper');
+const {color, travelSrcDir, prePulishSrc} = require('./build-utils');
 
 const ecDir = path.resolve(__dirname, '..');
 const srcDir = path.resolve(__dirname, '../src');

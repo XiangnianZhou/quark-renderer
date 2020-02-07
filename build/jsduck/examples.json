@@ -1,0 +1,583 @@
+[
+  {
+    "title": "FishDesktop Core Components",
+    "items": [
+      {
+        "name": "fish.accordion",
+        "title": "fish.accordion",
+        "description": "百叶窗组件",
+        "url": "accordion/index.html",
+        "icon": "img/accordion.png",
+        "status": ""
+      },
+      {
+        "name": "fish.alert",
+        "title": "fish.alert",
+        "description": "分类提示信息",
+        "url": "alert/index.html",
+        "icon": "img/alert.png",
+        "status": ""
+      },
+      {
+        "name": "fish.autocomplete",
+        "title": "fish.autocomplete",
+        "description": "提示输入组件",
+        "url": "autocomplete/index.html",
+        "icon": "img/autocomplete.png",
+        "status": ""
+      },
+      {
+        "name": "fish.blockui",
+        "title": "fish.blockui",
+        "description": "遮罩组件",
+        "url": "blockui/index.html",
+        "icon": "img/blockui.png",
+        "status": ""
+      },
+      {
+        "name": "fish.button",
+        "title": "fish.button",
+        "description": "按钮组件",
+        "url": "button/index.html",
+        "icon": "img/button.png",
+        "status": ""
+      },
+      {
+        "name": "fish.carousel",
+        "title": "fish.carousel",
+        "description": "轮播图组件",
+        "url": "carousel/index.html",
+        "icon": "img/carousel.png",
+        "status": ""
+      },
+      {
+        "name": "fish.clearinput",
+        "title": "fish.clearinput",
+        "description": "清除输入框组件",
+        "url": "clearinput/index.html",
+        "icon": "img/clearinput.png",
+        "status": ""
+      },
+      {
+        "name": "fish.collapse",
+        "title": "fish.collapse",
+        "description": "折叠组件",
+        "url": "collapse/index.html",
+        "icon": "img/collapse.png",
+        "status": ""
+      },
+      {
+        "name": "fish.combobox",
+        "title": "fish.combobox",
+        "description": "下拉框组件",
+        "url": "combobox/index.html",
+        "icon": "img/combobox.png",
+        "status": ""
+      },
+      {
+        "name": "fish.combogrid",
+        "title": "fish.combogrid",
+        "description": "下拉表格组件",
+        "url": "combogrid/index.html",
+        "icon": "img/combogrid.png",
+        "status": ""
+      },
+      {
+        "name": "fish.combotree",
+        "title": "fish.combotree",
+        "description": "下拉树组件",
+        "url": "combotree/index.html",
+        "icon": "img/combotree.png",
+        "status": ""
+      },
+      {
+        "name": "fish.currencybox",
+        "title": "fish.currencybox",
+        "description": "金额输入框",
+        "url": "currencybox/index.html",
+        "icon": "img/currencybox.png",
+        "status": ""
+      },
+      {
+        "name": "fish.contextmenu",
+        "title": "fish.contextmenu",
+        "description": "右键菜单组件",
+        "url": "contextmenu/index.html",
+        "icon": "img/contextmenu.jpg",
+        "status": ""
+      },
+      {
+        "name": "fish.datetimepicker",
+        "title": "fish.datetimepicker",
+        "description": "日期组件",
+        "url": "datetimepicker/index.html",
+        "icon": "img/datetimepicker.png",
+        "status": ""
+      },
+      {
+        "name": "fish.dropdown",
+        "title": "fish.dropdown",
+        "description": "下拉组件",
+        "url": "dropdown/index.html",
+        "icon": "img/dropdown.png",
+        "status": ""
+      },
+      {
+        "name": "fish.form",
+        "title": "fish.form",
+        "description": "表单组件",
+        "url": "form/index.html",
+        "icon": "img/form-tools.png",
+        "status": ""
+      },
+      {
+        "name": "fish.grid",
+        "title": "fish.grid",
+        "description": "表格组件",
+        "url": "grid/index.html",
+        "icon": "img/grid.png",
+        "status": ""
+      },
+      {
+        "name": "fish.listview",
+        "title": "fish.listview",
+        "description": "列表视图",
+        "url": "listview/index.html",
+        "icon": "img/listview-color.png",
+        "status": ""
+      },
+      {
+        "name": "fish.menu",
+        "title": "fish.menu",
+        "description": "菜单组件",
+        "url": "menu/index.html",
+        "icon": "img/menu.png",
+        "status": ""
+      },
+      {
+        "name": "fish.multiselect",
+        "title": "fish.multiselect",
+        "description": "多选下拉组件",
+        "url": "multiselect/index.html",
+        "icon": "img/multiselect.png",
+        "status": ""
+      },
+      {
+        "name": "fish.navbar",
+        "title": "fish.navbar",
+        "description": "导航栏组件",
+        "url": "navbar/index.html",
+        "icon": "img/navbar.png",
+        "status": ""
+      },
+      {
+        "name": "fish.pagination",
+        "title": "fish.pagination",
+        "description": "分页栏组件",
+        "url": "pagination/index.html",
+        "icon": "img/pagination.png",
+        "status": ""
+      },
+      {
+        "name": "fish.panel",
+        "title": "fish.panel",
+        "description": "面板组件",
+        "url": "panel/index.html",
+        "icon": "img/panel.png",
+        "status": ""
+      },
+      {
+        "name": "fish.popedit",
+        "title": "fish.popedit",
+        "description": "弹出编辑组件",
+        "url": "popedit/index.html",
+        "icon": "img/popedit.png",
+        "status": ""
+      },
+      {
+        "name": "fish.popover",
+        "title": "fish.popover",
+        "description": "弹出组件",
+        "url": "popover/index.html",
+        "icon": "img/popover.png",
+        "status": ""
+      },
+      {
+        "title": "fish.popup",
+        "description": "弹出窗口工具",
+        "url": "popup/index.html",
+        "icon": "img/popup.png",
+        "status": ""
+      },
+      {
+        "title": "fish.progressbar",
+        "description": "进度条组件",
+        "url": "progressbar/index.html",
+        "icon": "img/progressbar.png",
+        "status": ""
+      },
+      {
+        "name": "fish.scrollspy",
+        "title": "fish.scrollspy",
+        "description": "滚动定位组件",
+        "url": "scrollspy/index.html",
+        "icon": "img/scrollspy.png",
+        "status": ""
+      },
+      {
+        "name": "fish.searchbar",
+        "title": "fish.searchbar",
+        "description": "搜索栏组件",
+        "url": "searchbar/index.html",
+        "icon": "img/searchbar.png",
+        "status": ""
+      },
+      {
+        "name": "fish.slider",
+        "title": "fish.slider",
+        "description": "滑动条组件",
+        "url": "slider/index.html",
+        "icon": "img/slider.png",
+        "status": ""
+      },
+      {
+        "name": "fish.slimscroll",
+        "title": "fish.slimscroll",
+        "description": "漂亮的滚动条",
+        "url": "slimscroll/index.html",
+        "icon": "img/slimscroll.jpg",
+        "status": ""
+      },
+      {
+        "name": "fish.spinner",
+        "title": "fish.spinner",
+        "description": "数字选择框",
+        "url": "spinner/index.html",
+        "icon": "img/spinner.png",
+        "status": ""
+      },
+      {
+        "name": "fish.switchbutton",
+        "title": "fish.switchbutton",
+        "description": "切换按钮",
+        "url": "switchbutton/index.html",
+        "icon": "img/switchbutton.png",
+        "status": ""
+      },
+      {
+        "name": "fish.tabs",
+        "title": "fish.tabs",
+        "description": "页签组件",
+        "url": "tabs/index.html",
+        "icon": "img/tab.png",
+        "status": ""
+      },
+      {
+        "name": "fish.tooltip",
+        "title": "fish.tooltip",
+        "description": "提示组件",
+        "url": "tooltip/index.html",
+        "icon": "img/tooltip.png",
+        "status": ""
+      },
+      {
+        "name": "fish.tree",
+        "title": "fish.tree",
+        "description": "树组件",
+        "url": "tree/index.html",
+        "icon": "img/tree.png",
+        "status": ""
+      },
+      {
+        "name": "fish.validator",
+        "title": "fish.validator",
+        "description": "校验组件",
+        "url": "validator/index.html",
+        "icon": "img/form-validation.png",
+        "status": ""
+      },
+      {
+        "name": "fish.view",
+        "title": "fish.view",
+        "description": "视图",
+        "url": "fish.view/index.html",
+        "icon": "img/mvc.jpg",
+        "status": ""
+      }
+    ]
+  },
+  {
+    "title": "FishDesktop Other Components",
+    "items": [
+      {
+        "name": "affix",
+        "title": "affix",
+        "description": "粘贴组件",
+        "url": "affix/index.html",
+        "icon": "img/affix.png",
+        "status": ""
+      },
+      {
+        "name": "cascadeselect",
+        "title": "cascadeselect",
+        "description": "层级联动",
+        "url": "cascadeselect/index.html",
+        "icon": "img/cascadeselect.jpg",
+        "status": ""
+      },
+      {
+        "name": "colorpicker",
+        "title": "colorpicker",
+        "description": "颜色选择器组件",
+        "url": "colorpicker/index.html",
+        "icon": "img/colorpicker.png",
+        "status": ""
+      },
+      {
+        "name": "endlessScroll",
+        "title": "endlessScroll",
+        "description": "滚动加载组件",
+        "url": "endlessScroll/index.html",
+        "icon": "img/endless.png",
+        "status": ""
+      },
+      {
+        "name": "fileupload",
+        "title": "fileupload",
+        "description": "文件上传组件",
+        "url": "fileupload/index.html",
+        "icon": "img/fileupload.png",
+        "status": ""
+      },
+      {
+        "name": "fullcalendar",
+        "title": "fullcalendar",
+        "description": "日历",
+        "url": "fullcalendar/index.html",
+        "icon": "img/calendar.png",
+        "status": ""
+      },
+      {
+        "name": "icheck",
+        "title": "icheck",
+        "description": "单选/多选组件",
+        "url": "icheck/index.html",
+        "icon": "img/icheck.png",
+        "status": ""
+      },
+      {
+        "name": "intro",
+        "title": "intro",
+        "description": "页面引导",
+        "url": "intro/index.html",
+        "icon": "img/intro.png",
+        "status": ""
+      },
+      {
+        "name": "knob",
+        "title": "knob",
+        "description": "圆形进度条",
+        "url": "knob/index.html",
+        "icon": "img/knob.png",
+        "status": ""
+      },
+      {
+        "name": "loadingbar",
+        "title": "loadingbar",
+        "description": "进度条组件",
+        "url": "loadingbar/index.html",
+        "icon": "img/loadingbar.jpg",
+        "status": ""
+      },
+      {
+        "name": "pagesidebar",
+        "title": "pagesidebar",
+        "description": "侧边工具栏",
+        "url": "pagesidebar/index.html",
+        "icon": "img/pagesidebar.png",
+        "status": ""
+      },
+      {
+        "name": "qrcode",
+        "title": "qrcode",
+        "description": "二维码组件",
+        "url": "qrcode/index.html",
+        "icon": "img/qrcode.png",
+        "status": ""
+      },
+      {
+        "name": "raterstar",
+        "title": "raterstar",
+        "description": "五角星评价组件",
+        "url": "raterstar/index.html",
+        "icon": "img/raterstar.png",
+        "status": ""
+      },
+      {
+        "name": "select",
+        "title": "select",
+        "description": "jqueryui select组件",
+        "url": "select/index.html",
+        "icon": "img/select.png",
+        "status": ""
+      },
+      {
+        "name": "sliderpips",
+        "title": "sliderpips",
+        "description": "滑块组件",
+        "url": "sliderpips/index.html",
+        "icon": "img/sliderpips.png",
+        "status": ""
+      },
+      {
+        "name": "slidertime",
+        "title": "slidertime",
+        "description": "时间滑块组件",
+        "url": "slidertime/index.html",
+        "icon": "img/slidertime.png",
+        "status": ""
+      },
+      {
+        "name": "sliderdate",
+        "title": "sliderdate",
+        "description": "日期滑块组件",
+        "url": "sliderdate/index.html",
+        "icon": "img/sliderdate.png",
+        "status": ""
+      },
+      {
+        "name": "suspend",
+        "title": "suspend",
+        "description": "浮动组件",
+        "url": "suspend/index.html",
+        "icon": "img/suspend.png",
+        "status": ""
+      },
+      {
+        "name": "selectmenu",
+        "title": "selectmenu",
+        "description": "页面引导",
+        "url": "selectmenu/index.html",
+        "icon": "img/selectmenu.png",
+        "status": ""
+      },
+      {
+        "name": "splitter",
+        "title": "splitter",
+        "description": "布局分割组件",
+        "url": "splitter/index.html",
+        "icon": "img/splitter.png",
+        "status": ""
+      },
+      {
+        "name": "timeaxis",
+        "title": "timeaxis",
+        "description": "时间轴组件",
+        "url": "timeaxis/index.html",
+        "icon": "",
+        "status": ""
+      },
+      {
+        "name": "textscroll",
+        "title": "textscroll",
+        "description": "文字滚动组件",
+        "url": "textscroll/index.html",
+        "icon": "img/textscroll.png",
+        "status": ""
+      },
+      {
+        "name": "timeline",
+        "title": "timeline",
+        "description": "时间轴组件",
+        "url": "timeline/index.html",
+        "icon": "img/timeline.png",
+        "status": ""
+      },
+      {
+        "name": "ueditor",
+        "title": "ueditor",
+        "description": "百度ueditor",
+        "url": "ueditor/index.html",
+        "icon": "img/ueditor.png",
+        "status": ""
+      },
+      {
+        "name": "zoom",
+        "title": "zoom",
+        "description": "图片局部放大组件",
+        "url": "zoom/index.html",
+        "icon": "img/zoom.jpg",
+        "status": ""
+      },
+      {
+        "name": "waterfall",
+        "title": "waterfall",
+        "description": "流布局",
+        "url": "waterfall/index.html",
+        "icon": "img/waterfall.jpg",
+        "status": ""
+      },
+      {
+        "name": "regulartree",
+        "title": "regulartree",
+        "description": "规则树",
+        "url": "regulartree/index.html",
+        "icon": "img/regulartree.png",
+        "status": ""
+      },
+      {
+        "name": "pdfjs",
+        "title": "pdfjs",
+        "description": "pdf查看器",
+        "url": "pdfjs/index.html",
+        "icon": "",
+        "status": ""
+      }
+    ]
+  },
+  {
+    "title": "Technology behind FishDesktop",
+    "items": [
+      {
+        "name": "jQuery",
+        "title": "jQuery",
+        "description": "jquery库api链接",
+        "url": "http://api.jquery.com/",
+        "icon": "img/jquery.png",
+        "status": ""
+      },
+      {
+        "name": "Backbone",
+        "title": "Backbone",
+        "description": "Backbone库链接",
+        "url": "http://backbonejs.org",
+        "icon": "img/backbone.png",
+        "status": ""
+      },
+      {
+        "name": "Handlerbars",
+        "title": "Handlerbars",
+        "description": "Handlerbars库链接",
+        "url": "http://handlebarsjs.com/",
+        "icon": "img/handlebars.png",
+        "status": ""
+      },
+      {
+        "name": "Echarts",
+        "title": "Echarts",
+        "description": "Echarts库链接",
+        "url": "http://echarts.baidu.com/doc/example.html",
+        "icon": "img/echarts2.png",
+        "status": ""
+      },
+      {
+        "name": "Echarts3",
+        "title": "Echarts3",
+        "description": "Echarts3库链接",
+        "url": "http://echarts.baidu.com/examples.html",
+        "icon": "img/echarts3.png",
+        "status": ""
+      }
+    ]
+  }
+]

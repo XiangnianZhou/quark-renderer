@@ -4,7 +4,7 @@ const fsExtra = require('fs-extra');
 const {resolve} = require('path');
 const config = require('./config.js');
 const commander = require('commander');
-const {build, watch} = require('./helper');
+const {build, watch} = require('./build-utils');
 const prePublish = require('./pre-publish');
 
 function run() {
@@ -45,26 +45,19 @@ function run() {
     let isPrePublish = !!commander.prepublish;
     let min = !!commander.min;
 
-    // Clear `echarts/dist`
-    if (isRelease) {
-        fsExtra.removeSync(getPath('./dist'));
-    }
-
     if (isWatch) {
         watch(config.create());
-    }
-    else if (isPrePublish) {
+    }else if (isPrePublish) {
         prePublish();
-    }
-    else if (isRelease) {
+    }else if (isRelease) {
+        fsExtra.removeSync(getPath('./dist'));
         build([
             config.create(false),
             config.create(true)
         ]).then(function () {
             prePublish();
         }).catch(handleBuildError);
-    }
-    else {
+    }else {
         build([config.create(min)]).catch(handleBuildError);
     }
 }

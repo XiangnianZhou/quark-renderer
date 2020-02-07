@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var guid = require(&quot;./core/utils/guid&quot;);
+
+var env = require(&quot;./core/env&quot;);
+
+var Handler = require(&quot;./event/Handler&quot;);
+
+var Storage = require(&quot;./Storage&quot;);
+
+var Painter = require(&quot;./Painter&quot;);
+
+var GlobalAnimationMgr = require(&quot;./animation/GlobalAnimationMgr&quot;);
+
+var HandlerDomProxy = require(&quot;./event/HandlerDomProxy&quot;);
+
+/*!
+* ZRender, a high performance 2d drawing library.
+*
+* Copyright (c) 2013, Baidu Inc.
+* All rights reserved.
+*
+* LICENSE
+* https://github.com/ecomfe/zrender/blob/master/LICENSE.txt
+*/
+
+<span id='zrender-core-ZRender'>/**
+</span> * ZRender, a high performance 2d drawing library.
+ * @class zrender.core.ZRender
+ */
+
+<span id='zrender-core-ZRender-property-'>/**
+</span> * ZRender 是全局入口，同一个浏览器 window 中可以有多个 ZRender 实例，每个 ZRender 实例有自己唯一的 ID。
+ */
+//Custom version, canvas only, vml and svg are not supported.
+if (!env.canvasSupported) {
+  throw new Error(&quot;Need Canvas Environments.&quot;);
+}
+
+var useVML = !env.canvasSupported;
+var painterCtors = {
+  canvas: Painter
+}; // ZRender实例map索引，浏览器中同一个 window 下的 ZRender 实例都存在这里。
+
+var instances = {};
+<span id='zrender-core-ZRender-property-version'>/**
+</span> * @type {string}
+ */
+
+var version = &#39;4.1.2&#39;;
+<span id='zrender-core-ZRender-method-init'>/**
+</span> * 全局总入口，创建 ZRender 的实例。
+ * Initializing a zrender instance
+ * @param {HTMLElement} dom
+ * @param {Object} [opts]
+ * @param {string} [opts.renderer=&#39;canvas&#39;] &#39;canvas&#39; or &#39;svg&#39;
+ * @param {number} [opts.devicePixelRatio]
+ * @param {number|string} [opts.width] Can be &#39;auto&#39; (the same as null/undefined)
+ * @param {number|string} [opts.height] Can be &#39;auto&#39; (the same as null/undefined)
+ * @return {module:zrender/ZRender}
+ */
+
+function init(dom, opts) {
+  var zr = new ZRender(guid(), dom, opts);
+  instances[zr.id] = zr;
+  return zr;
+}
+<span id='zrender-core-ZRender-method-dispose'>/**
+</span> * TODO: 不要export这个全局函数看起来也没有问题。
+ * Dispose zrender instance
+ * @param {module:zrender/ZRender} zr
+ */
+
+
+function dispose(zr) {
+  if (zr) {
+    zr.dispose();
+  } else {
+    for (var key in instances) {
+      if (instances.hasOwnProperty(key)) {
+        instances[key].dispose();
+      }
+    }
+
+    instances = {};
+  }
+
+  return this;
+}
+<span id='zrender-core-ZRender-method-getInstance'>/**
+</span> * Get zrender instance by id
+ * @param {string} id zrender instance id
+ * @return {module:zrender/ZRender}
+ */
+
+
+function getInstance(id) {
+  return instances[id];
+}
+
+function registerPainter(name, Ctor) {
+  painterCtors[name] = Ctor;
+}
+<span id='zrender-core-ZRender-property-'>/**
+</span> * @module zrender/ZRender
+ */
+
+<span id='ZRender-method-constructor'><span id='ZRender'>/**
+</span></span> * @constructor
+ * @alias module:zrender/ZRender
+ * @param {string} id
+ * @param {HTMLElement} dom
+ * @param {Object} opts
+ * @param {string} [opts.renderer=&#39;canvas&#39;] &#39;canvas&#39; or &#39;svg&#39;
+ * @param {number} [opts.devicePixelRatio]
+ * @param {number} [opts.width] Can be &#39;auto&#39; (the same as null/undefined)
+ * @param {number} [opts.height] Can be &#39;auto&#39; (the same as null/undefined)
+ */
+
+
+var ZRender = function ZRender(id, dom, opts) {
+  opts = opts || {};
+<span id='ZRender-property-dom'>  /**
+</span>   * @type {HTMLDomElement}
+   */
+
+  this.dom = dom;
+<span id='ZRender-property-id'>  /**
+</span>   * @type {string}
+   */
+
+  this.id = id;
+  var self = this;
+  var storage = new Storage();
+  var rendererType = opts.renderer; // TODO WebGL
+  // TODO: remove vml
+
+  if (useVML) {
+    if (!painterCtors.vml) {
+      throw new Error(&#39;You need to require \&#39;zrender/vml/vml\&#39; to support IE8&#39;);
+    }
+
+    rendererType = &#39;vml&#39;;
+  } else if (!rendererType || !painterCtors[rendererType]) {
+    rendererType = &#39;canvas&#39;;
+  }
+
+  var painter = new painterCtors[rendererType](dom, storage, opts, id);
+  this.storage = storage;
+  this.painter = painter; //把DOM事件代理出来
+
+  var handerProxy = !env.node &amp;&amp; !env.worker ? new HandlerDomProxy(painter.getViewportRoot()) : null; //ZRender 自己封装的事件机制
+
+  this.handler = new Handler(storage, painter, handerProxy, painter.root);
+<span id='ZRender-property-globalAnimationMgr'>  /**
+</span>   * 利用 GlobalAnimationMgr 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
+   * FROM MDN：
+   * The window.requestAnimationFrame() method tells the browser that you wish 
+   * to perform an animation and requests that the browser calls a specified 
+   * function to update an animation before the next repaint. The method takes 
+   * a callback as an argument to be invoked before the repaint.
+   * 
+   * https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+   * 
+   * NOTE: 这里有潜在的性能限制，由于 requestAnimationFrame 方法每秒回调60次，每次执行时间约 16ms
+   * 如果在 16ms 的时间内无法渲染完一帧画面，会出现卡顿。也就是说，ZRender 引擎在同一张 canvas 上
+   * 能够渲染的图形元素数量有上限。本机在 Chrome 浏览器中 Benchmark 的结果大约为 100 万个矩形会出现
+   * 明显的卡顿。
+   * @type {module:zrender/animation/GlobalAnimationMgr}
+   */
+
+  this.globalAnimationMgr = new GlobalAnimationMgr();
+  this.globalAnimationMgr.on(&quot;frame&quot;, function () {
+    self.flush();
+  });
+  this.globalAnimationMgr.start();
+<span id='ZRender-property-'>  /**
+</span>   * @type {boolean}
+   * @private
+   */
+
+  this._needsRefresh; // 修改 storage.delFromStorage, 每次删除元素之前删除动画
+  // FIXME 有点ugly
+
+  var oldDelFromStorage = storage.delFromStorage;
+  var oldAddToStorage = storage.addToStorage;
+
+  storage.delFromStorage = function (el) {
+    oldDelFromStorage.call(storage, el);
+    el &amp;&amp; el.removeSelfFromZr(self);
+  };
+
+  storage.addToStorage = function (el) {
+    oldAddToStorage.call(storage, el);
+    el.addSelfToZr(self);
+  };
+};
+
+ZRender.prototype = {
+  constructor: ZRender,
+
+<span id='ZRender-method-getId'>  /**
+</span>   * 获取实例唯一标识
+   * @return {string}
+   */
+  getId: function getId() {
+    return this.id;
+  },
+
+<span id='ZRender-method-add'>  /**
+</span>   * 添加元素
+   * @param  {module:zrender/Element} el
+   */
+  add: function add(el) {
+    this.storage.addRoot(el);
+    this._needsRefresh = true;
+  },
+
+<span id='ZRender-method-remove'>  /**
+</span>   * 删除元素
+   * @param  {module:zrender/Element} el
+   */
+  remove: function remove(el) {
+    this.storage.delRoot(el);
+    this._needsRefresh = true;
+  },
+
+<span id='ZRender-method-configLayer'>  /**
+</span>   * Change configuration of layer
+   * @param {string} zLevel
+   * @param {Object} config
+   * @param {string} [config.clearColor=0] Clear color
+   * @param {string} [config.motionBlur=false] If enable motion blur
+   * @param {number} [config.lastFrameAlpha=0.7] Motion blur factor. Larger value cause longer trailer
+  */
+  configLayer: function configLayer(zLevel, config) {
+    if (this.painter.configLayer) {
+      this.painter.configLayer(zLevel, config);
+    }
+
+    this._needsRefresh = true;
+  },
+
+<span id='ZRender-method-setBackgroundColor'>  /**
+</span>   * Set background color
+   * @param {string} backgroundColor
+   */
+  setBackgroundColor: function setBackgroundColor(backgroundColor) {
+    if (this.painter.setBackgroundColor) {
+      this.painter.setBackgroundColor(backgroundColor);
+    }
+
+    this._needsRefresh = true;
+  },
+
+<span id='ZRender-method-refreshImmediately'>  /**
+</span>   * Repaint the canvas immediately
+   */
+  refreshImmediately: function refreshImmediately() {
+    // var start = new Date();
+    // Clear needsRefresh ahead to avoid something wrong happens in refresh
+    // Or it will cause zrender refreshes again and again.
+    this._needsRefresh = this._needsRefreshHover = false;
+    this.painter.refresh(); // Avoid trigger zr.refresh in Element#beforeUpdate hook
+
+    this._needsRefresh = this._needsRefreshHover = false; // var end = new Date();
+    // var log = document.getElementById(&#39;log&#39;);
+    // if (log) {
+    //     log.innerHTML = log.innerHTML + &#39;&lt;br&gt;&#39; + (end - start);
+    // }
+  },
+
+<span id='ZRender-method-refresh'>  /**
+</span>   * Mark and repaint the canvas in the next frame of browser
+   */
+  refresh: function refresh() {
+    this._needsRefresh = true;
+  },
+
+<span id='ZRender-method-flush'>  /**
+</span>   * Perform all refresh
+   * 刷新 canvas 画面，此方法会在 window.requestAnimationFrame 方法中被不断调用。
+   */
+  flush: function flush() {
+    var triggerRendered;
+
+    if (this._needsRefresh) {
+      //是否需要全部重绘
+      triggerRendered = true;
+      this.refreshImmediately();
+    }
+
+    if (this._needsRefreshHover) {
+      //只重绘特定的图元，提升性能
+      triggerRendered = true;
+      this.refreshHoverImmediately();
+    }
+
+    triggerRendered &amp;&amp; this.trigger(&#39;rendered&#39;);
+  },
+
+<span id='ZRender-method-addHover'>  /**
+</span>   * 与 Hover 相关的6个方法用来处理浮动层，当鼠标悬停在 canvas 中的图元上方时，可能会需要
+   * 显示一些浮动的层来展现一些特殊的数据。
+   * TODO:这里可能有点问题，Hover 一词可能指的是遮罩层，而不是浮动层，如果确认是遮罩，考虑
+   * 把这里的 API 单词重构成 Mask。
+   * 
+   * Add element to hover layer
+   * @param  {module:zrender/Element} el
+   * @param {Object} style
+   */
+  addHover: function addHover(el, style) {
+    if (this.painter.addHover) {
+      var elMirror = this.painter.addHover(el, style);
+      this.refreshHover();
+      return elMirror;
+    }
+  },
+
+<span id='ZRender-method-removeHover'>  /**
+</span>   * Remove element from hover layer
+   * @param  {module:zrender/Element} el
+   */
+  removeHover: function removeHover(el) {
+    if (this.painter.removeHover) {
+      this.painter.removeHover(el);
+      this.refreshHover();
+    }
+  },
+
+<span id='ZRender-method-findHover'>  /**
+</span>   * Find hovered element
+   * @param {number} x
+   * @param {number} y
+   * @return {Object} {target, topTarget}
+   */
+  findHover: function findHover(x, y) {
+    return this.handler.findHover(x, y);
+  },
+
+<span id='ZRender-method-clearHover'>  /**
+</span>   * Clear all hover elements in hover layer
+   * @param  {module:zrender/Element} el
+   */
+  clearHover: function clearHover() {
+    if (this.painter.clearHover) {
+      this.painter.clearHover();
+      this.refreshHover();
+    }
+  },
+
+<span id='ZRender-method-refreshHover'>  /**
+</span>   * Refresh hover in next frame
+   */
+  refreshHover: function refreshHover() {
+    this._needsRefreshHover = true;
+  },
+
+<span id='ZRender-method-refreshHoverImmediately'>  /**
+</span>   * Refresh hover immediately
+   */
+  refreshHoverImmediately: function refreshHoverImmediately() {
+    this._needsRefreshHover = false;
+    this.painter.refreshHover &amp;&amp; this.painter.refreshHover();
+  },
+
+<span id='ZRender-method-resize'>  /**
+</span>   * Resize the canvas.
+   * Should be invoked when container size is changed
+   * @param {Object} [opts]
+   * @param {number|string} [opts.width] Can be &#39;auto&#39; (the same as null/undefined)
+   * @param {number|string} [opts.height] Can be &#39;auto&#39; (the same as null/undefined)
+   */
+  resize: function resize(opts) {
+    opts = opts || {};
+    this.painter.resize(opts.width, opts.height);
+    this.handler.resize();
+  },
+
+<span id='ZRender-method-clearAnimation'>  /**
+</span>   * Stop and clear all animation immediately
+   */
+  clearAnimation: function clearAnimation() {
+    this.globalAnimationMgr.clear();
+  },
+
+<span id='ZRender-method-getWidth'>  /**
+</span>   * Get container width
+   */
+  getWidth: function getWidth() {
+    return this.painter.getWidth();
+  },
+
+<span id='ZRender-method-getHeight'>  /**
+</span>   * Get container height
+   */
+  getHeight: function getHeight() {
+    return this.painter.getHeight();
+  },
+
+<span id='ZRender-method-'>  /**
+</span>   * Export the canvas as Base64 URL
+   * @param {string} type
+   * @param {string} [backgroundColor=&#39;#fff&#39;]
+   * @return {string} Base64 URL
+   */
+  // toDataURL: function(type, backgroundColor) {
+  //     return this.painter.getRenderedCanvas({
+  //         backgroundColor: backgroundColor
+  //     }).toDataURL(type);
+  // },
+
+<span id='ZRender-method-pathToImage'>  /**
+</span>   * Converting a path to image.
+   * It has much better performance of drawing image rather than drawing a vector path.
+   * @param {module:zrender/graphic/Path} e
+   * @param {number} width
+   * @param {number} height
+   */
+  pathToImage: function pathToImage(e, dpr) {
+    return this.painter.pathToImage(e, dpr);
+  },
+
+<span id='ZRender-method-setCursorStyle'>  /**
+</span>   * Set default cursor
+   * @param {string} [cursorStyle=&#39;default&#39;] 例如 crosshair
+   */
+  setCursorStyle: function setCursorStyle(cursorStyle) {
+    this.handler.setCursorStyle(cursorStyle);
+  },
+
+<span id='ZRender-method-on'>  /**
+</span>   * Bind event
+   *
+   * @param {string} eventName Event name
+   * @param {Function} eventHandler Handler function
+   * @param {Object} [context] Context object
+   */
+  on: function on(eventName, eventHandler, context) {
+    this.handler.on(eventName, eventHandler, context);
+  },
+
+<span id='ZRender-method-off'>  /**
+</span>   * Unbind event
+   * @param {string} eventName Event name
+   * @param {Function} [eventHandler] Handler function
+   */
+  off: function off(eventName, eventHandler) {
+    this.handler.off(eventName, eventHandler);
+  },
+
+<span id='ZRender-method-trigger'>  /**
+</span>   * Trigger event manually
+   *
+   * @param {string} eventName Event name
+   * @param {event=} event Event object
+   */
+  trigger: function trigger(eventName, event) {
+    this.handler.trigger(eventName, event);
+  },
+
+<span id='ZRender-method-clear'>  /**
+</span>   * Clear all objects and the canvas.
+   */
+  clear: function clear() {
+    this.storage.delRoot();
+    this.painter.clear();
+  },
+
+<span id='ZRender-method-dispose'>  /**
+</span>   * Dispose self.
+   */
+  dispose: function dispose() {
+    this.globalAnimationMgr.stop();
+    this.clear();
+    this.storage.dispose();
+    this.painter.dispose();
+    this.handler.dispose();
+    this.globalAnimationMgr = this.storage = this.painter = this.handler = null;
+    delete instances[this.id];
+  }
+};
+exports.version = version;
+exports.init = init;
+exports.dispose = dispose;
+exports.getInstance = getInstance;
+exports.registerPainter = registerPainter;</pre>
+</body>
+</html>
