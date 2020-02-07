@@ -401,6 +401,7 @@ Painter.prototype = {
 
         //如果在一帧的时间内没有绘制完，在下一帧继续绘制
         //但是在下一帧的时候，可能还会有另外的动画回调，这里会造成 _paintList 方法被放在 requestAnimationFrame 的回调队列中。
+        //TODO:需要测试一个极限值出来，在 16ms 的时间里面最多能绘制多少个图元。
         if (!finished) {
             var self = this;
             requestAnimationFrame(function () {
