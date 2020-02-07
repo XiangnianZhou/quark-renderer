@@ -8,8 +8,16 @@
 * https://github.com/ecomfe/zrender/blob/master/LICENSE.txt
 */
 /**
- * ZRender, a high performance 2d drawing library.
  * @class zrender.core.ZRender
+ * ZRender, a high performance 2d drawing library.
+ * Class ZRender is the global entry, every time you call zrender.init() will 
+ * create an instance of ZRender class, each instance has an unique id.
+ * 
+ * ZRender 是一款高性能的 2d 渲染引擎。
+ * ZRender 类是全局入口，每次调用 zrender.init() 会创建一个实例，
+ * 每个 ZRender 实例有自己唯一的 ID。
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 import guid from './core/utils/guid';
 import env from './core/env';
@@ -19,10 +27,6 @@ import Painter from './Painter';
 import GlobalAnimationMgr from './animation/GlobalAnimationMgr';
 import HandlerDomProxy from './event/HandlerDomProxy';
 
-/**
- * ZRender 是全局入口，同一个浏览器 window 中可以有多个 ZRender 实例，每个 ZRender 实例有自己唯一的 ID。
- */
-//Custom version, canvas only, vml and svg are not supported.
 if(!env.canvasSupported){
     throw new Error("Need Canvas Environments.");
 }
@@ -37,20 +41,23 @@ var painterCtors = {
 var instances = {};
 
 /**
- * @type {string}
+ * @type {String}
  */
 export var version = '4.1.2';
 
 /**
+ * @method zrender.init()
+ * Global entry for creating a zrender instance.
+ * 
  * 全局总入口，创建 ZRender 的实例。
- * Initializing a zrender instance
+ * 
  * @param {HTMLElement} dom
  * @param {Object} [opts]
- * @param {string} [opts.renderer='canvas'] 'canvas' or 'svg'
- * @param {number} [opts.devicePixelRatio]
- * @param {number|string} [opts.width] Can be 'auto' (the same as null/undefined)
- * @param {number|string} [opts.height] Can be 'auto' (the same as null/undefined)
- * @return {module:zrender/ZRender}
+ * @param {String} [opts.renderer='canvas'] 'canvas' or 'svg'
+ * @param {Number} [opts.devicePixelRatio]
+ * @param {Number|String} [opts.width] Can be 'auto' (the same as null/undefined)
+ * @param {Number|String} [opts.height] Can be 'auto' (the same as null/undefined)
+ * @return {ZRender}
  */
 export function init(dom, opts) {
     var zr = new ZRender(guid(), dom, opts);
@@ -81,7 +88,7 @@ export function dispose(zr) {
 
 /**
  * Get zrender instance by id
- * @param {string} id zrender instance id
+ * @param {String} id zrender instance id
  * @return {module:zrender/ZRender}
  */
 export function getInstance(id) {
@@ -93,18 +100,15 @@ export function registerPainter(name, Ctor) {
 }
 
 /**
- * @module zrender/ZRender
- */
-/**
- * @constructor
- * @alias module:zrender/ZRender
- * @param {string} id
+ * @method constructor ZRender
+ * @param {String} id
  * @param {HTMLElement} dom
- * @param {Object} opts
- * @param {string} [opts.renderer='canvas'] 'canvas' or 'svg'
- * @param {number} [opts.devicePixelRatio]
- * @param {number} [opts.width] Can be 'auto' (the same as null/undefined)
- * @param {number} [opts.height] Can be 'auto' (the same as null/undefined)
+ * @param {Object} [opts]
+ * @param {String} [opts.renderer='canvas'] 'canvas' or 'svg'
+ * @param {Number} [opts.devicePixelRatio]
+ * @param {Number} [opts.width] Can be 'auto' (the same as null/undefined)
+ * @param {Number} [opts.height] Can be 'auto' (the same as null/undefined)
+ * @return {ZRender}
  */
 var ZRender = function (id, dom, opts) {
 
@@ -116,11 +120,15 @@ var ZRender = function (id, dom, opts) {
     this.dom = dom;
 
     /**
-     * @type {string}
+     * @type {String}
      */
     this.id = id;
 
     var self = this;
+
+    /**
+     * @type {Storage}
+     */
     var storage = new Storage();
 
     var rendererType = opts.renderer;
@@ -131,8 +139,7 @@ var ZRender = function (id, dom, opts) {
             throw new Error('You need to require \'zrender/vml/vml\' to support IE8');
         }
         rendererType = 'vml';
-    }
-    else if (!rendererType || !painterCtors[rendererType]) {
+    }else if (!rendererType || !painterCtors[rendererType]) {
         rendererType = 'canvas';
     }
     var painter = new painterCtors[rendererType](dom, storage, opts, id);
@@ -146,6 +153,7 @@ var ZRender = function (id, dom, opts) {
     this.handler = new Handler(storage, painter, handerProxy, painter.root);
 
     /**
+     * @type {GlobalAnimationMgr}
      * 利用 GlobalAnimationMgr 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
      * FROM MDN：
      * The window.requestAnimationFrame() method tells the browser that you wish 
@@ -159,7 +167,6 @@ var ZRender = function (id, dom, opts) {
      * 如果在 16ms 的时间内无法渲染完一帧画面，会出现卡顿。也就是说，ZRender 引擎在同一张 canvas 上
      * 能够渲染的图形元素数量有上限。本机在 Chrome 浏览器中 Benchmark 的结果大约为 100 万个矩形会出现
      * 明显的卡顿。
-     * @type {module:zrender/animation/GlobalAnimationMgr}
      */
     this.globalAnimationMgr = new GlobalAnimationMgr();
     this.globalAnimationMgr.on("frame",function(){
@@ -180,13 +187,11 @@ var ZRender = function (id, dom, opts) {
 
     storage.delFromStorage = function (el) {
         oldDelFromStorage.call(storage, el);
-
         el && el.removeSelfFromZr(self);
     };
 
     storage.addToStorage = function (el) {
         oldAddToStorage.call(storage, el);
-
         el.addSelfToZr(self);
     };
 };
@@ -195,16 +200,18 @@ ZRender.prototype = {
 
     constructor: ZRender,
     /**
+     * @method
      * 获取实例唯一标识
-     * @return {string}
+     * @return {String}
      */
     getId: function () {
         return this.id;
     },
 
     /**
+     * @method
      * 添加元素
-     * @param  {module:zrender/Element} el
+     * @param  {zrender/Element} el
      */
     add: function (el) {
         this.storage.addRoot(el);
@@ -212,8 +219,9 @@ ZRender.prototype = {
     },
 
     /**
+     * @method
      * 删除元素
-     * @param  {module:zrender/Element} el
+     * @param  {zrender/Element} el
      */
     remove: function (el) {
         this.storage.delRoot(el);
@@ -221,12 +229,14 @@ ZRender.prototype = {
     },
 
     /**
+     * @private
+     * @method
      * Change configuration of layer
-     * @param {string} zLevel
-     * @param {Object} config
-     * @param {string} [config.clearColor=0] Clear color
-     * @param {string} [config.motionBlur=false] If enable motion blur
-     * @param {number} [config.lastFrameAlpha=0.7] Motion blur factor. Larger value cause longer trailer
+     * @param {String} zLevel
+     * @param {Object} [config]
+     * @param {String} [config.clearColor=0] Clear color
+     * @param {String} [config.motionBlur=false] If enable motion blur
+     * @param {Number} [config.lastFrameAlpha=0.7] Motion blur factor. Larger value cause longer trailer
     */
     configLayer: function (zLevel, config) {
         if (this.painter.configLayer) {
@@ -236,8 +246,9 @@ ZRender.prototype = {
     },
 
     /**
+     * @method
      * Set background color
-     * @param {string} backgroundColor
+     * @param {String} backgroundColor
      */
     setBackgroundColor: function (backgroundColor) {
         if (this.painter.setBackgroundColor) {
@@ -247,11 +258,12 @@ ZRender.prototype = {
     },
 
     /**
+     * @private
+     * @method
      * Repaint the canvas immediately
      */
     refreshImmediately: function () {
         // var start = new Date();
-
         // Clear needsRefresh ahead to avoid something wrong happens in refresh
         // Or it will cause zrender refreshes again and again.
         this._needsRefresh = this._needsRefreshHover = false;
@@ -267,6 +279,7 @@ ZRender.prototype = {
     },
 
     /**
+     * @method
      * Mark and repaint the canvas in the next frame of browser
      */
     refresh: function () {
@@ -274,6 +287,8 @@ ZRender.prototype = {
     },
 
     /**
+     * @private
+     * @method
      * Perform all refresh
      * 刷新 canvas 画面，此方法会在 window.requestAnimationFrame 方法中被不断调用。
      */
@@ -293,6 +308,8 @@ ZRender.prototype = {
     },
 
     /**
+     * @private
+     * @method
      * 与 Hover 相关的6个方法用来处理浮动层，当鼠标悬停在 canvas 中的图元上方时，可能会需要
      * 显示一些浮动的层来展现一些特殊的数据。
      * TODO:这里可能有点问题，Hover 一词可能指的是遮罩层，而不是浮动层，如果确认是遮罩，考虑
@@ -311,6 +328,8 @@ ZRender.prototype = {
     },
 
     /**
+     * @private
+     * @method
      * Remove element from hover layer
      * @param  {module:zrender/Element} el
      */
@@ -322,9 +341,11 @@ ZRender.prototype = {
     },
 
     /**
+     * @private
+     * @method
      * Find hovered element
-     * @param {number} x
-     * @param {number} y
+     * @param {Number} x
+     * @param {Number} y
      * @return {Object} {target, topTarget}
      */
     findHover: function (x, y) {
@@ -332,6 +353,8 @@ ZRender.prototype = {
     },
 
     /**
+     * @private
+     * @method
      * Clear all hover elements in hover layer
      * @param  {module:zrender/Element} el
      */
@@ -343,6 +366,8 @@ ZRender.prototype = {
     },
 
     /**
+     * @private
+     * @method
      * Refresh hover in next frame
      */
     refreshHover: function () {
@@ -350,6 +375,8 @@ ZRender.prototype = {
     },
 
     /**
+     * @private
+     * @method
      * Refresh hover immediately
      */
     refreshHoverImmediately: function () {
@@ -358,11 +385,12 @@ ZRender.prototype = {
     },
 
     /**
+     * @method
      * Resize the canvas.
      * Should be invoked when container size is changed
      * @param {Object} [opts]
-     * @param {number|string} [opts.width] Can be 'auto' (the same as null/undefined)
-     * @param {number|string} [opts.height] Can be 'auto' (the same as null/undefined)
+     * @param {Number|String} [opts.width] Can be 'auto' (the same as null/undefined)
+     * @param {Number|String} [opts.height] Can be 'auto' (the same as null/undefined)
      */
     resize: function (opts) {
         opts = opts || {};
@@ -371,6 +399,7 @@ ZRender.prototype = {
     },
 
     /**
+     * @method
      * Stop and clear all animation immediately
      */
     clearAnimation: function () {
@@ -378,6 +407,7 @@ ZRender.prototype = {
     },
 
     /**
+     * @method
      * Get container width
      */
     getWidth: function () {
@@ -385,6 +415,7 @@ ZRender.prototype = {
     },
 
     /**
+     * @method
      * Get container height
      */
     getHeight: function () {
@@ -392,40 +423,31 @@ ZRender.prototype = {
     },
 
     /**
-     * Export the canvas as Base64 URL
-     * @param {string} type
-     * @param {string} [backgroundColor='#fff']
-     * @return {string} Base64 URL
-     */
-    // toDataURL: function(type, backgroundColor) {
-    //     return this.painter.getRenderedCanvas({
-    //         backgroundColor: backgroundColor
-    //     }).toDataURL(type);
-    // },
-
-    /**
+     * @method
      * Converting a path to image.
      * It has much better performance of drawing image rather than drawing a vector path.
      * @param {module:zrender/graphic/Path} e
-     * @param {number} width
-     * @param {number} height
+     * @param {Number} width
+     * @param {Number} height
      */
     pathToImage: function (e, dpr) {
         return this.painter.pathToImage(e, dpr);
     },
 
     /**
+     * @method
      * Set default cursor
-     * @param {string} [cursorStyle='default'] 例如 crosshair
+     * @param {String} [cursorStyle='default'] 例如 crosshair
      */
     setCursorStyle: function (cursorStyle) {
         this.handler.setCursorStyle(cursorStyle);
     },
 
     /**
+     * @method
      * Bind event
      *
-     * @param {string} eventName Event name
+     * @param {String} eventName Event name
      * @param {Function} eventHandler Handler function
      * @param {Object} [context] Context object
      */
@@ -434,8 +456,9 @@ ZRender.prototype = {
     },
 
     /**
+     * @method
      * Unbind event
-     * @param {string} eventName Event name
+     * @param {String} eventName Event name
      * @param {Function} [eventHandler] Handler function
      */
     off: function (eventName, eventHandler) {
@@ -443,9 +466,10 @@ ZRender.prototype = {
     },
 
     /**
+     * @method
      * Trigger event manually
      *
-     * @param {string} eventName Event name
+     * @param {String} eventName Event name
      * @param {event=} event Event object
      */
     trigger: function (eventName, event) {
@@ -453,6 +477,7 @@ ZRender.prototype = {
     },
 
     /**
+     * @method
      * Clear all objects and the canvas.
      */
     clear: function () {
@@ -461,6 +486,7 @@ ZRender.prototype = {
     },
 
     /**
+     * @method
      * Dispose self.
      */
     dispose: function () {

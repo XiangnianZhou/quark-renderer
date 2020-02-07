@@ -1,7 +1,8 @@
 /**
- * @class Element 
+ * @class zrender.graphic.Element 
  * 图形顶级抽象类，直接子类是 graphic/Displayable 。
  * Dispalyable 的直接子类是 graphic/Path，graphic 包中的所有形状对象都是 Path 的子类。
+ * @minxins zrender.animation.Animatable
  */
 import guid from '../core/utils/guid';
 import Eventful from '../event/Eventful';

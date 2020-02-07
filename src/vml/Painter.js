@@ -4,7 +4,7 @@
  * @module zrender/vml/Painter
  */
 import * as vmlCore from './core';
-import {each} from '../core/dataStructureUtil';
+import {each} from '../core/utils/dataStructureUtil';
 
 function parseInt10(val) {
     return parseInt(val, 10);

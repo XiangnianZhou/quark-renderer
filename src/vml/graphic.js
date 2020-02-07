@@ -2,12 +2,12 @@
 // TODO Use proxy like svg instead of overwrite brush methods
 
 import env from '../core/env';
-import {applyTransform} from '../core/vector';
+import {applyTransform} from '../core/utils/vector';
 import BoundingRect from '../core/BoundingRect';
-import * as colorTool from '../core/colorUtil';
+import * as colorTool from '../core/utils/colorUtil';
 import * as textContain from '../core/contain/text';
-import * as textHelper from '../graphic/helper/text';
-import RectText from '../graphic/mixin/RectText';
+import * as textHelper from '../graphic/utils/text';
+import RectText from '../graphic/RectText';
 import Displayable from '../graphic/Displayable';
 import ZImage from '../graphic/Image';
 import Text from '../graphic/Text';

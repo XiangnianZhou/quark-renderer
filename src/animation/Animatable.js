@@ -1,12 +1,16 @@
 /**
+ * @class zrender.animation.Animatable
+ * 
  * 动画接口类，在 Element 类中 mixin 此类提供的功能，为图元提供动画功能。
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 import AnimationProcess from './AnimationProcess';
 import * as dataUtil from '../core/utils/dataStructureUtil';
 
 /**
- * @alias modue:zrender/animation/Animatable
- * @constructor
+ * @abstract
+ * @method constructor Animatable
  */
 var Animatable = function () {
     /**
@@ -21,16 +25,16 @@ Animatable.prototype = {
     constructor: Animatable,
 
     /**
-     * 动画
-     *
-     * @param {string} path The path to fetch value from object, like 'a.b.c'.
-     * @param {boolean} [loop] Whether to loop animation.
-     * @return {module:zrender/animation/AnimationProcess}
-     * @example:
-     *     el.animate('style', false)
-     *         .when(1000, {x: 10} )
-     *         .done(function(){ // Animation done })
-     *         .start()
+     * @method 
+     * 创建动画实例
+     * @param {String} path The path to fetch value from object, like 'a.b.c'.
+     * @param {Boolean} [loop=false] Whether to loop animation.
+     * @return {zrender.animation.AnimationProcess}
+     * @example
+     *  el.animate('style', false)
+     *    .when(1000, {x: 10} )
+     *    .done(function(){ // Animation done })
+     *    .start()
      */
     animate: function (path, loop) {
         var target;
@@ -89,8 +93,9 @@ Animatable.prototype = {
     },
 
     /**
+     * @method
      * 停止动画
-     * @param {boolean} forwardToLast If move to last frame before stop
+     * @param {Boolean} forwardToLast If move to last frame before stop
      */
     stopAnimation: function (forwardToLast) {
         this.animationProcessList.forEach((ap,index)=>{
@@ -101,16 +106,16 @@ Animatable.prototype = {
     },
 
     /**
+     * @method
      * Caution: this method will stop previous animation.
      * So do not use this method to one element twice before
      * animation starts, unless you know what you are doing.
-     * @param {Object} target
-     * @param {number} [time=500] Time in ms
-     * @param {string} [easing='linear']
-     * @param {number} [delay=0]
+     * @param {Object} [target]
+     * @param {Number} [time=500] Time in ms
+     * @param {String} [easing='linear']
+     * @param {Number} [delay=0]
      * @param {Function} [callback]
-     * @param {Function} [forceAnimate] Prevent stop animation and callback
-     *        immediently when target values are the same as current values.
+     * @param {Function} [forceAnimate] Prevent stop animation and callbackm immediently when target values are the same as current values.
      *
      * @example
      *  // Animate position
@@ -129,21 +134,41 @@ Animatable.prototype = {
      *      position: [10, 10]
      *  }, 100, 100, 'cubicOut', function () { // done })
      */
-    // TODO Return animation key
+    // TODO:Return animation key
     animateTo: function (target, time, delay, easing, callback, forceAnimate) {
-        animateTo(this, target, time, delay, easing, callback, forceAnimate);
+        _doAnimation(this, target, time, delay, easing, callback, forceAnimate);
     },
 
     /**
+     * @method
      * Animate from the target state to current state.
      * The params and the return value are the same as `this.animateTo`.
+     * @param {Object} [target]
+     * @param {Number} [time=500] Time in ms
+     * @param {String} [easing='linear']
+     * @param {Number} [delay=0]
+     * @param {Function} [callback]
+     * @param {Function} [forceAnimate] Prevent stop animation and callbackm immediently when target values are the same as current values.
+     *
      */
     animateFrom: function (target, time, delay, easing, callback, forceAnimate) {
-        animateTo(this, target, time, delay, easing, callback, forceAnimate, true);
+        _doAnimation(this, target, time, delay, easing, callback, forceAnimate, true);
     }
 };
 
-function animateTo(animatable, target, time, delay, easing, callback, forceAnimate, reverse) {
+/**
+ * @private
+ * @method
+ * @param {Element} animatable 
+ * @param {Element} target 
+ * @param {Number} time 
+ * @param {Number} delay 
+ * @param {String} easing 
+ * @param {Function} callback 
+ * @param {Boolean} forceAnimate 
+ * @param {Boolean} reverse 
+ */
+function _doAnimation(animatable, target, time, delay, easing, callback, forceAnimate, reverse) {
     // animateTo(target, time, easing, callback);
     if (dataUtil.isString(delay)) {
         callback = easing;
@@ -200,12 +225,12 @@ function animateTo(animatable, target, time, delay, easing, callback, forceAnima
 }
 
 /**
- * @param {string} path=''
+ * @param {String} path=''
  * @param {Object} source=animatable
  * @param {Object} target
- * @param {number} [time=500]
- * @param {number} [delay=0]
- * @param {boolean} [reverse] If `true`, animate
+ * @param {Number} [time=500]
+ * @param {Number} [delay=0]
+ * @param {Boolean} [reverse] If `true`, animate
  *        from the `target` to current state.
  *
  * @example

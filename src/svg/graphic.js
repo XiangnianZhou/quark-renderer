@@ -5,9 +5,9 @@
 import {createElement} from './core';
 import PathProxy from '../core/PathProxy';
 import BoundingRect from '../core/BoundingRect';
-import * as matrix from '../core/matrix';
+import * as matrix from '../core/utils/matrix';
 import * as textContain from '../core/contain/text';
-import * as textHelper from '../graphic/helper/text';
+import * as textHelper from '../graphic/utils/text';
 import Text from '../graphic/Text';
 
 var CMD = PathProxy.CMD;

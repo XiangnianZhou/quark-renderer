@@ -1,14 +1,15 @@
 {
-  "--title": "NGWEB-FishDesktop API Documentation",
+  "--title": "ZRender API Documentation",
   "--output": "../../api",
   "--categories": "./categories.json",
   "--examples": "./examples.json",
   "--examples-base-url": "../examples/",
   "--image": "./resources",
   "--ignore-global": true,
-  "--external": "View,Function,Integer,any,Any,selector,Selector,Event,event,Element,jQuery,Promise",
-  "--footer": "Copyright 2013-2017, ZTEsoft Technology Co.,LTD, All rights reserved. ",
+  "--external": "jQuery,Promise",
+  "--footer": "https://github.com/damoqiongqiu/zrender",
   "--": [
-    "../../lib/zrender.js"
+    "../../lib/zrender.js",
+    "../../lib/animation/Animatable.js"
   ]
 }

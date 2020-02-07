@@ -4,8 +4,8 @@
  */
 
 import Definable from './Definable';
-import * as dataUtil from '../../core/dataStructureUtil';
-import * as colorTool from '../../core/colorUtil';
+import * as dataUtil from '../../core/utils/dataStructureUtil';
+import * as colorTool from '../../core/utils/colorUtil';
 
 /**
  * Manages SVG gradient elements.

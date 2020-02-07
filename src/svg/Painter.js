@@ -4,11 +4,11 @@
  */
 
 import {createElement} from './core';
-import * as util from '../core/dataStructureUtil';
+import * as util from '../core/utils/dataStructureUtil';
 import Path from '../graphic/Path';
 import ZImage from '../graphic/Image';
 import ZText from '../graphic/Text';
-import arrayDiff from '../core/arrayDiff2';
+import arrayDiff from '../core/utils/arrayDiff2';
 import GradientManager from './helper/GradientManager';
 import ClippathManager from './helper/ClippathManager';
 import ShadowManager from './helper/ShadowManager';

@@ -4,8 +4,8 @@
  */
 
 import Definable from './Definable';
-import * as dataUtil from '../../core/dataStructureUtil';
-import * as matrix from '../../core/matrix';
+import * as dataUtil from '../../core/utils/dataStructureUtil';
+import * as matrix from '../../core/utils/matrix';
 
 /**
  * Manages SVG clipPath elements.
