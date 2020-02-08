@@ -1,12 +1,11 @@
-/*!
-* ZRender, a high performance 2d drawing library.
-*
-* Copyright (c) 2013, Baidu Inc.
-* All rights reserved.
-*
-* LICENSE
-* https://github.com/ecomfe/zrender/blob/master/LICENSE.txt
-*/
+import guid from './core/utils/guid';
+import env from './core/env';
+import Handler from './event/Handler';
+import Storage from './Storage';
+import Painter from './Painter';
+import GlobalAnimationMgr from './animation/GlobalAnimationMgr';
+import HandlerDomProxy from './event/HandlerDomProxy';
+
 /**
  * @class zrender.core.ZRender
  * ZRender, a high performance 2d drawing library.
@@ -19,31 +18,24 @@
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
-import guid from './core/utils/guid';
-import env from './core/env';
-import Handler from './event/Handler';
-import Storage from './Storage';
-import Painter from './Painter';
-import GlobalAnimationMgr from './animation/GlobalAnimationMgr';
-import HandlerDomProxy from './event/HandlerDomProxy';
 
 if(!env.canvasSupported){
-    throw new Error("Need Canvas Environments.");
+    throw new Error("Need Canvas Environment.");
 }
 
-var useVML = !env.canvasSupported;
+let useVML = !env.canvasSupported;
 
-var painterCtors = {
+let painterCtors = {
     canvas: Painter
 };
 
 // ZRender实例map索引，浏览器中同一个 window 下的 ZRender 实例都存在这里。
-var instances = {};
+let instances = {};
 
 /**
  * @type {String}
  */
-export var version = '4.1.2';
+export let version = '4.1.2';
 
 /**
  * @method zrender.init()
@@ -60,7 +52,7 @@ export var version = '4.1.2';
  * @return {ZRender}
  */
 export function init(dom, opts) {
-    var zr = new ZRender(guid(), dom, opts);
+    let zr = new ZRender(guid(), dom, opts);
     instances[zr.id] = zr;
     return zr;
 }
@@ -75,7 +67,7 @@ export function dispose(zr) {
         zr.dispose();
     }
     else {
-        for (var key in instances) {
+        for (let key in instances) {
             if (instances.hasOwnProperty(key)) {
                 instances[key].dispose();
             }
@@ -110,7 +102,7 @@ export function registerPainter(name, Ctor) {
  * @param {Number} [opts.height] Can be 'auto' (the same as null/undefined)
  * @return {ZRender}
  */
-var ZRender = function (id, dom, opts) {
+let ZRender = function (id, dom, opts) {
 
     opts = opts || {};
 
@@ -124,14 +116,14 @@ var ZRender = function (id, dom, opts) {
      */
     this.id = id;
 
-    var self = this;
+    let self = this;
 
     /**
      * @type {Storage}
      */
-    var storage = new Storage();
+    let storage = new Storage();
 
-    var rendererType = opts.renderer;
+    let rendererType = opts.renderer;
     // TODO WebGL
     // TODO: remove vml
     if (useVML) {
@@ -142,13 +134,13 @@ var ZRender = function (id, dom, opts) {
     }else if (!rendererType || !painterCtors[rendererType]) {
         rendererType = 'canvas';
     }
-    var painter = new painterCtors[rendererType](dom, storage, opts, id);
+    let painter = new painterCtors[rendererType](dom, storage, opts, id);
 
     this.storage = storage;
     this.painter = painter;
 
     //把DOM事件代理出来
-    var handerProxy = (!env.node && !env.worker) ? new HandlerDomProxy(painter.getViewportRoot()) : null;
+    let handerProxy = (!env.node && !env.worker) ? new HandlerDomProxy(painter.getViewportRoot()) : null;
     //ZRender 自己封装的事件机制
     this.handler = new Handler(storage, painter, handerProxy, painter.root);
 
@@ -263,7 +255,7 @@ ZRender.prototype = {
      * Repaint the canvas immediately
      */
     refreshImmediately: function () {
-        // var start = new Date();
+        // let start = new Date();
         // Clear needsRefresh ahead to avoid something wrong happens in refresh
         // Or it will cause zrender refreshes again and again.
         this._needsRefresh = this._needsRefreshHover = false;
@@ -271,8 +263,8 @@ ZRender.prototype = {
         // Avoid trigger zr.refresh in Element#beforeUpdate hook
         this._needsRefresh = this._needsRefreshHover = false;
 
-        // var end = new Date();
-        // var log = document.getElementById('log');
+        // let end = new Date();
+        // let log = document.getElementById('log');
         // if (log) {
         //     log.innerHTML = log.innerHTML + '<br>' + (end - start);
         // }
@@ -293,7 +285,7 @@ ZRender.prototype = {
      * 刷新 canvas 画面，此方法会在 window.requestAnimationFrame 方法中被不断调用。
      */
     flush: function () {
-        var triggerRendered;
+        let triggerRendered;
 
         if (this._needsRefresh) {      //是否需要全部重绘
             triggerRendered = true;
@@ -321,7 +313,7 @@ ZRender.prototype = {
      */
     addHover: function (el, style) {
         if (this.painter.addHover) {
-            var elMirror = this.painter.addHover(el, style);
+            let elMirror = this.painter.addHover(el, style);
             this.refreshHover();
             return elMirror;
         }

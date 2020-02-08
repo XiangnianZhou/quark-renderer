@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var Timeline = require(&quot;./Timeline&quot;);
+
+var colorUtil = require(&quot;../core/utils/colorUtil&quot;);
+
+var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
+
+function _defineProperties(target, props) { for (var i = 0; i &lt; props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (&quot;value&quot; in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+<span id='zrender-animation-Track'>/**
+</span> * @class zrender.animation.Track
+ * 
+ * Track, 轨道，与图元（Element）上可以用来进行动画的属性一一对应。
+ * 图元上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，
+ * 每一种属性天然成为一条动画轨道，把这些轨道上的变化过程封装在 Timeline 中。
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ */
+var Track =
+/*#__PURE__*/
+function () {
+<span id='zrender-animation-Track-method-constructor'>  /**
+</span>   * @method constructor Track
+   * @param {Object} options 
+   */
+  function Track(options) {
+    _classCallCheck(this, Track);
+
+    this._target = options._target;
+    this._getter = options._getter;
+    this._setter = options._setter;
+    this._loop = options._loop;
+    this._delay = options._delay;
+    this.isFinished = false;
+    this.keyframes = [];
+    this.timeline;
+  }
+<span id='zrender-animation-Track-method-addKeyFrame'>  /**
+</span>   * @method addKeyFrame
+   * 添加关键帧
+   * @param {Object} kf 数据结构为 {time:0,value:0}
+   */
+
+
+  _createClass(Track, [{
+    key: &quot;addKeyFrame&quot;,
+    value: function addKeyFrame(kf) {
+      this.keyframes.push(kf);
+    }
+<span id='zrender-animation-Track-method-nextFrame'>    /**
+</span>     * @method nextFrame
+     * 进入下一帧
+     * @param {Number} time  当前时间
+     * @param {Number} delta 时间偏移量
+     */
+
+  }, {
+    key: &quot;nextFrame&quot;,
+    value: function nextFrame(time, delta) {
+      if (!this.timeline) {
+        //TODO:fix this, there is something wrong here.
+        return;
+      }
+
+      var result = this.timeline.nextFrame(time, delta);
+
+      if (dataUtil.isNumeric(result) &amp;&amp; result === 1) {
+        this.isFinished = true;
+      }
+
+      return result;
+    }
+<span id='zrender-animation-Track-method-fire'>    /**
+</span>     * @method fire
+     * 触发事件
+     * @param {String} eventType 
+     * @param {Object} arg 
+     */
+
+  }, {
+    key: &quot;fire&quot;,
+    value: function fire(eventType, arg) {
+      this.timeline.fire(eventType, arg);
+    }
+<span id='zrender-animation-Track-method-start'>    /**
+</span>     * @method start
+     * 开始动画
+     * @param {String} easing 缓动函数名称
+     * @param {String} propName 属性名称
+     * @param {Boolean} forceAnimate 是否强制开启动画 
+     */
+
+  }, {
+    key: &quot;start&quot;,
+    value: function start(easing, propName, forceAnimate) {
+      var options = this._parseKeyFrames(easing, propName, forceAnimate); //如果传入的参数不正确，则无法构造实例
+
+
+      if (!options) {
+        return null;
+      }
+
+      var timeline = new Timeline(options);
+      this.timeline = timeline;
+    }
+<span id='zrender-animation-Track-method-stop'>    /**
+</span>     * @method stop
+     * 停止动画
+     * @param {Boolean} forwardToLast 是否快进到最后一帧 
+     */
+
+  }, {
+    key: &quot;stop&quot;,
+    value: function stop(forwardToLast) {
+      if (forwardToLast) {
+        // Move to last frame before stop
+        this.timeline.onframe(this._target, 1);
+      }
+    }
+<span id='zrender-animation-Track-method-pause'>    /**
+</span>     * @method pause
+     * 暂停
+     */
+
+  }, {
+    key: &quot;pause&quot;,
+    value: function pause() {
+      this.timeline.pause();
+    }
+<span id='zrender-animation-Track-method-resume'>    /**
+</span>     * @method resume
+     * 重启
+     */
+
+  }, {
+    key: &quot;resume&quot;,
+    value: function resume() {
+      this.timeline.resume();
+    }
+<span id='zrender-animation-Track-method-_parseKeyFrames'>    /**
+</span>     * @private
+     * @method _parseKeyFrames
+     * 解析关键帧，创建时间线
+     * @param {String} easing 缓动函数名称
+     * @param {String} propName 属性名称
+     * @param {Boolean} forceAnimate 是否强制开启动画 
+     */
+
+  }, {
+    key: &quot;_parseKeyFrames&quot;,
+    value: function _parseKeyFrames(easing, propName, forceAnimate) {
+      var loop = this._loop;
+      var delay = this._delay;
+      var target = this._target;
+      var getter = this._getter;
+      var setter = this._setter;
+      var useSpline = easing === &#39;spline&#39;;
+      var kfLength = this.keyframes.length;
+
+      if (!kfLength) {
+        return;
+      } // Guess data type
+
+
+      var firstVal = this.keyframes[0].value;
+      var isValueArray = dataUtil.isArrayLike(firstVal);
+      var isValueColor = false;
+      var isValueString = false; // For vertices morphing
+
+      var arrDim = isValueArray ? dataUtil.getArrayDim(this.keyframes) : 0;
+      this.keyframes.sort(function (a, b) {
+        return a.time - b.time;
+      });
+      var trackMaxTime = this.keyframes[kfLength - 1].time;
+      var kfPercents = [];
+      var kfValues = [];
+      var prevValue = this.keyframes[0].value;
+      var isAllValueEqual = true;
+
+      for (var i = 0; i &lt; kfLength; i++) {
+        kfPercents.push(this.keyframes[i].time / trackMaxTime); // Assume value is a color when it is a string
+
+        var value = this.keyframes[i].value; // Check if value is equal, deep check if value is array
+
+        if (!(isValueArray &amp;&amp; dataUtil.isArraySame(value, prevValue, arrDim) || !isValueArray &amp;&amp; value === prevValue)) {
+          isAllValueEqual = false;
+        }
+
+        prevValue = value; // Try converting a string to a color array
+
+        if (typeof value === &#39;string&#39;) {
+          var colorArray = colorUtil.parse(value);
+
+          if (colorArray) {
+            value = colorArray;
+            isValueColor = true;
+          } else {
+            isValueString = true;
+          }
+        }
+
+        kfValues.push(value);
+      }
+
+      if (!forceAnimate &amp;&amp; isAllValueEqual) {
+        return;
+      }
+
+      var lastValue = kfValues[kfLength - 1]; // Polyfill array and NaN value
+
+      for (var _i = 0; _i &lt; kfLength - 1; _i++) {
+        if (isValueArray) {
+          dataUtil.fillArr(kfValues[_i], lastValue, arrDim);
+        } else {
+          if (isNaN(kfValues[_i]) &amp;&amp; !isNaN(lastValue) &amp;&amp; !isValueString &amp;&amp; !isValueColor) {
+            kfValues[_i] = lastValue;
+          }
+        }
+      }
+
+      isValueArray &amp;&amp; dataUtil.fillArr(getter(target, propName), lastValue, arrDim); // Cache the key of last frame to speed up when
+      // animation playback is sequency
+
+      var lastFrame = 0;
+      var lastFramePercent = 0;
+      var start;
+      var w;
+      var p0;
+      var p1;
+      var p2;
+      var p3;
+      var rgba = [0, 0, 0, 0]; //Timeline 每一帧都会回调此方法。
+
+      var onframe = function onframe(target, percent) {
+        // Find the range keyframes
+        // kf1-----kf2---------current--------kf3
+        // find kf2 and kf3 and do interpolation
+        var frame; // In the easing function like elasticOut, percent may less than 0
+
+        if (percent &lt; 0) {
+          frame = 0;
+        } else if (percent &lt; lastFramePercent) {
+          // Start from next key
+          // PENDING start from lastFrame ?
+          start = Math.min(lastFrame + 1, kfLength - 1);
+
+          for (frame = start; frame &gt;= 0; frame--) {
+            if (kfPercents[frame] &lt;= percent) {
+              break;
+            }
+          } // PENDING really need to do this ?
+
+
+          frame = Math.min(frame, kfLength - 2);
+        } else {
+          for (frame = lastFrame; frame &lt; kfLength; frame++) {
+            if (kfPercents[frame] &gt; percent) {
+              break;
+            }
+          }
+
+          frame = Math.min(frame - 1, kfLength - 2);
+        }
+
+        lastFrame = frame;
+        lastFramePercent = percent;
+        var range = kfPercents[frame + 1] - kfPercents[frame];
+
+        if (range === 0) {
+          return;
+        } else {
+          w = (percent - kfPercents[frame]) / range;
+        }
+
+        if (useSpline) {
+          p1 = kfValues[frame];
+          p0 = kfValues[frame === 0 ? frame : frame - 1];
+          p2 = kfValues[frame &gt; kfLength - 2 ? kfLength - 1 : frame + 1];
+          p3 = kfValues[frame &gt; kfLength - 3 ? kfLength - 1 : frame + 2];
+
+          if (isValueArray) {
+            dataUtil.catmullRomInterpolateArray(p0, p1, p2, p3, w, w * w, w * w * w, getter(target, propName), arrDim);
+          } else {
+            var _value;
+
+            if (isValueColor) {
+              _value = dataUtil.catmullRomInterpolateArray(p0, p1, p2, p3, w, w * w, w * w * w, rgba, 1);
+              _value = dataUtil.rgba2String(rgba);
+            } else if (isValueString) {
+              // String is step(0.5)
+              return dataUtil.interpolateString(p1, p2, w);
+            } else {
+              _value = dataUtil.catmullRomInterpolate(p0, p1, p2, p3, w, w * w, w * w * w);
+            }
+
+            setter(target, propName, _value);
+          }
+        } else {
+          if (isValueArray) {
+            dataUtil.interpolateArray(kfValues[frame], kfValues[frame + 1], w, getter(target, propName), arrDim);
+          } else {
+            var _value2;
+
+            if (isValueColor) {
+              dataUtil.interpolateArray(kfValues[frame], kfValues[frame + 1], w, rgba, 1);
+              _value2 = dataUtil.rgba2String(rgba);
+            } else if (isValueString) {
+              // String is step(0.5)
+              return dataUtil.interpolateString(kfValues[frame], kfValues[frame + 1], w);
+            } else {
+              _value2 = dataUtil.interpolateNumber(kfValues[frame], kfValues[frame + 1], w);
+            }
+
+            setter(target, propName, _value2);
+          }
+        }
+      };
+
+      var options = {
+        target: target,
+        lifeTime: trackMaxTime,
+        loop: loop,
+        delay: delay,
+        onframe: onframe,
+        easing: easing &amp;&amp; easing !== &#39;spline&#39; ? easing : &#39;Linear&#39;
+      };
+      return options;
+    }
+  }]);
+
+  return Track;
+}();
+
+module.exports = Track;</pre>
+</body>
+</html>

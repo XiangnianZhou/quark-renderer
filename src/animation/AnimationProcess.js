@@ -1,16 +1,18 @@
-/**
- * AnimationProcess 表示一次完整的动画过程。
- * 
- * @module echarts/animation/AnimationProcess
- */
 import * as dataUtil from '../core/utils/dataStructureUtil';
 import Track from './Track';
+/**
+ * @class zrender.animation.AnimationProcess
+ * 
+ * AnimationProcess 表示一次完整的动画过程，每一个图元（Element）中都有一个列表，用来存储本实例上的动画过程。
+ * GlobalAnimationMgr 负责维护和调度所有 AnimationProcess 实例。
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ */
 
 /**
- * @alias module:zrender/animation/AnimationProcess
- * @constructor
+ * @method constructor AnimationProcess
  * @param {Object} target 需要进行动画的图元
- * @param {boolean} loop 动画是否循环播放
+ * @param {Boolean} loop 动画是否循环播放
  * @param {Function} getter
  * @param {Function} setter
  */
@@ -35,10 +37,11 @@ AnimationProcess.prototype = {
     constructor: AnimationProcess,
 
     /**
-     * 为每一种属性创建一条轨道
-     * @param  {number} time 关键帧时间，单位ms
+     * @method when
+     * 为每一种需要进行动画的属性创建一条轨道
+     * @param  {Number} time 关键帧时间，单位ms
      * @param  {Object} props 关键帧的属性值，key-value表示
-     * @return {module:zrender/animation/AnimationProcess}
+     * @return {zrender.animation.AnimationProcess}
      */
     when: function (time, props) {
         for (let propName in props) {
@@ -82,9 +85,10 @@ AnimationProcess.prototype = {
     },
 
     /**
+     * @method during
      * 添加动画每一帧的回调函数
      * @param  {Function} callback
-     * @return {module:zrender/animation/AnimationProcess}
+     * @return {zrender.animation.AnimationProcess}
      */
     during: function (callback) {
         this._onframeList.push(callback);
@@ -92,6 +96,8 @@ AnimationProcess.prototype = {
     },
 
     /**
+     * @private
+     * @method _doneCallback
      * 动画过程整体结束的时候回调此函数
      */
     _doneCallback: function () {
@@ -102,7 +108,8 @@ AnimationProcess.prototype = {
     },
 
     /**
-     * 所有 Track 上的动画都完成则整个动画过程完成
+     * @method isFinished
+     * 判断整个动画过程是否已经完成，所有 Track 上的动画都完成则整个动画过程完成
      */
     isFinished: function () {
         let isFinished=true;
@@ -115,11 +122,11 @@ AnimationProcess.prototype = {
     },
 
     /**
+     * @method start
      * 开始执行动画
-     * @param  {string|Function} [easing]
-     *         动画缓动函数，详见{@link module:zrender/animation/easing}
-     * @param  {boolean} forceAnimate
-     * @return {module:zrender/animation/AnimationProcess}
+     * @param  {String|Function} [easing] 缓动函数名称，详见{@link zrender.animation.easing 缓动引擎}
+     * @param  {Boolean} forceAnimate
+     * @return {zrender.animation.AnimationProcess}
      */
     start: function (easing, forceAnimate) {
         let self = this;
@@ -142,8 +149,9 @@ AnimationProcess.prototype = {
     },
 
     /**
+     * @method stop
      * 停止动画
-     * @param {boolean} forwardToLast If move to last frame before stop
+     * @param {Boolean} forwardToLast If move to last frame before stop
      */
     stop: function (forwardToLast) {
         [...this._trackCacheMap.values()].forEach((track,index)=>{
@@ -152,6 +160,12 @@ AnimationProcess.prototype = {
         this._trackCacheMap=new Map();
     },
 
+    /**
+     * @method nextFrame
+     * 进入下一帧
+     * @param {Number} time  当前时间
+     * @param {Number} delta 时间偏移量
+     */
     nextFrame:function(time,delta){
         let deferredEvents = [];
         let deferredTracks = [];
@@ -183,6 +197,10 @@ AnimationProcess.prototype = {
         }
     },
 
+    /**
+     * @method pause
+     * 暂停动画
+     */
     pause: function () {
         [...this._trackCacheMap.values()].forEach((track,index)=>{
             track.pause();
@@ -190,6 +208,10 @@ AnimationProcess.prototype = {
         this._paused = true;
     },
 
+    /**
+     * @method resume
+     * 恢复动画
+     */
     resume: function () {
         [...this._trackCacheMap.values()].forEach((track,index)=>{
             track.resume();
@@ -197,14 +219,19 @@ AnimationProcess.prototype = {
         this._paused = false;
     },
 
+    /**
+     * @method isPaused
+     * 是否暂停
+     */
     isPaused: function () {
         return !!this._paused;
     },
 
     /**
+     * @method delay
      * 设置动画延迟开始的时间
-     * @param  {number} time 单位ms
-     * @return {module:zrender/animation/AnimationProcess}
+     * @param  {Number} time 单位ms
+     * @return {zrender.animation.AnimationProcess}
      */
     delay: function (time) {
         this._delay = time;
@@ -212,9 +239,10 @@ AnimationProcess.prototype = {
     },
     
     /**
+     * @method done
      * 添加动画结束的回调
      * @param  {Function} cb
-     * @return {module:zrender/animation/AnimationProcess}
+     * @return {zrender.animation.AnimationProcess}
      */
     done: function (cb) {
         if (cb) {

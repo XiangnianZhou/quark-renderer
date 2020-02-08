@@ -29,16 +29,6 @@ var GlobalAnimationMgr = require(&quot;./animation/GlobalAnimationMgr&quot;);
 
 var HandlerDomProxy = require(&quot;./event/HandlerDomProxy&quot;);
 
-/*!
-* ZRender, a high performance 2d drawing library.
-*
-* Copyright (c) 2013, Baidu Inc.
-* All rights reserved.
-*
-* LICENSE
-* https://github.com/ecomfe/zrender/blob/master/LICENSE.txt
-*/
-
 <span id='zrender-core-ZRender'>/**
 </span> * @class zrender.core.ZRender
  * ZRender, a high performance 2d drawing library.
@@ -52,7 +42,7 @@ var HandlerDomProxy = require(&quot;./event/HandlerDomProxy&quot;);
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 if (!env.canvasSupported) {
-  throw new Error(&quot;Need Canvas Environments.&quot;);
+  throw new Error(&quot;Need Canvas Environment.&quot;);
 }
 
 var useVML = !env.canvasSupported;
@@ -286,14 +276,14 @@ ZRender.prototype = {
    * Repaint the canvas immediately
    */
   refreshImmediately: function refreshImmediately() {
-    // var start = new Date();
+    // let start = new Date();
     // Clear needsRefresh ahead to avoid something wrong happens in refresh
     // Or it will cause zrender refreshes again and again.
     this._needsRefresh = this._needsRefreshHover = false;
     this.painter.refresh(); // Avoid trigger zr.refresh in Element#beforeUpdate hook
 
-    this._needsRefresh = this._needsRefreshHover = false; // var end = new Date();
-    // var log = document.getElementById(&#39;log&#39;);
+    this._needsRefresh = this._needsRefreshHover = false; // let end = new Date();
+    // let log = document.getElementById(&#39;log&#39;);
     // if (log) {
     //     log.innerHTML = log.innerHTML + &#39;&lt;br&gt;&#39; + (end - start);
     // }

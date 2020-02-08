@@ -1,4 +1,12 @@
+
+import * as dataUtil from '../core/utils/dataStructureUtil';
+import {Dispatcher} from '../core/utils/eventUtil';
+import requestAnimationFrame from './utils/requestAnimationFrame';
+import AnimationProcess from './AnimationProcess';
 /**
+ * @singleton
+ * @class zrender.animation.GlobalAnimationMgr
+ * 
  * Animation manager, global singleton, controls all the animation process.
  * Each ZRender instance has a GlobalAnimationMgr instance. GlobalAnimationMgr 
  * is designed to manage all the AnimationProcesses inside a zrender instance.
@@ -7,21 +15,15 @@
  * GlobalAnimationMgr 实例。GlobalAnimationMgr 会管理 zrender 实例中的所有
  * AnimationProcess。
  * 
- * @module zrender/animation/GlobalAnimationMgr
  * @author pissang(https://github.com/pissang)
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 // TODO Additive animation
 // http://iosoteric.com/additive-animations-animatewithduration-in-ios-8/
 // https://developer.apple.com/videos/wwdc2014/#236
 
-import * as dataUtil from '../core/utils/dataStructureUtil';
-import {Dispatcher} from '../core/utils/eventUtil';
-import requestAnimationFrame from './utils/requestAnimationFrame';
-import AnimationProcess from './AnimationProcess';
-
 /**
- * @alias module:zrender/animation/GlobalAnimationMgr
- * @constructor
+ * @method constructor GlobalAnimationMgr
  * @param {Object} [options]
  */
 function GlobalAnimationMgr(options) {
@@ -40,16 +42,18 @@ GlobalAnimationMgr.prototype = {
     constructor: GlobalAnimationMgr,
 
     /**
+     * @method addAnimationProcess
      * 添加 animationProcess
-     * @param {module:zrender/animation/AnimationProcess} animationProcess
+     * @param {zrender.animation.GlobalAnimationMgr} animationProcess
      */
     addAnimationProcess: function (animationProcess) {
         this._animationProcessList.push(animationProcess);
     },
 
     /**
+     * @method removeAnimationProcess
      * 删除动画片段
-     * @param {module:zrender/animation/AnimationProcess} animationProcess
+     * @param {zrender.animation.GlobalAnimationMgr} animationProcess
      */
     removeAnimationProcess: function (animationProcess) {
         let index=this._animationProcessList.findIndex(animationProcess);
@@ -58,6 +62,10 @@ GlobalAnimationMgr.prototype = {
         }
     },
 
+    /**
+     * @private
+     * @method _update
+     */
     _update: function () {
         var time = new Date().getTime() - this._pausedTime;
         var delta = time - this._timestamp;
@@ -76,6 +84,8 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
+     * @private
+     * @method _startLoop
      * TODO:需要确认在大量节点下的动画性能问题，比如 100 万个图元同时进行动画
      * 这里开始利用requestAnimationFrame递归执行
      * 如果这里的 _update() 不能在16ms的时间内完成一轮动画，就会出现明显的卡顿。
@@ -95,6 +105,7 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
+     * @method start
      * Start all the animations.
      */
     start: function () {
@@ -104,6 +115,7 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
+     * @method stop
      * Stop all the animations.
      */
     stop: function () {
@@ -111,6 +123,7 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
+     * @method pause
      * Pause all the animations.
      */
     pause: function () {
@@ -121,6 +134,7 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
+     * @method resume
      * Resume all the animations.
      */
     resume: function () {
@@ -131,6 +145,7 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
+     * @method clear
      * Clear all the animations.
      */
     clear: function () {
@@ -138,6 +153,7 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
+     * @method isFinished
      * Whether all the animations have finished.
      */
     isFinished:function(){

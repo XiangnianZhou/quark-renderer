@@ -1,13 +1,21 @@
-/**
- * Track, 轨道，与图元（Element）上可以用来进行动画的属性一一对应。
- * 图元上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，
- * 每一种属性天然成为一条动画轨道，把这些轨道上的变化过程封装在 Timeline 中。
- */
 import Timeline from './Timeline';
 import * as colorUtil from '../core/utils/colorUtil';
 import * as dataUtil from '../core/utils/dataStructureUtil';
+/**
+ * @class zrender.animation.Track
+ * 
+ * Track, 轨道，与图元（Element）上可以用来进行动画的属性一一对应。
+ * 图元上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，
+ * 每一种属性天然成为一条动画轨道，把这些轨道上的变化过程封装在 Timeline 中。
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ */
 
 export default class Track{
+    /**
+     * @method constructor Track
+     * @param {Object} options 
+     */
     constructor(options){
         this._target=options._target;
         this._getter=options._getter;
@@ -20,10 +28,21 @@ export default class Track{
         this.timeline;
     }
 
+    /**
+     * @method addKeyFrame
+     * 添加关键帧
+     * @param {Object} kf 数据结构为 {time:0,value:0}
+     */
     addKeyFrame(kf){
         this.keyframes.push(kf);
     }
 
+    /**
+     * @method nextFrame
+     * 进入下一帧
+     * @param {Number} time  当前时间
+     * @param {Number} delta 时间偏移量
+     */
     nextFrame(time, delta){
         if(!this.timeline){//TODO:fix this, there is something wrong here.
             return;
@@ -35,10 +54,23 @@ export default class Track{
         return result;
     }
 
+    /**
+     * @method fire
+     * 触发事件
+     * @param {String} eventType 
+     * @param {Object} arg 
+     */
     fire(eventType, arg){
         this.timeline.fire(eventType, arg);
     }
 
+    /**
+     * @method start
+     * 开始动画
+     * @param {String} easing 缓动函数名称
+     * @param {String} propName 属性名称
+     * @param {Boolean} forceAnimate 是否强制开启动画 
+     */
     start(easing,propName, forceAnimate){
         let options=this._parseKeyFrames(
             easing, 
@@ -54,6 +86,11 @@ export default class Track{
         this.timeline=timeline;
     }
 
+    /**
+     * @method stop
+     * 停止动画
+     * @param {Boolean} forwardToLast 是否快进到最后一帧 
+     */
     stop(forwardToLast){
         if (forwardToLast) {
             // Move to last frame before stop
@@ -61,14 +98,30 @@ export default class Track{
         }
     }
 
+    /**
+     * @method pause
+     * 暂停
+     */
     pause(){
         this.timeline.pause();
     }
 
+    /**
+     * @method resume
+     * 重启
+     */
     resume(){
         this.timeline.resume();
     }
     
+    /**
+     * @private
+     * @method _parseKeyFrames
+     * 解析关键帧，创建时间线
+     * @param {String} easing 缓动函数名称
+     * @param {String} propName 属性名称
+     * @param {Boolean} forceAnimate 是否强制开启动画 
+     */
     _parseKeyFrames(easing,propName,forceAnimate) {
         let loop=this._loop;
         let delay=this._delay;

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
+
+var Track = require(&quot;./Track&quot;);
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError(&quot;Invalid attempt to spread non-iterable instance&quot;); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === &quot;[object Arguments]&quot;) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i &lt; arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+<span id='zrender-animation-AnimationProcess'>/**
+</span> * @class zrender.animation.AnimationProcess
+ * 
+ * AnimationProcess 表示一次完整的动画过程，每一个图元（Element）中都有一个列表，用来存储本实例上的动画过程。
+ * GlobalAnimationMgr 负责维护和调度所有 AnimationProcess 实例。
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ */
+
+<span id='zrender-animation-AnimationProcess-method-constructor'>/**
+</span> * @method constructor AnimationProcess
+ * @param {Object} target 需要进行动画的图元
+ * @param {Boolean} loop 动画是否循环播放
+ * @param {Function} getter
+ * @param {Function} setter
+ */
+var AnimationProcess = function AnimationProcess(target, loop, getter, setter) {
+  this._trackCacheMap = new Map();
+  this._target = target;
+  this._loop = loop || false;
+
+  this._getter = getter || function (target, key) {
+    return target[key];
+  };
+
+  this._setter = setter || function (target, key, value) {
+    target[key] = value;
+  };
+
+  this._delay = 0;
+  this._paused = false;
+  this._doneList = []; //callback list when the entire animation process is finished
+
+  this._onframeList = []; //callback list for each frame
+};
+
+AnimationProcess.prototype = {
+  constructor: AnimationProcess,
+
+<span id='zrender-animation-AnimationProcess-method-when'>  /**
+</span>   * @method when
+   * 为每一种需要进行动画的属性创建一条轨道
+   * @param  {Number} time 关键帧时间，单位ms
+   * @param  {Object} props 关键帧的属性值，key-value表示
+   * @return {zrender.animation.AnimationProcess}
+   */
+  when: function when(time, props) {
+    for (var propName in props) {
+      if (!props.hasOwnProperty(propName)) {
+        continue;
+      } // Invalid value
+
+
+      var value = this._getter(this._target, propName);
+
+      if (value == null) {
+        // zrLog(&#39;Invalid property &#39; + propName);
+        continue;
+      }
+
+      var track = this._trackCacheMap.get(propName);
+
+      if (!track) {
+        track = new Track({
+          _target: this._target,
+          _getter: this._getter,
+          _setter: this._setter,
+          _loop: this._loop,
+          _delay: this._delay
+        });
+      }
+
+      if (time !== 0) {
+        track.addKeyFrame({
+          time: 0,
+          value: dataUtil.cloneValue(value)
+        });
+      }
+
+      track.addKeyFrame({
+        time: time,
+        value: props[propName]
+      });
+
+      this._trackCacheMap.set(propName, track);
+    }
+
+    return this;
+  },
+
+<span id='zrender-animation-AnimationProcess-method-during'>  /**
+</span>   * @method during
+   * 添加动画每一帧的回调函数
+   * @param  {Function} callback
+   * @return {zrender.animation.AnimationProcess}
+   */
+  during: function during(callback) {
+    this._onframeList.push(callback);
+
+    return this;
+  },
+
+<span id='zrender-animation-AnimationProcess-method-_doneCallback'>  /**
+</span>   * @private
+   * @method _doneCallback
+   * 动画过程整体结束的时候回调此函数
+   */
+  _doneCallback: function _doneCallback() {
+    var _this = this;
+
+    this._doneList.forEach(function (fn, index) {
+      fn.call(_this);
+    });
+
+    this._trackCacheMap = new Map();
+  },
+
+<span id='zrender-animation-AnimationProcess-method-isFinished'>  /**
+</span>   * @method isFinished
+   * 判断整个动画过程是否已经完成，所有 Track 上的动画都完成则整个动画过程完成
+   */
+  isFinished: function isFinished() {
+    var isFinished = true;
+
+    _toConsumableArray(this._trackCacheMap.values()).forEach(function (track, index) {
+      if (!track.isFinished) {
+        isFinished = false;
+      }
+    });
+
+    return isFinished;
+  },
+
+<span id='zrender-animation-AnimationProcess-method-start'>  /**
+</span>   * @method start
+   * 开始执行动画
+   * @param  {String|Function} [easing] 缓动函数名称，详见{@link zrender.animation.easing 缓动引擎}
+   * @param  {Boolean} forceAnimate
+   * @return {zrender.animation.AnimationProcess}
+   */
+  start: function start(easing, forceAnimate) {
+    var _this2 = this;
+
+    var self = this;
+
+    var keys = _toConsumableArray(this._trackCacheMap.keys());
+
+    keys.forEach(function (propName, index) {
+      if (!_this2._trackCacheMap.get(propName)) {
+        return;
+      }
+
+      var track = _this2._trackCacheMap.get(propName);
+
+      track.start(easing, propName, forceAnimate);
+    }); // This optimization will help the case that in the upper application
+    // the view may be refreshed frequently, where animation will be
+    // called repeatly but nothing changed.
+
+    if (!keys.length) {
+      this._doneCallback();
+    }
+
+    return this;
+  },
+
+<span id='zrender-animation-AnimationProcess-method-stop'>  /**
+</span>   * @method stop
+   * 停止动画
+   * @param {Boolean} forwardToLast If move to last frame before stop
+   */
+  stop: function stop(forwardToLast) {
+    var _this3 = this;
+
+    _toConsumableArray(this._trackCacheMap.values()).forEach(function (track, index) {
+      track.stop(_this3._target, 1);
+    });
+
+    this._trackCacheMap = new Map();
+  },
+
+<span id='zrender-animation-AnimationProcess-method-nextFrame'>  /**
+</span>   * @method nextFrame
+   * 进入下一帧
+   * @param {Number} time  当前时间
+   * @param {Number} delta 时间偏移量
+   */
+  nextFrame: function nextFrame(time, delta) {
+    var deferredEvents = [];
+    var deferredTracks = [];
+    var percent = &quot;&quot;;
+
+    _toConsumableArray(this._trackCacheMap.values()).forEach(function (track, index) {
+      var result = track.nextFrame(time, delta);
+
+      if (dataUtil.isString(result)) {
+        deferredEvents.push(result);
+        deferredTracks.push(track);
+      } else if (dataUtil.isNumeric(result)) {
+        percent = result;
+      }
+    });
+
+    var len = deferredEvents.length;
+
+    for (var i = 0; i &lt; len; i++) {
+      deferredTracks[i].fire(deferredEvents[i]);
+    }
+
+    if (dataUtil.isNumeric(percent)) {
+      for (var _i = 0; _i &lt; this._onframeList.length; _i++) {
+        this._onframeList[_i](this._target, percent);
+      }
+    }
+
+    if (this.isFinished()) {
+      this._doneCallback();
+    }
+  },
+
+<span id='zrender-animation-AnimationProcess-method-pause'>  /**
+</span>   * @method pause
+   * 暂停动画
+   */
+  pause: function pause() {
+    _toConsumableArray(this._trackCacheMap.values()).forEach(function (track, index) {
+      track.pause();
+    });
+
+    this._paused = true;
+  },
+
+<span id='zrender-animation-AnimationProcess-method-resume'>  /**
+</span>   * @method resume
+   * 恢复动画
+   */
+  resume: function resume() {
+    _toConsumableArray(this._trackCacheMap.values()).forEach(function (track, index) {
+      track.resume();
+    });
+
+    this._paused = false;
+  },
+
+<span id='zrender-animation-AnimationProcess-method-isPaused'>  /**
+</span>   * @method isPaused
+   * 是否暂停
+   */
+  isPaused: function isPaused() {
+    return !!this._paused;
+  },
+
+<span id='zrender-animation-AnimationProcess-method-delay'>  /**
+</span>   * @method delay
+   * 设置动画延迟开始的时间
+   * @param  {Number} time 单位ms
+   * @return {zrender.animation.AnimationProcess}
+   */
+  delay: function delay(time) {
+    this._delay = time;
+    return this;
+  },
+
+<span id='zrender-animation-AnimationProcess-method-done'>  /**
+</span>   * @method done
+   * 添加动画结束的回调
+   * @param  {Function} cb
+   * @return {zrender.animation.AnimationProcess}
+   */
+  done: function done(cb) {
+    if (cb) {
+      this._doneList.push(cb);
+    }
+
+    return this;
+  }
+};
+var _default = AnimationProcess;
+module.exports = _default;</pre>
+</body>
+</html>

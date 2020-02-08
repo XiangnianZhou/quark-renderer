@@ -3592,20 +3592,25 @@ var easing = {
 };
 
 /**
+ * @class zrender.animation.Timeline
  * Timeline，时间线，用来计算图元上的某个属性在指定时间点的数值。
- * 
- * @config target 动画对象，可以是数组，如果是数组的话会批量分发onframe等事件
- * @config life(1000) 动画时长
- * @config delay(0) 动画延迟时间
- * @config loop(true)
- * @config gap(0) 循环的间隔时间
- * @config onframe
- * @config easing(optional)
- * @config ondestroy(optional)
- * @config onrestart(optional)
- *
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
+
 class Timeline{
+    /**
+     * @method constructor Timeline
+     * @param {Object} options 
+     * @param {Element} options.target 动画对象，可以是数组，如果是数组的话会批量分发onframe等事件
+     * @param {Number} options.life(1000) 动画时长
+     * @param {Number} options.delay(0) 动画延迟时间
+     * @param {Boolean} options.loop(true)
+     * @param {Number} options.gap(0) 循环的间隔时间
+     * @param {Function} options.onframe
+     * @param {String} options.easing(optional)
+     * @param {Function} options.ondestroy(optional)
+     * @param {Function} options.onrestart(optional)
+     */
     constructor(options){
         this._target = options.target;
         this._lifeTime = options.lifeTime || 1000;
@@ -3622,6 +3627,12 @@ class Timeline{
         this._paused = false;
     }
 
+    /**
+     * @method nextFrame
+     * 进入下一帧
+     * @param {Number} globalTime 当前时间
+     * @param {Number} deltaTime  时间偏移量
+     */
     nextFrame(globalTime, deltaTime) {
         // Set startTime on first frame, or _startTime may has milleseconds different between clips
         // PENDING
@@ -3662,12 +3673,23 @@ class Timeline{
         return percent;
     }
 
+    /**
+     * @method restart
+     * 重新开始
+     * @param {Number} globalTime 
+     */
     restart(globalTime) {
         let remainder = (globalTime - this._startTime - this._pausedTime) % this._lifeTime;
         this._startTime = globalTime - remainder + this.gap;
         this._pausedTime = 0;
     }
 
+    /**
+     * @method fire
+     * 触发事件
+     * @param {String} eventType 
+     * @param {Object} arg 
+     */
     fire(eventType, arg) {
         eventType = 'on' + eventType;
         if (this[eventType]) {
@@ -3675,10 +3697,18 @@ class Timeline{
         }
     }
 
+    /**
+     * @method pause
+     * 暂停
+     */
     pause() {
         this._paused = true;
     }
 
+    /**
+     * @method resume
+     * 恢复运行
+     */
     resume() {
         this._paused = false;
     }
@@ -4433,11 +4463,20 @@ var colorUtil = (Object.freeze || Object)({
 });
 
 /**
+ * @class zrender.animation.Track
+ * 
  * Track, 轨道，与图元（Element）上可以用来进行动画的属性一一对应。
  * 图元上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，
  * 每一种属性天然成为一条动画轨道，把这些轨道上的变化过程封装在 Timeline 中。
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
+
 class Track{
+    /**
+     * @method constructor Track
+     * @param {Object} options 
+     */
     constructor(options){
         this._target=options._target;
         this._getter=options._getter;
@@ -4450,10 +4489,21 @@ class Track{
         this.timeline;
     }
 
+    /**
+     * @method addKeyFrame
+     * 添加关键帧
+     * @param {Object} kf 数据结构为 {time:0,value:0}
+     */
     addKeyFrame(kf){
         this.keyframes.push(kf);
     }
 
+    /**
+     * @method nextFrame
+     * 进入下一帧
+     * @param {Number} time  当前时间
+     * @param {Number} delta 时间偏移量
+     */
     nextFrame(time, delta){
         if(!this.timeline){//TODO:fix this, there is something wrong here.
             return;
@@ -4465,10 +4515,23 @@ class Track{
         return result;
     }
 
+    /**
+     * @method fire
+     * 触发事件
+     * @param {String} eventType 
+     * @param {Object} arg 
+     */
     fire(eventType, arg){
         this.timeline.fire(eventType, arg);
     }
 
+    /**
+     * @method start
+     * 开始动画
+     * @param {String} easing 缓动函数名称
+     * @param {String} propName 属性名称
+     * @param {Boolean} forceAnimate 是否强制开启动画 
+     */
     start(easing,propName, forceAnimate){
         let options=this._parseKeyFrames(
             easing, 
@@ -4484,6 +4547,11 @@ class Track{
         this.timeline=timeline;
     }
 
+    /**
+     * @method stop
+     * 停止动画
+     * @param {Boolean} forwardToLast 是否快进到最后一帧 
+     */
     stop(forwardToLast){
         if (forwardToLast) {
             // Move to last frame before stop
@@ -4491,14 +4559,30 @@ class Track{
         }
     }
 
+    /**
+     * @method pause
+     * 暂停
+     */
     pause(){
         this.timeline.pause();
     }
 
+    /**
+     * @method resume
+     * 重启
+     */
     resume(){
         this.timeline.resume();
     }
     
+    /**
+     * @private
+     * @method _parseKeyFrames
+     * 解析关键帧，创建时间线
+     * @param {String} easing 缓动函数名称
+     * @param {String} propName 属性名称
+     * @param {Boolean} forceAnimate 是否强制开启动画 
+     */
     _parseKeyFrames(easing,propName,forceAnimate) {
         let loop=this._loop;
         let delay=this._delay;
@@ -4698,15 +4782,18 @@ class Track{
 }
 
 /**
- * AnimationProcess 表示一次完整的动画过程。
+ * @class zrender.animation.AnimationProcess
  * 
- * @module echarts/animation/AnimationProcess
+ * AnimationProcess 表示一次完整的动画过程，每一个图元（Element）中都有一个列表，用来存储本实例上的动画过程。
+ * GlobalAnimationMgr 负责维护和调度所有 AnimationProcess 实例。
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
+
 /**
- * @alias module:zrender/animation/AnimationProcess
- * @constructor
+ * @method constructor AnimationProcess
  * @param {Object} target 需要进行动画的图元
- * @param {boolean} loop 动画是否循环播放
+ * @param {Boolean} loop 动画是否循环播放
  * @param {Function} getter
  * @param {Function} setter
  */
@@ -4731,10 +4818,11 @@ AnimationProcess.prototype = {
     constructor: AnimationProcess,
 
     /**
-     * 为每一种属性创建一条轨道
-     * @param  {number} time 关键帧时间，单位ms
+     * @method when
+     * 为每一种需要进行动画的属性创建一条轨道
+     * @param  {Number} time 关键帧时间，单位ms
      * @param  {Object} props 关键帧的属性值，key-value表示
-     * @return {module:zrender/animation/AnimationProcess}
+     * @return {zrender.animation.AnimationProcess}
      */
     when: function (time, props) {
         for (let propName in props) {
@@ -4778,9 +4866,10 @@ AnimationProcess.prototype = {
     },
 
     /**
+     * @method during
      * 添加动画每一帧的回调函数
      * @param  {Function} callback
-     * @return {module:zrender/animation/AnimationProcess}
+     * @return {zrender.animation.AnimationProcess}
      */
     during: function (callback) {
         this._onframeList.push(callback);
@@ -4788,6 +4877,8 @@ AnimationProcess.prototype = {
     },
 
     /**
+     * @private
+     * @method _doneCallback
      * 动画过程整体结束的时候回调此函数
      */
     _doneCallback: function () {
@@ -4798,7 +4889,8 @@ AnimationProcess.prototype = {
     },
 
     /**
-     * 所有 Track 上的动画都完成则整个动画过程完成
+     * @method isFinished
+     * 判断整个动画过程是否已经完成，所有 Track 上的动画都完成则整个动画过程完成
      */
     isFinished: function () {
         let isFinished=true;
@@ -4811,11 +4903,11 @@ AnimationProcess.prototype = {
     },
 
     /**
+     * @method start
      * 开始执行动画
-     * @param  {string|Function} [easing]
-     *         动画缓动函数，详见{@link module:zrender/animation/easing}
-     * @param  {boolean} forceAnimate
-     * @return {module:zrender/animation/AnimationProcess}
+     * @param  {String|Function} [easing] 缓动函数名称，详见{@link zrender.animation.easing 缓动引擎}
+     * @param  {Boolean} forceAnimate
+     * @return {zrender.animation.AnimationProcess}
      */
     start: function (easing, forceAnimate) {
         let keys=[...this._trackCacheMap.keys()];
@@ -4837,8 +4929,9 @@ AnimationProcess.prototype = {
     },
 
     /**
+     * @method stop
      * 停止动画
-     * @param {boolean} forwardToLast If move to last frame before stop
+     * @param {Boolean} forwardToLast If move to last frame before stop
      */
     stop: function (forwardToLast) {
         [...this._trackCacheMap.values()].forEach((track,index)=>{
@@ -4847,6 +4940,12 @@ AnimationProcess.prototype = {
         this._trackCacheMap=new Map();
     },
 
+    /**
+     * @method nextFrame
+     * 进入下一帧
+     * @param {Number} time  当前时间
+     * @param {Number} delta 时间偏移量
+     */
     nextFrame:function(time,delta){
         let deferredEvents = [];
         let deferredTracks = [];
@@ -4878,6 +4977,10 @@ AnimationProcess.prototype = {
         }
     },
 
+    /**
+     * @method pause
+     * 暂停动画
+     */
     pause: function () {
         [...this._trackCacheMap.values()].forEach((track,index)=>{
             track.pause();
@@ -4885,6 +4988,10 @@ AnimationProcess.prototype = {
         this._paused = true;
     },
 
+    /**
+     * @method resume
+     * 恢复动画
+     */
     resume: function () {
         [...this._trackCacheMap.values()].forEach((track,index)=>{
             track.resume();
@@ -4892,14 +4999,19 @@ AnimationProcess.prototype = {
         this._paused = false;
     },
 
+    /**
+     * @method isPaused
+     * 是否暂停
+     */
     isPaused: function () {
         return !!this._paused;
     },
 
     /**
+     * @method delay
      * 设置动画延迟开始的时间
-     * @param  {number} time 单位ms
-     * @return {module:zrender/animation/AnimationProcess}
+     * @param  {Number} time 单位ms
+     * @return {zrender.animation.AnimationProcess}
      */
     delay: function (time) {
         this._delay = time;
@@ -4907,9 +5019,10 @@ AnimationProcess.prototype = {
     },
     
     /**
+     * @method done
      * 添加动画结束的回调
      * @param  {Function} cb
-     * @return {module:zrender/animation/AnimationProcess}
+     * @return {zrender.animation.AnimationProcess}
      */
     done: function (cb) {
         if (cb) {
@@ -4926,13 +5039,14 @@ AnimationProcess.prototype = {
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
+
 /**
  * @abstract
  * @method constructor Animatable
  */
-var Animatable = function () {
+let Animatable = function () {
     /**
-     * @type {Array.<module:zrender/animation/AnimationProcess>}
+     * @type {zrender.animation.AnimationProcess}
      * @readOnly
      */
     this.animationProcessList = [];
@@ -4949,22 +5063,21 @@ Animatable.prototype = {
      * @param {Boolean} [loop=false] Whether to loop animation.
      * @return {zrender.animation.AnimationProcess}
      * @example
-     *  el.animate('style', false)
-     *    .when(1000, {x: 10} )
-     *    .done(function(){ // Animation done })
-     *    .start()
+     * el.animate('style', false)
+     *   .when(1000, {x: 10} )
+     *   .done(function(){ // Animation done })
+     *   .start()
      */
     animate: function (path, loop) {
-        var target;
-        var animatingShape = false;
-        var el = this;
-        var zr = this.__zr;
+        let target;
+        let animatingShape = false;
+        let animatable = this;
         if (path) {
-            var pathSplitted = path.split('.');
-            var prop = el;
+            let pathSplitted = path.split('.');
+            let prop = animatable;
             // If animating shape
             animatingShape = pathSplitted[0] === 'shape';
-            for (var i = 0, l = pathSplitted.length; i < l; i++) {
+            for (let i = 0, l = pathSplitted.length; i < l; i++) {
                 if (!prop) {
                     continue;
                 }
@@ -4973,9 +5086,8 @@ Animatable.prototype = {
             if (prop) {
                 target = prop;
             }
-        }
-        else {
-            target = el;
+        }else {
+            target = animatable;
         }
 
         if (!target) {
@@ -4983,28 +5095,24 @@ Animatable.prototype = {
                 'Property "'
                 + path
                 + '" is not existed in element '
-                + el.id
+                + animatable.id
             );
             return;
         }
 
-        var animationProcessList = el.animationProcessList;
-
-        var animationProcess = new AnimationProcess(target, loop);
-
+        let animationProcess = new AnimationProcess(target, loop);
         animationProcess.during(function (target) {
-            el.dirty(animatingShape);
+            animatable.dirty(animatingShape);
         })
         .done(function () {
             // FIXME AnimationProcess will not be removed if use `AnimationProcess#stop` to stop animation
-            animationProcessList.splice(indexOf(animationProcessList, animationProcess), 1);
+            animatable.animationProcessList.splice(indexOf(animatable.animationProcessList, animationProcess), 1);
         });
-
-        animationProcessList.push(animationProcess);
+        animatable.animationProcessList.push(animationProcess);
 
         // If animate after added to the zrender
-        if (zr) {
-            zr.globalAnimationMgr.addAnimationProcess(animationProcess);
+        if (this.__zr) {
+            this.__zr.globalAnimationMgr.addAnimationProcess(animationProcess);
         }
 
         return animationProcess;
@@ -5052,7 +5160,6 @@ Animatable.prototype = {
      *      position: [10, 10]
      *  }, 100, 100, 'cubicOut', function () { // done })
      */
-    // TODO:Return animation key
     animateTo: function (target, time, delay, easing, callback, forceAnimate) {
         _doAnimation(this, target, time, delay, easing, callback, forceAnimate);
     },
@@ -5119,8 +5226,8 @@ function _doAnimation(animatable, target, time, delay, easing, callback, forceAn
 
     // AnimationProcess may be removed immediately after start
     // if there is nothing to animate
-    var animationProcessList = animatable.animationProcessList.slice();
-    var count = animationProcessList.length;
+    let animationProcessList = animatable.animationProcessList.slice();
+    let count = animationProcessList.length;
     function done() {
         count--;
         if (!count) {
@@ -5135,7 +5242,7 @@ function _doAnimation(animatable, target, time, delay, easing, callback, forceAn
     }
     // Start after all animationProcessList created
     // Incase any animationProcess is done immediately when all animation properties are not changed
-    for (var i = 0; i < animationProcessList.length; i++) {
+    for (let i = 0; i < animationProcessList.length; i++) {
         animationProcessList[i]
             .done(done)
             .start(easing, forceAnimate);
@@ -5143,6 +5250,10 @@ function _doAnimation(animatable, target, time, delay, easing, callback, forceAn
 }
 
 /**
+ * @private
+ * @method
+ * 
+ * @param {Element} animatable
  * @param {String} path=''
  * @param {Object} source=animatable
  * @param {Object} target
@@ -5169,38 +5280,35 @@ function _doAnimation(animatable, target, time, delay, easing, callback, forceAn
  *  }, 100, 100)
  */
 function animateToShallow(animatable, path, source, target, time, delay, reverse) {
-    var objShallow = {};
-    var propertyCount = 0;
-    for (var name in target) {
-        if (!target.hasOwnProperty(name)) {
+    let objShallow = {};
+    let propertyCount = 0;
+    for (let prop in target) {
+        if (!target.hasOwnProperty(prop)) {
             continue;
         }
 
-        if (source[name] != null) {
-            if (isObject(target[name]) && !isArrayLike(target[name])) {
+        if (source[prop] != null) {
+            if (isObject(target[prop]) && !isArrayLike(target[prop])) {
                 animateToShallow(
                     animatable,
-                    path ? path + '.' + name : name,
-                    source[name],
-                    target[name],
+                    path ? path + '.' + prop : prop,
+                    source[prop],
+                    target[prop],
                     time,
                     delay,
                     reverse
                 );
-            }
-            else {
+            }else {
                 if (reverse) {
-                    objShallow[name] = source[name];
-                    setAttrByPath(animatable, path, name, target[name]);
-                }
-                else {
-                    objShallow[name] = target[name];
+                    objShallow[prop] = source[prop];
+                    setAttrByPath(animatable, path, prop, target[prop]);
+                }else {
+                    objShallow[prop] = target[prop];
                 }
                 propertyCount++;
             }
-        }
-        else if (target[name] != null && !reverse) {
-            setAttrByPath(animatable, path, name, target[name]);
+        }else if (target[prop] != null && !reverse) {
+            setAttrByPath(animatable, path, prop, target[prop]);
         }
     }
 
@@ -5211,17 +5319,16 @@ function animateToShallow(animatable, path, source, target, time, delay, reverse
     }
 }
 
-function setAttrByPath(el, path, name, value) {
+function setAttrByPath(el, path, prop, value) {
     // Attr directly if not has property
     // FIXME, if some property not needed for element ?
     if (!path) {
-        el.attr(name, value);
-    }
-    else {
+        el.attr(prop, value);
+    }else {
         // Only support set shape or style
-        var props = {};
+        let props = {};
         props[path] = {};
-        props[path][name] = value;
+        props[path][prop] = value;
         el.attr(props);
     }
 }
@@ -10700,6 +10807,9 @@ Painter.prototype = {
 };
 
 /**
+ * @singleton
+ * @class zrender.animation.GlobalAnimationMgr
+ * 
  * Animation manager, global singleton, controls all the animation process.
  * Each ZRender instance has a GlobalAnimationMgr instance. GlobalAnimationMgr 
  * is designed to manage all the AnimationProcesses inside a zrender instance.
@@ -10708,16 +10818,15 @@ Painter.prototype = {
  * GlobalAnimationMgr 实例。GlobalAnimationMgr 会管理 zrender 实例中的所有
  * AnimationProcess。
  * 
- * @module zrender/animation/GlobalAnimationMgr
  * @author pissang(https://github.com/pissang)
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 // TODO Additive animation
 // http://iosoteric.com/additive-animations-animatewithduration-in-ios-8/
 // https://developer.apple.com/videos/wwdc2014/#236
 
 /**
- * @alias module:zrender/animation/GlobalAnimationMgr
- * @constructor
+ * @method constructor GlobalAnimationMgr
  * @param {Object} [options]
  */
 function GlobalAnimationMgr(options) {
@@ -10736,16 +10845,18 @@ GlobalAnimationMgr.prototype = {
     constructor: GlobalAnimationMgr,
 
     /**
+     * @method addAnimationProcess
      * 添加 animationProcess
-     * @param {module:zrender/animation/AnimationProcess} animationProcess
+     * @param {zrender.animation.GlobalAnimationMgr} animationProcess
      */
     addAnimationProcess: function (animationProcess) {
         this._animationProcessList.push(animationProcess);
     },
 
     /**
+     * @method removeAnimationProcess
      * 删除动画片段
-     * @param {module:zrender/animation/AnimationProcess} animationProcess
+     * @param {zrender.animation.GlobalAnimationMgr} animationProcess
      */
     removeAnimationProcess: function (animationProcess) {
         let index=this._animationProcessList.findIndex(animationProcess);
@@ -10754,6 +10865,10 @@ GlobalAnimationMgr.prototype = {
         }
     },
 
+    /**
+     * @private
+     * @method _update
+     */
     _update: function () {
         var time = new Date().getTime() - this._pausedTime;
         var delta = time - this._timestamp;
@@ -10772,6 +10887,8 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
+     * @private
+     * @method _startLoop
      * TODO:需要确认在大量节点下的动画性能问题，比如 100 万个图元同时进行动画
      * 这里开始利用requestAnimationFrame递归执行
      * 如果这里的 _update() 不能在16ms的时间内完成一轮动画，就会出现明显的卡顿。
@@ -10791,6 +10908,7 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
+     * @method start
      * Start all the animations.
      */
     start: function () {
@@ -10800,6 +10918,7 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
+     * @method stop
      * Stop all the animations.
      */
     stop: function () {
@@ -10807,6 +10926,7 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
+     * @method pause
      * Pause all the animations.
      */
     pause: function () {
@@ -10817,6 +10937,7 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
+     * @method resume
      * Resume all the animations.
      */
     resume: function () {
@@ -10827,6 +10948,7 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
+     * @method clear
      * Clear all the animations.
      */
     clear: function () {
@@ -10834,6 +10956,7 @@ GlobalAnimationMgr.prototype = {
     },
 
     /**
+     * @method isFinished
      * Whether all the animations have finished.
      */
     isFinished:function(){
@@ -11370,15 +11493,6 @@ handlerDomProxyProto.togglePageEvent = function (enableOrDisable) {
 //注意，HandlerDomProxy 也混入了 Eventful 里面提供的事件处理工具。
 mixin(HandlerDomProxy, Eventful);
 
-/*!
-* ZRender, a high performance 2d drawing library.
-*
-* Copyright (c) 2013, Baidu Inc.
-* All rights reserved.
-*
-* LICENSE
-* https://github.com/ecomfe/zrender/blob/master/LICENSE.txt
-*/
 /**
  * @class zrender.core.ZRender
  * ZRender, a high performance 2d drawing library.
@@ -11391,23 +11505,24 @@ mixin(HandlerDomProxy, Eventful);
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
+
 if(!env$1.canvasSupported){
-    throw new Error("Need Canvas Environments.");
+    throw new Error("Need Canvas Environment.");
 }
 
-var useVML = !env$1.canvasSupported;
+let useVML = !env$1.canvasSupported;
 
-var painterCtors = {
+let painterCtors = {
     canvas: Painter
 };
 
 // ZRender实例map索引，浏览器中同一个 window 下的 ZRender 实例都存在这里。
-var instances = {};
+let instances = {};
 
 /**
  * @type {String}
  */
-var version = '4.1.2';
+let version = '4.1.2';
 
 /**
  * @method zrender.init()
@@ -11424,7 +11539,7 @@ var version = '4.1.2';
  * @return {ZRender}
  */
 function init(dom, opts) {
-    var zr = new ZRender(guid(), dom, opts);
+    let zr = new ZRender(guid(), dom, opts);
     instances[zr.id] = zr;
     return zr;
 }
@@ -11439,7 +11554,7 @@ function dispose(zr) {
         zr.dispose();
     }
     else {
-        for (var key in instances) {
+        for (let key in instances) {
             if (instances.hasOwnProperty(key)) {
                 instances[key].dispose();
             }
@@ -11474,7 +11589,7 @@ function registerPainter(name, Ctor) {
  * @param {Number} [opts.height] Can be 'auto' (the same as null/undefined)
  * @return {ZRender}
  */
-var ZRender = function (id, dom, opts) {
+let ZRender = function (id, dom, opts) {
 
     opts = opts || {};
 
@@ -11488,14 +11603,14 @@ var ZRender = function (id, dom, opts) {
      */
     this.id = id;
 
-    var self = this;
+    let self = this;
 
     /**
      * @type {Storage}
      */
-    var storage = new Storage();
+    let storage = new Storage();
 
-    var rendererType = opts.renderer;
+    let rendererType = opts.renderer;
     // TODO WebGL
     // TODO: remove vml
     if (useVML) {
@@ -11506,13 +11621,13 @@ var ZRender = function (id, dom, opts) {
     }else if (!rendererType || !painterCtors[rendererType]) {
         rendererType = 'canvas';
     }
-    var painter = new painterCtors[rendererType](dom, storage, opts, id);
+    let painter = new painterCtors[rendererType](dom, storage, opts, id);
 
     this.storage = storage;
     this.painter = painter;
 
     //把DOM事件代理出来
-    var handerProxy = (!env$1.node && !env$1.worker) ? new HandlerDomProxy(painter.getViewportRoot()) : null;
+    let handerProxy = (!env$1.node && !env$1.worker) ? new HandlerDomProxy(painter.getViewportRoot()) : null;
     //ZRender 自己封装的事件机制
     this.handler = new Handler(storage, painter, handerProxy, painter.root);
 
@@ -11627,7 +11742,7 @@ ZRender.prototype = {
      * Repaint the canvas immediately
      */
     refreshImmediately: function () {
-        // var start = new Date();
+        // let start = new Date();
         // Clear needsRefresh ahead to avoid something wrong happens in refresh
         // Or it will cause zrender refreshes again and again.
         this._needsRefresh = this._needsRefreshHover = false;
@@ -11635,8 +11750,8 @@ ZRender.prototype = {
         // Avoid trigger zr.refresh in Element#beforeUpdate hook
         this._needsRefresh = this._needsRefreshHover = false;
 
-        // var end = new Date();
-        // var log = document.getElementById('log');
+        // let end = new Date();
+        // let log = document.getElementById('log');
         // if (log) {
         //     log.innerHTML = log.innerHTML + '<br>' + (end - start);
         // }
@@ -11657,7 +11772,7 @@ ZRender.prototype = {
      * 刷新 canvas 画面，此方法会在 window.requestAnimationFrame 方法中被不断调用。
      */
     flush: function () {
-        var triggerRendered;
+        let triggerRendered;
 
         if (this._needsRefresh) {      //是否需要全部重绘
             triggerRendered = true;
@@ -11685,7 +11800,7 @@ ZRender.prototype = {
      */
     addHover: function (el, style) {
         if (this.painter.addHover) {
-            var elMirror = this.painter.addHover(el, style);
+            let elMirror = this.painter.addHover(el, style);
             this.refreshHover();
             return elMirror;
         }

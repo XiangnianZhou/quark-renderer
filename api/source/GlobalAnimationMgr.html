@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
+
+var _eventUtil = require(&quot;../core/utils/eventUtil&quot;);
+
+var Dispatcher = _eventUtil.Dispatcher;
+
+var requestAnimationFrame = require(&quot;./utils/requestAnimationFrame&quot;);
+
+var AnimationProcess = require(&quot;./AnimationProcess&quot;);
+
+<span id='zrender-animation-GlobalAnimationMgr'>/**
+</span> * @singleton
+ * @class zrender.animation.GlobalAnimationMgr
+ * 
+ * Animation manager, global singleton, controls all the animation process.
+ * Each ZRender instance has a GlobalAnimationMgr instance. GlobalAnimationMgr 
+ * is designed to manage all the AnimationProcesses inside a zrender instance.
+ * 
+ * 动画管理器，全局单例，控制和调度所有动画过程。每个 zrender 实例中会持有一个 
+ * GlobalAnimationMgr 实例。GlobalAnimationMgr 会管理 zrender 实例中的所有
+ * AnimationProcess。
+ * 
+ * @author pissang(https://github.com/pissang)
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ */
+// TODO Additive animation
+// http://iosoteric.com/additive-animations-animatewithduration-in-ios-8/
+// https://developer.apple.com/videos/wwdc2014/#236
+
+<span id='zrender-animation-GlobalAnimationMgr-method-constructor'>/**
+</span> * @method constructor GlobalAnimationMgr
+ * @param {Object} [options]
+ */
+function GlobalAnimationMgr(options) {
+  options = options || {};
+  this._animationProcessList = [];
+  this._running = false;
+  this._timestamp;
+  this._pausedTime; //ms
+
+  this._pauseStart;
+  this._paused = false;
+  Dispatcher.call(this);
+}
+
+;
+GlobalAnimationMgr.prototype = {
+  constructor: GlobalAnimationMgr,
+
+<span id='zrender-animation-GlobalAnimationMgr-method-addAnimationProcess'>  /**
+</span>   * @method addAnimationProcess
+   * 添加 animationProcess
+   * @param {zrender.animation.GlobalAnimationMgr} animationProcess
+   */
+  addAnimationProcess: function addAnimationProcess(animationProcess) {
+    this._animationProcessList.push(animationProcess);
+  },
+
+<span id='zrender-animation-GlobalAnimationMgr-method-removeAnimationProcess'>  /**
+</span>   * @method removeAnimationProcess
+   * 删除动画片段
+   * @param {zrender.animation.GlobalAnimationMgr} animationProcess
+   */
+  removeAnimationProcess: function removeAnimationProcess(animationProcess) {
+    var index = this._animationProcessList.findIndex(animationProcess);
+
+    if (index &gt;= 0) {
+      this._animationProcessList.splice(index, 1);
+    }
+  },
+
+<span id='zrender-animation-GlobalAnimationMgr-method-_update'>  /**
+</span>   * @private
+   * @method _update
+   */
+  _update: function _update() {
+    var time = new Date().getTime() - this._pausedTime;
+
+    var delta = time - this._timestamp;
+
+    this._animationProcessList.forEach(function (ap, index) {
+      ap.nextFrame(time, delta);
+    });
+
+    this._timestamp = time; // TODO:What&#39;s going on here?
+    // &#39;frame&#39; should be triggered before stage, because upper application
+    // depends on the sequence (e.g., echarts-stream and finish
+    // event judge)
+
+    this.trigger(&#39;frame&#39;, delta);
+  },
+
+<span id='zrender-animation-GlobalAnimationMgr-method-_startLoop'>  /**
+</span>   * @private
+   * @method _startLoop
+   * TODO:需要确认在大量节点下的动画性能问题，比如 100 万个图元同时进行动画
+   * 这里开始利用requestAnimationFrame递归执行
+   * 如果这里的 _update() 不能在16ms的时间内完成一轮动画，就会出现明显的卡顿。
+   * 按照 W3C 的推荐标准 60fps，这里的 step 函数大约每隔 16ms 被调用一次
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+   */
+  _startLoop: function _startLoop() {
+    var self = this;
+    this._running = true;
+
+    function nextFrame() {
+      if (self._running) {
+        requestAnimationFrame(nextFrame);
+        !self._paused &amp;&amp; self._update();
+      }
+    }
+
+    requestAnimationFrame(nextFrame);
+  },
+
+<span id='zrender-animation-GlobalAnimationMgr-method-start'>  /**
+</span>   * @method start
+   * Start all the animations.
+   */
+  start: function start() {
+    this._timestamp = new Date().getTime();
+    this._pausedTime = 0;
+
+    this._startLoop();
+  },
+
+<span id='zrender-animation-GlobalAnimationMgr-method-stop'>  /**
+</span>   * @method stop
+   * Stop all the animations.
+   */
+  stop: function stop() {
+    this._running = false;
+  },
+
+<span id='zrender-animation-GlobalAnimationMgr-method-pause'>  /**
+</span>   * @method pause
+   * Pause all the animations.
+   */
+  pause: function pause() {
+    if (!this._paused) {
+      this._pauseStart = new Date().getTime();
+      this._paused = true;
+    }
+  },
+
+<span id='zrender-animation-GlobalAnimationMgr-method-resume'>  /**
+</span>   * @method resume
+   * Resume all the animations.
+   */
+  resume: function resume() {
+    if (this._paused) {
+      this._pausedTime += new Date().getTime() - this._pauseStart;
+      this._paused = false;
+    }
+  },
+
+<span id='zrender-animation-GlobalAnimationMgr-method-clear'>  /**
+</span>   * @method clear
+   * Clear all the animations.
+   */
+  clear: function clear() {
+    this._animationProcessList.length = 0;
+  },
+
+<span id='zrender-animation-GlobalAnimationMgr-method-isFinished'>  /**
+</span>   * @method isFinished
+   * Whether all the animations have finished.
+   */
+  isFinished: function isFinished() {
+    var finished = true;
+
+    this._animationProcessList.forEach(function (animationProcess, index) {
+      if (!animationProcess.isFinished()) {
+        finished = false;
+      }
+    });
+
+    return finished;
+  }
+};
+dataUtil.mixin(GlobalAnimationMgr, Dispatcher);
+var _default = GlobalAnimationMgr;
+module.exports = _default;</pre>
+</body>
+</html>
