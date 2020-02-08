@@ -10,6 +10,10 @@
   "--footer": "https://github.com/damoqiongqiu/zrender",
   "--": [
     "../../lib/zrender.js",
-    "../../lib/animation/Animatable.js"
+    "../../lib/animation/Animatable.js",
+    "../../lib/animation/AnimationProcess.js",
+    "../../lib/animation/GlobalAnimationMgr.js",
+    "../../lib/animation/Timeline.js",
+    "../../lib/animation/Track.js"
   ]
 }
