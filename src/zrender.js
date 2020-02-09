@@ -4,7 +4,7 @@ import ZRenderEventHandler from './event/ZRenderEventHandler';
 import Storage from './Storage';
 import Painter from './Painter';
 import GlobalAnimationMgr from './animation/GlobalAnimationMgr';
-import HandlerDomProxy from './event/HandlerDomProxy';
+import DomEventProxy from './event/DomEventProxy';
 
 /**
  * @class zrender.core.ZRender
@@ -140,7 +140,7 @@ let ZRender = function (id, dom, opts) {
     this.painter = painter;
 
     //把DOM事件代理出来
-    let handerProxy = (!env.node && !env.worker) ? new HandlerDomProxy(painter.getViewportRoot()) : null;
+    let handerProxy = (!env.node && !env.worker) ? new DomEventProxy(painter.getViewportRoot()) : null;
     //ZRender 自己封装的事件机制
     this.eventHandler = new ZRenderEventHandler(storage, painter, handerProxy, painter.root);
 

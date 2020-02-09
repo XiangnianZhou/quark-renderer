@@ -1,24 +1,20 @@
+import Eventful from './Eventful';
+import * as eventUtil from '../core/utils/eventUtil';
+import * as dataUtil from '../core/utils/dataStructureUtil';
+import env from '../core/env';
+
 /**
- * HandlerProxy 的主要功能是：把原生的 DOM 事件代理（转发）到 ZRender 实例上，
+ * @class zrender.event.DomEventProxy
+ * DomEventProxy 的主要功能是：把原生的 DOM 事件代理（转发）到 ZRender 实例上，
  * 在 Handler 类中会把事件进一步分发给 canvas 中绘制的图元。
  * 大部分事件挂载在 canvas 的外层容器 div 上面，少部分事件挂载在全局的 document 对象上，因为
  * 在实现拖拽和键盘交互的过程中，鼠标指针可能已经脱离了 canvas 所在的区域。
- * 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-import {
-    addEventListener,
-    removeEventListener,
-    normalizeEvent,
-    getNativeEvent
-} from '../core/utils/eventUtil';
-import * as dataUtil from '../core/utils/dataStructureUtil';
-import Eventful from './Eventful';
-import env from '../core/env';
 
 var TOUCH_CLICK_DELAY = 300;
 // "page event" is defined in the comment of `[Page Event]`.
 var pageEventSupported = env.domSupported;
-
 
 /**
  * [Page Event]
@@ -51,7 +47,7 @@ var pageEventSupported = env.domSupported;
  * [NOTICE]:
  * (1) There are cases that `pagemousexxx` will not be triggered when the pointer is out of
  * zrender area:
- * "document.addEventListener" is not available in the current runtime environment,
+ * "document.eventUtil.addEventListener" is not available in the current runtime environment,
  * or there is any `stopPropagation` called at some user defined listeners on the ancestors
  * of the zrender dom.
  * (2) Although those bad cases exist, users do not need to worry about that. That is, if you
@@ -160,12 +156,12 @@ function markTouch(event) {
 /**
  * Local 指的是 Canvas 内部的区域。
  * Local DOM Handlers
- * @this {HandlerProxy}
+ * @this {DomEventProxy}
  */
 var localDOMHandlers = {
 
     mouseout: function (event) {
-        event = normalizeEvent(this.dom, event);
+        event = eventUtil.normalizeEvent(this.dom, event);
 
         var element = event.toElement || event.relatedTarget;
         if (element !== this.dom) {
@@ -187,7 +183,7 @@ var localDOMHandlers = {
     touchstart: function (event) {
         // Default mouse behaviour should not be disabled here.
         // For example, page may needs to be slided.
-        event = normalizeEvent(this.dom, event);
+        event = eventUtil.normalizeEvent(this.dom, event);
 
         markTouch(event);
 
@@ -204,7 +200,7 @@ var localDOMHandlers = {
     },
 
     touchmove: function (event) {
-        event = normalizeEvent(this.dom, event);
+        event = eventUtil.normalizeEvent(this.dom, event);
 
         markTouch(event);
 
@@ -217,7 +213,7 @@ var localDOMHandlers = {
     },
 
     touchend: function (event) {
-        event = normalizeEvent(this.dom, event);
+        event = eventUtil.normalizeEvent(this.dom, event);
 
         markTouch(event);
 
@@ -279,11 +275,11 @@ var localDOMHandlers = {
 /**
  * Othere DOM UI Event handlers for zr dom.
  * ZRender 内部的 DOM 结构默认支持以下7个事件。
- * @this {HandlerProxy}
+ * @this {DomEventProxy}
  */
 dataUtil.each(['click', 'mousemove', 'mousedown', 'mouseup', 'mousewheel', 'dblclick', 'contextmenu'], function (name) {
     localDOMHandlers[name] = function (event) {
-        event = normalizeEvent(this.dom, event);
+        event = eventUtil.normalizeEvent(this.dom, event);
         this.trigger(name, event);
 
         if (name === 'mousemove' || name === 'mouseup') {
@@ -300,7 +296,7 @@ dataUtil.each(['click', 'mousemove', 'mousedown', 'mouseup', 'mousewheel', 'dblc
  * 监听外层 HTML 上的 mousemove 和 mouseup，绕开这种问题。
  * 
  * Page DOM UI Event handlers for global page.
- * @this {HandlerProxy}
+ * @this {DomEventProxy}
  */
 var globalDOMHandlers = {
 
@@ -330,22 +326,22 @@ var globalDOMHandlers = {
     },
 
     mousemove: function (event) {
-        event = normalizeEvent(this.dom, event, true);
+        event = eventUtil.normalizeEvent(this.dom, event, true);
         this.trigger('pagemousemove', event);
     },
 
     mouseup: function (event) {
-        event = normalizeEvent(this.dom, event, true);
+        event = eventUtil.normalizeEvent(this.dom, event, true);
         this.trigger('pagemouseup', event);
     },
 
     keyup: function (event) {
-        event = normalizeEvent(this.dom, event, true);
+        event = eventUtil.normalizeEvent(this.dom, event, true);
         this.trigger('pagekeyup', event);
     },
 
     keydown: function (event) {
-        event = normalizeEvent(this.dom, event, true);
+        event = eventUtil.normalizeEvent(this.dom, event, true);
         this.trigger('pagekeydown', event);
     }
 };
@@ -356,7 +352,7 @@ var globalDOMHandlers = {
 
 
 /**
- * @param {HandlerProxy} instance
+ * @param {DomEventProxy} instance
  * @param {DOMHandlerScope} scope
  * @param {Object} nativeListenerNames {mouse: Array<string>, touch: Array<string>, poiner: Array<string>}
  * @param {boolean} localOrGlobal `true`: target local, `false`: target global.
@@ -393,7 +389,7 @@ function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlo
         // See <https://msdn.microsoft.com/en-us/library/dn433243(v=vs.85).aspx>
         // if (typeof MSGesture === 'function') {
         //     (this._msGesture = new MSGesture()).target = dom; // jshint ignore:line
-        //     dom.addEventListener('MSGestureChange', onMSGestureChange);
+        //     dom.eventUtil.addEventListener('MSGestureChange', onMSGestureChange);
         // }
     }
     else {
@@ -408,7 +404,7 @@ function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlo
                 });
             });
             // Handler of 'mouseout' event is needed in touch mode, which will be mounted below.
-            // addEventListener(root, 'mouseout', this._mouseoutHandler);
+            // eventUtil.addEventListener(root, 'mouseout', this._mouseoutHandler);
         }
 
         // 1. Considering some devices that both enable touch and mouse event (like on MS Surface
@@ -418,7 +414,7 @@ function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlo
         // mouseevent after touch event triggered, see `setTouchTimer`.
         dataUtil.each(nativeListenerNames.mouse, function (nativeEventName) {
             mountSingle(nativeEventName, function (event) {
-                event = getNativeEvent(event);
+                event = eventUtil.getNativeEvent(event);
                 if (!scope.touching
                     && (localOrGlobal || !isTriggeredFromLocal(event))
                 ) {
@@ -442,7 +438,7 @@ function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlo
     //用来监听原生 DOM 事件
     function mountSingle(nativeEventName, listener) {
         scope.mounted[nativeEventName] = listener;
-        addEventListener(domTarget, eventNameFix(nativeEventName), listener);
+        eventUtil.addEventListener(domTarget, eventNameFix(nativeEventName), listener);
     }
 }
 
@@ -450,7 +446,7 @@ function unmountDOMEventListeners(scope) {
     var mounted = scope.mounted;
     for (var nativeEventName in mounted) {
         if (mounted.hasOwnProperty(nativeEventName)) {
-            removeEventListener(scope.domTarget, eventNameFix(nativeEventName), mounted[nativeEventName]);
+            eventUtil.removeEventListener(scope.domTarget, eventNameFix(nativeEventName), mounted[nativeEventName]);
         }
     }
     scope.mounted = {};
@@ -477,7 +473,7 @@ function DOMHandlerScope(domTarget, domHandlers) {
  * @public
  * @class
  */
-function HandlerDomProxy(dom) {
+function DomEventProxy(dom) {
     Eventful.call(this);
 
     this.dom = dom;
@@ -490,11 +486,11 @@ function HandlerDomProxy(dom) {
 
     this._pageEventEnabled = false;
 
-    //在构造 HandlerDomProxy 实例的时候，挂载 DOM 事件监听器。
+    //在构造 DomEventProxy 实例的时候，挂载 DOM 事件监听器。
     mountDOMEventListeners(this, this._localHandlerScope, localNativeListenerNames, true);
 }
 
-var handlerDomProxyProto = HandlerDomProxy.prototype;
+var handlerDomProxyProto = DomEventProxy.prototype;
 
 handlerDomProxyProto.dispose = function () {
     unmountDOMEventListeners(this._localHandlerScope);
@@ -526,7 +522,7 @@ handlerDomProxyProto.togglePageEvent = function (enableOrDisable) {
     }
 };
 
-//注意，HandlerDomProxy 也混入了 Eventful 里面提供的事件处理工具。
-dataUtil.mixin(HandlerDomProxy, Eventful);
+//注意，DomEventProxy 也混入了 Eventful 里面提供的事件处理工具。
+dataUtil.mixin(DomEventProxy, Eventful);
 
-export default HandlerDomProxy;
+export default DomEventProxy;
