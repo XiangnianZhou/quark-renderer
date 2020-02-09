@@ -11007,15 +11007,16 @@ mixin(GlobalAnimationMgr, Eventful);
 /**
  * @class zrender.event.DomEventProxy
  * DomEventProxy 的主要功能是：把原生的 DOM 事件代理（转发）到 ZRender 实例上，
- * 在 Handler 类中会把事件进一步分发给 canvas 中绘制的图元。
- * 大部分事件挂载在 canvas 的外层容器 div 上面，少部分事件挂载在全局的 document 对象上，因为
- * 在实现拖拽和键盘交互的过程中，鼠标指针可能已经脱离了 canvas 所在的区域。
+ * 在 ZRenderEventHandler 类中会把事件进一步分发给 canvas 中绘制的图元。
+ * 需要转发的大部分 DOM 事件挂载在 canvas 的外层容器 div 上面，例如：click, dbclick ；
+ * 少部分 DOM 事件挂载在 document 对象上，例如：mousemove, mouseout。因为在实现拖拽和
+ * 键盘交互的过程中，鼠标指针可能已经脱离了 canvas 所在的区域。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
-var TOUCH_CLICK_DELAY = 300;
+let TOUCH_CLICK_DELAY = 300;
 // "page event" is defined in the comment of `[Page Event]`.
-var pageEventSupported = env$1.domSupported;
+let pageEventSupported = env$1.domSupported;
 
 /**
  * [Page Event]
@@ -11026,7 +11027,7 @@ var pageEventSupported = env$1.domSupported;
  * The use case of page events can be, for example, if we are implementing a dragging feature:
  * ```js
  * zr.on('mousedown', function (event) {
- *     var dragging = true;
+ *     let dragging = true;
  *
  *     // Listen to `pagemousemove` and `pagemouseup` rather than `mousemove` and `mouseup`,
  *     // because `mousemove` and `mouseup` will not be triggered when the pointer is out
@@ -11058,19 +11059,19 @@ var pageEventSupported = env$1.domSupported;
  * triggered just after `mousexxx` triggered and sharing the same event object. Those bad
  * cases only happen when the pointer is out of zrender area.
  */
-var localNativeListenerNames = (function () {
-    var mouseHandlerNames = [
+let localNativeListenerNames = (function () {
+    let mouseHandlerNames = [
         'click', 'dblclick', 'mousewheel', 'mouseout',
         'mouseup', 'mousedown', 'mousemove', 'contextmenu'
     ];
-    var touchHandlerNames = [
+    let touchHandlerNames = [
         'touchstart', 'touchend', 'touchmove'
     ];
-    var pointerEventNameMap = {
+    let pointerEventNameMap = {
         pointerdown: 1, pointerup: 1, pointermove: 1, pointerout: 1
     };
-    var pointerHandlerNames = map(mouseHandlerNames, function (name) {
-        var nm = name.replace('mouse', 'pointer');
+    let pointerHandlerNames = map(mouseHandlerNames, function (name) {
+        let nm = name.replace('mouse', 'pointer');
         return pointerEventNameMap.hasOwnProperty(nm) ? nm : name;
     });
 
@@ -11081,7 +11082,7 @@ var localNativeListenerNames = (function () {
     };
 })();
 
-var globalNativeListenerNames = {
+let globalNativeListenerNames = {
     keyboard:['keydown','keyup'],
     mouse: ['mousemove', 'mouseup'],
     touch: ['touchmove', 'touchend'],
@@ -11093,26 +11094,9 @@ function eventNameFix(name) {
 }
 
 function isPointerFromTouch(event) {
-    var pointerType = event.pointerType;
+    let pointerType = event.pointerType;
     return pointerType === 'pen' || pointerType === 'touch';
 }
-
-// function useMSGuesture(handlerProxy, event) {
-//     return isPointerFromTouch(event) && !!handlerProxy._msGesture;
-// }
-
-// function onMSGestureChange(proxy, event) {
-//     if (event.translationX || event.translationY) {
-//         // mousemove is carried by MSGesture to reduce the sensitivity.
-//         proxy.handler.dispatchToElement(event.target, 'mousemove', event);
-//     }
-//     if (event.scale !== 1) {
-//         event.pinchX = event.offsetX;
-//         event.pinchY = event.offsetY;
-//         event.pinchScale = event.scale;
-//         proxy.handler.dispatchToElement(event.target, 'pinch', event);
-//     }
-// }
 
 /**
  * Prevent mouse event from being dispatched after Touch Events action
@@ -11159,12 +11143,12 @@ function markTouch(event) {
  * Local DOM Handlers
  * @this {DomEventProxy}
  */
-var localDOMHandlers = {
+let localDOMHandlers = {
 
     mouseout: function (event) {
         event = normalizeEvent(this.dom, event);
 
-        var element = event.toElement || event.relatedTarget;
+        let element = event.toElement || event.relatedTarget;
         if (element !== this.dom) {
             while (element && element.nodeType !== 9) {
                 // 忽略包含在root中的dom引起的mouseOut
@@ -11278,7 +11262,8 @@ var localDOMHandlers = {
  * ZRender 内部的 DOM 结构默认支持以下7个事件。
  * @this {DomEventProxy}
  */
-each(['click', 'mousemove', 'mousedown', 'mouseup', 'mousewheel', 'dblclick', 'contextmenu'], function (name) {
+each(['click', 'mousemove', 'mousedown', 
+    'mouseup', 'mousewheel', 'dblclick', 'contextmenu'], function (name) {
     localDOMHandlers[name] = function (event) {
         event = normalizeEvent(this.dom, event);
         this.trigger(name, event);
@@ -11299,7 +11284,7 @@ each(['click', 'mousemove', 'mousedown', 'mouseup', 'mousewheel', 'dblclick', 'c
  * Page DOM UI Event handlers for global page.
  * @this {DomEventProxy}
  */
-var globalDOMHandlers = {
+let globalDOMHandlers = {
 
     touchmove: function (event) {
         markTouch(event);
@@ -11353,14 +11338,16 @@ var globalDOMHandlers = {
 
 
 /**
- * @param {DomEventProxy} instance
- * @param {DOMHandlerScope} scope
+ * @private
+ * @method mountDOMEventListeners
+ * @param {DomEventProxy} domEventProxy
+ * @param {DOMHandlerScope} domHandlerScope
  * @param {Object} nativeListenerNames {mouse: Array<string>, touch: Array<string>, poiner: Array<string>}
- * @param {boolean} localOrGlobal `true`: target local, `false`: target global.
+ * @param {Boolean} localOrGlobal `true`: target local, `false`: target global.
  */
 function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlobal) {
-    var domHandlers = scope.domHandlers;
-    var domTarget = scope.domTarget;
+    let domHandlers = scope.domHandlers;
+    let domTarget = scope.domTarget;
 
     if (env$1.pointerEventsSupported) { // Only IE11+/Edge
         // 1. On devices that both enable touch and mouse (e.g., MS Surface and lenovo X240),
@@ -11392,8 +11379,7 @@ function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlo
         //     (this._msGesture = new MSGesture()).target = dom; // jshint ignore:line
         //     dom.eventUtil.addEventListener('MSGestureChange', onMSGestureChange);
         // }
-    }
-    else {
+    }else {
         if (env$1.touchEventsSupported) {
             each(nativeListenerNames.touch, function (nativeEventName) {
                 mountSingle(nativeEventName, function (event) {
@@ -11443,9 +11429,14 @@ function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlo
     }
 }
 
+/**
+ * @private
+ * @method unmountDOMEventListeners
+ * @param {Object} scope 
+ */
 function unmountDOMEventListeners(scope) {
-    var mounted = scope.mounted;
-    for (var nativeEventName in mounted) {
+    let mounted = scope.mounted;
+    for (let nativeEventName in mounted) {
         if (mounted.hasOwnProperty(nativeEventName)) {
             removeEventListener(scope.domTarget, eventNameFix(nativeEventName), mounted[nativeEventName]);
         }
@@ -11453,70 +11444,91 @@ function unmountDOMEventListeners(scope) {
     scope.mounted = {};
 }
 
-
 /**
- * @inner
- * @class
+ * Inner class, do not export this.
  */
 function DOMHandlerScope(domTarget, domHandlers) {
     this.domTarget = domTarget;
     this.domHandlers = domHandlers;
 
-    // Key: eventName, value: mounted handler funcitons.
+    // Key: eventName
+    // value: mounted handler funcitons.
     // Used for unmount.
     this.mounted = {};
-
     this.touchTimer = null;
     this.touching = false;
 }
 
 /**
- * @public
- * @class
+ * @method constructor
+ * @param dom 被代理的 DOM 节点
  */
 function DomEventProxy(dom) {
     Eventful.call(this);
 
+    /**
+     * @property dom
+     */
     this.dom = dom;
 
+    /**
+     * @private
+     * @property _localHandlerScope
+     */
     this._localHandlerScope = new DOMHandlerScope(dom, localDOMHandlers);
 
     if (pageEventSupported) {
+        /**
+         * @private
+         * @property _globalHandlerScope
+         */
         this._globalHandlerScope = new DOMHandlerScope(document, globalDOMHandlers);//注意，这里直接监听 document 上的事件
     }
 
+    /**
+     * @private
+     * @property _pageEventEnabled
+     */
     this._pageEventEnabled = false;
 
     //在构造 DomEventProxy 实例的时候，挂载 DOM 事件监听器。
     mountDOMEventListeners(this, this._localHandlerScope, localNativeListenerNames, true);
 }
 
-var handlerDomProxyProto = DomEventProxy.prototype;
-
-handlerDomProxyProto.dispose = function () {
+/**
+ * @private
+ * @method dispose
+ */
+DomEventProxy.prototype.dispose = function () {
     unmountDOMEventListeners(this._localHandlerScope);
     if (pageEventSupported) {
         unmountDOMEventListeners(this._globalHandlerScope);
     }
 };
 
-handlerDomProxyProto.setCursor = function (cursorStyle) {
+/**
+ * @private
+ * @method setCursor
+ */
+DomEventProxy.prototype.setCursor = function (cursorStyle) {
     this.dom.style && (this.dom.style.cursor = cursorStyle || 'default');
 };
 
 /**
+ * @private
+ * @method togglePageEvent
  * The implementation of page event depends on listening to document.
  * So we should better only listen to that on needed, and remove the
  * listeners when do not need them to escape unexpected side-effect.
- * @param {boolean} enableOrDisable `true`: enable page event. `false`: disable page event.
+ * @param {Boolean} enableOrDisable `true`: enable page event. `false`: disable page event.
  */
-handlerDomProxyProto.togglePageEvent = function (enableOrDisable) {
+DomEventProxy.prototype.togglePageEvent = function (enableOrDisable) {
     assert(enableOrDisable != null);
 
     if (pageEventSupported && (this._pageEventEnabled ^ enableOrDisable)) {
         this._pageEventEnabled = enableOrDisable;
 
-        var globalHandlerScope = this._globalHandlerScope;
+        let globalHandlerScope = this._globalHandlerScope;
         enableOrDisable
             ? mountDOMEventListeners(this, globalHandlerScope, globalNativeListenerNames)
             : unmountDOMEventListeners(globalHandlerScope);
