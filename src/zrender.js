@@ -1,6 +1,6 @@
 import guid from './core/utils/guid';
 import env from './core/env';
-import Handler from './event/Handler';
+import ZRenderEventHandler from './event/ZRenderEventHandler';
 import Storage from './Storage';
 import Painter from './Painter';
 import GlobalAnimationMgr from './animation/GlobalAnimationMgr';
@@ -142,7 +142,7 @@ let ZRender = function (id, dom, opts) {
     //把DOM事件代理出来
     let handerProxy = (!env.node && !env.worker) ? new HandlerDomProxy(painter.getViewportRoot()) : null;
     //ZRender 自己封装的事件机制
-    this.handler = new Handler(storage, painter, handerProxy, painter.root);
+    this.eventHandler = new ZRenderEventHandler(storage, painter, handerProxy, painter.root);
 
     /**
      * @type {GlobalAnimationMgr}
@@ -341,7 +341,7 @@ ZRender.prototype = {
      * @return {Object} {target, topTarget}
      */
     findHover: function (x, y) {
-        return this.handler.findHover(x, y);
+        return this.eventHandler.findHover(x, y);
     },
 
     /**
@@ -387,7 +387,7 @@ ZRender.prototype = {
     resize: function (opts) {
         opts = opts || {};
         this.painter.resize(opts.width, opts.height);
-        this.handler.resize();
+        this.eventHandler.resize();
     },
 
     /**
@@ -432,7 +432,7 @@ ZRender.prototype = {
      * @param {String} [cursorStyle='default'] 例如 crosshair
      */
     setCursorStyle: function (cursorStyle) {
-        this.handler.setCursorStyle(cursorStyle);
+        this.eventHandler.setCursorStyle(cursorStyle);
     },
 
     /**
@@ -444,7 +444,7 @@ ZRender.prototype = {
      * @param {Object} [context] Context object
      */
     on: function (eventName, eventHandler, context) {
-        this.handler.on(eventName, eventHandler, context);
+        this.eventHandler.on(eventName, eventHandler, context);
     },
 
     /**
@@ -454,7 +454,7 @@ ZRender.prototype = {
      * @param {Function} [eventHandler] Handler function
      */
     off: function (eventName, eventHandler) {
-        this.handler.off(eventName, eventHandler);
+        this.eventHandler.off(eventName, eventHandler);
     },
 
     /**
@@ -465,7 +465,7 @@ ZRender.prototype = {
      * @param {event=} event Event object
      */
     trigger: function (eventName, event) {
-        this.handler.trigger(eventName, event);
+        this.eventHandler.trigger(eventName, event);
     },
 
     /**
@@ -487,12 +487,12 @@ ZRender.prototype = {
         this.clear();
         this.storage.dispose();
         this.painter.dispose();
-        this.handler.dispose();
+        this.eventHandler.dispose();
 
         this.globalAnimationMgr =
         this.storage =
         this.painter =
-        this.handler = null;
+        this.eventHandler = null;
 
         delete instances[this.id];
     }

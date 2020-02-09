@@ -2388,10 +2388,13 @@ var recognizers = {
 };
 
 /**
+ * @class zrender.event.ZRenderEventHandler
  * Canvas 内置的API只在 canvas 实例本身上面触发事件，对画布内部的画出来的元素没有提供事件支持。
- * Handler.js 用来封装画布内部元素的事件处理逻辑，核心思路是，在 canvas 收到事件之后，派发给指定的元素，
+ * ZRenderEventHandler.js 用来封装画布内部元素的事件处理逻辑，核心思路是，在 canvas 收到事件之后，派发给指定的元素，
  * 然后再进行冒泡，从而模拟出原生 DOM 事件的行为。
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
+
 var SILENT = 'silent';
 
 function makeEventPacket(eveType, targetInfo, event) {
@@ -2469,7 +2472,7 @@ function afterListenerChanged(handlerInstance) {
 }
 
 /**
- * @alias module:zrender/Handler
+ * @alias module:zrender/ZRenderEventHandler
  * @constructor
  * @extends module:zrender/mixin/Eventful
  * @param {module:zrender/Storage} storage Storage instance.
@@ -2477,7 +2480,7 @@ function afterListenerChanged(handlerInstance) {
  * @param {module:zrender/event/HandlerProxy} proxy HandlerProxy instance.
  * @param {HTMLElement} painterRoot painter.root (not painter.getViewportRoot()).
  */
-var Handler = function (storage, painter, proxy, painterRoot) {
+var ZRenderEventHandler = function (storage, painter, proxy, painterRoot) {
     Eventful.call(this, {
         afterListenerChanged: bind(afterListenerChanged, null, this)
     });
@@ -2531,9 +2534,9 @@ var Handler = function (storage, painter, proxy, painterRoot) {
     this.setHandlerProxy(proxy);
 };
 
-Handler.prototype = {
+ZRenderEventHandler.prototype = {
 
-    constructor: Handler,
+    constructor: ZRenderEventHandler,
 
     setHandlerProxy: function (proxy) {
         if (this.proxy) {
@@ -2759,7 +2762,7 @@ Handler.prototype = {
 // Common handlers
 each(['click', 'mousedown', 'mouseup', 'mousewheel', 
     'dblclick', 'contextmenu'], function (name) {
-    Handler.prototype[name] = function (event) {
+    ZRenderEventHandler.prototype[name] = function (event) {
         // Find hover again to avoid click event is dispatched manually. Or click is triggered without mouseover
         var hovered = this.findHover(event.zrX, event.zrY);
         var hoveredTarget = hovered.target;
@@ -2794,7 +2797,7 @@ each(['click', 'mousedown', 'mouseup', 'mousewheel',
 });
 
 //注意，Handler 里面混入了 Eventful 里面提供的事件处理工具。
-mixin(Handler, Eventful);
+mixin(ZRenderEventHandler, Eventful);
 
 /**
  * 3x2矩阵操作类
@@ -11658,7 +11661,7 @@ let ZRender = function (id, dom, opts) {
     //把DOM事件代理出来
     let handerProxy = (!env$1.node && !env$1.worker) ? new HandlerDomProxy(painter.getViewportRoot()) : null;
     //ZRender 自己封装的事件机制
-    this.handler = new Handler(storage, painter, handerProxy, painter.root);
+    this.eventHandler = new ZRenderEventHandler(storage, painter, handerProxy, painter.root);
 
     /**
      * @type {GlobalAnimationMgr}
@@ -11857,7 +11860,7 @@ ZRender.prototype = {
      * @return {Object} {target, topTarget}
      */
     findHover: function (x, y) {
-        return this.handler.findHover(x, y);
+        return this.eventHandler.findHover(x, y);
     },
 
     /**
@@ -11903,7 +11906,7 @@ ZRender.prototype = {
     resize: function (opts) {
         opts = opts || {};
         this.painter.resize(opts.width, opts.height);
-        this.handler.resize();
+        this.eventHandler.resize();
     },
 
     /**
@@ -11948,7 +11951,7 @@ ZRender.prototype = {
      * @param {String} [cursorStyle='default'] 例如 crosshair
      */
     setCursorStyle: function (cursorStyle) {
-        this.handler.setCursorStyle(cursorStyle);
+        this.eventHandler.setCursorStyle(cursorStyle);
     },
 
     /**
@@ -11960,7 +11963,7 @@ ZRender.prototype = {
      * @param {Object} [context] Context object
      */
     on: function (eventName, eventHandler, context) {
-        this.handler.on(eventName, eventHandler, context);
+        this.eventHandler.on(eventName, eventHandler, context);
     },
 
     /**
@@ -11970,7 +11973,7 @@ ZRender.prototype = {
      * @param {Function} [eventHandler] Handler function
      */
     off: function (eventName, eventHandler) {
-        this.handler.off(eventName, eventHandler);
+        this.eventHandler.off(eventName, eventHandler);
     },
 
     /**
@@ -11981,7 +11984,7 @@ ZRender.prototype = {
      * @param {event=} event Event object
      */
     trigger: function (eventName, event) {
-        this.handler.trigger(eventName, event);
+        this.eventHandler.trigger(eventName, event);
     },
 
     /**
@@ -12003,12 +12006,12 @@ ZRender.prototype = {
         this.clear();
         this.storage.dispose();
         this.painter.dispose();
-        this.handler.dispose();
+        this.eventHandler.dispose();
 
         this.globalAnimationMgr =
         this.storage =
         this.painter =
-        this.handler = null;
+        this.eventHandler = null;
 
         delete instances[this.id];
     }

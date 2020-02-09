@@ -1,14 +1,16 @@
-/**
- * Canvas 内置的API只在 canvas 实例本身上面触发事件，对画布内部的画出来的元素没有提供事件支持。
- * Handler.js 用来封装画布内部元素的事件处理逻辑，核心思路是，在 canvas 收到事件之后，派发给指定的元素，
- * 然后再进行冒泡，从而模拟出原生 DOM 事件的行为。
- */
 import * as util from '../core/utils/dataStructureUtil';
 import * as vec2 from '../core/utils/vector';
 import * as eventTool from '../core/utils/eventUtil';
 import MultiDragDrop from './MultiDragDrop';
 import Eventful from './Eventful';
 import GestureMgr from '../core/GestureMgr';
+/**
+ * @class zrender.event.ZRenderEventHandler
+ * Canvas 内置的API只在 canvas 实例本身上面触发事件，对画布内部的画出来的元素没有提供事件支持。
+ * ZRenderEventHandler.js 用来封装画布内部元素的事件处理逻辑，核心思路是，在 canvas 收到事件之后，派发给指定的元素，
+ * 然后再进行冒泡，从而模拟出原生 DOM 事件的行为。
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 
 var SILENT = 'silent';
 
@@ -87,7 +89,7 @@ function afterListenerChanged(handlerInstance) {
 }
 
 /**
- * @alias module:zrender/Handler
+ * @alias module:zrender/ZRenderEventHandler
  * @constructor
  * @extends module:zrender/mixin/Eventful
  * @param {module:zrender/Storage} storage Storage instance.
@@ -95,7 +97,7 @@ function afterListenerChanged(handlerInstance) {
  * @param {module:zrender/event/HandlerProxy} proxy HandlerProxy instance.
  * @param {HTMLElement} painterRoot painter.root (not painter.getViewportRoot()).
  */
-var Handler = function (storage, painter, proxy, painterRoot) {
+var ZRenderEventHandler = function (storage, painter, proxy, painterRoot) {
     Eventful.call(this, {
         afterListenerChanged: util.bind(afterListenerChanged, null, this)
     });
@@ -149,9 +151,9 @@ var Handler = function (storage, painter, proxy, painterRoot) {
     this.setHandlerProxy(proxy);
 };
 
-Handler.prototype = {
+ZRenderEventHandler.prototype = {
 
-    constructor: Handler,
+    constructor: ZRenderEventHandler,
 
     setHandlerProxy: function (proxy) {
         if (this.proxy) {
@@ -377,7 +379,7 @@ Handler.prototype = {
 // Common handlers
 util.each(['click', 'mousedown', 'mouseup', 'mousewheel', 
     'dblclick', 'contextmenu'], function (name) {
-    Handler.prototype[name] = function (event) {
+    ZRenderEventHandler.prototype[name] = function (event) {
         // Find hover again to avoid click event is dispatched manually. Or click is triggered without mouseover
         var hovered = this.findHover(event.zrX, event.zrY);
         var hoveredTarget = hovered.target;
@@ -412,6 +414,6 @@ util.each(['click', 'mousedown', 'mouseup', 'mousewheel',
 });
 
 //注意，Handler 里面混入了 Eventful 里面提供的事件处理工具。
-util.mixin(Handler, Eventful);
+util.mixin(ZRenderEventHandler, Eventful);
 
-export default Handler;
+export default ZRenderEventHandler;
