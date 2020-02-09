@@ -25,6 +25,8 @@
     "../../lib/core/BoundingRect.js",
     "../../lib/graphic/Element.js",
     "../../lib/graphic/Displayable.js",
-    "../../lib/graphic/Group.js"
+    "../../lib/graphic/Group.js",
+    "../../lib/graphic/Image.js",
+    "../../lib/graphic/Path.js"
   ]
 }

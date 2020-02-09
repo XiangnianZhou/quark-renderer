@@ -4,35 +4,32 @@ import PathProxy from '../core/PathProxy';
 import * as pathContain from '../core/contain/path';
 import Pattern from './Pattern';
 
-var getCanvasPattern = Pattern.prototype.getCanvasPattern;
-
-var abs = Math.abs;
-
-var pathProxyForDraw = new PathProxy(true);
 /**
- * @alias module:zrender/graphic/Path
- * @extends module:zrender/graphic/Displayable
- * @constructor
+ * @class zrender.graphic.Path 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
+let getCanvasPattern = Pattern.prototype.getCanvasPattern;
+let abs = Math.abs;
+let pathProxyForDraw = new PathProxy(true);
+
+/**
+ * @method constructor Path
  * @param {Object} opts
  */
 function Path(opts) {
     Displayable.call(this, opts);
 
     /**
-     * @type {module:zrender/core/PathProxy}
+     * @property {PathProxy}
      * @readOnly
      */
     this.path = null;
 }
 
 Path.prototype = {
-
     constructor: Path,
-
     type: 'path',
-
     __dirtyPath: true,
-
     strokeContainThreshold: 5,
 
     // This item default to be false. But in map series in echarts,
@@ -42,27 +39,32 @@ Path.prototype = {
 
     /**
      * See `module:zrender/src/graphic/helper/subPixelOptimize`.
-     * @type {boolean}
+     * @property {Boolean}
      */
     subPixelOptimize: false,
 
+    /**
+     * @method brush
+     * @param {Object} ctx 
+     * @param {Element} prevEl 
+     */
     brush: function (ctx, prevEl) {
-        var style = this.style;
-        var path = this.path || pathProxyForDraw;
-        var hasStroke = style.hasStroke();
-        var hasFill = style.hasFill();
-        var fill = style.fill;
-        var stroke = style.stroke;
-        var hasFillGradient = hasFill && !!(fill.colorStops);
-        var hasStrokeGradient = hasStroke && !!(stroke.colorStops);
-        var hasFillPattern = hasFill && !!(fill.image);
-        var hasStrokePattern = hasStroke && !!(stroke.image);
+        let style = this.style;
+        let path = this.path || pathProxyForDraw;
+        let hasStroke = style.hasStroke();
+        let hasFill = style.hasFill();
+        let fill = style.fill;
+        let stroke = style.stroke;
+        let hasFillGradient = hasFill && !!(fill.colorStops);
+        let hasStrokeGradient = hasStroke && !!(stroke.colorStops);
+        let hasFillPattern = hasFill && !!(fill.image);
+        let hasStrokePattern = hasStroke && !!(stroke.image);
 
         style.bind(ctx, this, prevEl);
         this.setTransform(ctx);
 
         if (this.__dirty) {
-            var rect;
+            let rect;
             // Update gradient because bounding rect may changed
             if (hasFillGradient) {
                 rect = rect || this.getBoundingRect();
@@ -88,13 +90,13 @@ Path.prototype = {
             ctx.strokeStyle = getCanvasPattern.call(stroke, ctx);
         }
 
-        var lineDash = style.lineDash;
-        var lineDashOffset = style.lineDashOffset;
+        let lineDash = style.lineDash;
+        let lineDashOffset = style.lineDashOffset;
 
-        var ctxLineDash = !!ctx.setLineDash;
+        let ctxLineDash = !!ctx.setLineDash;
 
         // Update path sx, sy
-        var scale = this.getGlobalScale();
+        let scale = this.getGlobalScale();
         path.setScale(scale[0], scale[1], this.segmentIgnoreThreshold);
 
         // Proxy context
@@ -128,7 +130,7 @@ Path.prototype = {
 
         if (hasFill) {
             if (style.fillOpacity != null) {
-                var originalGlobalAlpha = ctx.globalAlpha;
+                let originalGlobalAlpha = ctx.globalAlpha;
                 ctx.globalAlpha = style.fillOpacity * style.opacity;
                 path.fill(ctx);
                 ctx.globalAlpha = originalGlobalAlpha;
@@ -145,7 +147,7 @@ Path.prototype = {
 
         if (hasStroke) {
             if (style.strokeOpacity != null) {
-                var originalGlobalAlpha = ctx.globalAlpha;
+                let originalGlobalAlpha = ctx.globalAlpha;
                 ctx.globalAlpha = style.strokeOpacity * style.opacity;
                 path.stroke(ctx);
                 ctx.globalAlpha = originalGlobalAlpha;
@@ -169,20 +171,32 @@ Path.prototype = {
         }
     },
 
-    // When bundling path, some shape may decide if use moveTo to begin a new subpath or closePath
-    // Like in circle
+    /**
+     * @method buildPath
+     * When bundling path, some shape may decide if use moveTo to begin a new subpath or closePath
+     * Like in circle
+     * @param {*} ctx 
+     * @param {*} shapeCfg 
+     * @param {*} inBundle 
+     */
     buildPath: function (ctx, shapeCfg, inBundle) {},
 
+    /**
+     * @method createPathProxy
+     */
     createPathProxy: function () {
         this.path = new PathProxy();
     },
 
+    /**
+     * @method getBoundingRect
+     */
     getBoundingRect: function () {
-        var rect = this._rect;
-        var style = this.style;
-        var needsUpdateRect = !rect;
+        let rect = this._rect;
+        let style = this.style;
+        let needsUpdateRect = !rect;
         if (needsUpdateRect) {
-            var path = this.path;
+            let path = this.path;
             if (!path) {
                 // Create path on demand.
                 path = this.path = new PathProxy();
@@ -199,13 +213,13 @@ Path.prototype = {
             // Needs update rect with stroke lineWidth when
             // 1. Element changes scale or lineWidth
             // 2. Shape is changed
-            var rectWithStroke = this._rectWithStroke || (this._rectWithStroke = rect.clone());
+            let rectWithStroke = this._rectWithStroke || (this._rectWithStroke = rect.clone());
             if (this.__dirty || needsUpdateRect) {
                 rectWithStroke.copy(rect);
                 // FIXME Must after updateTransform
-                var w = style.lineWidth;
+                let w = style.lineWidth;
                 // PENDING, Min line width is needed when line is horizontal or vertical
-                var lineScale = style.strokeNoScale ? this.getLineScale() : 1;
+                let lineScale = style.strokeNoScale ? this.getLineScale() : 1;
 
                 // Only add extra hover lineWidth when there are no fill
                 if (!style.hasFill()) {
@@ -228,18 +242,23 @@ Path.prototype = {
         return rect;
     },
 
+    /**
+     * @method contain
+     * @param {*} x 
+     * @param {*} y 
+     */
     contain: function (x, y) {
-        var localPos = this.transformCoordToLocal(x, y);
-        var rect = this.getBoundingRect();
-        var style = this.style;
+        let localPos = this.transformCoordToLocal(x, y);
+        let rect = this.getBoundingRect();
+        let style = this.style;
         x = localPos[0];
         y = localPos[1];
 
         if (rect.contain(x, y)) {
-            var pathData = this.path.data;
+            let pathData = this.path.data;
             if (style.hasStroke()) {
-                var lineWidth = style.lineWidth;
-                var lineScale = style.strokeNoScale ? this.getLineScale() : 1;
+                let lineWidth = style.lineWidth;
+                let lineScale = style.strokeNoScale ? this.getLineScale() : 1;
                 // Line scale can't be 0;
                 if (lineScale > 1e-10) {
                     // Only add extra hover lineWidth when there are no fill
@@ -261,7 +280,8 @@ Path.prototype = {
     },
 
     /**
-     * @param  {boolean} dirtyPath
+     * @method dirty
+     * @param  {Boolean} dirtyPath
      */
     dirty: function (dirtyPath) {
         if (dirtyPath == null) {
@@ -284,14 +304,20 @@ Path.prototype = {
     },
 
     /**
+     * @method animateShape
      * Alias for animate('shape')
-     * @param {boolean} loop
+     * @param {Boolean} loop
      */
     animateShape: function (loop) {
         return this.animate('shape', loop);
     },
 
-    // Overwrite attrKV
+    /**
+     * @method attrKV
+     * Overwrite attrKV
+     * @param {*} key 
+     * @param {Object} value 
+     */
     attrKV: function (key, value) {
         // FIXME
         if (key === 'shape') {
@@ -305,15 +331,16 @@ Path.prototype = {
     },
 
     /**
-     * @param {Object|string} key
-     * @param {*} value
+     * @method setShape
+     * @param {Object|String} key
+     * @param {Object} value
      */
     setShape: function (key, value) {
-        var shape = this.shape;
+        let shape = this.shape;
         // Path from string may not have shape
         if (shape) {
             if (dataUtil.isObject(key)) {
-                for (var name in key) {
+                for (let name in key) {
                     if (key.hasOwnProperty(name)) {
                         shape[name] = key[name];
                     }
@@ -327,8 +354,11 @@ Path.prototype = {
         return this;
     },
 
+    /**
+     * @method getLineScale
+     */
     getLineScale: function () {
-        var m = this.transform;
+        let m = this.transform;
         // Get the line scale.
         // Determinant of `m` means how much the area is enlarged by the
         // transformation. So its square root can be used as a scale factor
@@ -350,7 +380,7 @@ Path.prototype = {
  * @param {Object} [props.shape] Extended default shape config
  */
 Path.extend = function (defaults) {
-    var Sub = function (opts) {
+    let Sub = function (opts) {
         Path.call(this, opts);
 
         if (defaults.style) {
@@ -359,11 +389,11 @@ Path.extend = function (defaults) {
         }
 
         // Extend default shape
-        var defaultShape = defaults.shape;
+        let defaultShape = defaults.shape;
         if (defaultShape) {
             this.shape = this.shape || {};
-            var thisShape = this.shape;
-            for (var name in defaultShape) {
+            let thisShape = this.shape;
+            for (let name in defaultShape) {
                 if (
                     !thisShape.hasOwnProperty(name)
                     && defaultShape.hasOwnProperty(name)
@@ -379,13 +409,12 @@ Path.extend = function (defaults) {
     dataUtil.inherits(Sub, Path);
 
     // FIXME 不能 extend position, rotation 等引用对象
-    for (var name in defaults) {
+    for (let name in defaults) {
         // Extending prototype values and methods
         if (name !== 'style' && name !== 'shape') {
             Sub.prototype[name] = defaults[name];
         }
     }
-
     return Sub;
 };
 

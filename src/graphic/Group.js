@@ -8,21 +8,21 @@ import BoundingRect from '../core/BoundingRect';
  * Group是一个容器，可以插入子节点，Group的变换也会被应用到子节点上。
  * Group 可以嵌套子节点，其它类型不能。
  * 
- * @example
+ *      @example small frame
+ *      let Group = require('zrender/Group');
+ *      let Circle = require('zrender/graphic/shape/Circle');
+ *      let g = new Group();
+ *      g.position[0] = 100;
+ *      g.position[1] = 100;
+ *      g.add(new Circle({
+ *          style: {
+ *              x: 100,
+ *              y: 100,
+ *              r: 20,
+ *          }
+ *      }));
+ *      zr.add(g);
  * 
- * let Group = require('zrender/Group');
- * let Circle = require('zrender/graphic/shape/Circle');
- * let g = new Group();
- * g.position[0] = 100;
- * g.position[1] = 100;
- * g.add(new Circle({
- * style: {
- * x: 100,
- * y: 100,
- * r: 20,
- * }
- * }));
- * zr.add(g);
  */
 
 /**

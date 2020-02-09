@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var Displayable = require(&quot;./Displayable&quot;);
+
+var BoundingRect = require(&quot;../core/BoundingRect&quot;);
+
+var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
+
+var imageHelper = require(&quot;./utils/image&quot;);
+
+<span id='zrender-graphic-ZImage'>/**
+</span> * @class zrender.graphic.ZImage 
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+
+<span id='zrender-graphic-ZImage-method-constructor'>/**
+</span> * @method constructor ZImage
+ * @param {Object} opts
+ */
+function ZImage(opts) {
+  Displayable.call(this, opts);
+}
+
+ZImage.prototype = {
+  constructor: ZImage,
+
+<span id='zrender-graphic-ZImage-property-type'>  /**
+</span>   * @property {String}
+   */
+  type: &#39;image&#39;,
+
+<span id='zrender-graphic-ZImage-method-brush'>  /**
+</span>   * @method brush
+   * @param {Object} ctx 
+   * @param {Element} prevEl 
+   */
+  brush: function brush(ctx, prevEl) {
+    var style = this.style;
+    var src = style.image; // Must bind each time
+
+    style.bind(ctx, this, prevEl);
+    var image = this._image = imageHelper.createOrUpdateImage(src, this._image, this, this.onload);
+
+    if (!image || !imageHelper.isImageReady(image)) {
+      return;
+    } // 图片已经加载完成
+    // if (image.nodeName.toUpperCase() == &#39;IMG&#39;) {
+    //     if (!image.complete) {
+    //         return;
+    //     }
+    // }
+    // Else is canvas
+
+
+    var x = style.x || 0;
+    var y = style.y || 0;
+    var width = style.width;
+    var height = style.height;
+    var aspect = image.width / image.height;
+
+    if (width == null &amp;&amp; height != null) {
+      // Keep image/height ratio
+      width = height * aspect;
+    } else if (height == null &amp;&amp; width != null) {
+      height = width / aspect;
+    } else if (width == null &amp;&amp; height == null) {
+      width = image.width;
+      height = image.height;
+    } // 设置transform
+
+
+    this.setTransform(ctx);
+
+    if (style.sWidth &amp;&amp; style.sHeight) {
+      var sx = style.sx || 0;
+      var sy = style.sy || 0;
+      ctx.drawImage(image, sx, sy, style.sWidth, style.sHeight, x, y, width, height);
+    } else if (style.sx &amp;&amp; style.sy) {
+      var _sx = style.sx;
+      var _sy = style.sy;
+      var sWidth = width - _sx;
+      var sHeight = height - _sy;
+      ctx.drawImage(image, _sx, _sy, sWidth, sHeight, x, y, width, height);
+    } else {
+      ctx.drawImage(image, x, y, width, height);
+    } // Draw rect text
+
+
+    if (style.text != null) {
+      // Only restore transform when needs draw text.
+      this.restoreTransform(ctx);
+      this.drawRectText(ctx, this.getBoundingRect());
+    }
+  },
+
+<span id='zrender-graphic-ZImage-method-getBoundingRect'>  /**
+</span>   * @method getBoundingRect
+   */
+  getBoundingRect: function getBoundingRect() {
+    var style = this.style;
+
+    if (!this._rect) {
+      this._rect = new BoundingRect(style.x || 0, style.y || 0, style.width || 0, style.height || 0);
+    }
+
+    return this._rect;
+  }
+};
+dataUtil.inherits(ZImage, Displayable);
+var _default = ZImage;
+module.exports = _default;</pre>
+</body>
+</html>
