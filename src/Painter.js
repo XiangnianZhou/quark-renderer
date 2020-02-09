@@ -521,7 +521,8 @@ Painter.prototype = {
                 start = layer.__startIndex;
             }
 
-            for (let i = start; i < layer.__endIndex; i++) {
+            let i = start;
+            for (;i < layer.__endIndex; i++) {
                 let el = list[i];
                 this._doPaintEl(el, layer, paintAll, scope);
                 el.__dirty = el.__dirtyText = false;
@@ -823,7 +824,8 @@ Painter.prototype = {
 
         let prevLayer = null;
         let incrementalLayerCount = 0;
-        for (let i = 0; i < list.length; i++) {
+        let i = 0;
+        for (;i < list.length; i++) {
             let el = list[i];
             let zlevel = el.zlevel;
             let layer;

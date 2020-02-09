@@ -104,8 +104,8 @@ function isClipPathChanged(clipPaths, prevClipPaths) {
     return true;
   }
 
-  for (var _i = 0; _i &lt; clipPaths.length; _i++) {
-    if (clipPaths[_i] !== prevClipPaths[_i]) {
+  for (var i = 0; i &lt; clipPaths.length; i++) {
+    if (clipPaths[i] !== prevClipPaths[i]) {
       return true;
     }
   }
@@ -121,8 +121,8 @@ function isClipPathChanged(clipPaths, prevClipPaths) {
 
 
 function doClip(clipPaths, ctx) {
-  for (var _i2 = 0; _i2 &lt; clipPaths.length; _i2++) {
-    var clipPath = clipPaths[_i2];
+  for (var i = 0; i &lt; clipPaths.length; i++) {
+    var clipPath = clipPaths[i];
     clipPath.setTransform(ctx);
     ctx.beginPath();
     clipPath.buildPath(ctx, clipPath.shape);
@@ -332,12 +332,12 @@ Painter.prototype = {
     this._paintList(list, paintAll, this._redrawId); // Paint custum layers
 
 
-    for (var _i3 = 0; _i3 &lt; zlevelList.length; _i3++) {
-      var z = zlevelList[_i3];
+    for (var i = 0; i &lt; zlevelList.length; i++) {
+      var z = zlevelList[i];
       var layer = this._layers[z];
 
       if (!layer.__builtin__ &amp;&amp; layer.refresh) {
-        var clearColor = _i3 === 0 ? this._backgroundColor : null;
+        var clearColor = i === 0 ? this._backgroundColor : null;
         layer.refresh(clearColor);
       }
     }
@@ -396,8 +396,8 @@ Painter.prototype = {
   clearHover: function clearHover(el) {
     var hoverElements = this._hoverElements;
 
-    for (var _i4 = 0; _i4 &lt; hoverElements.length; _i4++) {
-      var from = hoverElements[_i4].__from;
+    for (var i = 0; i &lt; hoverElements.length; i++) {
+      var from = hoverElements[i].__from;
 
       if (from) {
         from.__hoverMir = null;
@@ -430,19 +430,19 @@ Painter.prototype = {
     var scope = {};
     hoverLayer.ctx.save();
 
-    for (var _i5 = 0; _i5 &lt; len;) {
-      var el = hoverElements[_i5];
+    for (var i = 0; i &lt; len;) {
+      var el = hoverElements[i];
       var originalEl = el.__from; // Original el is removed
       // PENDING
 
       if (!(originalEl &amp;&amp; originalEl.__zr)) {
-        hoverElements.splice(_i5, 1);
+        hoverElements.splice(i, 1);
         originalEl.__hoverMir = null;
         len--;
         continue;
       }
 
-      _i5++; // Use transform
+      i++; // Use transform
       // FIXME style and shape ?
 
       if (!originalEl.invisible) {
@@ -554,8 +554,10 @@ Painter.prototype = {
         start = _layer.__startIndex;
       }
 
-      for (var _i6 = start; _i6 &lt; _layer.__endIndex; _i6++) {
-        var el = list[_i6];
+      var i = start;
+
+      for (; i &lt; _layer.__endIndex; i++) {
+        var el = list[i];
 
         this._doPaintEl(el, _layer, paintAll, scope);
 
@@ -838,10 +840,10 @@ Painter.prototype = {
     }
 
     if (this._singleCanvas) {
-      for (var _i7 = 1; _i7 &lt; list.length; _i7++) {
-        var el = list[_i7];
+      for (var _i = 1; _i &lt; list.length; _i++) {
+        var el = list[_i];
 
-        if (el.zlevel !== list[_i7 - 1].zlevel || el.incremental) {
+        if (el.zlevel !== list[_i - 1].zlevel || el.incremental) {
           this._needsManuallyCompositing = true;
           break;
         }
@@ -850,9 +852,10 @@ Painter.prototype = {
 
     var prevLayer = null;
     var incrementalLayerCount = 0;
+    var i = 0;
 
-    for (var _i8 = 0; _i8 &lt; list.length; _i8++) {
-      var _el = list[_i8];
+    for (; i &lt; list.length; i++) {
+      var _el = list[i];
       var zlevel = _el.zlevel;
       var layer = void 0; // PENDING If change one incremental element style ?
       // TODO Where there are non-incremental elements between incremental elements.
@@ -872,20 +875,20 @@ Painter.prototype = {
       if (layer !== prevLayer) {
         layer.__used = true;
 
-        if (layer.__startIndex !== _i8) {
+        if (layer.__startIndex !== i) {
           layer.__dirty = true;
         }
 
-        layer.__startIndex = _i8;
+        layer.__startIndex = i;
 
         if (!layer.incremental) {
-          layer.__drawIndex = _i8;
+          layer.__drawIndex = i;
         } else {
           // Mark layer draw index needs to update.
           layer.__drawIndex = -1;
         }
 
-        updatePrevLayer(_i8);
+        updatePrevLayer(i);
         prevLayer = layer;
       }
 
@@ -894,7 +897,7 @@ Painter.prototype = {
 
         if (layer.incremental &amp;&amp; layer.__drawIndex &lt; 0) {
           // Start draw from the first dirty element.
-          layer.__drawIndex = _i8;
+          layer.__drawIndex = i;
         }
       }
     }
@@ -958,8 +961,8 @@ Painter.prototype = {
         dataUtil.merge(layerConfig[zlevel], config, true);
       }
 
-      for (var _i9 = 0; _i9 &lt; this._zlevelList.length; _i9++) {
-        var _zlevel = this._zlevelList[_i9];
+      for (var i = 0; i &lt; this._zlevelList.length; i++) {
+        var _zlevel = this._zlevelList[i];
 
         if (_zlevel === zlevel || _zlevel === zlevel + EL_AFTER_INCREMENTAL_INC) {
           var layer = this._layers[_zlevel];
@@ -1098,8 +1101,8 @@ Painter.prototype = {
       var scope = {};
       var displayList = this.storage.getDisplayList(true);
 
-      for (var _i10 = 0; _i10 &lt; displayList.length; _i10++) {
-        var el = displayList[_i10];
+      for (var i = 0; i &lt; displayList.length; i++) {
+        var el = displayList[i];
 
         this._doPaintEl(el, imageLayer, true, scope);
       }

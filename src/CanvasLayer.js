@@ -1,59 +1,51 @@
-/**
- * @module zrender/Layer
- * @author pissang(https://www.github.com/pissang)
- */
 import * as util from './core/utils/dataStructureUtil';
 import {devicePixelRatio} from './config';
 import Style from './graphic/Style';
 import Pattern from './graphic/Pattern';
 
 /**
- * 用来创建 canvas 层，在 ./Painter 类中会引用此类。
+ * @class zrender.canvas.Layer
+ * 用来创建 canvas 层，在 Painter 类中会引用此类。
+ * @author pissang(https://www.github.com/pissang)
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-function returnFalse() {
-    return false;
-}
 
 /**
+ * @private
+ * @method
  * 创建dom
- *
- * @inner
- * @param {string} id dom id 待用
+ * @param {String} id dom id 待用
  * @param {Painter} painter painter instance
- * @param {number} number
+ * @param {Number} number
  */
 function createDom(id, painter, dpr) {
-    var newDom = util.createCanvas();
-    var width = painter.getWidth();
-    var height = painter.getHeight();
+    let newDom = util.createCanvas();
+    let width = painter.getWidth();
+    let height = painter.getHeight();
+    let newDomStyle = newDom.style;
 
-    var newDomStyle = newDom.style;
     if (newDomStyle) {  // In node or some other non-browser environment
         newDomStyle.position = 'absolute';
         newDomStyle.left = 0;
         newDomStyle.top = 0;
         newDomStyle.width = width + 'px';
         newDomStyle.height = height + 'px';
-
         newDom.setAttribute('data-zr-dom-id', id);
     }
 
     newDom.width = width * dpr;
     newDom.height = height * dpr;
-
     return newDom;
 }
 
 /**
- * @alias module:zrender/Layer
- * @constructor
- * @extends module:zrender/mixin/Transformable
- * @param {string} id
- * @param {module:zrender/Painter} painter
- * @param {number} [dpr]
+ * @method constructor Layer
+ * @param {String} id
+ * @param {Painter} painter
+ * @param {Number} [dpr]
  */
-var Layer = function (id, painter, dpr) {
-    var dom;
+let Layer = function (id, painter, dpr) {
+    let dom;
     dpr = dpr || devicePixelRatio;
     if (typeof id === 'string') {
         dom = createDom(id, painter, dpr);
@@ -66,9 +58,9 @@ var Layer = function (id, painter, dpr) {
     this.id = id;
     this.dom = dom;
 
-    var domStyle = dom.style;
+    let domStyle = dom.style;
     if (domStyle) { // Not in node
-        dom.onselectstart = returnFalse; // 避免页面选中的尴尬
+        dom.onselectstart = ()=>{return false;}; // 避免页面选中的尴尬
         domStyle['-webkit-user-select'] = 'none';
         domStyle['user-select'] = 'none';
         domStyle['-webkit-touch-callout'] = 'none';
@@ -80,63 +72,56 @@ var Layer = function (id, painter, dpr) {
 
     this.domBack = null;
     this.ctxBack = null;
-
     this.painter = painter;
-
     this.config = null;
 
-    // Configs
     /**
-     * 每次清空画布的颜色
-     * @type {string}
-     * @default 0
+     * @property {String} 每次清空画布的颜色
      */
     this.clearColor = 0;
     /**
-     * 是否开启动态模糊
-     * @type {boolean}
-     * @default false
+     * @property {boolean} 是否开启动态模糊
      */
     this.motionBlur = false;
     /**
-     * 在开启动态模糊的时候使用，与上一帧混合的alpha值，值越大尾迹越明显
-     * @type {number}
-     * @default 0.7
+     * @property {Number} 在开启动态模糊的时候使用，与上一帧混合的alpha值，值越大尾迹越明显
      */
     this.lastFrameAlpha = 0.7;
-
     /**
-     * Layer dpr
-     * @type {number}
+     * @property {Number} Layer dpr
      */
     this.dpr = dpr;
 };
 
 Layer.prototype = {
-
     constructor: Layer,
-
     __dirty: true,
-
     __used: false,
-
     __drawIndex: 0,
     __startIndex: 0,
     __endIndex: 0,
-
     incremental: false,
 
+    /**
+     * @method getElementCount
+     */
     getElementCount: function () {
         return this.__endIndex - this.__startIndex;
     },
 
+    /**
+     * @method initContext
+     */
     initContext: function () {
         this.ctx = this.dom.getContext('2d');
         this.ctx.dpr = this.dpr;
     },
 
+    /**
+     * @method createBackBuffer
+     */
     createBackBuffer: function () {
-        var dpr = this.dpr;
+        let dpr = this.dpr;
 
         this.domBack = createDom('back-' + this.id, this.painter, dpr);
         this.ctxBack = this.domBack.getContext('2d');
@@ -147,15 +132,15 @@ Layer.prototype = {
     },
 
     /**
-     * @param  {number} width
-     * @param  {number} height
+     * @method resize
+     * @param  {Number} width
+     * @param  {Number} height
      */
     resize: function (width, height) {
-        var dpr = this.dpr;
-
-        var dom = this.dom;
-        var domStyle = dom.style;
-        var domBack = this.domBack;
+        let dpr = this.dpr;
+        let dom = this.dom;
+        let domStyle = dom.style;
+        let domBack = this.domBack;
 
         if (domStyle) {
             domStyle.width = width + 'px';
@@ -176,21 +161,20 @@ Layer.prototype = {
     },
 
     /**
+     * @method clear
      * 清空该层画布
-     * @param {boolean} [clearAll]=false Clear all with out motion blur
+     * @param {boolean} [clearAll=false] Clear all with out motion blur
      * @param {Color} [clearColor]
      */
     clear: function (clearAll, clearColor) {
-        var dom = this.dom;
-        var ctx = this.ctx;
-        var width = dom.width;
-        var height = dom.height;
-
-        var clearColor = clearColor || this.clearColor;
-        var haveMotionBLur = this.motionBlur && !clearAll;
-        var lastFrameAlpha = this.lastFrameAlpha;
-
-        var dpr = this.dpr;
+        clearColor = clearColor || this.clearColor;
+        let dom = this.dom;
+        let ctx = this.ctx;
+        let width = dom.width;
+        let height = dom.height;
+        let haveMotionBLur = this.motionBlur && !clearAll;
+        let lastFrameAlpha = this.lastFrameAlpha;
+        let dpr = this.dpr;
 
         if (haveMotionBLur) {
             if (!this.domBack) {
@@ -207,7 +191,7 @@ Layer.prototype = {
 
         ctx.clearRect(0, 0, width, height);
         if (clearColor && clearColor !== 'transparent') {
-            var clearColorGradientOrPattern;
+            let clearColorGradientOrPattern;
             // Gradient
             if (clearColor.colorStops) {
                 // Cache canvas gradient
@@ -231,7 +215,7 @@ Layer.prototype = {
         }
 
         if (haveMotionBLur) {
-            var domBack = this.domBack;
+            let domBack = this.domBack;
             ctx.save();
             ctx.globalAlpha = lastFrameAlpha;
             ctx.drawImage(domBack, 0, 0, width, height);
