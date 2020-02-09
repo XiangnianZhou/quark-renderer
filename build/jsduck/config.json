@@ -19,6 +19,7 @@
     "../../lib/event/DomEventProxy.js",
     "../../lib/event/MultiDragDrop.js",
     "../../lib/event/ZRenderEventHandler.js",
-    "../../lib/Storage.js"
+    "../../lib/Storage.js",
+    "../../lib/Painter.js"
   ]
 }

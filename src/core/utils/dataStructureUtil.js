@@ -885,3 +885,7 @@ export function getArrayDim(keyframes) {
     var lastValue = keyframes[keyframes.length - 1].value;
     return isArrayLike(lastValue && lastValue[0]) ? 2 : 1;
 }
+
+export function parseInt10(val) {
+    return parseInt(val, 10);
+}
