@@ -19,7 +19,7 @@
 
 var env = require(&quot;./core/env&quot;);
 
-var Handler = require(&quot;./event/Handler&quot;);
+var ZRenderEventHandler = require(&quot;./event/ZRenderEventHandler&quot;);
 
 var Storage = require(&quot;./Storage&quot;);
 
@@ -27,7 +27,7 @@ var Painter = require(&quot;./Painter&quot;);
 
 var GlobalAnimationMgr = require(&quot;./animation/GlobalAnimationMgr&quot;);
 
-var HandlerDomProxy = require(&quot;./event/HandlerDomProxy&quot;);
+var DomEventProxy = require(&quot;./event/DomEventProxy&quot;);
 
 <span id='zrender-core-ZRender'>/**
 </span> * @class zrender.core.ZRender
@@ -160,9 +160,9 @@ var ZRender = function ZRender(id, dom, opts) {
   this.storage = storage;
   this.painter = painter; //把DOM事件代理出来
 
-  var handerProxy = !env.node &amp;&amp; !env.worker ? new HandlerDomProxy(painter.getViewportRoot()) : null; //ZRender 自己封装的事件机制
+  var handerProxy = !env.node &amp;&amp; !env.worker ? new DomEventProxy(painter.getViewportRoot()) : null; //ZRender 自己封装的事件机制
 
-  this.handler = new Handler(storage, painter, handerProxy, painter.root);
+  this.eventHandler = new ZRenderEventHandler(storage, painter, handerProxy, painter.root);
 <span id='zrender-core-ZRender-property-globalAnimationMgr'>  /**
 </span>   * @type {GlobalAnimationMgr}
    * 利用 GlobalAnimationMgr 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
@@ -363,7 +363,7 @@ ZRender.prototype = {
    * @return {Object} {target, topTarget}
    */
   findHover: function findHover(x, y) {
-    return this.handler.findHover(x, y);
+    return this.eventHandler.findHover(x, y);
   },
 
 <span id='zrender-core-ZRender-method-clearHover'>  /**
@@ -409,7 +409,7 @@ ZRender.prototype = {
   resize: function resize(opts) {
     opts = opts || {};
     this.painter.resize(opts.width, opts.height);
-    this.handler.resize();
+    this.eventHandler.resize();
   },
 
 <span id='zrender-core-ZRender-method-clearAnimation'>  /**
@@ -454,7 +454,7 @@ ZRender.prototype = {
    * @param {String} [cursorStyle=&#39;default&#39;] 例如 crosshair
    */
   setCursorStyle: function setCursorStyle(cursorStyle) {
-    this.handler.setCursorStyle(cursorStyle);
+    this.eventHandler.setCursorStyle(cursorStyle);
   },
 
 <span id='zrender-core-ZRender-method-on'>  /**
@@ -466,7 +466,7 @@ ZRender.prototype = {
    * @param {Object} [context] Context object
    */
   on: function on(eventName, eventHandler, context) {
-    this.handler.on(eventName, eventHandler, context);
+    this.eventHandler.on(eventName, eventHandler, context);
   },
 
 <span id='zrender-core-ZRender-method-off'>  /**
@@ -476,7 +476,7 @@ ZRender.prototype = {
    * @param {Function} [eventHandler] Handler function
    */
   off: function off(eventName, eventHandler) {
-    this.handler.off(eventName, eventHandler);
+    this.eventHandler.off(eventName, eventHandler);
   },
 
 <span id='zrender-core-ZRender-method-trigger'>  /**
@@ -487,7 +487,7 @@ ZRender.prototype = {
    * @param {event=} event Event object
    */
   trigger: function trigger(eventName, event) {
-    this.handler.trigger(eventName, event);
+    this.eventHandler.trigger(eventName, event);
   },
 
 <span id='zrender-core-ZRender-method-clear'>  /**
@@ -508,8 +508,8 @@ ZRender.prototype = {
     this.clear();
     this.storage.dispose();
     this.painter.dispose();
-    this.handler.dispose();
-    this.globalAnimationMgr = this.storage = this.painter = this.handler = null;
+    this.eventHandler.dispose();
+    this.globalAnimationMgr = this.storage = this.painter = this.eventHandler = null;
     delete instances[this.id];
   }
 }; // ---------------------------

@@ -443,9 +443,6 @@ function unmountDOMEventListeners(scope) {
     scope.mounted = {};
 }
 
-/**
- * Inner class, do not export this.
- */
 function DOMHandlerScope(domTarget, domHandlers) {
     this.domTarget = domTarget;
     this.domHandlers = domHandlers;
