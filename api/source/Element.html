@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var guid = require(&quot;../core/utils/guid&quot;);
+
+var Eventful = require(&quot;../event/Eventful&quot;);
+
+var Transformable = require(&quot;./Transformable&quot;);
+
+var Animatable = require(&quot;../animation/Animatable&quot;);
+
+var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
+
+<span id='zrender-graphic-Element'>/**
+</span> * @class zrender.graphic.Element 
+ * 图形顶级抽象类，关键继承结构为 Element&lt;-Displayable&lt;-Path，shape包中的所有形状对象
+ * 都是 Path 的子类。
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+
+<span id='zrender-graphic-Element-method-constructor'>/**
+</span> * @method constructor Element
+ */
+var Element = function Element(opts) {
+  // jshint ignore:line
+  Transformable.call(this, opts);
+  Eventful.call(this, opts);
+  Animatable.call(this, opts);
+<span id='zrender-graphic-Element-property-id'>  /**
+</span>   * 画布元素ID
+   * @property {String}
+   */
+
+  this.id = opts.id || guid();
+};
+
+Element.prototype = {
+<span id='zrender-graphic-Element-property-type'>  /**
+</span>   * @property {String} type 元素类型
+   */
+  type: &#39;element&#39;,
+
+<span id='zrender-graphic-Element-property-name'>  /**
+</span>   * @property {String} name 元素名字
+   */
+  name: &#39;&#39;,
+
+<span id='zrender-graphic-Element-property-__zr'>  /**
+</span>   * @private
+   * @property {ZRender} __zr
+   * ZRender instance will be assigned when element is associated with zrender
+   * ZRender 实例对象，会在 element 添加到 zrender 实例中后自动赋值
+   */
+  __zr: null,
+
+<span id='zrender-graphic-Element-property-ignore'>  /**
+</span>   * @property {Boolean} ignore
+   * If ignore drawing and events of the element object
+   * 图形是否忽略，为true时忽略图形的绘制以及事件触发
+   */
+  ignore: false,
+
+<span id='zrender-graphic-Element-property-clipPath'>  /**
+</span>   * @property {Path} clipPath
+   * 用于裁剪的路径(shape)，所有 Group 内的路径在绘制时都会被这个路径裁剪
+   * 该路径会继承被裁减对象的变换
+   * @readOnly
+   * @see http://www.w3.org/TR/2dcontext/#clipping-region
+   */
+  clipPath: null,
+
+<span id='zrender-graphic-Element-property-isGroup'>  /**
+</span>   * @property {Boolean} isGroup
+   * 是否是 Group
+   */
+  isGroup: false,
+
+<span id='zrender-graphic-Element-method-drift'>  /**
+</span>   * @method
+   * Drift element
+   * @param  {Number} dx dx on the global space
+   * @param  {Number} dy dy on the global space
+   */
+  drift: function drift(dx, dy) {
+    switch (this.draggable) {
+      case &#39;horizontal&#39;:
+        dy = 0;
+        break;
+
+      case &#39;vertical&#39;:
+        dx = 0;
+        break;
+    }
+
+    var m = this.transform;
+
+    if (!m) {
+      m = this.transform = [1, 0, 0, 1, 0, 0];
+    }
+
+    m[4] += dx;
+    m[5] += dy;
+    this.decomposeTransform();
+    this.dirty(false);
+  },
+
+<span id='zrender-graphic-Element-property-beforeUpdate'>  /**
+</span>   * @property {Function} beforeUpdate
+   * Hook before update
+   */
+  beforeUpdate: function beforeUpdate() {},
+
+<span id='zrender-graphic-Element-property-afterUpdate'>  /**
+</span>   * @property {Function} afterUpdate
+   * Hook after update
+   */
+  afterUpdate: function afterUpdate() {},
+
+<span id='zrender-graphic-Element-property-update'>  /**
+</span>   * @property {Function} update
+   * Update each frame
+   */
+  update: function update() {
+    this.updateTransform();
+  },
+
+<span id='zrender-graphic-Element-property-traverse'>  /**
+</span>   * @property {Function} traverse
+   * @param  {Function} cb
+   * @param  {Object}   context
+   */
+  traverse: function traverse(cb, context) {},
+
+<span id='zrender-graphic-Element-method-attrKV'>  /**
+</span>   * @protected
+   * @method attrKV
+   * @param {String} key
+   * @param {Object} value
+   */
+  attrKV: function attrKV(key, value) {
+    if (key === &#39;position&#39; || key === &#39;scale&#39; || key === &#39;origin&#39;) {
+      // Copy the array
+      if (value) {
+        var target = this[key];
+
+        if (!target) {
+          target = this[key] = [];
+        }
+
+        target[0] = value[0];
+        target[1] = value[1];
+      }
+    } else {
+      this[key] = value;
+    }
+  },
+
+<span id='zrender-graphic-Element-method-hide'>  /**
+</span>   * @method hide
+   * Hide the element
+   */
+  hide: function hide() {
+    this.ignore = true;
+    this.__zr &amp;&amp; this.__zr.refresh();
+  },
+
+<span id='zrender-graphic-Element-method-show'>  /**
+</span>   * @method show
+   * Show the element
+   */
+  show: function show() {
+    this.ignore = false;
+    this.__zr &amp;&amp; this.__zr.refresh();
+  },
+
+<span id='zrender-graphic-Element-method-attr'>  /**
+</span>   * @method attr
+   * 修改对象上的属性。
+   * @param {String|Object} key
+   * @param {*} value
+   */
+  attr: function attr(key, value) {
+    if (typeof key === &#39;String&#39;) {
+      this.attrKV(key, value);
+    } else if (dataUtil.isObject(key)) {
+      for (var name in key) {
+        if (key.hasOwnProperty(name)) {
+          this.attrKV(name, key[name]);
+        }
+      }
+    }
+
+    this.dirty(false);
+    return this;
+  },
+
+<span id='zrender-graphic-Element-method-setClipPath'>  /**
+</span>   * @method setClipPath
+   * @param {Path} clipPath
+   */
+  setClipPath: function setClipPath(clipPath) {
+    var zr = this.__zr;
+
+    if (zr) {
+      clipPath.addSelfToZr(zr);
+    } // Remove previous clip path
+
+
+    if (this.clipPath &amp;&amp; this.clipPath !== clipPath) {
+      this.removeClipPath();
+    }
+
+    this.clipPath = clipPath;
+    clipPath.__zr = zr;
+    clipPath.__clipTarget = this; //TODO: FIX this，需要重写一下，考虑把 Element 类和 Displayable 类合并起来。
+    //dirty() 方法定义在子类 Displayable 中，这里似乎不应该直接调用，作为父类的 Element 不应该了解子类的实现，否则不易理解和维护。
+    //另，Displayable 中的 dirty() 方法没有参数，而孙类 Path 中有参数。
+
+    this.dirty(false);
+  },
+
+<span id='zrender-graphic-Element-method-removeClipPath'>  /**
+</span>   * @method removeClipPath
+   */
+  removeClipPath: function removeClipPath() {
+    var clipPath = this.clipPath;
+
+    if (clipPath) {
+      if (clipPath.__zr) {
+        clipPath.removeSelfFromZr(clipPath.__zr);
+      }
+
+      clipPath.__zr = null;
+      clipPath.__clipTarget = null;
+      this.clipPath = null;
+      this.dirty(false);
+    }
+  },
+
+<span id='zrender-graphic-Element-method-addSelfToZr'>  /**
+</span>   * @method addSelfToZr
+   * Add self to zrender instance.
+   * Not recursively because it will be invoked when element added to storage.
+   * @param {ZRender} zr
+   */
+  addSelfToZr: function addSelfToZr(zr) {
+    this.__zr = zr; // 添加动画
+
+    var animationProcessList = this.animationProcessList;
+
+    if (animationProcessList) {
+      for (var i = 0; i &lt; animationProcessList.length; i++) {
+        zr.globalAnimationMgr.addAnimationProcess(animationProcessList[i]);
+      }
+    }
+
+    if (this.clipPath) {
+      this.clipPath.addSelfToZr(zr);
+    }
+  },
+
+<span id='zrender-graphic-Element-method-removeSelfFromZr'>  /**
+</span>   * @method removeSelfFromZr
+   * Remove self from zrender instance.
+   * Not recursively because it will be invoked when element added to storage.
+   * @param {ZRender} zr
+   */
+  removeSelfFromZr: function removeSelfFromZr(zr) {
+    this.__zr = null; // 移除动画
+
+    var animationProcessList = this.animationProcessList;
+
+    if (animationProcessList) {
+      for (var i = 0; i &lt; animationProcessList.length; i++) {
+        zr.globalAnimationMgr.removeAnimationProcess(animationProcessList[i]);
+      }
+    }
+
+    if (this.clipPath) {
+      this.clipPath.removeSelfFromZr(zr);
+    }
+  }
+};
+dataUtil.mixin(Element, Animatable);
+dataUtil.mixin(Element, Transformable);
+dataUtil.mixin(Element, Eventful);
+var _default = Element;
+module.exports = _default;</pre>
+</body>
+</html>

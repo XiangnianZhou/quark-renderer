@@ -1,87 +1,76 @@
-/**
- * @class zrender.graphic.Element 
- * 图形顶级抽象类，直接子类是 graphic/Displayable 。
- * Dispalyable 的直接子类是 graphic/Path，graphic 包中的所有形状对象都是 Path 的子类。
- * @minxins zrender.animation.Animatable
- */
 import guid from '../core/utils/guid';
 import Eventful from '../event/Eventful';
 import Transformable from './Transformable';
 import Animatable from '../animation/Animatable';
 import * as dataUtil from '../core/utils/dataStructureUtil';
+/**
+ * @class zrender.graphic.Element 
+ * 图形顶级抽象类，关键继承结构为 Element<-Displayable<-Path，shape包中的所有形状对象
+ * 都是 Path 的子类。
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 
 /**
- * @alias module:zrender/Element
- * @constructor
- * @extends {module:zrender/animation/Animatable}
- * @extends {module:zrender/mixin/Transformable}
- * @extends {module:zrender/mixin/Eventful}
+ * @method constructor Element
  */
 var Element = function (opts) { // jshint ignore:line
-
     Transformable.call(this, opts);
     Eventful.call(this, opts);
     Animatable.call(this, opts);
 
     /**
      * 画布元素ID
-     * @type {string}
+     * @property {String}
      */
     this.id = opts.id || guid();
 };
 
 Element.prototype = {
-
     /**
-     * 元素类型
-     * Element type
-     * @type {string}
+     * @property {String} type 元素类型
      */
     type: 'element',
 
     /**
-     * 元素名字
-     * Element name
-     * @type {string}
+     * @property {String} name 元素名字
      */
     name: '',
 
     /**
-     * ZRender 实例对象，会在 element 添加到 zrender 实例中后自动赋值
+     * @private
+     * @property {ZRender} __zr
      * ZRender instance will be assigned when element is associated with zrender
-     * @name module:/zrender/Element#__zr
-     * @type {module:zrender/ZRender}
+     * ZRender 实例对象，会在 element 添加到 zrender 实例中后自动赋值
      */
     __zr: null,
 
     /**
-     * 图形是否忽略，为true时忽略图形的绘制以及事件触发
+     * @property {Boolean} ignore
      * If ignore drawing and events of the element object
-     * @name module:/zrender/Element#ignore
-     * @type {boolean}
-     * @default false
+     * 图形是否忽略，为true时忽略图形的绘制以及事件触发
      */
     ignore: false,
 
     /**
+     * @property {Path} clipPath
      * 用于裁剪的路径(shape)，所有 Group 内的路径在绘制时都会被这个路径裁剪
      * 该路径会继承被裁减对象的变换
-     * @type {module:zrender/graphic/Path}
-     * @see http://www.w3.org/TR/2dcontext/#clipping-region
      * @readOnly
+     * @see http://www.w3.org/TR/2dcontext/#clipping-region
      */
     clipPath: null,
 
     /**
+     * @property {Boolean} isGroup
      * 是否是 Group
-     * @type {boolean}
      */
     isGroup: false,
 
     /**
+     * @method
      * Drift element
-     * @param  {number} dx dx on the global space
-     * @param  {number} dy dy on the global space
+     * @param  {Number} dx dx on the global space
+     * @param  {Number} dy dy on the global space
      */
     drift: function (dx, dy) {
         switch (this.draggable) {
@@ -105,28 +94,33 @@ Element.prototype = {
     },
 
     /**
+     * @property {Function} beforeUpdate
      * Hook before update
      */
     beforeUpdate: function () {},
     /**
+     * @property {Function} afterUpdate
      * Hook after update
      */
     afterUpdate: function () {},
     /**
+     * @property {Function} update
      * Update each frame
      */
     update: function () {
         this.updateTransform();
     },
-
     /**
+     * @property {Function} traverse
      * @param  {Function} cb
-     * @param  {}   context
+     * @param  {Object}   context
      */
     traverse: function (cb, context) {},
-
     /**
      * @protected
+     * @method attrKV
+     * @param {String} key
+     * @param {Object} value
      */
     attrKV: function (key, value) {
         if (key === 'position' || key === 'scale' || key === 'origin') {
@@ -146,6 +140,7 @@ Element.prototype = {
     },
 
     /**
+     * @method hide
      * Hide the element
      */
     hide: function () {
@@ -154,6 +149,7 @@ Element.prototype = {
     },
 
     /**
+     * @method show
      * Show the element
      */
     show: function () {
@@ -162,12 +158,13 @@ Element.prototype = {
     },
 
     /**
+     * @method attr
      * 修改对象上的属性。
-     * @param {string|Object} key
+     * @param {String|Object} key
      * @param {*} value
      */
     attr: function (key, value) {
-        if (typeof key === 'string') {
+        if (typeof key === 'String') {
             this.attrKV(key, value);
         }
         else if (dataUtil.isObject(key)) {
@@ -184,7 +181,8 @@ Element.prototype = {
     },
 
     /**
-     * @param {module:zrender/graphic/Path} clipPath
+     * @method setClipPath
+     * @param {Path} clipPath
      */
     setClipPath: function (clipPath) {
         var zr = this.__zr;
@@ -208,6 +206,7 @@ Element.prototype = {
     },
 
     /**
+     * @method removeClipPath
      */
     removeClipPath: function () {
         var clipPath = this.clipPath;
@@ -225,9 +224,10 @@ Element.prototype = {
     },
 
     /**
+     * @method addSelfToZr
      * Add self to zrender instance.
      * Not recursively because it will be invoked when element added to storage.
-     * @param {module:zrender/ZRender} zr
+     * @param {ZRender} zr
      */
     addSelfToZr: function (zr) {
         this.__zr = zr;
@@ -245,9 +245,10 @@ Element.prototype = {
     },
 
     /**
+     * @method removeSelfFromZr
      * Remove self from zrender instance.
      * Not recursively because it will be invoked when element added to storage.
-     * @param {module:zrender/ZRender} zr
+     * @param {ZRender} zr
      */
     removeSelfFromZr: function (zr) {
         this.__zr = null;
