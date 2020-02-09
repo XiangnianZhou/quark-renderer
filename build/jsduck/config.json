@@ -18,6 +18,7 @@
     "../../lib/event/Eventful.js",
     "../../lib/event/DomEventProxy.js",
     "../../lib/event/MultiDragDrop.js",
-    "../../lib/event/ZRenderEventHandler.js"
+    "../../lib/event/ZRenderEventHandler.js",
+    "../../lib/Storage.js"
   ]
 }
