@@ -17,6 +17,7 @@
     "../../lib/animation/Track.js",
     "../../lib/event/Eventful.js",
     "../../lib/event/DomEventProxy.js",
-    "../../lib/event/MultiDragDrop.js"
+    "../../lib/event/MultiDragDrop.js",
+    "../../lib/event/ZRenderEventHandler.js"
   ]
 }

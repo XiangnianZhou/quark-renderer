@@ -31,7 +31,7 @@ var MultiDragDrop =
 /*#__PURE__*/
 function () {
 <span id='zrender-event-MultiDragDrop-method-constructor'>  /**
-</span>   * @method constructor
+</span>   * @method constructor MultiDragDrop
    * @param {ZRenderEventHandler} handler 
    */
   function MultiDragDrop(handler) {
@@ -57,8 +57,8 @@ function () {
         topTarget: e &amp;&amp; e.topTarget
       };
     }
-<span id='zrender-event-MultiDragDrop-method-'>    /**
-</span>     * @method
+<span id='zrender-event-MultiDragDrop-method-getSelectedItems'>    /**
+</span>     * @method getSelectedItems
      * 获取当前选中的图元
      * @return {Map} selectionMap
      */
@@ -68,8 +68,8 @@ function () {
     value: function getSelectedItems() {
       return this.selectionMap;
     }
-<span id='zrender-event-MultiDragDrop-method-'>    /**
-</span>     * @method
+<span id='zrender-event-MultiDragDrop-method-clearSelectionMap'>    /**
+</span>     * @method clearSelectionMap
      * 清除选中
      */
 
@@ -122,9 +122,9 @@ function () {
         _this.handler.dispatchToElement(_this.param(el, e), &#39;dragstart&#39;, e.event);
       });
     }
-<span id='zrender-event-MultiDragDrop-method-'>    /**
+<span id='zrender-event-MultiDragDrop-method-_drag'>    /**
 </span>     * @private
-     * @method
+     * @method _drag
      * 拖动过程中
      * @param {Event} e 
      */
@@ -159,9 +159,9 @@ function () {
         }
       }
     }
-<span id='zrender-event-MultiDragDrop-method-'>    /**
+<span id='zrender-event-MultiDragDrop-method-_dragEnd'>    /**
 </span>     * @private
-     * @method
+     * @method _dragEnd
      * 拖动结束
      * @param {Event} e 
      */

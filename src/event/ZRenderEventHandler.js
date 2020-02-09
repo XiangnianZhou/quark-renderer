@@ -4,6 +4,7 @@ import * as eventTool from '../core/utils/eventUtil';
 import MultiDragDrop from './MultiDragDrop';
 import Eventful from './Eventful';
 import GestureMgr from '../core/GestureMgr';
+
 /**
  * @class zrender.event.ZRenderEventHandler
  * Canvas 内置的API只在 canvas 实例本身上面触发事件，对画布内部的画出来的元素没有提供事件支持。
@@ -14,6 +15,13 @@ import GestureMgr from '../core/GestureMgr';
 
 var SILENT = 'silent';
 
+/**
+ * @private
+ * @method
+ * @param {String} eveType 
+ * @param {Object} targetInfo 
+ * @param {Event} event 
+ */
 function makeEventPacket(eveType, targetInfo, event) {
     return {
         type: eveType,
@@ -37,6 +45,11 @@ function makeEventPacket(eveType, targetInfo, event) {
     };
 }
 
+/**
+ * @private
+ * @method
+ * @param {Event} event  
+ */
 function stopEvent(event) {
     eventTool.stop(this.event);
 }
@@ -51,11 +64,23 @@ var handlerNames = [
     'pagekeydown','pagekeyup'
 ];
 
-//监听页面上触发的事件，转换成当前实例自己触发的事件
+/**
+ * @method
+ * 监听页面上触发的事件，转换成当前实例自己触发的事件
+ * @param {String} pageEventName 
+ * @param {Event} event 
+ */
 function pageEventHandler(pageEventName, event) {
     this.trigger(pageEventName, makeEventPacket(pageEventName, {}, event));
 }
 
+/**
+ * @method
+ * 鼠标是否在指定的图元上方。
+ * @param {Displayable} displayable 
+ * @param {Number} x 
+ * @param {Number} y 
+ */
 function isHover(displayable, x, y) {
     if (displayable[displayable.rectHover ? 'rectContain' : 'contain'](x, y)) {
         var el = displayable;
@@ -78,6 +103,11 @@ function isHover(displayable, x, y) {
     return false;
 }
 
+/**
+ * @private
+ * @method
+ * @param {Function} handlerInstance 
+ */
 function afterListenerChanged(handlerInstance) {
     //监听整个页面上的事件
     var allSilent = handlerInstance.isSilent('pagemousemove')
@@ -89,12 +119,10 @@ function afterListenerChanged(handlerInstance) {
 }
 
 /**
- * @alias module:zrender/ZRenderEventHandler
- * @constructor
- * @extends module:zrender/mixin/Eventful
- * @param {module:zrender/Storage} storage Storage instance.
- * @param {module:zrender/Painter} painter Painter instance.
- * @param {module:zrender/event/HandlerProxy} proxy HandlerProxy instance.
+ * @method constructor ZRenderEventHandler
+ * @param {Storage} storage Storage instance.
+ * @param {Painter} painter Painter instance.
+ * @param {HandlerProxy} proxy HandlerProxy instance.
  * @param {HTMLElement} painterRoot painter.root (not painter.getViewportRoot()).
  */
 var ZRenderEventHandler = function (storage, painter, proxy, painterRoot) {
@@ -102,47 +130,56 @@ var ZRenderEventHandler = function (storage, painter, proxy, painterRoot) {
         afterListenerChanged: util.bind(afterListenerChanged, null, this)
     });
 
+    /**
+     * @property storage
+     */
     this.storage = storage;
 
+    /**
+     * @property painter
+     */
     this.painter = painter;
 
+    /**
+     * @property painterRoot
+     */
     this.painterRoot = painterRoot;
 
     proxy = proxy || new EmptyProxy();
 
     /**
+     * @property proxy
      * Proxy of event. can be Dom, WebGLSurface, etc.
      */
     this.proxy = null;
 
     /**
-     * {target, topTarget, x, y}
-     * @private
-     * @type {Object}
+     * @private 
+     * @property {Object} _hovered
      */
     this._hovered = {};
 
     /**
      * @private
-     * @type {Date}
+     * @property {Date} _lastTouchMoment
      */
     this._lastTouchMoment;
 
     /**
      * @private
-     * @type {number}
+     * @property {Number} _lastX
      */
     this._lastX;
 
     /**
      * @private
-     * @type {number}
+     * @property {Number} _lastY
      */
     this._lastY;
 
     /**
      * @private
-     * @type {module:zrender/core/GestureMgr}
+     * @property _gestureMgr
      */
     this._gestureMgr;
 
@@ -155,6 +192,10 @@ ZRenderEventHandler.prototype = {
 
     constructor: ZRenderEventHandler,
 
+    /**
+     * @method setHandlerProxy
+     * @param {*} proxy 
+     */
     setHandlerProxy: function (proxy) {
         if (this.proxy) {
             this.proxy.dispose();
@@ -171,6 +212,10 @@ ZRenderEventHandler.prototype = {
         this.proxy = proxy;
     },
 
+    /**
+     * @method mousemove
+     * @param {*} proxy 
+     */
     mousemove: function (event) {
         var x = event.zrX;
         var y = event.zrY;
@@ -207,6 +252,10 @@ ZRenderEventHandler.prototype = {
         }
     },
 
+    /**
+     * @method mouseout
+     * @param {*} proxy 
+     */
     mouseout: function (event) {
         this.dispatchToElement(this._hovered, 'mouseout', event);
 
@@ -232,19 +281,22 @@ ZRenderEventHandler.prototype = {
     pagemouseup: util.curry(pageEventHandler, 'pagemouseup'),
 
     pagekeydown: util.curry(pageEventHandler, 'pagekeydown'),
+    
     pagekeyup: util.curry(pageEventHandler, 'pagekeyup'),
 
     /**
-     * Resize
+     * @method resize
+     * @param {Event} event 
      */
     resize: function (event) {
         this._hovered = {};
     },
 
     /**
+     * @method dispatch
      * Dispatch event
-     * @param {string} eventName
-     * @param {event=} eventArgs
+     * @param {String} eventName
+     * @param {Event} eventArgs
      */
     dispatch: function (eventName, eventArgs) {
         var handler = this[eventName];
@@ -252,20 +304,19 @@ ZRenderEventHandler.prototype = {
     },
 
     /**
-     * Dispose
+     * @method dispose
      */
     dispose: function () {
-
         this.proxy.dispose();
-
-        this.storage =
-        this.proxy =
+        this.storage = null;
+        this.proxy = null;
         this.painter = null;
     },
 
     /**
+     * @method setCursorStyle
      * 设置默认的cursor style
-     * @param {string} [cursorStyle='default'] 例如 crosshair
+     * @param {String} [cursorStyle='default'] 例如 crosshair
      */
     setCursorStyle: function (cursorStyle) {
         var proxy = this.proxy;
@@ -273,11 +324,12 @@ ZRenderEventHandler.prototype = {
     },
 
     /**
+     * @private
+     * @method dispatchToElement
      * 事件分发代理，把事件分发给 canvas 中绘制的元素。
      *
-     * @private
      * @param {Object} targetInfo {target, topTarget} 目标图形元素
-     * @param {string} eventName 事件名称
+     * @param {String} eventName 事件名称
      * @param {Object} event 事件对象
      */
     dispatchToElement: function (targetInfo, eventName, event) {
@@ -320,12 +372,11 @@ ZRenderEventHandler.prototype = {
     },
 
     /**
-     * @private
-     * @param {number} x
-     * @param {number} y
-     * @param {module:zrender/graphic/Displayable} exclude
-     * @return {model:zrender/Element}
-     * @method
+     * @method findHover
+     * @param {Number} x
+     * @param {Number} y
+     * @param {Displayable} exclude
+     * @return {Element}
      */
     findHover: function (x, y, exclude) {
         var list = this.storage.getDisplayList();
@@ -350,13 +401,18 @@ ZRenderEventHandler.prototype = {
         return out;
     },
 
-    processGesture: function (event, stage) {
+    /**
+     * @method processGesture
+     * @param {Event} event 
+     * @param {String} phase 
+     */
+    processGesture: function (event, phase) {
         if (!this._gestureMgr) {
             this._gestureMgr = new GestureMgr();
         }
         var gestureMgr = this._gestureMgr;
 
-        stage === 'start' && gestureMgr.clear();
+        phase === 'start' && gestureMgr.clear();
 
         var gestureInfo = gestureMgr.recognize(
             event,
@@ -364,7 +420,7 @@ ZRenderEventHandler.prototype = {
             this.proxy.dom
         );
 
-        stage === 'end' && gestureMgr.clear();
+        phase === 'end' && gestureMgr.clear();
 
         // Do not do any preventDefault here. Upper application do that if necessary.
         if (gestureInfo) {
@@ -377,7 +433,8 @@ ZRenderEventHandler.prototype = {
 };
 
 // Common handlers
-util.each(['click', 'mousedown', 'mouseup', 'mousewheel', 
+util.each(['click', 'mousedown', 
+    'mouseup', 'mousewheel', 
     'dblclick', 'contextmenu'], function (name) {
     ZRenderEventHandler.prototype[name] = function (event) {
         // Find hover again to avoid click event is dispatched manually. Or click is triggered without mouseover
@@ -413,7 +470,6 @@ util.each(['click', 'mousedown', 'mouseup', 'mousewheel',
     };
 });
 
-//注意，Handler 里面混入了 Eventful 里面提供的事件处理工具。
 util.mixin(ZRenderEventHandler, Eventful);
 
 export default ZRenderEventHandler;
