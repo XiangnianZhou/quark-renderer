@@ -21,6 +21,7 @@
     "../../lib/event/ZRenderEventHandler.js",
     "../../lib/Storage.js",
     "../../lib/Painter.js",
-    "../../lib/CanvasLayer.js"
+    "../../lib/CanvasLayer.js",
+    "../../lib/core/BoundingRect.js"
   ]
 }

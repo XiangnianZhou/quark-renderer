@@ -5731,18 +5731,16 @@ mixin(Element, Transformable);
 mixin(Element, Eventful);
 
 /**
- * @module echarts/core/BoundingRect
+ * @class zrender.core.BoundingRect
  */
-
-var v2ApplyTransform = applyTransform;
-var mathMin = Math.min;
-var mathMax = Math.max;
+let v2ApplyTransform = applyTransform;
+let mathMin = Math.min;
+let mathMax = Math.max;
 
 /**
- * @alias module:echarts/core/BoundingRect
+ * @method constructor BoundingRect
  */
 function BoundingRect(x, y, width, height) {
-
     if (width < 0) {
         x = x + width;
         width = -width;
@@ -5753,19 +5751,19 @@ function BoundingRect(x, y, width, height) {
     }
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     this.x = x;
     /**
-     * @type {number}
+     * @property {Number}
      */
     this.y = y;
     /**
-     * @type {number}
+     * @property {Number}
      */
     this.width = width;
     /**
-     * @type {number}
+     * @property {Number}
      */
     this.height = height;
 }
@@ -5775,11 +5773,12 @@ BoundingRect.prototype = {
     constructor: BoundingRect,
 
     /**
-     * @param {module:echarts/core/BoundingRect} other
+     * @method union
+     * @param {BoundingRect} other
      */
     union: function (other) {
-        var x = mathMin(other.x, this.x);
-        var y = mathMin(other.y, this.y);
+        let x = mathMin(other.x, this.x);
+        let y = mathMin(other.y, this.y);
 
         this.width = mathMax(
                 other.x + other.width,
@@ -5794,14 +5793,14 @@ BoundingRect.prototype = {
     },
 
     /**
-     * @param {Array.<number>} m
-     * @methods
+     * @method applyTransform
+     * @param {Array<Number>}
      */
     applyTransform: (function () {
-        var lt = [];
-        var rb = [];
-        var lb = [];
-        var rt = [];
+        let lt = [];
+        let rb = [];
+        let lb = [];
+        let rt = [];
         return function (m) {
             // In case usage like this
             // el.getBoundingRect().applyTransform(el.transform)
@@ -5821,24 +5820,25 @@ BoundingRect.prototype = {
 
             this.x = mathMin(lt[0], rb[0], lb[0], rt[0]);
             this.y = mathMin(lt[1], rb[1], lb[1], rt[1]);
-            var maxX = mathMax(lt[0], rb[0], lb[0], rt[0]);
-            var maxY = mathMax(lt[1], rb[1], lb[1], rt[1]);
+            let maxX = mathMax(lt[0], rb[0], lb[0], rt[0]);
+            let maxY = mathMax(lt[1], rb[1], lb[1], rt[1]);
             this.width = maxX - this.x;
             this.height = maxY - this.y;
         };
     })(),
 
     /**
+     * @method calculateTransform
      * Calculate matrix of transforming from self to target rect
-     * @param  {module:zrender/core/BoundingRect} b
-     * @return {Array.<number>}
+     * @param  {BoundingRect} b
+     * @return {Array<Number>}
      */
     calculateTransform: function (b) {
-        var a = this;
-        var sx = b.width / a.width;
-        var sy = b.height / a.height;
+        let a = this;
+        let sx = b.width / a.width;
+        let sy = b.height / a.height;
 
-        var m = create$1();
+        let m = create$1();
 
         // 矩阵右乘
         translate(m, m, [-a.x, -a.y]);
@@ -5849,7 +5849,8 @@ BoundingRect.prototype = {
     },
 
     /**
-     * @param {(module:echarts/core/BoundingRect|Object)} b
+     * @method intersect
+     * @param {(BoundingRect|Object)} b
      * @return {boolean}
      */
     intersect: function (b) {
@@ -5862,22 +5863,27 @@ BoundingRect.prototype = {
             b = BoundingRect.create(b);
         }
 
-        var a = this;
-        var ax0 = a.x;
-        var ax1 = a.x + a.width;
-        var ay0 = a.y;
-        var ay1 = a.y + a.height;
+        let a = this;
+        let ax0 = a.x;
+        let ax1 = a.x + a.width;
+        let ay0 = a.y;
+        let ay1 = a.y + a.height;
 
-        var bx0 = b.x;
-        var bx1 = b.x + b.width;
-        var by0 = b.y;
-        var by1 = b.y + b.height;
+        let bx0 = b.x;
+        let bx1 = b.x + b.width;
+        let by0 = b.y;
+        let by1 = b.y + b.height;
 
         return !(ax1 < bx0 || bx1 < ax0 || ay1 < by0 || by1 < ay0);
     },
 
+    /**
+     * @method contain
+     * @param {*} x 
+     * @param {*} y 
+     */
     contain: function (x, y) {
-        var rect = this;
+        let rect = this;
         return x >= rect.x
             && x <= (rect.x + rect.width)
             && y >= rect.y
@@ -5885,14 +5891,17 @@ BoundingRect.prototype = {
     },
 
     /**
-     * @return {module:echarts/core/BoundingRect}
+     * @method clone
+     * @return {BoundingRect}
      */
     clone: function () {
         return new BoundingRect(this.x, this.y, this.width, this.height);
     },
 
     /**
+     * @method copy
      * Copy from another rect
+     * @param other
      */
     copy: function (other) {
         this.x = other.x;
@@ -5901,6 +5910,9 @@ BoundingRect.prototype = {
         this.height = other.height;
     },
 
+    /**
+     * @method plain
+     */
     plain: function () {
         return {
             x: this.x,
@@ -5912,12 +5924,12 @@ BoundingRect.prototype = {
 };
 
 /**
- * @param {Object|module:zrender/core/BoundingRect} rect
- * @param {number} rect.x
- * @param {number} rect.y
- * @param {number} rect.width
- * @param {number} rect.height
- * @return {module:zrender/core/BoundingRect}
+ * @param {Object|BoundingRect} rect
+ * @param {Number} rect.x
+ * @param {Number} rect.y
+ * @param {Number} rect.width
+ * @param {Number} rect.height
+ * @return {BoundingRect}
  */
 BoundingRect.create = function (rect) {
     return new BoundingRect(rect.x, rect.y, rect.width, rect.height);
