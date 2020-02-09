@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
+
+var Element = require(&quot;./Element&quot;);
+
+var BoundingRect = require(&quot;../core/BoundingRect&quot;);
+
+<span id='zrender-graphic-Group'>/**
+</span> * @class zrender.graphic.Group
+ * 
+ * Group是一个容器，可以插入子节点，Group的变换也会被应用到子节点上。
+ * Group 可以嵌套子节点，其它类型不能。
+ * 
+ * @example
+ *     var Group = require(&#39;zrender/Group&#39;);
+ *     var Circle = require(&#39;zrender/graphic/shape/Circle&#39;);
+ *     var g = new Group();
+ *     g.position[0] = 100;
+ *     g.position[1] = 100;
+ *     g.add(new Circle({
+ *         style: {
+ *             x: 100,
+ *             y: 100,
+ *             r: 20,
+ *         }
+ *     }));
+ *     zr.add(g);
+ */
+
+<span id='zrender-graphic-Group-method-constructor'>/**
+</span> * @method constructor Group
+ */
+var Group = function Group(opts) {
+  opts = opts || {};
+  Element.call(this, opts);
+
+  for (var key in opts) {
+    if (opts.hasOwnProperty(key)) {
+      this[key] = opts[key];
+    }
+  }
+<span id='zrender-graphic-Group-property-_children'>  /**
+</span>   * @private
+   * @property _children
+   */
+
+
+  this._children = [];
+<span id='zrender-graphic-Group-property-__storage'>  /**
+</span>   * @private
+   * @property __storage
+   */
+
+  this.__storage = null;
+<span id='zrender-graphic-Group-property-__dirty'>  /**
+</span>   * @private
+   * @property __dirty
+   */
+
+  this.__dirty = true;
+};
+
+Group.prototype = {
+  constructor: Group,
+
+<span id='zrender-graphic-Group-property-isGroup'>  /**
+</span>   * @property isGroup
+   */
+  isGroup: true,
+
+<span id='zrender-graphic-Group-property-type'>  /**
+</span>   * @property {String}
+   */
+  type: &#39;group&#39;,
+
+<span id='zrender-graphic-Group-property-silent'>  /**
+</span>   * @property {Boolean} 所有子孙元素是否响应鼠标事件
+   */
+  silent: false,
+
+<span id='zrender-graphic-Group-method-children'>  /**
+</span>   * @method children
+   * @return {Array&lt;Element&gt;}
+   */
+  children: function children() {
+    return this._children.slice();
+  },
+
+<span id='zrender-graphic-Group-method-childAt'>  /**
+</span>   * @method childAt
+   * 获取指定 index 的儿子节点
+   * @param  {Number} idx
+   * @return {Element}
+   */
+  childAt: function childAt(idx) {
+    return this._children[idx];
+  },
+
+<span id='zrender-graphic-Group-method-childOfName'>  /**
+</span>   * @method childOfName
+   * 获取指定名字的儿子节点
+   * @param  {String} name
+   * @return {Element}
+   */
+  childOfName: function childOfName(name) {
+    var children = this._children;
+
+    for (var i = 0; i &lt; children.length; i++) {
+      if (children[i].name === name) {
+        return children[i];
+      }
+    }
+  },
+
+<span id='zrender-graphic-Group-method-childCount'>  /**
+</span>   * @method childCount
+   * @return {Number}
+   */
+  childCount: function childCount() {
+    return this._children.length;
+  },
+
+<span id='zrender-graphic-Group-method-add'>  /**
+</span>   * @method add
+   * 添加子节点到最后
+   * @param {Element} child
+   */
+  add: function add(child) {
+    if (child &amp;&amp; child !== this &amp;&amp; child.parent !== this) {
+      this._children.push(child);
+
+      this._doAdd(child);
+    }
+
+    return this;
+  },
+
+<span id='zrender-graphic-Group-method-addBefore'>  /**
+</span>   * @method addBefore
+   * 添加子节点在 nextSibling 之前
+   * @param {Element} child
+   * @param {Element} nextSibling
+   */
+  addBefore: function addBefore(child, nextSibling) {
+    if (child &amp;&amp; child !== this &amp;&amp; child.parent !== this &amp;&amp; nextSibling &amp;&amp; nextSibling.parent === this) {
+      var children = this._children;
+      var idx = children.indexOf(nextSibling);
+
+      if (idx &gt;= 0) {
+        children.splice(idx, 0, child);
+
+        this._doAdd(child);
+      }
+    }
+
+    return this;
+  },
+
+<span id='zrender-graphic-Group-method-_doAdd'>  /**
+</span>   * @private
+   * @method _doAdd
+   * @param {*} child 
+   */
+  _doAdd: function _doAdd(child) {
+    if (child.parent) {
+      child.parent.remove(child);
+    }
+
+    child.parent = this; //把子节点的 parent 属性指向自己，在事件冒泡的时候会使用 parent 属性。
+
+    var storage = this.__storage;
+    var zr = this.__zr;
+
+    if (storage &amp;&amp; storage !== child.__storage) {
+      storage.addToStorage(child);
+
+      if (child instanceof Group) {
+        child.addChildrenToStorage(storage);
+      }
+    }
+
+    zr &amp;&amp; zr.refresh();
+  },
+
+<span id='zrender-graphic-Group-method-remove'>  /**
+</span>   * @method remove
+   * 移除子节点
+   * @param {Element} child
+   */
+  remove: function remove(child) {
+    var zr = this.__zr;
+    var storage = this.__storage;
+    var children = this._children;
+    var idx = dataUtil.indexOf(children, child);
+
+    if (idx &lt; 0) {
+      return this;
+    }
+
+    children.splice(idx, 1);
+    child.parent = null;
+
+    if (storage) {
+      storage.delFromStorage(child);
+
+      if (child instanceof Group) {
+        child.delChildrenFromStorage(storage);
+      }
+    }
+
+    zr &amp;&amp; zr.refresh();
+    return this;
+  },
+
+<span id='zrender-graphic-Group-method-removeAll'>  /**
+</span>   * @method removeAll
+   * 移除所有子节点
+   */
+  removeAll: function removeAll() {
+    var children = this._children;
+    var storage = this.__storage;
+    var child;
+    var i;
+
+    for (i = 0; i &lt; children.length; i++) {
+      child = children[i];
+
+      if (storage) {
+        storage.delFromStorage(child);
+
+        if (child instanceof Group) {
+          child.delChildrenFromStorage(storage);
+        }
+      }
+
+      child.parent = null;
+    }
+
+    children.length = 0;
+    return this;
+  },
+
+<span id='zrender-graphic-Group-method-eachChild'>  /**
+</span>   * @method eachChild
+   * 遍历所有子节点
+   * @param  {Function} cb
+   * @param  {Object}   context
+   */
+  eachChild: function eachChild(cb, context) {
+    var children = this._children;
+
+    for (var i = 0; i &lt; children.length; i++) {
+      var child = children[i];
+      cb.call(context, child, i);
+    }
+
+    return this;
+  },
+
+<span id='zrender-graphic-Group-method-traverse'>  /**
+</span>   * @method traverse
+   * 深度优先遍历所有子孙节点
+   * @param  {Function} cb
+   * @param  {Object}   context
+   */
+  traverse: function traverse(cb, context) {
+    for (var i = 0; i &lt; this._children.length; i++) {
+      var child = this._children[i];
+      cb.call(context, child);
+
+      if (child.type === &#39;group&#39;) {
+        child.traverse(cb, context);
+      }
+    }
+
+    return this;
+  },
+
+<span id='zrender-graphic-Group-method-addChildrenToStorage'>  /**
+</span>   * @method addChildrenToStorage
+   * @param {Storage} storage 
+   */
+  addChildrenToStorage: function addChildrenToStorage(storage) {
+    for (var i = 0; i &lt; this._children.length; i++) {
+      var child = this._children[i];
+      storage.addToStorage(child);
+
+      if (child instanceof Group) {
+        child.addChildrenToStorage(storage);
+      }
+    }
+  },
+
+<span id='zrender-graphic-Group-method-delChildrenFromStorage'>  /**
+</span>   * @method delChildrenFromStorage
+   * @param {Storage} storage 
+   */
+  delChildrenFromStorage: function delChildrenFromStorage(storage) {
+    for (var i = 0; i &lt; this._children.length; i++) {
+      var child = this._children[i];
+      storage.delFromStorage(child);
+
+      if (child instanceof Group) {
+        child.delChildrenFromStorage(storage);
+      }
+    }
+  },
+
+<span id='zrender-graphic-Group-method-dirty'>  /**
+</span>   * @method dirty
+   * @return {Group}
+   */
+  dirty: function dirty() {
+    this.__dirty = true;
+    this.__zr &amp;&amp; this.__zr.refresh();
+    return this;
+  },
+
+<span id='zrender-graphic-Group-method-getBoundingRect'>  /**
+</span>   * @method getBoundingRect
+   * @return {BoundingRect}
+   */
+  getBoundingRect: function getBoundingRect(includeChildren) {
+    // TODO Caching
+    var rect = null;
+    var tmpRect = new BoundingRect(0, 0, 0, 0);
+    var children = includeChildren || this._children;
+    var tmpMat = [];
+
+    for (var i = 0; i &lt; children.length; i++) {
+      var child = children[i];
+
+      if (child.ignore || child.invisible) {
+        continue;
+      }
+
+      var childRect = child.getBoundingRect();
+      var transform = child.getLocalTransform(tmpMat); // TODO
+      // The boundingRect cacluated by transforming original
+      // rect may be bigger than the actual bundingRect when rotation
+      // is used. (Consider a circle rotated aginst its center, where
+      // the actual boundingRect should be the same as that not be
+      // rotated.) But we can not find better approach to calculate
+      // actual boundingRect yet, considering performance.
+
+      if (transform) {
+        tmpRect.copy(childRect);
+        tmpRect.applyTransform(transform);
+        rect = rect || tmpRect.clone();
+        rect.union(tmpRect);
+      } else {
+        rect = rect || childRect.clone();
+        rect.union(childRect);
+      }
+    }
+
+    return rect || tmpRect;
+  }
+};
+dataUtil.inherits(Group, Element);
+var _default = Group;
+module.exports = _default;</pre>
+</body>
+</html>
