@@ -8,7 +8,7 @@ import * as dataUtil from '../core/utils/dataStructureUtil';
  * 图元上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，
  * 每一种属性天然成为一条动画轨道，把这些轨道上的变化过程封装在 Timeline 中。
  * 
- * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
 export default class Track{

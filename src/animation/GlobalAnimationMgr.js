@@ -16,7 +16,7 @@ import AnimationProcess from './AnimationProcess';
  * AnimationProcess。
  * 
  * @author pissang(https://github.com/pissang)
- * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 // TODO Additive animation
 // http://iosoteric.com/additive-animations-animatewithduration-in-ios-8/

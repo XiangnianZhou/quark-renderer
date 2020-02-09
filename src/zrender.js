@@ -497,3 +497,71 @@ ZRender.prototype = {
         delete instances[this.id];
     }
 };
+
+// ---------------------------
+// Events of zrender instance.
+// ---------------------------
+/**
+ * @event onclick
+ * @param {Function} null
+ */
+/**
+ * @event onmouseover
+ * @param {Function} null
+ */
+/**
+ * @event onmouseout
+ * @param {Function} null
+ */
+/**
+ * @event onmousemove
+ * @param {Function} null
+ */
+/**
+ * @event onmousewheel
+ * @param {Function} null
+ */
+/**
+ * @event onmousedown
+ * @param {Function} null
+ */
+/**
+ * @event onmouseup
+ * @param {Function} null
+ */
+/**
+ * @event ondrag
+ * @param {Function} null
+ */
+/**
+ * @event ondragstart
+ * @param {Function} null
+ */
+/**
+ * @event ondragend
+ * @param {Function} null
+ */
+/**
+ * @event ondragenter
+ * @param {Function} null
+ */
+/**
+ * @event ondragleave
+ * @param {Function} null
+ */
+/**
+ * @event ondragover
+ * @param {Function} null
+ */
+/**
+ * @event ondrop
+ * @param {Function} null
+ */
+/**
+ * @event onpagemousemove
+ * @param {Function} null
+ */
+/**
+ * @event onpagemouseup
+ * @param {Function} null
+ */

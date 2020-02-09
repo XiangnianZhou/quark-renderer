@@ -6,7 +6,7 @@ import Track from './Track';
  * AnimationProcess 表示一次完整的动画过程，每一个图元（Element）中都有一个列表，用来存储本实例上的动画过程。
  * GlobalAnimationMgr 负责维护和调度所有 AnimationProcess 实例。
  * 
- * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
 /**

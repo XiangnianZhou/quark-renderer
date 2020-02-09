@@ -2,7 +2,7 @@ import easingFuncs from './utils/easing';
 /**
  * @class zrender.animation.Timeline
  * Timeline，时间线，用来计算图元上的某个属性在指定时间点的数值。
- * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
 export default class Timeline{

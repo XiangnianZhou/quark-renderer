@@ -6,7 +6,7 @@ import * as dataUtil from '../core/utils/dataStructureUtil';
  * 
  * 动画接口类，在 Element 类中 mixin 此类提供的功能，为图元提供动画功能。
  * 
- * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
 /**
