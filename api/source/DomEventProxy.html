@@ -424,10 +424,6 @@ function unmountDOMEventListeners(scope) {
 
   scope.mounted = {};
 }
-<span id='DOMHandlerScope'>/**
-</span> * Inner class, do not export this.
- */
-
 
 function DOMHandlerScope(domTarget, domHandlers) {
   this.domTarget = domTarget;
@@ -439,7 +435,7 @@ function DOMHandlerScope(domTarget, domHandlers) {
   this.touchTimer = null;
   this.touching = false;
 }
-<span id='DOMHandlerScope-method-constructor'>/**
+<span id='zrender-event-DomEventProxy-method-constructor'>/**
 </span> * @method constructor
  * @param dom 被代理的 DOM 节点
  */
@@ -447,12 +443,12 @@ function DOMHandlerScope(domTarget, domHandlers) {
 
 function DomEventProxy(dom) {
   Eventful.call(this);
-<span id='DOMHandlerScope-property-dom'>  /**
+<span id='zrender-event-DomEventProxy-property-dom'>  /**
 </span>   * @property dom
    */
 
   this.dom = dom;
-<span id='DOMHandlerScope-property-_localHandlerScope'>  /**
+<span id='zrender-event-DomEventProxy-property-_localHandlerScope'>  /**
 </span>   * @private
    * @property _localHandlerScope
    */
@@ -460,13 +456,13 @@ function DomEventProxy(dom) {
   this._localHandlerScope = new DOMHandlerScope(dom, localDOMHandlers);
 
   if (pageEventSupported) {
-<span id='DOMHandlerScope-property-_globalHandlerScope'>    /**
+<span id='zrender-event-DomEventProxy-property-_globalHandlerScope'>    /**
 </span>     * @private
      * @property _globalHandlerScope
      */
     this._globalHandlerScope = new DOMHandlerScope(document, globalDOMHandlers); //注意，这里直接监听 document 上的事件
   }
-<span id='DOMHandlerScope-property-_pageEventEnabled'>  /**
+<span id='zrender-event-DomEventProxy-property-_pageEventEnabled'>  /**
 </span>   * @private
    * @property _pageEventEnabled
    */
@@ -476,7 +472,7 @@ function DomEventProxy(dom) {
 
   mountDOMEventListeners(this, this._localHandlerScope, localNativeListenerNames, true);
 }
-<span id='DOMHandlerScope-method-dispose'>/**
+<span id='zrender-event-DomEventProxy-method-dispose'>/**
 </span> * @private
  * @method dispose
  */
@@ -489,7 +485,7 @@ DomEventProxy.prototype.dispose = function () {
     unmountDOMEventListeners(this._globalHandlerScope);
   }
 };
-<span id='DOMHandlerScope-method-setCursor'>/**
+<span id='zrender-event-DomEventProxy-method-setCursor'>/**
 </span> * @private
  * @method setCursor
  */
@@ -498,7 +494,7 @@ DomEventProxy.prototype.dispose = function () {
 DomEventProxy.prototype.setCursor = function (cursorStyle) {
   this.dom.style &amp;&amp; (this.dom.style.cursor = cursorStyle || &#39;default&#39;);
 };
-<span id='DOMHandlerScope-method-togglePageEvent'>/**
+<span id='zrender-event-DomEventProxy-method-togglePageEvent'>/**
 </span> * @private
  * @method togglePageEvent
  * The implementation of page event depends on listening to document.

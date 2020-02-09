@@ -1,26 +1,54 @@
 /**
+ * @class zrender.event.MultiDragDrop
  * 支持同时拖拽多个图元，按住 Ctrl 键可以多选。
+ * 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 export default class MultiDragDrop{
+    /**
+     * @method constructor MultiDragDrop
+     * @param {ZRenderEventHandler} handler 
+     */
     constructor(handler){
         this.selectionMap=new Map();
         this.handler=handler;
         this.handler.on('mousedown', this._dragStart, this);
     }
 
+    /**
+     * @private
+     * @method param
+     * @param {Element} target 
+     * @param {Event} e 
+     */
     param(target, e) {
         return {target: target, topTarget: e && e.topTarget};
     }
 
+    /**
+     * @method getSelectedItems
+     * 获取当前选中的图元
+     * @return {Map} selectionMap
+     */
     getSelectedItems(){
         return this.selectionMap;
     }
 
+    /**
+     * @method clearSelectionMap
+     * 清除选中
+     */
     clearSelectionMap(){
         this.selectionMap.forEach((el,key)=>{el.dragging=false;});
         this.selectionMap.clear();
     }
 
+    /**
+     * @private
+     * @method _dragStart
+     * 开始拖动
+     * @param {Event} e 
+     */
     _dragStart(e) {
         let el = e.target;
         let event = e.event;
@@ -52,6 +80,12 @@ export default class MultiDragDrop{
         });
     }
 
+    /**
+     * @private
+     * @method _drag
+     * 拖动过程中
+     * @param {Event} e 
+     */
     _drag(e) {
         let x = e.offsetX;
         let y = e.offsetY;
@@ -79,6 +113,12 @@ export default class MultiDragDrop{
         }
     }
 
+    /**
+     * @private
+     * @method _dragEnd
+     * 拖动结束
+     * @param {Event} e 
+     */
     _dragEnd(e) {
         this.selectionMap.forEach((el,key)=>{
             el.dragging=false;

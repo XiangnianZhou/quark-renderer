@@ -16,6 +16,7 @@
     "../../lib/animation/Timeline.js",
     "../../lib/animation/Track.js",
     "../../lib/event/Eventful.js",
-    "../../lib/event/DomEventProxy.js"
+    "../../lib/event/DomEventProxy.js",
+    "../../lib/event/MultiDragDrop.js"
   ]
 }

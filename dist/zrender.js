@@ -2177,28 +2177,56 @@ var stop = isDomLevel2
  */
 
 /**
+ * @class zrender.event.MultiDragDrop
  * 支持同时拖拽多个图元，按住 Ctrl 键可以多选。
+ * 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 class MultiDragDrop{
+    /**
+     * @method constructor
+     * @param {ZRenderEventHandler} handler 
+     */
     constructor(handler){
         this.selectionMap=new Map();
         this.handler=handler;
         this.handler.on('mousedown', this._dragStart, this);
     }
 
+    /**
+     * @private
+     * @method param
+     * @param {Element} target 
+     * @param {Event} e 
+     */
     param(target, e) {
         return {target: target, topTarget: e && e.topTarget};
     }
 
+    /**
+     * @method
+     * 获取当前选中的图元
+     * @return {Map} selectionMap
+     */
     getSelectedItems(){
         return this.selectionMap;
     }
 
+    /**
+     * @method
+     * 清除选中
+     */
     clearSelectionMap(){
         this.selectionMap.forEach((el,key)=>{el.dragging=false;});
         this.selectionMap.clear();
     }
 
+    /**
+     * @private
+     * @method _dragStart
+     * 开始拖动
+     * @param {Event} e 
+     */
     _dragStart(e) {
         let el = e.target;
         let event = e.event;
@@ -2230,6 +2258,12 @@ class MultiDragDrop{
         });
     }
 
+    /**
+     * @private
+     * @method
+     * 拖动过程中
+     * @param {Event} e 
+     */
     _drag(e) {
         let x = e.offsetX;
         let y = e.offsetY;
@@ -2257,6 +2291,12 @@ class MultiDragDrop{
         }
     }
 
+    /**
+     * @private
+     * @method
+     * 拖动结束
+     * @param {Event} e 
+     */
     _dragEnd(e) {
         this.selectionMap.forEach((el,key)=>{
             el.dragging=false;
@@ -11444,9 +11484,6 @@ function unmountDOMEventListeners(scope) {
     scope.mounted = {};
 }
 
-/**
- * Inner class, do not export this.
- */
 function DOMHandlerScope(domTarget, domHandlers) {
     this.domTarget = domTarget;
     this.domHandlers = domHandlers;
