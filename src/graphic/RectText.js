@@ -5,7 +5,7 @@
 
 import * as textHelper from './utils/text';
 import BoundingRect from '../core/BoundingRect';
-import {WILL_BE_RESTORED} from './constant';
+import {WILL_BE_RESTORED} from './constants';
 
 var tmpRect = new BoundingRect();
 

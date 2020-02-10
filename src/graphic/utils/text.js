@@ -4,7 +4,7 @@ import * as textContain from '../../core/contain/text';
 import * as roundRectHelper from './roundRect';
 import * as imageHelper from './image';
 import fixShadow from './fixShadow';
-import {ContextCachedBy, WILL_BE_RESTORED} from '../constant';
+import {ContextCachedBy, WILL_BE_RESTORED} from '../constants';
 
 var DEFAULT_FONT = textContain.DEFAULT_FONT;
 

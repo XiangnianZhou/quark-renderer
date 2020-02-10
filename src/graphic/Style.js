@@ -1,6 +1,6 @@
 
 import fixShadow from './utils/fixShadow';
-import {ContextCachedBy} from './constant';
+import {ContextCachedBy} from './constants';
 
 var STYLE_COMMON_PROPS = [
     ['shadowBlur', 0], ['shadowOffsetX', 0], ['shadowOffsetY', 0], ['shadowColor', '#000'],

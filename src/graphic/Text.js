@@ -2,7 +2,7 @@ import Displayable from './Displayable';
 import * as dataUtil from '../core/utils/dataStructureUtil';
 import * as textContain from '../core/contain/text';
 import * as textHelper from './utils/text';
-import {ContextCachedBy} from './constant';
+import {ContextCachedBy} from './constants';
 
 /**
  * @alias zrender/graphic/Text
