@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var Path = require(&quot;../Path&quot;);
+
+<span id='zrender-graphic-shape-Isogon'>/**
+</span> * @class zrender.graphic.shape.Isogon 
+ * 正多边形
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+var PI = Math.PI;
+var sin = Math.sin;
+var cos = Math.cos;
+
+var _default = Path.extend({
+<span id='zrender-graphic-shape-Isogon-property-type'>  /**
+</span>   * @property {String} type
+   */
+  type: &#39;isogon&#39;,
+  shape: {
+    x: 0,
+    y: 0,
+    r: 0,
+    n: 0
+  },
+
+<span id='zrender-graphic-shape-Isogon-method-buildPath'>  /**
+</span>   * @method buildPath
+   * @param {Object} ctx 
+   * @param {String} shape 
+   */
+  buildPath: function buildPath(ctx, shape) {
+    var n = shape.n;
+
+    if (!n || n &lt; 2) {
+      return;
+    }
+
+    var x = shape.x;
+    var y = shape.y;
+    var r = shape.r;
+    var dStep = 2 * PI / n;
+    var deg = -PI / 2;
+    ctx.moveTo(x + r * cos(deg), y + r * sin(deg));
+
+    for (var i = 0, end = n - 1; i &lt; end; i++) {
+      deg += dStep;
+      ctx.lineTo(x + r * cos(deg), y + r * sin(deg));
+    }
+
+    ctx.closePath();
+    return;
+  }
+});
+
+module.exports = _default;</pre>
+</body>
+</html>

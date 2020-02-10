@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var Path = require(&quot;../Path&quot;);
+
+<span id='zrender-graphic-shape-Circle'>/**
+</span> * @class zrender.graphic.shape.Circle 
+ * 圆形
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+var _default = Path.extend({
+<span id='zrender-graphic-shape-Circle-property-type'>  /**
+</span>   * @property {String} type
+   */
+  type: &#39;circle&#39;,
+  shape: {
+    cx: 0,
+    cy: 0,
+    r: 0
+  },
+
+<span id='zrender-graphic-shape-Circle-method-buildPath'>  /**
+</span>   * @method buildPath
+   * @param {Object} ctx 
+   * @param {String} shape 
+   */
+  buildPath: function buildPath(ctx, shape, inBundle) {
+    // Better stroking in ShapeBundle
+    // Always do it may have performence issue ( fill may be 2x more cost)
+    if (inBundle) {
+      ctx.moveTo(shape.cx + shape.r, shape.cy);
+    } // else {
+    //     if (ctx.allocate &amp;&amp; !ctx.data.length) {
+    //         ctx.allocate(ctx.CMD_MEM_SIZE.A);
+    //     }
+    // }
+    // Better stroking in ShapeBundle
+    // ctx.moveTo(shape.cx + shape.r, shape.cy);
+
+
+    ctx.arc(shape.cx, shape.cy, shape.r, 0, Math.PI * 2, true);
+  }
+});
+
+module.exports = _default;</pre>
+</body>
+</html>

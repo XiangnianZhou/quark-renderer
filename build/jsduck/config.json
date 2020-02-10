@@ -27,6 +27,22 @@
     "../../lib/graphic/Displayable.js",
     "../../lib/graphic/Group.js",
     "../../lib/graphic/Image.js",
-    "../../lib/graphic/Path.js"
+    "../../lib/graphic/Path.js",
+    "../../lib/graphic/shape/Arc.js",
+    "../../lib/graphic/shape/BezierCurve.js",
+    "../../lib/graphic/shape/Circle.js",
+    "../../lib/graphic/shape/Droplet.js",
+    "../../lib/graphic/shape/Ellipse.js",
+    "../../lib/graphic/shape/Heart.js",
+    "../../lib/graphic/shape/Isogon.js",
+    "../../lib/graphic/shape/Line.js",
+    "../../lib/graphic/shape/Polygon.js",
+    "../../lib/graphic/shape/Polyline.js",
+    "../../lib/graphic/shape/Rect.js",
+    "../../lib/graphic/shape/Ring.js",
+    "../../lib/graphic/shape/Rose.js",
+    "../../lib/graphic/shape/Sector.js",
+    "../../lib/graphic/shape/Star.js",
+    "../../lib/graphic/shape/Trochoid.js"
   ]
 }

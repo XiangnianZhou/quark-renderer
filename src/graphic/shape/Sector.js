@@ -1,13 +1,15 @@
-/**
- * 扇形
- * @module zrender/graphic/shape/Sector
- */
-
 import Path from '../Path';
 import fixClipWithShadow from '../utils/fixClipWithShadow';
-
+/**
+ * @class zrender.graphic.shape.Sector 
+ * 扇形
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 export default Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'sector',
 
     shape: {
@@ -29,18 +31,24 @@ export default Path.extend({
 
     brush: fixClipWithShadow(Path.prototype.brush),
 
+    /**
+     * @method buildPath
+     * 绘制图元路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
 
-        var x = shape.cx;
-        var y = shape.cy;
-        var r0 = Math.max(shape.r0 || 0, 0);
-        var r = Math.max(shape.r, 0);
-        var startAngle = shape.startAngle;
-        var endAngle = shape.endAngle;
-        var clockwise = shape.clockwise;
+        let x = shape.cx;
+        let y = shape.cy;
+        let r0 = Math.max(shape.r0 || 0, 0);
+        let r = Math.max(shape.r, 0);
+        let startAngle = shape.startAngle;
+        let endAngle = shape.endAngle;
+        let clockwise = shape.clockwise;
 
-        var unitX = Math.cos(startAngle);
-        var unitY = Math.sin(startAngle);
+        let unitX = Math.cos(startAngle);
+        let unitY = Math.sin(startAngle);
 
         ctx.moveTo(unitX * r0 + x, unitY * r0 + y);
 

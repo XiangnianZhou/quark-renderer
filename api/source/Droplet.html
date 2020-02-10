@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var Path = require(&quot;../Path&quot;);
+
+<span id='global-property-_default'>/**
+</span> * 水滴形状
+ * @module zrender/graphic/shape/Droplet
+ */
+var _default = Path.extend({
+<span id='global-property-type'>  /**
+</span>   * @property {String} type
+   */
+  type: &#39;droplet&#39;,
+  shape: {
+    cx: 0,
+    cy: 0,
+    width: 0,
+    height: 0
+  },
+
+<span id='global-method-buildPath'>  /**
+</span>   * @method buildPath
+   * @param {Object} ctx 
+   * @param {String} shape 
+   */
+  buildPath: function buildPath(ctx, shape) {
+    var x = shape.cx;
+    var y = shape.cy;
+    var a = shape.width;
+    var b = shape.height;
+    ctx.moveTo(x, y + a);
+    ctx.bezierCurveTo(x + a, y + a, x + a * 3 / 2, y - a / 3, x, y - b);
+    ctx.bezierCurveTo(x - a * 3 / 2, y - a / 3, x - a, y + a, x, y + a);
+    ctx.closePath();
+  }
+});
+
+module.exports = _default;</pre>
+</body>
+</html>

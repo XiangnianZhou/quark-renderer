@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var Path = require(&quot;../Path&quot;);
+
+<span id='zrender-graphic-shape-Star'>/**
+</span> * @class zrender.graphic.shape.Star 
+ * n角星（n&gt;3）
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+var PI = Math.PI;
+var cos = Math.cos;
+var sin = Math.sin;
+
+var _default = Path.extend({
+<span id='zrender-graphic-shape-Star-property-type'>  /**
+</span>   * @property {String} type
+   */
+  type: &#39;star&#39;,
+  shape: {
+    cx: 0,
+    cy: 0,
+    n: 3,
+    r0: null,
+    r: 0
+  },
+
+<span id='zrender-graphic-shape-Star-method-buildPath'>  /**
+</span>   * @method buildPath
+   * @param {Object} ctx 
+   * @param {String} shape 
+   */
+  buildPath: function buildPath(ctx, shape) {
+    var n = shape.n;
+
+    if (!n || n &lt; 2) {
+      return;
+    }
+
+    var x = shape.cx;
+    var y = shape.cy;
+    var r = shape.r;
+    var r0 = shape.r0; // 如果未指定内部顶点外接圆半径，则自动计算
+
+    if (r0 == null) {
+      r0 = n &gt; 4 // 相隔的外部顶点的连线的交点，
+      // 被取为内部交点，以此计算r0
+      ? r * cos(2 * PI / n) / cos(PI / n) // 二三四角星的特殊处理
+      : r / 3;
+    }
+
+    var dStep = PI / n;
+    var deg = -PI / 2;
+    var xStart = x + r * cos(deg);
+    var yStart = y + r * sin(deg);
+    deg += dStep; // 记录边界点，用于判断inside
+
+    ctx.moveTo(xStart, yStart);
+
+    for (var i = 0, end = n * 2 - 1, ri; i &lt; end; i++) {
+      ri = i % 2 === 0 ? r0 : r;
+      ctx.lineTo(x + ri * cos(deg), y + ri * sin(deg));
+      deg += dStep;
+    }
+
+    ctx.closePath();
+  }
+});
+
+module.exports = _default;</pre>
+</body>
+</html>

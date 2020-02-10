@@ -1,16 +1,18 @@
-/**
- * 玫瑰线
- * @module zrender/graphic/shape/Rose
- */
-
 import Path from '../Path';
-
-var sin = Math.sin;
-var cos = Math.cos;
-var radian = Math.PI / 180;
+/**
+ * @class zrender.graphic.shape.Rose 
+ * 玫瑰线
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
+let sin = Math.sin;
+let cos = Math.cos;
+let radian = Math.PI / 180;
 
 export default Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'rose',
 
     shape: {
@@ -26,23 +28,29 @@ export default Path.extend({
         fill: null
     },
 
+    /**
+     * @method buildPath
+     * 绘制图元路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
-        var x;
-        var y;
-        var R = shape.r;
-        var r;
-        var k = shape.k;
-        var n = shape.n;
+        let x;
+        let y;
+        let R = shape.r;
+        let r;
+        let k = shape.k;
+        let n = shape.n;
 
-        var x0 = shape.cx;
-        var y0 = shape.cy;
+        let x0 = shape.cx;
+        let y0 = shape.cy;
 
         ctx.moveTo(x0, y0);
 
-        for (var i = 0, len = R.length; i < len; i++) {
+        for (let i = 0, len = R.length; i < len; i++) {
             r = R[i];
 
-            for (var j = 0; j <= 360 * n; j++) {
+            for (let j = 0; j <= 360 * n; j++) {
                 x = r
                         * sin(k / n * j % 360 * radian)
                         * cos(j * radian)

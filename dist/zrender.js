@@ -15474,12 +15474,16 @@ Text.prototype = {
 inherits(Text, Displayable);
 
 /**
+ * @class zrender.graphic.shape.Circle 
  * 圆形
- * @module zrender/shape/Circle
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
 var Circle = Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'circle',
 
     shape: {
@@ -15488,7 +15492,11 @@ var Circle = Path.extend({
         r: 0
     },
 
-
+    /**
+     * @method buildPath
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape, inBundle) {
         // Better stroking in ShapeBundle
         // Always do it may have performence issue ( fill may be 2x more cost)
@@ -15613,15 +15621,18 @@ function subPixelOptimize(position, lineWidth, positiveOrNegative) {
 }
 
 /**
+ * @class zrender.graphic.shape.Rect 
  * 矩形
- * @module zrender/graphic/shape/Rect
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
 // Avoid create repeatly.
-var subPixelOptimizeOutputShape = {};
+let subPixelOptimizeOutputShape = {};
 
 var Rect = Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'rect',
 
     shape: {
@@ -15638,11 +15649,16 @@ var Rect = Path.extend({
         height: 0
     },
 
+    /**
+     * @method buildPath
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
-        var x;
-        var y;
-        var width;
-        var height;
+        let x;
+        let y;
+        let width;
+        let height;
 
         if (this.subPixelOptimize) {
             subPixelOptimizeRect(subPixelOptimizeOutputShape, shape, this.style);
@@ -15672,12 +15688,15 @@ var Rect = Path.extend({
 });
 
 /**
+ * @class zrender.graphic.shape.Ellipse 
  * 椭圆形状
- * @module zrender/graphic/shape/Ellipse
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
 var Ellipse = Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'ellipse',
 
     shape: {
@@ -15685,14 +15704,19 @@ var Ellipse = Path.extend({
         rx: 0, ry: 0
     },
 
+    /**
+     * @method buildPath
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
-        var k = 0.5522848;
-        var x = shape.cx;
-        var y = shape.cy;
-        var a = shape.rx;
-        var b = shape.ry;
-        var ox = a * k; // 水平控制点偏移量
-        var oy = b * k; // 垂直控制点偏移量
+        let k = 0.5522848;
+        let x = shape.cx;
+        let y = shape.cy;
+        let a = shape.rx;
+        let b = shape.ry;
+        let ox = a * k; // 水平控制点偏移量
+        let oy = b * k; // 垂直控制点偏移量
         // 从椭圆的左端点开始顺时针绘制四条三次贝塞尔曲线
         ctx.moveTo(x - a, y);
         ctx.bezierCurveTo(x - a, y - oy, x - ox, y - b, x, y - b);
@@ -15704,15 +15728,18 @@ var Ellipse = Path.extend({
 });
 
 /**
+ * @class zrender.graphic.shape.Line 
  * 直线
- * @module zrender/graphic/shape/Line
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
 // Avoid create repeatly.
-var subPixelOptimizeOutputShape$1 = {};
+let subPixelOptimizeOutputShape$1 = {};
 
 var Line = Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'line',
 
     shape: {
@@ -15731,11 +15758,16 @@ var Line = Path.extend({
         fill: null
     },
 
+    /**
+     * @method buildPath
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
-        var x1;
-        var y1;
-        var x2;
-        var y2;
+        let x1;
+        let y1;
+        let x2;
+        let y2;
 
         if (this.subPixelOptimize) {
             subPixelOptimizeLine(subPixelOptimizeOutputShape$1, shape, this.style);
@@ -15751,7 +15783,7 @@ var Line = Path.extend({
             y2 = shape.y2;
         }
 
-        var percent = shape.percent;
+        let percent = shape.percent;
 
         if (percent === 0) {
             return;
@@ -15772,7 +15804,7 @@ var Line = Path.extend({
      * @return {Array<Number>}
      */
     pointAt: function (p) {
-        var shape = this.shape;
+        let shape = this.shape;
         return [
             shape.x1 * (1 - p) + shape.x2 * p,
             shape.y1 * (1 - p) + shape.y2 * p
@@ -15978,12 +16010,15 @@ function buildPath$1(ctx, shape, closePath) {
 }
 
 /**
+ * @class zrender.graphic.shape.Polygon 
  * 多边形
- * @module zrender/shape/Polygon
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
 var Polygon = Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'polygon',
 
     shape: {
@@ -15994,17 +16029,26 @@ var Polygon = Path.extend({
         smoothConstraint: null
     },
 
+    /**
+     * @method buildPath
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
         buildPath$1(ctx, shape, true);
     }
 });
 
 /**
- * @module zrender/graphic/shape/Polyline
+ * @class zrender.graphic.shape.Polyline 
+ * 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
 var Polyline = Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'polyline',
 
     shape: {
@@ -16021,6 +16065,11 @@ var Polyline = Path.extend({
         fill: null
     },
 
+    /**
+     * @method buildPath
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
         buildPath$1(ctx, shape, false);
     }
@@ -16944,12 +16993,16 @@ IncrementalDisplayble.prototype.contain = function (x, y) {
 inherits(IncrementalDisplayble, Displayable);
 
 /**
+ * @class zrender.graphic.shape.Arc 
  * 圆弧
- * @module zrender/graphic/shape/Arc
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
 var Arc = Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'arc',
 
     shape: {
@@ -16974,17 +17027,21 @@ var Arc = Path.extend({
         fill: null
     },
 
+    /**
+     * @method buildPath
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
+        let x = shape.cx;
+        let y = shape.cy;
+        let r = Math.max(shape.r, 0);
+        let startAngle = shape.startAngle;
+        let endAngle = shape.endAngle;
+        let clockwise = shape.clockwise;
 
-        var x = shape.cx;
-        var y = shape.cy;
-        var r = Math.max(shape.r, 0);
-        var startAngle = shape.startAngle;
-        var endAngle = shape.endAngle;
-        var clockwise = shape.clockwise;
-
-        var unitX = Math.cos(startAngle);
-        var unitY = Math.sin(startAngle);
+        let unitX = Math.cos(startAngle);
+        let unitY = Math.sin(startAngle);
 
         ctx.moveTo(unitX * r + x, unitY * r + y);
         ctx.arc(x, y, r, startAngle, endAngle, !clockwise);
@@ -16992,15 +17049,16 @@ var Arc = Path.extend({
 });
 
 /**
+ * @class zrender.graphic.shape.BezierCurve 
  * 贝塞尔曲线
- * @module zrender/shape/BezierCurve
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
-var out = [];
+let out = [];
 
 function someVectorAt(shape, t, isTangent) {
-    var cpx2 = shape.cpx2;
-    var cpy2 = shape.cpy2;
+    let cpx2 = shape.cpx2;
+    let cpy2 = shape.cpy2;
     if (cpx2 === null || cpy2 === null) {
         return [
             (isTangent ? cubicDerivativeAt : cubicAt)(shape.x1, shape.cpx1, shape.cpx2, shape.x2, t),
@@ -17017,6 +17075,9 @@ function someVectorAt(shape, t, isTangent) {
 
 var BezierCurve = Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'bezier-curve',
 
     shape: {
@@ -17038,16 +17099,21 @@ var BezierCurve = Path.extend({
         fill: null
     },
 
+    /**
+     * @method buildPath
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
-        var x1 = shape.x1;
-        var y1 = shape.y1;
-        var x2 = shape.x2;
-        var y2 = shape.y2;
-        var cpx1 = shape.cpx1;
-        var cpy1 = shape.cpy1;
-        var cpx2 = shape.cpx2;
-        var cpy2 = shape.cpy2;
-        var percent = shape.percent;
+        let x1 = shape.x1;
+        let y1 = shape.y1;
+        let x2 = shape.x2;
+        let y2 = shape.y2;
+        let cpx1 = shape.cpx1;
+        let cpy1 = shape.cpy1;
+        let cpx2 = shape.cpx2;
+        let cpy2 = shape.cpy2;
+        let percent = shape.percent;
         if (percent === 0) {
             return;
         }
@@ -17111,7 +17177,7 @@ var BezierCurve = Path.extend({
      * @return {Array<Number>}
      */
     tangentAt: function (t) {
-        var p = someVectorAt(this.shape, t, true);
+        let p = someVectorAt(this.shape, t, true);
         return normalize(p, p);
     }
 });
@@ -17123,6 +17189,9 @@ var BezierCurve = Path.extend({
 
 var Droplet = Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'droplet',
 
     shape: {
@@ -17130,11 +17199,16 @@ var Droplet = Path.extend({
         width: 0, height: 0
     },
 
+    /**
+     * @method buildPath
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
-        var x = shape.cx;
-        var y = shape.cy;
-        var a = shape.width;
-        var b = shape.height;
+        let x = shape.cx;
+        let y = shape.cy;
+        let a = shape.width;
+        let b = shape.height;
 
         ctx.moveTo(x, y + a);
         ctx.bezierCurveTo(
@@ -17158,12 +17232,15 @@ var Droplet = Path.extend({
 });
 
 /**
+ * @class zrender.graphic.shape.Heart 
  * 心形
- * @module zrender/graphic/shape/Heart
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
 var Heart = Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'heart',
 
     shape: {
@@ -17173,11 +17250,16 @@ var Heart = Path.extend({
         height: 0
     },
 
+    /**
+     * @method buildPath
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
-        var x = shape.cx;
-        var y = shape.cy;
-        var a = shape.width;
-        var b = shape.height;
+        let x = shape.cx;
+        let y = shape.cy;
+        let a = shape.width;
+        let b = shape.height;
         ctx.moveTo(x, y);
         ctx.bezierCurveTo(
             x + a / 2, y - b * 2 / 3,
@@ -17193,16 +17275,19 @@ var Heart = Path.extend({
 });
 
 /**
+ * @class zrender.graphic.shape.Isogon 
  * 正多边形
- * @module zrender/shape/Isogon
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-var PI$1 = Math.PI;
-var sin = Math.sin;
-var cos = Math.cos;
+let PI$1 = Math.PI;
+let sin = Math.sin;
+let cos = Math.cos;
 
 var Isogon = Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'isogon',
 
     shape: {
@@ -17210,21 +17295,26 @@ var Isogon = Path.extend({
         r: 0, n: 0
     },
 
+    /**
+     * @method buildPath
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
-        var n = shape.n;
+        let n = shape.n;
         if (!n || n < 2) {
             return;
         }
 
-        var x = shape.x;
-        var y = shape.y;
-        var r = shape.r;
+        let x = shape.x;
+        let y = shape.y;
+        let r = shape.r;
 
-        var dStep = 2 * PI$1 / n;
-        var deg = -PI$1 / 2;
+        let dStep = 2 * PI$1 / n;
+        let deg = -PI$1 / 2;
 
         ctx.moveTo(x + r * cos(deg), y + r * sin(deg));
-        for (var i = 0, end = n - 1; i < end; i++) {
+        for (let i = 0, end = n - 1; i < end; i++) {
             deg += dStep;
             ctx.lineTo(x + r * cos(deg), y + r * sin(deg));
         }
@@ -17236,12 +17326,15 @@ var Isogon = Path.extend({
 });
 
 /**
+ * @class zrender.graphic.shape.Ring 
  * 圆环
- * @module zrender/graphic/shape/Ring
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
 var Ring = Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'ring',
 
     shape: {
@@ -17251,10 +17344,15 @@ var Ring = Path.extend({
         r0: 0
     },
 
+    /**
+     * @method buildPath
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
-        var x = shape.cx;
-        var y = shape.cy;
-        var PI2 = Math.PI * 2;
+        let x = shape.cx;
+        let y = shape.cy;
+        let PI2 = Math.PI * 2;
         ctx.moveTo(x + shape.r, y);
         ctx.arc(x, y, shape.r, 0, PI2, false);
         ctx.moveTo(x + shape.r0, y);
@@ -17263,16 +17361,19 @@ var Ring = Path.extend({
 });
 
 /**
+ * @class zrender.graphic.shape.Rose 
  * 玫瑰线
- * @module zrender/graphic/shape/Rose
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-var sin$1 = Math.sin;
-var cos$1 = Math.cos;
-var radian = Math.PI / 180;
+let sin$1 = Math.sin;
+let cos$1 = Math.cos;
+let radian = Math.PI / 180;
 
 var Rose = Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'rose',
 
     shape: {
@@ -17288,23 +17389,28 @@ var Rose = Path.extend({
         fill: null
     },
 
+    /**
+     * @method buildPath
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
-        var x;
-        var y;
-        var R = shape.r;
-        var r;
-        var k = shape.k;
-        var n = shape.n;
+        let x;
+        let y;
+        let R = shape.r;
+        let r;
+        let k = shape.k;
+        let n = shape.n;
 
-        var x0 = shape.cx;
-        var y0 = shape.cy;
+        let x0 = shape.cx;
+        let y0 = shape.cy;
 
         ctx.moveTo(x0, y0);
 
-        for (var i = 0, len = R.length; i < len; i++) {
+        for (let i = 0, len = R.length; i < len; i++) {
             r = R[i];
 
-            for (var j = 0; j <= 360 * n; j++) {
+            for (let j = 0; j <= 360 * n; j++) {
                 x = r
                         * sin$1(k / n * j % 360 * radian)
                         * cos$1(j * radian)
@@ -17386,12 +17492,15 @@ var fixClipWithShadow = function (orignalBrush) {
 };
 
 /**
+ * @class zrender.graphic.shape.Sector 
  * 扇形
- * @module zrender/graphic/shape/Sector
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
 var Sector = Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'sector',
 
     shape: {
@@ -17413,18 +17522,23 @@ var Sector = Path.extend({
 
     brush: fixClipWithShadow(Path.prototype.brush),
 
+    /**
+     * @method buildPath
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
 
-        var x = shape.cx;
-        var y = shape.cy;
-        var r0 = Math.max(shape.r0 || 0, 0);
-        var r = Math.max(shape.r, 0);
-        var startAngle = shape.startAngle;
-        var endAngle = shape.endAngle;
-        var clockwise = shape.clockwise;
+        let x = shape.cx;
+        let y = shape.cy;
+        let r0 = Math.max(shape.r0 || 0, 0);
+        let r = Math.max(shape.r, 0);
+        let startAngle = shape.startAngle;
+        let endAngle = shape.endAngle;
+        let clockwise = shape.clockwise;
 
-        var unitX = Math.cos(startAngle);
-        var unitY = Math.sin(startAngle);
+        let unitX = Math.cos(startAngle);
+        let unitY = Math.sin(startAngle);
 
         ctx.moveTo(unitX * r0 + x, unitY * r0 + y);
 
@@ -17446,16 +17560,19 @@ var Sector = Path.extend({
 });
 
 /**
+ * @class zrender.graphic.shape.Star 
  * n角星（n>3）
- * @module zrender/graphic/shape/Star
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-var PI$2 = Math.PI;
-var cos$2 = Math.cos;
-var sin$2 = Math.sin;
+let PI$2 = Math.PI;
+let cos$2 = Math.cos;
+let sin$2 = Math.sin;
 
 var Star = Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'star',
 
     shape: {
@@ -17466,17 +17583,22 @@ var Star = Path.extend({
         r: 0
     },
 
+    /**
+     * @method buildPath
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
 
-        var n = shape.n;
+        let n = shape.n;
         if (!n || n < 2) {
             return;
         }
 
-        var x = shape.cx;
-        var y = shape.cy;
-        var r = shape.r;
-        var r0 = shape.r0;
+        let x = shape.cx;
+        let y = shape.cy;
+        let r = shape.r;
+        let r0 = shape.r0;
 
         // 如果未指定内部顶点外接圆半径，则自动计算
         if (r0 == null) {
@@ -17488,15 +17610,15 @@ var Star = Path.extend({
                 : r / 3;
         }
 
-        var dStep = PI$2 / n;
-        var deg = -PI$2 / 2;
-        var xStart = x + r * cos$2(deg);
-        var yStart = y + r * sin$2(deg);
+        let dStep = PI$2 / n;
+        let deg = -PI$2 / 2;
+        let xStart = x + r * cos$2(deg);
+        let yStart = y + r * sin$2(deg);
         deg += dStep;
 
         // 记录边界点，用于判断inside
         ctx.moveTo(xStart, yStart);
-        for (var i = 0, end = n * 2 - 1, ri; i < end; i++) {
+        for (let i = 0, end = n * 2 - 1, ri; i < end; i++) {
             ri = i % 2 === 0 ? r0 : r;
             ctx.lineTo(x + ri * cos$2(deg), y + ri * sin$2(deg));
             deg += dStep;
@@ -17507,15 +17629,18 @@ var Star = Path.extend({
 });
 
 /**
+ * @class zrender.graphic.shape.Trochold 
  * 内外旋轮曲线
- * @module zrender/graphic/shape/Trochold
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-var cos$3 = Math.cos;
-var sin$3 = Math.sin;
+let cos$3 = Math.cos;
+let sin$3 = Math.sin;
 
 var Trochoid = Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'trochoid',
 
     shape: {
@@ -17533,25 +17658,30 @@ var Trochoid = Path.extend({
         fill: null
     },
 
+    /**
+     * @method buildPath
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
-        var x1;
-        var y1;
-        var x2;
-        var y2;
-        var R = shape.r;
-        var r = shape.r0;
-        var d = shape.d;
-        var offsetX = shape.cx;
-        var offsetY = shape.cy;
-        var delta = shape.location === 'out' ? 1 : -1;
+        let x1;
+        let y1;
+        let x2;
+        let y2;
+        let R = shape.r;
+        let r = shape.r0;
+        let d = shape.d;
+        let offsetX = shape.cx;
+        let offsetY = shape.cy;
+        let delta = shape.location === 'out' ? 1 : -1;
 
         if (shape.location && R <= r) {
             return;
         }
 
-        var num = 0;
-        var i = 1;
-        var theta;
+        let num = 0;
+        let i = 1;
+        let theta;
 
         x1 = (R + delta * r) * cos$3(0)
             - delta * d * cos$3(0) + offsetX;

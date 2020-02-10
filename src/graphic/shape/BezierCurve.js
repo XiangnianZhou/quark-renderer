@@ -1,8 +1,3 @@
-/**
- * 贝塞尔曲线
- * @module zrender/shape/BezierCurve
- */
-
 import Path from '../Path';
 import * as vec2 from '../../core/utils/vector';
 import {
@@ -14,11 +9,17 @@ import {
     cubicDerivativeAt
 } from '../../core/utils/curveUtil';
 
-var out = [];
+/**
+ * @class zrender.graphic.shape.BezierCurve 
+ * 贝塞尔曲线
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
+
+let out = [];
 
 function someVectorAt(shape, t, isTangent) {
-    var cpx2 = shape.cpx2;
-    var cpy2 = shape.cpy2;
+    let cpx2 = shape.cpx2;
+    let cpy2 = shape.cpy2;
     if (cpx2 === null || cpy2 === null) {
         return [
             (isTangent ? cubicDerivativeAt : cubicAt)(shape.x1, shape.cpx1, shape.cpx2, shape.x2, t),
@@ -35,6 +36,9 @@ function someVectorAt(shape, t, isTangent) {
 
 export default Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'bezier-curve',
 
     shape: {
@@ -56,16 +60,22 @@ export default Path.extend({
         fill: null
     },
 
+    /**
+     * @method buildPath
+     * 绘制图元路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
-        var x1 = shape.x1;
-        var y1 = shape.y1;
-        var x2 = shape.x2;
-        var y2 = shape.y2;
-        var cpx1 = shape.cpx1;
-        var cpy1 = shape.cpy1;
-        var cpx2 = shape.cpx2;
-        var cpy2 = shape.cpy2;
-        var percent = shape.percent;
+        let x1 = shape.x1;
+        let y1 = shape.y1;
+        let x2 = shape.x2;
+        let y2 = shape.y2;
+        let cpx1 = shape.cpx1;
+        let cpy1 = shape.cpy1;
+        let cpx2 = shape.cpx2;
+        let cpy2 = shape.cpy2;
+        let percent = shape.percent;
         if (percent === 0) {
             return;
         }
@@ -129,7 +139,7 @@ export default Path.extend({
      * @return {Array<Number>}
      */
     tangentAt: function (t) {
-        var p = someVectorAt(this.shape, t, true);
+        let p = someVectorAt(this.shape, t, true);
         return vec2.normalize(p, p);
     }
 });

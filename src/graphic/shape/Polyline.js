@@ -1,12 +1,15 @@
-/**
- * @module zrender/graphic/shape/Polyline
- */
-
 import Path from '../Path';
 import * as polyHelper from '../utils/poly';
-
+/**
+ * @class zrender.graphic.shape.Polyline 
+ * 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 export default Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'polyline',
 
     shape: {
@@ -23,6 +26,12 @@ export default Path.extend({
         fill: null
     },
 
+    /**
+     * @method buildPath
+     * 绘制图元路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
         polyHelper.buildPath(ctx, shape, false);
     }

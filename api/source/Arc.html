@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var Path = require(&quot;../Path&quot;);
+
+<span id='zrender-graphic-shape-Arc'>/**
+</span> * @class zrender.graphic.shape.Arc 
+ * 圆弧
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+var _default = Path.extend({
+<span id='zrender-graphic-shape-Arc-property-type'>  /**
+</span>   * @property {String} type
+   */
+  type: &#39;arc&#39;,
+  shape: {
+    cx: 0,
+    cy: 0,
+    r: 0,
+    startAngle: 0,
+    endAngle: Math.PI * 2,
+    clockwise: true
+  },
+  style: {
+    stroke: &#39;#000&#39;,
+    fill: null
+  },
+
+<span id='zrender-graphic-shape-Arc-method-buildPath'>  /**
+</span>   * @method buildPath
+   * @param {Object} ctx 
+   * @param {String} shape 
+   */
+  buildPath: function buildPath(ctx, shape) {
+    var x = shape.cx;
+    var y = shape.cy;
+    var r = Math.max(shape.r, 0);
+    var startAngle = shape.startAngle;
+    var endAngle = shape.endAngle;
+    var clockwise = shape.clockwise;
+    var unitX = Math.cos(startAngle);
+    var unitY = Math.sin(startAngle);
+    ctx.moveTo(unitX * r + x, unitY * r + y);
+    ctx.arc(x, y, r, startAngle, endAngle, !clockwise);
+  }
+});
+
+module.exports = _default;</pre>
+</body>
+</html>

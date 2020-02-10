@@ -1,12 +1,16 @@
-/**
- * 圆形
- * @module zrender/shape/Circle
- */
-
 import Path from '../Path';
+
+/**
+ * @class zrender.graphic.shape.Circle 
+ * 圆形
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 
 export default Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'circle',
 
     shape: {
@@ -15,7 +19,12 @@ export default Path.extend({
         r: 0
     },
 
-
+    /**
+     * @method buildPath
+     * 绘制图元路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape, inBundle) {
         // Better stroking in ShapeBundle
         // Always do it may have performence issue ( fill may be 2x more cost)

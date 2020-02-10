@@ -1,16 +1,18 @@
-/**
- * 直线
- * @module zrender/graphic/shape/Line
- */
-
 import Path from '../Path';
 import {subPixelOptimizeLine} from '../utils/subPixelOptimize';
-
+/**
+ * @class zrender.graphic.shape.Line 
+ * 直线
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 // Avoid create repeatly.
-var subPixelOptimizeOutputShape = {};
+let subPixelOptimizeOutputShape = {};
 
 export default Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'line',
 
     shape: {
@@ -29,11 +31,17 @@ export default Path.extend({
         fill: null
     },
 
+    /**
+     * @method buildPath
+     * 绘制图元路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
-        var x1;
-        var y1;
-        var x2;
-        var y2;
+        let x1;
+        let y1;
+        let x2;
+        let y2;
 
         if (this.subPixelOptimize) {
             subPixelOptimizeLine(subPixelOptimizeOutputShape, shape, this.style);
@@ -49,7 +57,7 @@ export default Path.extend({
             y2 = shape.y2;
         }
 
-        var percent = shape.percent;
+        let percent = shape.percent;
 
         if (percent === 0) {
             return;
@@ -70,7 +78,7 @@ export default Path.extend({
      * @return {Array<Number>}
      */
     pointAt: function (p) {
-        var shape = this.shape;
+        let shape = this.shape;
         return [
             shape.x1 * (1 - p) + shape.x2 * p,
             shape.y1 * (1 - p) + shape.y2 * p

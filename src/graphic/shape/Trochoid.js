@@ -1,15 +1,17 @@
-/**
- * 内外旋轮曲线
- * @module zrender/graphic/shape/Trochold
- */
-
 import Path from '../Path';
-
-var cos = Math.cos;
-var sin = Math.sin;
+/**
+ * @class zrender.graphic.shape.Trochold 
+ * 内外旋轮曲线
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
+let cos = Math.cos;
+let sin = Math.sin;
 
 export default Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'trochoid',
 
     shape: {
@@ -27,25 +29,31 @@ export default Path.extend({
         fill: null
     },
 
+    /**
+     * @method buildPath
+     * 绘制图元路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
-        var x1;
-        var y1;
-        var x2;
-        var y2;
-        var R = shape.r;
-        var r = shape.r0;
-        var d = shape.d;
-        var offsetX = shape.cx;
-        var offsetY = shape.cy;
-        var delta = shape.location === 'out' ? 1 : -1;
+        let x1;
+        let y1;
+        let x2;
+        let y2;
+        let R = shape.r;
+        let r = shape.r0;
+        let d = shape.d;
+        let offsetX = shape.cx;
+        let offsetY = shape.cy;
+        let delta = shape.location === 'out' ? 1 : -1;
 
         if (shape.location && R <= r) {
             return;
         }
 
-        var num = 0;
-        var i = 1;
-        var theta;
+        let num = 0;
+        let i = 1;
+        let theta;
 
         x1 = (R + delta * r) * cos(0)
             - delta * d * cos(0) + offsetX;

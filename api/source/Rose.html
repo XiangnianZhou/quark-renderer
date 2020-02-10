@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var Path = require(&quot;../Path&quot;);
+
+<span id='zrender-graphic-shape-Rose'>/**
+</span> * @class zrender.graphic.shape.Rose 
+ * 玫瑰线
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+var sin = Math.sin;
+var cos = Math.cos;
+var radian = Math.PI / 180;
+
+var _default = Path.extend({
+<span id='zrender-graphic-shape-Rose-property-type'>  /**
+</span>   * @property {String} type
+   */
+  type: &#39;rose&#39;,
+  shape: {
+    cx: 0,
+    cy: 0,
+    r: [],
+    k: 0,
+    n: 1
+  },
+  style: {
+    stroke: &#39;#000&#39;,
+    fill: null
+  },
+
+<span id='zrender-graphic-shape-Rose-method-buildPath'>  /**
+</span>   * @method buildPath
+   * @param {Object} ctx 
+   * @param {String} shape 
+   */
+  buildPath: function buildPath(ctx, shape) {
+    var x;
+    var y;
+    var R = shape.r;
+    var r;
+    var k = shape.k;
+    var n = shape.n;
+    var x0 = shape.cx;
+    var y0 = shape.cy;
+    ctx.moveTo(x0, y0);
+
+    for (var i = 0, len = R.length; i &lt; len; i++) {
+      r = R[i];
+
+      for (var j = 0; j &lt;= 360 * n; j++) {
+        x = r * sin(k / n * j % 360 * radian) * cos(j * radian) + x0;
+        y = r * sin(k / n * j % 360 * radian) * sin(j * radian) + y0;
+        ctx.lineTo(x, y);
+      }
+    }
+  }
+});
+
+module.exports = _default;</pre>
+</body>
+</html>

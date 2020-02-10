@@ -1,12 +1,15 @@
-/**
- * 圆弧
- * @module zrender/graphic/shape/Arc
- */
-
 import Path from '../Path';
+/**
+ * @class zrender.graphic.shape.Arc 
+ * 圆弧
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 
 export default Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'arc',
 
     shape: {
@@ -31,17 +34,22 @@ export default Path.extend({
         fill: null
     },
 
+    /**
+     * @method buildPath
+     * 绘制图元路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
+        let x = shape.cx;
+        let y = shape.cy;
+        let r = Math.max(shape.r, 0);
+        let startAngle = shape.startAngle;
+        let endAngle = shape.endAngle;
+        let clockwise = shape.clockwise;
 
-        var x = shape.cx;
-        var y = shape.cy;
-        var r = Math.max(shape.r, 0);
-        var startAngle = shape.startAngle;
-        var endAngle = shape.endAngle;
-        var clockwise = shape.clockwise;
-
-        var unitX = Math.cos(startAngle);
-        var unitY = Math.sin(startAngle);
+        let unitX = Math.cos(startAngle);
+        let unitY = Math.sin(startAngle);
 
         ctx.moveTo(unitX * r + x, unitY * r + y);
         ctx.arc(x, y, r, startAngle, endAngle, !clockwise);

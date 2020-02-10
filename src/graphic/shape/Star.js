@@ -1,16 +1,18 @@
-/**
- * n角星（n>3）
- * @module zrender/graphic/shape/Star
- */
-
 import Path from '../Path';
-
-var PI = Math.PI;
-var cos = Math.cos;
-var sin = Math.sin;
+/**
+ * @class zrender.graphic.shape.Star 
+ * n角星（n>3）
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
+let PI = Math.PI;
+let cos = Math.cos;
+let sin = Math.sin;
 
 export default Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'star',
 
     shape: {
@@ -21,17 +23,23 @@ export default Path.extend({
         r: 0
     },
 
+    /**
+     * @method buildPath
+     * 绘制图元路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
 
-        var n = shape.n;
+        let n = shape.n;
         if (!n || n < 2) {
             return;
         }
 
-        var x = shape.cx;
-        var y = shape.cy;
-        var r = shape.r;
-        var r0 = shape.r0;
+        let x = shape.cx;
+        let y = shape.cy;
+        let r = shape.r;
+        let r0 = shape.r0;
 
         // 如果未指定内部顶点外接圆半径，则自动计算
         if (r0 == null) {
@@ -43,15 +51,15 @@ export default Path.extend({
                 : r / 3;
         }
 
-        var dStep = PI / n;
-        var deg = -PI / 2;
-        var xStart = x + r * cos(deg);
-        var yStart = y + r * sin(deg);
+        let dStep = PI / n;
+        let deg = -PI / 2;
+        let xStart = x + r * cos(deg);
+        let yStart = y + r * sin(deg);
         deg += dStep;
 
         // 记录边界点，用于判断inside
         ctx.moveTo(xStart, yStart);
-        for (var i = 0, end = n * 2 - 1, ri; i < end; i++) {
+        for (let i = 0, end = n * 2 - 1, ri; i < end; i++) {
             ri = i % 2 === 0 ? r0 : r;
             ctx.lineTo(x + ri * cos(deg), y + ri * sin(deg));
             deg += dStep;

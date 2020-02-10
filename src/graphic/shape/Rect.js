@@ -1,17 +1,19 @@
-/**
- * 矩形
- * @module zrender/graphic/shape/Rect
- */
-
 import Path from '../Path';
 import * as roundRectHelper from '../utils/roundRect';
 import {subPixelOptimizeRect} from '../utils/subPixelOptimize';
-
+/**
+ * @class zrender.graphic.shape.Rect 
+ * 矩形
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 // Avoid create repeatly.
-var subPixelOptimizeOutputShape = {};
+let subPixelOptimizeOutputShape = {};
 
 export default Path.extend({
 
+    /**
+     * @property {String} type
+     */
     type: 'rect',
 
     shape: {
@@ -28,11 +30,17 @@ export default Path.extend({
         height: 0
     },
 
+    /**
+     * @method buildPath
+     * 绘制图元路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
     buildPath: function (ctx, shape) {
-        var x;
-        var y;
-        var width;
-        var height;
+        let x;
+        let y;
+        let width;
+        let height;
 
         if (this.subPixelOptimize) {
             subPixelOptimizeRect(subPixelOptimizeOutputShape, shape, this.style);
