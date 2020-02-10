@@ -9808,28 +9808,26 @@ mixin(Displayable, RectText);
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
-/**
- * @method constructor ZImage
- * @param {Object} opts
- */
-function ZImage(opts) {
-    Displayable.call(this, opts);
-}
 
-ZImage.prototype = {
-
-    constructor: ZImage,
+class ZImage extends Displayable{
     /**
-     * @property {String}
+     * @method constructor ZImage
+     * @param {Object} opts
      */
-    type: 'image',
+    constructor(opts){
+        super(opts);
+        /**
+         * @property {String}
+         */
+        this.type='image';
+    }
 
     /**
      * @method brush
      * @param {Object} ctx 
      * @param {Element} prevEl 
      */
-    brush: function (ctx, prevEl) {
+    brush(ctx, prevEl) {
         let style = this.style;
         let src = style.image;
 
@@ -9847,14 +9845,6 @@ ZImage.prototype = {
             return;
         }
 
-        // 图片已经加载完成
-        // if (image.nodeName.toUpperCase() == 'IMG') {
-        //     if (!image.complete) {
-        //         return;
-        //     }
-        // }
-        // Else is canvas
-
         let x = style.x || 0;
         let y = style.y || 0;
         let width = style.width;
@@ -9863,11 +9853,9 @@ ZImage.prototype = {
         if (width == null && height != null) {
             // Keep image/height ratio
             width = height * aspect;
-        }
-        else if (height == null && width != null) {
+        }else if (height == null && width != null) {
             height = width / aspect;
-        }
-        else if (width == null && height == null) {
+        }else if (width == null && height == null) {
             width = image.width;
             height = image.height;
         }
@@ -9883,8 +9871,7 @@ ZImage.prototype = {
                 sx, sy, style.sWidth, style.sHeight,
                 x, y, width, height
             );
-        }
-        else if (style.sx && style.sy) {
+        }else if (style.sx && style.sy) {
             let sx = style.sx;
             let sy = style.sy;
             let sWidth = width - sx;
@@ -9894,8 +9881,7 @@ ZImage.prototype = {
                 sx, sy, sWidth, sHeight,
                 x, y, width, height
             );
-        }
-        else {
+        }else {
             ctx.drawImage(image, x, y, width, height);
         }
 
@@ -9905,12 +9891,12 @@ ZImage.prototype = {
             this.restoreTransform(ctx);
             this.drawRectText(ctx, this.getBoundingRect());
         }
-    },
+    }
 
     /**
      * @method getBoundingRect
      */
-    getBoundingRect: function () {
+    getBoundingRect() {
         let style = this.style;
         if (!this._rect) {
             this._rect = new BoundingRect(
@@ -9919,9 +9905,7 @@ ZImage.prototype = {
         }
         return this._rect;
     }
-};
-
-inherits(ZImage, Displayable);
+}
 
 /**
  * @class zrender.canvas.CanvasPainter
@@ -14819,8 +14803,13 @@ Path.prototype = {
 };
 
 /**
- * 扩展一个 Path element, 比如星形，圆等。
- * Extend a path element
+ * @private
+ * @method extend
+ * 
+ * Extending tool function for Path class.
+ * 
+ * Path 类专用的继承工具函数。
+ * 
  * @param {Object} props
  * @param {String} props.type Path type
  * @param {Function} props.init Initialize
@@ -14841,17 +14830,12 @@ Path.extend = function (defaults$$1) {
         let defaultShape = defaults$$1.shape;
         if (defaultShape) {
             this.shape = this.shape || {};
-            let thisShape = this.shape;
             for (let name in defaultShape) {
-                if (
-                    !thisShape.hasOwnProperty(name)
-                    && defaultShape.hasOwnProperty(name)
-                ) {
-                    thisShape[name] = defaultShape[name];
+                if (!this.shape.hasOwnProperty(name)&&defaultShape.hasOwnProperty(name)){
+                    this.shape[name] = defaultShape[name];
                 }
             }
         }
-
         defaults$$1.init && defaults$$1.init.call(this, opts);
     };
 

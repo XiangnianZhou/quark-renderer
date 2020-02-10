@@ -8,28 +8,26 @@ import * as imageHelper from './utils/image';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
-/**
- * @method constructor ZImage
- * @param {Object} opts
- */
-function ZImage(opts) {
-    Displayable.call(this, opts);
-}
 
-ZImage.prototype = {
-
-    constructor: ZImage,
+export default class ZImage extends Displayable{
     /**
-     * @property {String}
+     * @method constructor ZImage
+     * @param {Object} opts
      */
-    type: 'image',
+    constructor(opts){
+        super(opts);
+        /**
+         * @property {String}
+         */
+        this.type='image';
+    }
 
     /**
      * @method brush
      * @param {Object} ctx 
      * @param {Element} prevEl 
      */
-    brush: function (ctx, prevEl) {
+    brush(ctx, prevEl) {
         let style = this.style;
         let src = style.image;
 
@@ -47,14 +45,6 @@ ZImage.prototype = {
             return;
         }
 
-        // 图片已经加载完成
-        // if (image.nodeName.toUpperCase() == 'IMG') {
-        //     if (!image.complete) {
-        //         return;
-        //     }
-        // }
-        // Else is canvas
-
         let x = style.x || 0;
         let y = style.y || 0;
         let width = style.width;
@@ -63,11 +53,9 @@ ZImage.prototype = {
         if (width == null && height != null) {
             // Keep image/height ratio
             width = height * aspect;
-        }
-        else if (height == null && width != null) {
+        }else if (height == null && width != null) {
             height = width / aspect;
-        }
-        else if (width == null && height == null) {
+        }else if (width == null && height == null) {
             width = image.width;
             height = image.height;
         }
@@ -83,8 +71,7 @@ ZImage.prototype = {
                 sx, sy, style.sWidth, style.sHeight,
                 x, y, width, height
             );
-        }
-        else if (style.sx && style.sy) {
+        }else if (style.sx && style.sy) {
             let sx = style.sx;
             let sy = style.sy;
             let sWidth = width - sx;
@@ -94,8 +81,7 @@ ZImage.prototype = {
                 sx, sy, sWidth, sHeight,
                 x, y, width, height
             );
-        }
-        else {
+        }else {
             ctx.drawImage(image, x, y, width, height);
         }
 
@@ -105,12 +91,12 @@ ZImage.prototype = {
             this.restoreTransform(ctx);
             this.drawRectText(ctx, this.getBoundingRect());
         }
-    },
+    }
 
     /**
      * @method getBoundingRect
      */
-    getBoundingRect: function () {
+    getBoundingRect() {
         let style = this.style;
         if (!this._rect) {
             this._rect = new BoundingRect(
@@ -119,8 +105,4 @@ ZImage.prototype = {
         }
         return this._rect;
     }
-};
-
-dataUtil.inherits(ZImage, Displayable);
-
-export default ZImage;
+}
