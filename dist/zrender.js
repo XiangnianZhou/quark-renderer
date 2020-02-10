@@ -16158,7 +16158,7 @@ LinearGradient.prototype = {
 inherits(LinearGradient, Gradient);
 
 // Most of the values can be separated by comma and/or white space.
-var DILIMITER_REG = /[\s,]+/;
+let DILIMITER_REG = /[\s,]+/;
 
 /**
  * For big svg string, this method might be time consuming.
@@ -16168,7 +16168,7 @@ var DILIMITER_REG = /[\s,]+/;
  */
 function parseXML(svg) {
     if (isString(svg)) {
-        var parser = new DOMParser();
+        let parser = new DOMParser();
         svg = parser.parseFromString(svg, 'text/xml');
     }
 
@@ -16184,199 +16184,197 @@ function parseXML(svg) {
     return svg;
 }
 
+/**
+ * @class zrender.svg.SVGParser
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ */
+
 function SVGParser() {
     this._defs = {};
     this._root = null;
-
     this._isDefine = false;
     this._isText = false;
 }
 
-SVGParser.prototype.parse = function (xml, opt) {
-    opt = opt || {};
-
-    var svg = parseXML(xml);
-
-    if (!svg) {
-        throw new Error('Illegal svg');
-    }
-
-    var root = new Group();
-    this._root = root;
-    // parse view port
-    var viewBox = svg.getAttribute('viewBox') || '';
-
-    // If width/height not specified, means "100%" of `opt.width/height`.
-    // TODO: Other percent value not supported yet.
-    var width = parseFloat(svg.getAttribute('width') || opt.width);
-    var height = parseFloat(svg.getAttribute('height') || opt.height);
-    // If width/height not specified, set as null for output.
-    isNaN(width) && (width = null);
-    isNaN(height) && (height = null);
-
-    // Apply inline style on svg element.
-    parseAttributes(svg, root, null, true);
-
-    var child = svg.firstChild;
-    while (child) {
-        this._parseNode(child, root);
-        child = child.nextSibling;
-    }
-
-    var viewBoxRect;
-    var viewBoxTransform;
-
-    if (viewBox) {
-        var viewBoxArr = trim(viewBox).split(DILIMITER_REG);
-        // Some invalid case like viewBox: 'none'.
-        if (viewBoxArr.length >= 4) {
-            viewBoxRect = {
-                x: parseFloat(viewBoxArr[0] || 0),
-                y: parseFloat(viewBoxArr[1] || 0),
-                width: parseFloat(viewBoxArr[2]),
-                height: parseFloat(viewBoxArr[3])
-            };
+SVGParser.prototype={
+    constructor:SVGParser,
+    parse:function (xml, opt) {
+        opt = opt || {};
+    
+        let svg = parseXML(xml);
+    
+        if (!svg) {
+            throw new Error('Illegal svg');
         }
-    }
-
-    if (viewBoxRect && width != null && height != null) {
-        viewBoxTransform = makeViewBoxTransform(viewBoxRect, width, height);
-
-        if (!opt.ignoreViewBox) {
-            // If set transform on the output group, it probably bring trouble when
-            // some users only intend to show the clipped content inside the viewBox,
-            // but not intend to transform the output group. So we keep the output
-            // group no transform. If the user intend to use the viewBox as a
-            // camera, just set `opt.ignoreViewBox` as `true` and set transfrom
-            // manually according to the viewBox info in the output of this method.
-            var elRoot = root;
-            root = new Group();
-            root.add(elRoot);
-            elRoot.scale = viewBoxTransform.scale.slice();
-            elRoot.position = viewBoxTransform.position.slice();
+    
+        let root = new Group();
+        this._root = root;
+        // parse view port
+        let viewBox = svg.getAttribute('viewBox') || '';
+    
+        // If width/height not specified, means "100%" of `opt.width/height`.
+        // TODO: Other percent value not supported yet.
+        let width = parseFloat(svg.getAttribute('width') || opt.width);
+        let height = parseFloat(svg.getAttribute('height') || opt.height);
+        // If width/height not specified, set as null for output.
+        isNaN(width) && (width = null);
+        isNaN(height) && (height = null);
+    
+        // Apply inline style on svg element.
+        parseAttributes(svg, root, null, true);
+    
+        let child = svg.firstChild;
+        while (child) {
+            this._parseNode(child, root);
+            child = child.nextSibling;
         }
-    }
-
-    // Some shapes might be overflow the viewport, which should be
-    // clipped despite whether the viewBox is used, as the SVG does.
-    if (!opt.ignoreRootClip && width != null && height != null) {
-        root.setClipPath(new Rect({
-            shape: {x: 0, y: 0, width: width, height: height}
-        }));
-    }
-
-    // Set width/height on group just for output the viewport size.
-    return {
-        root: root,
-        width: width,
-        height: height,
-        viewBoxRect: viewBoxRect,
-        viewBoxTransform: viewBoxTransform
-    };
-};
-
-SVGParser.prototype._parseNode = function (xmlNode, parentGroup) {
-
-    var nodeName = xmlNode.nodeName.toLowerCase();
-
-    // TODO
-    // support <style>...</style> in svg, where nodeName is 'style',
-    // CSS classes is defined globally wherever the style tags are declared.
-
-    if (nodeName === 'defs') {
-        // define flag
-        this._isDefine = true;
-    }
-    else if (nodeName === 'text') {
-        this._isText = true;
-    }
-
-    var el;
-    if (this._isDefine) {
-        var parser = defineParsers[nodeName];
-        if (parser) {
-            var def = parser.call(this, xmlNode);
-            var id = xmlNode.getAttribute('id');
-            if (id) {
-                this._defs[id] = def;
+    
+        let viewBoxRect;
+        let viewBoxTransform;
+    
+        if (viewBox) {
+            let viewBoxArr = trim(viewBox).split(DILIMITER_REG);
+            // Some invalid case like viewBox: 'none'.
+            if (viewBoxArr.length >= 4) {
+                viewBoxRect = {
+                    x: parseFloat(viewBoxArr[0] || 0),
+                    y: parseFloat(viewBoxArr[1] || 0),
+                    width: parseFloat(viewBoxArr[2]),
+                    height: parseFloat(viewBoxArr[3])
+                };
             }
         }
-    }
-    else {
-        var parser = nodeParsers[nodeName];
-        if (parser) {
-            el = parser.call(this, xmlNode, parentGroup);
-            parentGroup.add(el);
+    
+        if (viewBoxRect && width != null && height != null) {
+            viewBoxTransform = makeViewBoxTransform(viewBoxRect, width, height);
+    
+            if (!opt.ignoreViewBox) {
+                // If set transform on the output group, it probably bring trouble when
+                // some users only intend to show the clipped content inside the viewBox,
+                // but not intend to transform the output group. So we keep the output
+                // group no transform. If the user intend to use the viewBox as a
+                // camera, just set `opt.ignoreViewBox` as `true` and set transfrom
+                // manually according to the viewBox info in the output of this method.
+                let elRoot = root;
+                root = new Group();
+                root.add(elRoot);
+                elRoot.scale = viewBoxTransform.scale.slice();
+                elRoot.position = viewBoxTransform.position.slice();
+            }
         }
-    }
+    
+        // Some shapes might be overflow the viewport, which should be
+        // clipped despite whether the viewBox is used, as the SVG does.
+        if (!opt.ignoreRootClip && width != null && height != null) {
+            root.setClipPath(new Rect({
+                shape: {x: 0, y: 0, width: width, height: height}
+            }));
+        }
+    
+        // Set width/height on group just for output the viewport size.
+        return {
+            root: root,
+            width: width,
+            height: height,
+            viewBoxRect: viewBoxRect,
+            viewBoxTransform: viewBoxTransform
+        };
+    },
+    _parseNode:function (xmlNode, parentGroup) {
+        let nodeName = xmlNode.nodeName.toLowerCase();
+        // TODO
+        // support <style>...</style> in svg, where nodeName is 'style',
+        // CSS classes is defined globally wherever the style tags are declared.
+        if (nodeName === 'defs') {
+            // define flag
+            this._isDefine = true;
+        }else if (nodeName === 'text') {
+            this._isText = true;
+        }
+    
+        let el;
+        if (this._isDefine) {
+            let parser = defineParsers[nodeName];
+            if (parser) {
+                let def = parser.call(this, xmlNode);
+                let id = xmlNode.getAttribute('id');
+                if (id) {
+                    this._defs[id] = def;
+                }
+            }
+        }else {
+            let parser = nodeParsers[nodeName];
+            if (parser) {
+                el = parser.call(this, xmlNode, parentGroup);
+                parentGroup.add(el);
+            }
+        }
+    
+        let child = xmlNode.firstChild;
+        while (child) {
+            if (child.nodeType === 1) {
+                this._parseNode(child, el);
+            }
+            // Is text
+            if (child.nodeType === 3 && this._isText) {
+                this._parseText(child, el);
+            }
+            child = child.nextSibling;
+        }
+    
+        // Quit define
+        if (nodeName === 'defs') {
+            this._isDefine = false;
+        }else if (nodeName === 'text') {
+            this._isText = false;
+        }
+    },
+    _parseText:function (xmlNode, parentGroup) {
+        if (xmlNode.nodeType === 1) {
+            let dx = xmlNode.getAttribute('dx') || 0;
+            let dy = xmlNode.getAttribute('dy') || 0;
+            this._textX += parseFloat(dx);
+            this._textY += parseFloat(dy);
+        }
+    
+        let text = new Text({
+            style: {
+                text: xmlNode.textContent,
+                transformText: true
+            },
+            position: [this._textX || 0, this._textY || 0]
+        });
+    
+        inheritStyle(parentGroup, text);
+        parseAttributes(xmlNode, text, this._defs);
+    
+        let fontSize = text.style.fontSize;
+        if (fontSize && fontSize < 9) {
+            // PENDING
+            text.style.fontSize = 9;
+            text.scale = text.scale || [1, 1];
+            text.scale[0] *= fontSize / 9;
+            text.scale[1] *= fontSize / 9;
+        }
 
-    var child = xmlNode.firstChild;
-    while (child) {
-        if (child.nodeType === 1) {
-            this._parseNode(child, el);
-        }
-        // Is text
-        if (child.nodeType === 3 && this._isText) {
-            this._parseText(child, el);
-        }
-        child = child.nextSibling;
-    }
-
-    // Quit define
-    if (nodeName === 'defs') {
-        this._isDefine = false;
-    }
-    else if (nodeName === 'text') {
-        this._isText = false;
+        let rect = text.getBoundingRect();
+        this._textX += rect.width;
+        parentGroup.add(text);
+        return text;
     }
 };
 
-SVGParser.prototype._parseText = function (xmlNode, parentGroup) {
-    if (xmlNode.nodeType === 1) {
-        var dx = xmlNode.getAttribute('dx') || 0;
-        var dy = xmlNode.getAttribute('dy') || 0;
-        this._textX += parseFloat(dx);
-        this._textY += parseFloat(dy);
-    }
-
-    var text = new Text({
-        style: {
-            text: xmlNode.textContent,
-            transformText: true
-        },
-        position: [this._textX || 0, this._textY || 0]
-    });
-
-    inheritStyle(parentGroup, text);
-    parseAttributes(xmlNode, text, this._defs);
-
-    var fontSize = text.style.fontSize;
-    if (fontSize && fontSize < 9) {
-        // PENDING
-        text.style.fontSize = 9;
-        text.scale = text.scale || [1, 1];
-        text.scale[0] *= fontSize / 9;
-        text.scale[1] *= fontSize / 9;
-    }
-
-    var rect = text.getBoundingRect();
-    this._textX += rect.width;
-
-    parentGroup.add(text);
-
-    return text;
-};
-
-var nodeParsers = {
+let nodeParsers = {
     'g': function (xmlNode, parentGroup) {
-        var g = new Group();
+        let g = new Group();
         inheritStyle(parentGroup, g);
         parseAttributes(xmlNode, g, this._defs);
 
         return g;
     },
     'rect': function (xmlNode, parentGroup) {
-        var rect = new Rect();
+        let rect = new Rect();
         inheritStyle(parentGroup, rect);
         parseAttributes(xmlNode, rect, this._defs);
 
@@ -16393,7 +16391,7 @@ var nodeParsers = {
         return rect;
     },
     'circle': function (xmlNode, parentGroup) {
-        var circle = new Circle();
+        let circle = new Circle();
         inheritStyle(parentGroup, circle);
         parseAttributes(xmlNode, circle, this._defs);
 
@@ -16406,7 +16404,7 @@ var nodeParsers = {
         return circle;
     },
     'line': function (xmlNode, parentGroup) {
-        var line = new Line();
+        let line = new Line();
         inheritStyle(parentGroup, line);
         parseAttributes(xmlNode, line, this._defs);
 
@@ -16420,7 +16418,7 @@ var nodeParsers = {
         return line;
     },
     'ellipse': function (xmlNode, parentGroup) {
-        var ellipse = new Ellipse();
+        let ellipse = new Ellipse();
         inheritStyle(parentGroup, ellipse);
         parseAttributes(xmlNode, ellipse, this._defs);
 
@@ -16433,11 +16431,11 @@ var nodeParsers = {
         return ellipse;
     },
     'polygon': function (xmlNode, parentGroup) {
-        var points = xmlNode.getAttribute('points');
+        let points = xmlNode.getAttribute('points');
         if (points) {
             points = parsePoints(points);
         }
-        var polygon = new Polygon({
+        let polygon = new Polygon({
             shape: {
                 points: points || []
             }
@@ -16449,15 +16447,15 @@ var nodeParsers = {
         return polygon;
     },
     'polyline': function (xmlNode, parentGroup) {
-        var path = new Path();
+        let path = new Path();
         inheritStyle(parentGroup, path);
         parseAttributes(xmlNode, path, this._defs);
 
-        var points = xmlNode.getAttribute('points');
+        let points = xmlNode.getAttribute('points');
         if (points) {
             points = parsePoints(points);
         }
-        var polyline = new Polyline({
+        let polyline = new Polyline({
             shape: {
                 points: points || []
             }
@@ -16466,7 +16464,7 @@ var nodeParsers = {
         return polyline;
     },
     'image': function (xmlNode, parentGroup) {
-        var img = new ZImage();
+        let img = new ZImage();
         inheritStyle(parentGroup, img);
         parseAttributes(xmlNode, img, this._defs);
 
@@ -16481,23 +16479,23 @@ var nodeParsers = {
         return img;
     },
     'text': function (xmlNode, parentGroup) {
-        var x = xmlNode.getAttribute('x') || 0;
-        var y = xmlNode.getAttribute('y') || 0;
-        var dx = xmlNode.getAttribute('dx') || 0;
-        var dy = xmlNode.getAttribute('dy') || 0;
+        let x = xmlNode.getAttribute('x') || 0;
+        let y = xmlNode.getAttribute('y') || 0;
+        let dx = xmlNode.getAttribute('dx') || 0;
+        let dy = xmlNode.getAttribute('dy') || 0;
 
         this._textX = parseFloat(x) + parseFloat(dx);
         this._textY = parseFloat(y) + parseFloat(dy);
 
-        var g = new Group();
+        let g = new Group();
         inheritStyle(parentGroup, g);
         parseAttributes(xmlNode, g, this._defs);
 
         return g;
     },
     'tspan': function (xmlNode, parentGroup) {
-        var x = xmlNode.getAttribute('x');
-        var y = xmlNode.getAttribute('y');
+        let x = xmlNode.getAttribute('x');
+        let y = xmlNode.getAttribute('y');
         if (x != null) {
             // new offset x
             this._textX = parseFloat(x);
@@ -16506,10 +16504,10 @@ var nodeParsers = {
             // new offset y
             this._textY = parseFloat(y);
         }
-        var dx = xmlNode.getAttribute('dx') || 0;
-        var dy = xmlNode.getAttribute('dy') || 0;
+        let dx = xmlNode.getAttribute('dx') || 0;
+        let dy = xmlNode.getAttribute('dy') || 0;
 
-        var g = new Group();
+        let g = new Group();
 
         inheritStyle(parentGroup, g);
         parseAttributes(xmlNode, g, this._defs);
@@ -16524,11 +16522,11 @@ var nodeParsers = {
         // TODO svg fill rule
         // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/fill-rule
         // path.style.globalCompositeOperation = 'xor';
-        var d = xmlNode.getAttribute('d') || '';
+        let d = xmlNode.getAttribute('d') || '';
 
         // Performance sensitive.
 
-        var path = createFromString(d);
+        let path = createFromString(d);
 
         inheritStyle(parentGroup, path);
         parseAttributes(xmlNode, path, this._defs);
@@ -16537,15 +16535,15 @@ var nodeParsers = {
     }
 };
 
-var defineParsers = {
+let defineParsers = {
 
     'lineargradient': function (xmlNode) {
-        var x1 = parseInt(xmlNode.getAttribute('x1') || 0, 10);
-        var y1 = parseInt(xmlNode.getAttribute('y1') || 0, 10);
-        var x2 = parseInt(xmlNode.getAttribute('x2') || 10, 10);
-        var y2 = parseInt(xmlNode.getAttribute('y2') || 0, 10);
+        let x1 = parseInt(xmlNode.getAttribute('x1') || 0, 10);
+        let y1 = parseInt(xmlNode.getAttribute('y1') || 0, 10);
+        let x2 = parseInt(xmlNode.getAttribute('x2') || 10, 10);
+        let y2 = parseInt(xmlNode.getAttribute('y2') || 0, 10);
 
-        var gradient = new LinearGradient(x1, y1, x2, y2);
+        let gradient = new LinearGradient(x1, y1, x2, y2);
 
         _parseGradientColorStops(xmlNode, gradient);
 
@@ -16559,11 +16557,11 @@ var defineParsers = {
 
 function _parseGradientColorStops(xmlNode, gradient) {
 
-    var stop = xmlNode.firstChild;
+    let stop = xmlNode.firstChild;
 
     while (stop) {
         if (stop.nodeType === 1) {
-            var offset = stop.getAttribute('offset');
+            let offset = stop.getAttribute('offset');
             if (offset.indexOf('%') > 0) {  // percentage
                 offset = parseInt(offset, 10) / 100;
             }
@@ -16574,7 +16572,7 @@ function _parseGradientColorStops(xmlNode, gradient) {
                 offset = 0;
             }
 
-            var stopColor = stop.getAttribute('stop-color') || '#000000';
+            let stopColor = stop.getAttribute('stop-color') || '#000000';
 
             gradient.addColorStop(offset, stopColor);
         }
@@ -16592,18 +16590,18 @@ function inheritStyle(parent, child) {
 }
 
 function parsePoints(pointsString) {
-    var list = trim(pointsString).split(DILIMITER_REG);
-    var points = [];
+    let list = trim(pointsString).split(DILIMITER_REG);
+    let points = [];
 
-    for (var i = 0; i < list.length; i += 2) {
-        var x = parseFloat(list[i]);
-        var y = parseFloat(list[i + 1]);
+    for (let i = 0; i < list.length; i += 2) {
+        let x = parseFloat(list[i]);
+        let y = parseFloat(list[i + 1]);
         points.push([x, y]);
     }
     return points;
 }
 
-var attributesMap = {
+let attributesMap = {
     'fill': 'fill',
     'stroke': 'stroke',
     'stroke-width': 'lineWidth',
@@ -16625,8 +16623,8 @@ var attributesMap = {
 };
 
 function parseAttributes(xmlNode, el, defs, onlyInlineStyle) {
-    var zrStyle = el.__inheritedStyle || {};
-    var isTextEl = el.type === 'text';
+    let zrStyle = el.__inheritedStyle || {};
+    let isTextEl = el.type === 'text';
 
     // TODO Shadow
     if (xmlNode.nodeType === 1) {
@@ -16635,9 +16633,9 @@ function parseAttributes(xmlNode, el, defs, onlyInlineStyle) {
         extend(zrStyle, parseStyleAttribute(xmlNode));
 
         if (!onlyInlineStyle) {
-            for (var svgAttrName in attributesMap) {
+            for (let svgAttrName in attributesMap) {
                 if (attributesMap.hasOwnProperty(svgAttrName)) {
-                    var attrValue = xmlNode.getAttribute(svgAttrName);
+                    let attrValue = xmlNode.getAttribute(svgAttrName);
                     if (attrValue != null) {
                         zrStyle[attributesMap[svgAttrName]] = attrValue;
                     }
@@ -16646,11 +16644,11 @@ function parseAttributes(xmlNode, el, defs, onlyInlineStyle) {
         }
     }
 
-    var elFillProp = isTextEl ? 'textFill' : 'fill';
-    var elStrokeProp = isTextEl ? 'textStroke' : 'stroke';
+    let elFillProp = isTextEl ? 'textFill' : 'fill';
+    let elStrokeProp = isTextEl ? 'textStroke' : 'stroke';
 
     el.style = el.style || new Style();
-    var elStyle = el.style;
+    let elStyle = el.style;
 
     zrStyle.fill != null && elStyle.set(elFillProp, getPaint(zrStyle.fill, defs));
     zrStyle.stroke != null && elStyle.set(elStrokeProp, getPaint(zrStyle.stroke, defs));
@@ -16658,7 +16656,7 @@ function parseAttributes(xmlNode, el, defs, onlyInlineStyle) {
     each([
         'lineWidth', 'opacity', 'fillOpacity', 'strokeOpacity', 'miterLimit', 'fontSize'
     ], function (propName) {
-        var elPropName = (propName === 'lineWidth' && isTextEl) ? 'textStrokeWidth' : propName;
+        let elPropName = (propName === 'lineWidth' && isTextEl) ? 'textStrokeWidth' : propName;
         zrStyle[propName] != null && elStyle.set(elPropName, parseFloat(zrStyle[propName]));
     });
 
@@ -16694,34 +16692,34 @@ function parseAttributes(xmlNode, el, defs, onlyInlineStyle) {
 }
 
 
-var urlRegex = /url\(\s*#(.*?)\)/;
+let urlRegex = /url\(\s*#(.*?)\)/;
 function getPaint(str, defs) {
     // if (str === 'none') {
     //     return;
     // }
-    var urlMatch = defs && str && str.match(urlRegex);
+    let urlMatch = defs && str && str.match(urlRegex);
     if (urlMatch) {
-        var url = trim(urlMatch[1]);
-        var def = defs[url];
+        let url = trim(urlMatch[1]);
+        let def = defs[url];
         return def;
     }
     return str;
 }
 
-var transformRegex = /(translate|scale|rotate|skewX|skewY|matrix)\(([\-\s0-9\.e,]*)\)/g;
+let transformRegex = /(translate|scale|rotate|skewX|skewY|matrix)\(([\-\s0-9\.e,]*)\)/g;
 
 function parseTransformAttribute(xmlNode, node) {
-    var transform = xmlNode.getAttribute('transform');
+    let transform = xmlNode.getAttribute('transform');
     if (transform) {
         transform = transform.replace(/,/g, ' ');
-        var m = null;
-        var transformOps = [];
+        let m = null;
+        let transformOps = [];
         transform.replace(transformRegex, function (str, type, value) {
             transformOps.push(type, value);
         });
-        for (var i = transformOps.length - 1; i > 0; i -= 2) {
-            var value = transformOps[i];
-            var type = transformOps[i - 1];
+        for (let i = transformOps.length - 1; i > 0; i -= 2) {
+            let value = transformOps[i];
+            let type = transformOps[i - 1];
             m = m || create$1();
             switch (type) {
                 case 'translate':
@@ -16741,7 +16739,7 @@ function parseTransformAttribute(xmlNode, node) {
                     console.warn('Skew transform is not supported yet');
                     break;
                 case 'matrix':
-                    var value = trim(value).split(DILIMITER_REG);
+                    value = trim(value).split(DILIMITER_REG);
                     m[0] = parseFloat(value[0]);
                     m[1] = parseFloat(value[1]);
                     m[2] = parseFloat(value[2]);
@@ -16756,23 +16754,23 @@ function parseTransformAttribute(xmlNode, node) {
 }
 
 // Value may contain space.
-var styleRegex = /([^\s:;]+)\s*:\s*([^:;]+)/g;
+let styleRegex = /([^\s:;]+)\s*:\s*([^:;]+)/g;
 function parseStyleAttribute(xmlNode) {
-    var style = xmlNode.getAttribute('style');
-    var result = {};
+    let style = xmlNode.getAttribute('style');
+    let result = {};
 
     if (!style) {
         return result;
     }
 
-    var styleList = {};
+    let styleList = {};
     styleRegex.lastIndex = 0;
-    var styleRegResult;
+    let styleRegResult;
     while ((styleRegResult = styleRegex.exec(style)) != null) {
         styleList[styleRegResult[1]] = styleRegResult[2];
     }
 
-    for (var svgAttrName in attributesMap) {
+    for (let svgAttrName in attributesMap) {
         if (attributesMap.hasOwnProperty(svgAttrName) && styleList[svgAttrName] != null) {
             result[attributesMap[svgAttrName]] = styleList[svgAttrName];
         }
@@ -16788,12 +16786,12 @@ function parseStyleAttribute(xmlNode) {
  * @return {Object} {scale, position}
  */
 function makeViewBoxTransform(viewBoxRect, width, height) {
-    var scaleX = width / viewBoxRect.width;
-    var scaleY = height / viewBoxRect.height;
-    var scale = Math.min(scaleX, scaleY);
+    let scaleX = width / viewBoxRect.width;
+    let scaleY = height / viewBoxRect.height;
+    let scale = Math.min(scaleX, scaleY);
     // preserveAspectRatio 'xMidYMid'
-    var viewBoxScale = [scale, scale];
-    var viewBoxPosition = [
+    let viewBoxScale = [scale, scale];
+    let viewBoxPosition = [
         -(viewBoxRect.x + viewBoxRect.width / 2) * scale + width / 2,
         -(viewBoxRect.y + viewBoxRect.height / 2) * scale + height / 2
     ];
@@ -16821,7 +16819,7 @@ function makeViewBoxTransform(viewBoxRect, width, height) {
  * }
  */
 function parseSVG(xml, opt) {
-    var parser = new SVGParser();
+    let parser = new SVGParser();
     return parser.parse(xml, opt);
 }
 
@@ -17815,18 +17813,18 @@ function createElement(name) {
 // 1. shadow
 // 2. Image: sx, sy, sw, sh
 
-var CMD$3 = PathProxy.CMD;
-var arrayJoin = Array.prototype.join;
+let CMD$3 = PathProxy.CMD;
+let arrayJoin = Array.prototype.join;
 
-var NONE = 'none';
-var mathRound = Math.round;
-var mathSin$3 = Math.sin;
-var mathCos$3 = Math.cos;
-var PI$3 = Math.PI;
-var PI2$4 = Math.PI * 2;
-var degree = 180 / PI$3;
+let NONE = 'none';
+let mathRound = Math.round;
+let mathSin$3 = Math.sin;
+let mathCos$3 = Math.cos;
+let PI$3 = Math.PI;
+let PI2$4 = Math.PI * 2;
+let degree = 180 / PI$3;
 
-var EPSILON$3 = 1e-4;
+let EPSILON$3 = 1e-4;
 
 function round4(val) {
     return mathRound(val * 1e4) / 1e4;
@@ -17837,12 +17835,12 @@ function isAroundZero$1(val) {
 }
 
 function pathHasFill(style, isText) {
-    var fill = isText ? style.textFill : style.fill;
+    let fill = isText ? style.textFill : style.fill;
     return fill != null && fill !== NONE;
 }
 
 function pathHasStroke(style, isText) {
-    var stroke = isText ? style.textStroke : style.stroke;
+    let stroke = isText ? style.textStroke : style.stroke;
     return stroke != null && stroke !== NONE;
 }
 
@@ -17865,35 +17863,33 @@ function attrXLink(el, key, val) {
 
 function bindStyle(svgEl, style, isText, el) {
     if (pathHasFill(style, isText)) {
-        var fill = isText ? style.textFill : style.fill;
+        let fill = isText ? style.textFill : style.fill;
         fill = fill === 'transparent' ? NONE : fill;
         attr(svgEl, 'fill', fill);
         attr(svgEl, 'fill-opacity', style.fillOpacity != null ? style.fillOpacity * style.opacity : style.opacity);
-    }
-    else {
+    }else {
         attr(svgEl, 'fill', NONE);
     }
 
     if (pathHasStroke(style, isText)) {
-        var stroke = isText ? style.textStroke : style.stroke;
+        let stroke = isText ? style.textStroke : style.stroke;
         stroke = stroke === 'transparent' ? NONE : stroke;
         attr(svgEl, 'stroke', stroke);
-        var strokeWidth = isText
+        let strokeWidth = isText
             ? style.textStrokeWidth
             : style.lineWidth;
-        var strokeScale = !isText && style.strokeNoScale
+        let strokeScale = !isText && style.strokeNoScale
             ? el.getLineScale()
             : 1;
         attr(svgEl, 'stroke-width', strokeWidth / strokeScale);
         // stroke then fill for text; fill then stroke for others
         attr(svgEl, 'paint-order', isText ? 'stroke' : 'fill');
         attr(svgEl, 'stroke-opacity', style.strokeOpacity != null ? style.strokeOpacity : style.opacity);
-        var lineDash = style.lineDash;
+        let lineDash = style.lineDash;
         if (lineDash) {
             attr(svgEl, 'stroke-dasharray', style.lineDash.join(','));
             attr(svgEl, 'stroke-dashoffset', mathRound(style.lineDashOffset || 0));
-        }
-        else {
+        }else {
             attr(svgEl, 'stroke-dasharray', '');
         }
 
@@ -17901,8 +17897,7 @@ function bindStyle(svgEl, style, isText, el) {
         style.lineCap && attr(svgEl, 'stroke-linecap', style.lineCap);
         style.lineJoin && attr(svgEl, 'stroke-linejoin', style.lineJoin);
         style.miterLimit && attr(svgEl, 'stroke-miterlimit', style.miterLimit);
-    }
-    else {
+    }else {
         attr(svgEl, 'stroke', NONE);
     }
 }
@@ -17910,14 +17905,21 @@ function bindStyle(svgEl, style, isText, el) {
 /***************************************************
  * PATH
  **************************************************/
+/**
+ * @class zrender.svg.SVGPath
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ */
 function pathDataToString(path) {
-    var str = [];
-    var data = path.data;
-    var dataLength = path.len();
-    for (var i = 0; i < dataLength;) {
-        var cmd = data[i++];
-        var cmdStr = '';
-        var nData = 0;
+    let str = [];
+    let data = path.data;
+    let dataLength = path.len();
+    let cmdStr = '';
+    let nData = 0;
+    let x=0;
+    let y=0;
+    for (let i = 0; i < dataLength;) {
+        let cmd = data[i++];
         switch (cmd) {
             case CMD$3.M:
                 cmdStr = 'M';
@@ -17936,23 +17938,23 @@ function pathDataToString(path) {
                 nData = 6;
                 break;
             case CMD$3.A:
-                var cx = data[i++];
-                var cy = data[i++];
-                var rx = data[i++];
-                var ry = data[i++];
-                var theta = data[i++];
-                var dTheta = data[i++];
-                var psi = data[i++];
-                var clockwise = data[i++];
+                let cx = data[i++];
+                let cy = data[i++];
+                let rx = data[i++];
+                let ry = data[i++];
+                let theta = data[i++];
+                let dTheta = data[i++];
+                let psi = data[i++];
+                let clockwise = data[i++];
 
-                var dThetaPositive = Math.abs(dTheta);
-                var isCircle = isAroundZero$1(dThetaPositive - PI2$4)
+                let dThetaPositive = Math.abs(dTheta);
+                let isCircle = isAroundZero$1(dThetaPositive - PI2$4)
                     || (clockwise ? dTheta >= PI2$4 : -dTheta >= PI2$4);
 
                 // Mapping to 0~2PI
-                var unifiedTheta = dTheta > 0 ? dTheta % PI2$4 : (dTheta % PI2$4 + PI2$4);
+                let unifiedTheta = dTheta > 0 ? dTheta % PI2$4 : (dTheta % PI2$4 + PI2$4);
 
-                var large = false;
+                let large = false;
                 if (isCircle) {
                     large = true;
                 }
@@ -17963,8 +17965,8 @@ function pathDataToString(path) {
                     large = (unifiedTheta >= PI$3) === !!clockwise;
                 }
 
-                var x0 = round4(cx + rx * mathCos$3(theta));
-                var y0 = round4(cy + ry * mathSin$3(theta));
+                let x0 = round4(cx + rx * mathCos$3(theta));
+                let y0 = round4(cy + ry * mathSin$3(theta));
 
                 // It will not draw if start point and end point are exactly the same
                 // We need to shift the end point with a small value
@@ -17989,8 +17991,8 @@ function pathDataToString(path) {
                     }
                 }
 
-                var x = round4(cx + rx * mathCos$3(theta + dTheta));
-                var y = round4(cy + ry * mathSin$3(theta + dTheta));
+                x = round4(cx + rx * mathCos$3(theta + dTheta));
+                y = round4(cy + ry * mathSin$3(theta + dTheta));
 
                 // FIXME Ellipse
                 str.push('A', round4(rx), round4(ry),
@@ -18000,10 +18002,10 @@ function pathDataToString(path) {
                 cmdStr = 'Z';
                 break;
             case CMD$3.R:
-                var x = round4(data[i++]);
-                var y = round4(data[i++]);
-                var w = round4(data[i++]);
-                var h = round4(data[i++]);
+                x = round4(data[i++]);
+                y = round4(data[i++]);
+                let w = round4(data[i++]);
+                let h = round4(data[i++]);
                 str.push(
                     'M', x, y,
                     'L', x + w, y,
@@ -18014,7 +18016,7 @@ function pathDataToString(path) {
                 break;
         }
         cmdStr && str.push(cmdStr);
-        for (var j = 0; j < nData; j++) {
+        for (let j = 0; j < nData; j++) {
             // PENDING With scale
             str.push(round4(data[i++]));
         }
@@ -18022,11 +18024,11 @@ function pathDataToString(path) {
     return str.join(' ');
 }
 
-var svgPath = {};
+let svgPath = {};
 svgPath.brush = function (el) {
-    var style = el.style;
+    let style = el.style;
 
-    var svgEl = el.__svgEl;
+    let svgEl = el.__svgEl;
     if (!svgEl) {
         svgEl = createElement('path');
         el.__svgEl = svgEl;
@@ -18035,7 +18037,7 @@ svgPath.brush = function (el) {
     if (!el.path) {
         el.createPathProxy();
     }
-    var path = el.path;
+    let path = el.path;
 
     if (el.__dirtyPath) {
         path.beginPath();
@@ -18043,7 +18045,7 @@ svgPath.brush = function (el) {
         el.buildPath(path, el.shape);
         el.__dirtyPath = false;
 
-        var pathStr = pathDataToString(path);
+        let pathStr = pathDataToString(path);
         if (pathStr.indexOf('NaN') < 0) {
             // Ignore illegal path, which may happen such in out-of-range
             // data in Calendar series.
@@ -18056,8 +18058,7 @@ svgPath.brush = function (el) {
 
     if (style.text != null) {
         svgTextDrawRectText(el, el.getBoundingRect());
-    }
-    else {
+    }else {
         removeOldTextNode(el);
     }
 };
@@ -18065,26 +18066,31 @@ svgPath.brush = function (el) {
 /***************************************************
  * IMAGE
  **************************************************/
-var svgImage = {};
+/**
+ * @class zrender.svg.SVGImage
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ */
+let svgImage = {};
 svgImage.brush = function (el) {
-    var style = el.style;
-    var image = style.image;
+    let style = el.style;
+    let image = style.image;
 
     if (image instanceof HTMLImageElement) {
-        var src = image.src;
+        let src = image.src;
         image = src;
     }
     if (!image) {
         return;
     }
 
-    var x = style.x || 0;
-    var y = style.y || 0;
+    let x = style.x || 0;
+    let y = style.y || 0;
 
-    var dw = style.width;
-    var dh = style.height;
+    let dw = style.width;
+    let dh = style.height;
 
-    var svgEl = el.__svgEl;
+    let svgEl = el.__svgEl;
     if (!svgEl) {
         svgEl = createElement('image');
         el.__svgEl = svgEl;
@@ -18106,8 +18112,7 @@ svgImage.brush = function (el) {
 
     if (style.text != null) {
         svgTextDrawRectText(el, el.getBoundingRect());
-    }
-    else {
+    }else {
         removeOldTextNode(el);
     }
 };
@@ -18115,11 +18120,16 @@ svgImage.brush = function (el) {
 /***************************************************
  * TEXT
  **************************************************/
-var svgText = {};
-var _tmpTextHostRect = new BoundingRect();
-var _tmpTextBoxPos = {};
-var _tmpTextTransform = [];
-var TEXT_ALIGN_TO_ANCHRO = {
+/**
+ * @class zrender.svg.SVGText
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ */
+let svgText = {};
+let _tmpTextHostRect = new BoundingRect();
+let _tmpTextBoxPos = {};
+let _tmpTextTransform = [];
+let TEXT_ALIGN_TO_ANCHRO = {
     left: 'start',
     right: 'end',
     center: 'middle',
@@ -18131,14 +18141,14 @@ var TEXT_ALIGN_TO_ANCHRO = {
  * @param {Object|boolean} [hostRect] {x, y, width, height}
  *        If set false, rect text is not used.
  */
-var svgTextDrawRectText = function (el, hostRect) {
-    var style = el.style;
-    var elTransform = el.transform;
-    var needTransformTextByHostEl = el instanceof Text || style.transformText;
+let svgTextDrawRectText = function (el, hostRect) {
+    let style = el.style;
+    let elTransform = el.transform;
+    let needTransformTextByHostEl = el instanceof Text || style.transformText;
 
     el.__dirty && normalizeTextStyle(style, true);
 
-    var text = style.text;
+    let text = style.text;
     // Convert to string
     text != null && (text += '');
     if (!needDrawText(text, style)) {
@@ -18155,48 +18165,48 @@ var svgTextDrawRectText = function (el, hostRect) {
         hostRect = _tmpTextHostRect;
     }
 
-    var textSvgEl = el.__textSvgEl;
+    let textSvgEl = el.__textSvgEl;
     if (!textSvgEl) {
         textSvgEl = createElement('text');
         el.__textSvgEl = textSvgEl;
     }
 
     // style.font has been normalized by `normalizeTextStyle`.
-    var textSvgElStyle = textSvgEl.style;
-    var font = style.font || DEFAULT_FONT$1;
-    var computedFont = textSvgEl.__computedFont;
+    let textSvgElStyle = textSvgEl.style;
+    let font = style.font || DEFAULT_FONT$1;
+    let computedFont = textSvgEl.__computedFont;
     if (font !== textSvgEl.__styleFont) {
         textSvgElStyle.font = textSvgEl.__styleFont = font;
         // The computedFont might not be the orginal font if it is illegal font.
         computedFont = textSvgEl.__computedFont = textSvgElStyle.font;
     }
 
-    var textPadding = style.textPadding;
-    var textLineHeight = style.textLineHeight;
+    let textPadding = style.textPadding;
+    let textLineHeight = style.textLineHeight;
 
-    var contentBlock = el.__textCotentBlock;
+    let contentBlock = el.__textCotentBlock;
     if (!contentBlock || el.__dirtyText) {
         contentBlock = el.__textCotentBlock = parsePlainText(
             text, computedFont, textPadding, textLineHeight, style.truncate
         );
     }
 
-    var outerHeight = contentBlock.outerHeight;
-    var lineHeight = contentBlock.lineHeight;
+    let outerHeight = contentBlock.outerHeight;
+    let lineHeight = contentBlock.lineHeight;
 
     getBoxPosition(_tmpTextBoxPos, el, style, hostRect);
-    var baseX = _tmpTextBoxPos.baseX;
-    var baseY = _tmpTextBoxPos.baseY;
-    var textAlign = _tmpTextBoxPos.textAlign || 'left';
-    var textVerticalAlign = _tmpTextBoxPos.textVerticalAlign;
+    let baseX = _tmpTextBoxPos.baseX;
+    let baseY = _tmpTextBoxPos.baseY;
+    let textAlign = _tmpTextBoxPos.textAlign || 'left';
+    let textVerticalAlign = _tmpTextBoxPos.textVerticalAlign;
 
     setTextTransform(
         textSvgEl, needTransformTextByHostEl, elTransform, style, hostRect, baseX, baseY
     );
 
-    var boxY = adjustTextY(baseY, outerHeight, textVerticalAlign);
-    var textX = baseX;
-    var textY = boxY;
+    let boxY = adjustTextY(baseY, outerHeight, textVerticalAlign);
+    let textX = baseX;
+    let textY = boxY;
 
     // TODO needDrawBg
     if (textPadding) {
@@ -18214,36 +18224,34 @@ var svgTextDrawRectText = function (el, hostRect) {
     // otherwise the outer <style> may set the unexpected style.
 
     // Font may affect position of each tspan elements
-    var canCacheByTextString = contentBlock.canCacheByTextString;
-    var tspanList = el.__tspanList || (el.__tspanList = []);
-    var tspanOriginLen = tspanList.length;
+    let canCacheByTextString = contentBlock.canCacheByTextString;
+    let tspanList = el.__tspanList || (el.__tspanList = []);
+    let tspanOriginLen = tspanList.length;
 
     // Optimize for most cases, just compare text string to determine change.
     if (canCacheByTextString && el.__canCacheByTextString && el.__text === text) {
         if (el.__dirtyText && tspanOriginLen) {
-            for (var idx = 0; idx < tspanOriginLen; ++idx) {
+            for (let idx = 0; idx < tspanOriginLen; ++idx) {
                 updateTextLocation(tspanList[idx], textAlign, textX, textY + idx * lineHeight);
             }
         }
-    }
-    else {
+    }else {
         el.__text = text;
         el.__canCacheByTextString = canCacheByTextString;
-        var textLines = contentBlock.lines;
-        var nTextLines = textLines.length;
+        let textLines = contentBlock.lines;
+        let nTextLines = textLines.length;
 
-        var idx = 0;
+        let idx = 0;
         for (; idx < nTextLines; idx++) {
             // Using cached tspan elements
-            var tspan = tspanList[idx];
-            var singleLineText = textLines[idx];
+            let tspan = tspanList[idx];
+            let singleLineText = textLines[idx];
 
             if (!tspan) {
                 tspan = tspanList[idx] = createElement('tspan');
                 textSvgEl.appendChild(tspan);
                 tspan.appendChild(document.createTextNode(singleLineText));
-            }
-            else if (tspan.__zrText !== singleLineText) {
+            }else if (tspan.__zrText !== singleLineText) {
                 tspan.innerHTML = '';
                 tspan.appendChild(document.createTextNode(singleLineText));
             }
@@ -18267,14 +18275,13 @@ function setTextTransform(textSvgEl, needTransformTextByHostEl, elTransform, sty
     }
 
     // textRotation only apply in RectText.
-    var textRotation = style.textRotation;
+    let textRotation = style.textRotation;
     if (hostRect && textRotation) {
-        var origin = style.textOrigin;
+        let origin = style.textOrigin;
         if (origin === 'center') {
             baseX = hostRect.width / 2 + hostRect.x;
             baseY = hostRect.height / 2 + hostRect.y;
-        }
-        else if (origin) {
+        }else if (origin) {
             baseX = origin[0] + hostRect.x;
             baseY = origin[1] + hostRect.y;
         }
@@ -18322,11 +18329,10 @@ function removeOldTextNode(el) {
 svgText.drawRectText = svgTextDrawRectText;
 
 svgText.brush = function (el) {
-    var style = el.style;
+    let style = el.style;
     if (style.text != null) {
         svgTextDrawRectText(el, false);
-    }
-    else {
+    }else {
         removeOldTextNode(el);
     }
 };
