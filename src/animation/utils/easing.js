@@ -6,30 +6,30 @@
  */
 var easing = {
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     linear: function (k) {
         return k;
     },
 
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quadraticIn: function (k) {
         return k * k;
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quadraticOut: function (k) {
         return k * (2 - k);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quadraticInOut: function (k) {
         if ((k *= 2) < 1) {
@@ -40,22 +40,22 @@ var easing = {
 
     // 三次方的缓动（t^3）
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     cubicIn: function (k) {
         return k * k * k;
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     cubicOut: function (k) {
         return --k * k * k + 1;
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     cubicInOut: function (k) {
         if ((k *= 2) < 1) {
@@ -66,22 +66,22 @@ var easing = {
 
     // 四次方的缓动（t^4）
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quarticIn: function (k) {
         return k * k * k * k;
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quarticOut: function (k) {
         return 1 - (--k * k * k * k);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quarticInOut: function (k) {
         if ((k *= 2) < 1) {
@@ -92,22 +92,22 @@ var easing = {
 
     // 五次方的缓动（t^5）
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quinticIn: function (k) {
         return k * k * k * k * k;
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quinticOut: function (k) {
         return --k * k * k * k * k + 1;
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quinticInOut: function (k) {
         if ((k *= 2) < 1) {
@@ -118,22 +118,22 @@ var easing = {
 
     // 正弦曲线的缓动（sin(t)）
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     sinusoidalIn: function (k) {
         return 1 - Math.cos(k * Math.PI / 2);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     sinusoidalOut: function (k) {
         return Math.sin(k * Math.PI / 2);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     sinusoidalInOut: function (k) {
         return 0.5 * (1 - Math.cos(Math.PI * k));
@@ -141,22 +141,22 @@ var easing = {
 
     // 指数曲线的缓动（2^t）
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     exponentialIn: function (k) {
         return k === 0 ? 0 : Math.pow(1024, k - 1);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     exponentialOut: function (k) {
         return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     exponentialInOut: function (k) {
         if (k === 0) {
@@ -173,22 +173,22 @@ var easing = {
 
     // 圆形曲线的缓动（sqrt(1-t^2)）
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     circularIn: function (k) {
         return 1 - Math.sqrt(1 - k * k);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     circularOut: function (k) {
         return Math.sqrt(1 - (--k * k));
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     circularInOut: function (k) {
         if ((k *= 2) < 1) {
@@ -199,8 +199,8 @@ var easing = {
 
     // 创建类似于弹簧在停止前来回振荡的动画
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     elasticIn: function (k) {
         var s;
@@ -223,8 +223,8 @@ var easing = {
                     * Math.sin((k - s) * (2 * Math.PI) / p));
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     elasticOut: function (k) {
         var s;
@@ -247,8 +247,8 @@ var easing = {
                     * Math.sin((k - s) * (2 * Math.PI) / p) + 1);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     elasticInOut: function (k) {
         var s;
@@ -278,24 +278,24 @@ var easing = {
 
     // 在某一动画开始沿指示的路径进行动画处理前稍稍收回该动画的移动
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     backIn: function (k) {
         var s = 1.70158;
         return k * k * ((s + 1) * k - s);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     backOut: function (k) {
         var s = 1.70158;
         return --k * k * ((s + 1) * k + s) + 1;
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     backInOut: function (k) {
         var s = 1.70158 * 1.525;
@@ -307,15 +307,15 @@ var easing = {
 
     // 创建弹跳效果
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     bounceIn: function (k) {
         return 1 - easing.bounceOut(1 - k);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     bounceOut: function (k) {
         if (k < (1 / 2.75)) {
@@ -332,8 +332,8 @@ var easing = {
         }
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     bounceInOut: function (k) {
         if (k < 0.5) {

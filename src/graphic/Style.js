@@ -63,27 +63,27 @@ Style.prototype = {
     constructor: Style,
 
     /**
-     * @type {string}
+     * @property {String}
      */
     fill: '#000',
 
     /**
-     * @type {string}
+     * @property {String}
      */
     stroke: null,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     opacity: 1,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     fillOpacity: null,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     strokeOpacity: null,
 
@@ -93,45 +93,45 @@ Style.prototype = {
      * `false` is used to remove lineDash in some
      * case that `null`/`undefined` can not be set.
      * (e.g., emphasis.lineStyle in echarts)
-     * @type {Array.<number>|boolean}
+     * @property {Array<Number>|boolean}
      */
     lineDash: null,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     lineDashOffset: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     shadowBlur: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     shadowOffsetX: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     shadowOffsetY: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     lineWidth: 1,
 
     /**
      * If stroke ignore scale
-     * @type {Boolean}
+     * @property {Boolean}
      */
     strokeNoScale: false,
 
     // Bounding rect text configuration
     // Not affected by element transform
     /**
-     * @type {string}
+     * @property {String}
      */
     text: null,
 
@@ -140,66 +140,66 @@ Style.prototype = {
      * `fontSize`, `fontStyle`, `fontWeight`, `fontFamily`.
      * So do not visit it directly in upper application (like echarts),
      * but use `contain/text#makeFont` instead.
-     * @type {string}
+     * @property {String}
      */
     font: null,
 
     /**
      * The same as font. Use font please.
      * @deprecated
-     * @type {string}
+     * @property {String}
      */
     textFont: null,
 
     /**
      * It helps merging respectively, rather than parsing an entire font string.
-     * @type {string}
+     * @property {String}
      */
     fontStyle: null,
 
     /**
      * It helps merging respectively, rather than parsing an entire font string.
-     * @type {string}
+     * @property {String}
      */
     fontWeight: null,
 
     /**
      * It helps merging respectively, rather than parsing an entire font string.
      * Should be 12 but not '12px'.
-     * @type {number}
+     * @property {Number}
      */
     fontSize: null,
 
     /**
      * It helps merging respectively, rather than parsing an entire font string.
-     * @type {string}
+     * @property {String}
      */
     fontFamily: null,
 
     /**
      * Reserved for special functinality, like 'hr'.
-     * @type {string}
+     * @property {String}
      */
     textTag: null,
 
     /**
-     * @type {string}
+     * @property {String}
      */
     textFill: '#000',
 
     /**
-     * @type {string}
+     * @property {String}
      */
     textStroke: null,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textWidth: null,
 
     /**
      * Only for textBackground.
-     * @type {number}
+     * @property {Number}
      */
     textHeight: null,
 
@@ -208,12 +208,12 @@ Style.prototype = {
      * value in upper applicaion, where the default value
      * of textStrokeWidth should be 0 to make sure that
      * user can choose to do not use text stroke.
-     * @type {number}
+     * @property {Number}
      */
     textStrokeWidth: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textLineHeight: null,
 
@@ -221,75 +221,75 @@ Style.prototype = {
      * 'inside', 'left', 'right', 'top', 'bottom'
      * [x, y]
      * Based on x, y of rect.
-     * @type {string|Array.<number>}
+     * @property {string|Array.<Number>}
      * @default 'inside'
      */
     textPosition: 'inside',
 
     /**
      * If not specified, use the boundingRect of a `displayable`.
-     * @type {Object}
+     * @property {Object}
      */
     textRect: null,
 
     /**
      * [x, y]
-     * @type {Array.<number>}
+     * @property {Array<Number>}
      */
     textOffset: null,
 
     /**
-     * @type {string}
+     * @property {String}
      */
     textAlign: null,
 
     /**
-     * @type {string}
+     * @property {String}
      */
     textVerticalAlign: null,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textDistance: 5,
 
     /**
-     * @type {string}
+     * @property {String}
      */
     textShadowColor: 'transparent',
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textShadowBlur: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textShadowOffsetX: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textShadowOffsetY: 0,
 
     /**
-     * @type {string}
+     * @property {String}
      */
     textBoxShadowColor: 'transparent',
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textBoxShadowBlur: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textBoxShadowOffsetX: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textBoxShadowOffsetY: 0,
 
@@ -297,7 +297,7 @@ Style.prototype = {
      * Whether transform text.
      * Only available in Path and Image element,
      * where the text is called as `RectText`.
-     * @type {boolean}
+     * @property {boolean}
      */
     transformText: false,
 
@@ -320,51 +320,51 @@ Style.prototype = {
      * + If specified as a string `center`, it is the center of the rect of
      * its host element.
      * + By default, this origin is the `textPosition`.
-     * @type {string|Array.<number>}
+     * @property {string|Array.<Number>}
      */
     textOrigin: null,
 
     /**
-     * @type {string}
+     * @property {String}
      */
     textBackgroundColor: null,
 
     /**
-     * @type {string}
+     * @property {String}
      */
     textBorderColor: null,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textBorderWidth: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textBorderRadius: 0,
 
     /**
      * Can be `2` or `[2, 4]` or `[2, 3, 4, 5]`
-     * @type {number|Array.<number>}
+     * @property {number|Array.<Number>}
      */
     textPadding: null,
 
     /**
      * Text styles for rich text.
-     * @type {Object}
+     * @property {Object}
      */
     rich: null,
 
     /**
      * {outerWidth, outerHeight, ellipsis, placeholder}
-     * @type {Object}
+     * @property {Object}
      */
     truncate: null,
 
     /**
      * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
-     * @type {string}
+     * @property {String}
      */
     blend: null,
 

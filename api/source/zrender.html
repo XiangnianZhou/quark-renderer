@@ -52,7 +52,7 @@ var painterCtors = {
 
 var instances = {};
 <span id='zrender-core-ZRender-property-version'>/**
-</span> * @type {String}
+</span> * @property {String}
  */
 
 var version = &#39;4.1.2&#39;;
@@ -128,18 +128,18 @@ function registerPainter(name, Ctor) {
 var ZRender = function ZRender(id, dom, opts) {
   opts = opts || {};
 <span id='zrender-core-ZRender-property-dom'>  /**
-</span>   * @type {HTMLDomElement}
+</span>   * @property {HTMLDomElement}
    */
 
   this.dom = dom;
 <span id='zrender-core-ZRender-property-id'>  /**
-</span>   * @type {String}
+</span>   * @property {String}
    */
 
   this.id = id;
   var self = this;
 <span id='zrender-core-ZRender-property-storage'>  /**
-</span>   * @type {Storage}
+</span>   * @property {Storage}
    */
 
   var storage = new Storage();
@@ -164,7 +164,7 @@ var ZRender = function ZRender(id, dom, opts) {
 
   this.eventHandler = new ZRenderEventHandler(storage, painter, handerProxy, painter.root);
 <span id='zrender-core-ZRender-property-globalAnimationMgr'>  /**
-</span>   * @type {GlobalAnimationMgr}
+</span>   * @property {GlobalAnimationMgr}
    * 利用 GlobalAnimationMgr 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
    * FROM MDN：
    * The window.requestAnimationFrame() method tells the browser that you wish 
@@ -186,7 +186,7 @@ var ZRender = function ZRender(id, dom, opts) {
   });
   this.globalAnimationMgr.start();
 <span id='zrender-core-ZRender-property-'>  /**
-</span>   * @type {boolean}
+</span>   * @property {boolean}
    * @private
    */
 

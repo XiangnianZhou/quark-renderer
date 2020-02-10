@@ -116,8 +116,8 @@ export default Path.extend({
 
     /**
      * Get point at percent
-     * @param  {number} t
-     * @return {Array.<number>}
+     * @param  {Number} t
+     * @return {Array<Number>}
      */
     pointAt: function (t) {
         return someVectorAt(this.shape, t, false);
@@ -125,8 +125,8 @@ export default Path.extend({
 
     /**
      * Get tangent at percent
-     * @param  {number} t
-     * @return {Array.<number>}
+     * @param  {Number} t
+     * @return {Array<Number>}
      */
     tangentAt: function (t) {
         var p = someVectorAt(this.shape, t, true);

@@ -1,6 +1,6 @@
 
 /**
- * @param {Array.<Object>} colorStops
+ * @param {Array<Object>} colorStops
  */
 var Gradient = function (colorStops) {
 

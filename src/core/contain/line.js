@@ -1,13 +1,13 @@
 
 /**
  * 线段包含判断
- * @param  {number}  x0
- * @param  {number}  y0
- * @param  {number}  x1
- * @param  {number}  y1
- * @param  {number}  lineWidth
- * @param  {number}  x
- * @param  {number}  y
+ * @param  {Number}  x0
+ * @param  {Number}  y0
+ * @param  {Number}  x1
+ * @param  {Number}  y1
+ * @param  {Number}  lineWidth
+ * @param  {Number}  x
+ * @param  {Number}  y
  * @return {boolean}
  */
 export function containStroke(x0, y0, x1, y1, lineWidth, x, y) {

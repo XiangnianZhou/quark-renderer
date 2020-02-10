@@ -61,7 +61,7 @@ var PathProxy = function (notSaveData) {
     if (this._saveData) {
         /**
          * Path data. Stored as flat array
-         * @type {Array.<Object>}
+         * @property {Array<Object>}
          */
         this.data = [];
     }
@@ -137,8 +137,8 @@ PathProxy.prototype = {
     },
 
     /**
-     * @param  {number} x
-     * @param  {number} y
+     * @param  {Number} x
+     * @param  {Number} y
      * @return {module:zrender/core/PathProxy}
      */
     moveTo: function (x, y) {
@@ -159,8 +159,8 @@ PathProxy.prototype = {
     },
 
     /**
-     * @param  {number} x
-     * @param  {number} y
+     * @param  {Number} x
+     * @param  {Number} y
      * @return {module:zrender/core/PathProxy}
      */
     lineTo: function (x, y) {
@@ -184,12 +184,12 @@ PathProxy.prototype = {
     },
 
     /**
-     * @param  {number} x1
-     * @param  {number} y1
-     * @param  {number} x2
-     * @param  {number} y2
-     * @param  {number} x3
-     * @param  {number} y3
+     * @param  {Number} x1
+     * @param  {Number} y1
+     * @param  {Number} x2
+     * @param  {Number} y2
+     * @param  {Number} x3
+     * @param  {Number} y3
      * @return {module:zrender/core/PathProxy}
      */
     bezierCurveTo: function (x1, y1, x2, y2, x3, y3) {
@@ -204,10 +204,10 @@ PathProxy.prototype = {
     },
 
     /**
-     * @param  {number} x1
-     * @param  {number} y1
-     * @param  {number} x2
-     * @param  {number} y2
+     * @param  {Number} x1
+     * @param  {Number} y1
+     * @param  {Number} x2
+     * @param  {Number} y2
      * @return {module:zrender/core/PathProxy}
      */
     quadraticCurveTo: function (x1, y1, x2, y2) {
@@ -222,11 +222,11 @@ PathProxy.prototype = {
     },
 
     /**
-     * @param  {number} cx
-     * @param  {number} cy
-     * @param  {number} r
-     * @param  {number} startAngle
-     * @param  {number} endAngle
+     * @param  {Number} cx
+     * @param  {Number} cy
+     * @param  {Number} r
+     * @param  {Number} startAngle
+     * @param  {Number} endAngle
      * @param  {boolean} anticlockwise
      * @return {module:zrender/core/PathProxy}
      */

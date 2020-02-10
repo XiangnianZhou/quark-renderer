@@ -12,7 +12,7 @@ import * as matrix from '../../core/utils/matrix';
  *
  * @class
  * @extends Definable
- * @param   {number}     zrId    zrender instance id
+ * @param   {Number}     zrId    zrender instance id
  * @param   {SVGElement} svgRoot root of SVG document
  */
 function ClippathManager(zrId, svgRoot) {

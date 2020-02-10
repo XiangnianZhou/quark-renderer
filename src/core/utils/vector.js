@@ -6,8 +6,8 @@ var ArrayCtor = typeof Float32Array === 'undefined'
 
 /**
  * 创建一个向量
- * @param {number} [x=0]
- * @param {number} [y=0]
+ * @param {Number} [x=0]
+ * @param {Number} [y=0]
  * @return {Vector2}
  */
 export function create(x, y) {
@@ -50,8 +50,8 @@ export function clone(v) {
 /**
  * 设置向量的两个项
  * @param {Vector2} out
- * @param {number} a
- * @param {number} b
+ * @param {Number} a
+ * @param {Number} b
  * @return {Vector2} 结果
  */
 export function set(out, a, b) {
@@ -77,7 +77,7 @@ export function add(out, v1, v2) {
  * @param {Vector2} out
  * @param {Vector2} v1
  * @param {Vector2} v2
- * @param {number} a
+ * @param {Number} a
  */
 export function scaleAndAdd(out, v1, v2, a) {
     out[0] = v1[0] + v2[0] * a;
@@ -100,7 +100,7 @@ export function sub(out, v1, v2) {
 /**
  * 向量长度
  * @param {Vector2} v
- * @return {number}
+ * @return {Number}
  */
 export function len(v) {
     return Math.sqrt(lenSquare(v));
@@ -110,7 +110,7 @@ export var length = len; // jshint ignore:line
 /**
  * 向量长度平方
  * @param {Vector2} v
- * @return {number}
+ * @return {Number}
  */
 export function lenSquare(v) {
     return v[0] * v[0] + v[1] * v[1];
@@ -145,7 +145,7 @@ export function div(out, v1, v2) {
  * 向量点乘
  * @param {Vector2} v1
  * @param {Vector2} v2
- * @return {number}
+ * @return {Number}
  */
 export function dot(v1, v2) {
     return v1[0] * v2[0] + v1[1] * v2[1];
@@ -155,7 +155,7 @@ export function dot(v1, v2) {
  * 向量缩放
  * @param {Vector2} out
  * @param {Vector2} v
- * @param {number} s
+ * @param {Number} s
  */
 export function scale(out, v, s) {
     out[0] = v[0] * s;
@@ -185,7 +185,7 @@ export function normalize(out, v) {
  * 计算向量间距离
  * @param {Vector2} v1
  * @param {Vector2} v2
- * @return {number}
+ * @return {Number}
  */
 export function distance(v1, v2) {
     return Math.sqrt(
@@ -199,7 +199,7 @@ export var dist = distance;
  * 向量距离平方
  * @param {Vector2} v1
  * @param {Vector2} v2
- * @return {number}
+ * @return {Number}
  */
 export function distanceSquare(v1, v2) {
     return (v1[0] - v2[0]) * (v1[0] - v2[0])
@@ -223,7 +223,7 @@ export function negate(out, v) {
  * @param {Vector2} out
  * @param {Vector2} v1
  * @param {Vector2} v2
- * @param {number} t
+ * @param {Number} t
  */
 export function lerp(out, v1, v2, t) {
     out[0] = v1[0] + t * (v2[0] - v1[0]);

@@ -33,7 +33,7 @@ let painterCtors = {
 let instances = {};
 
 /**
- * @type {String}
+ * @property {String}
  */
 export let version = '4.1.2';
 
@@ -107,19 +107,19 @@ let ZRender = function (id, dom, opts) {
     opts = opts || {};
 
     /**
-     * @type {HTMLDomElement}
+     * @property {HTMLDomElement}
      */
     this.dom = dom;
 
     /**
-     * @type {String}
+     * @property {String}
      */
     this.id = id;
 
     let self = this;
 
     /**
-     * @type {Storage}
+     * @property {Storage}
      */
     let storage = new Storage();
 
@@ -145,7 +145,7 @@ let ZRender = function (id, dom, opts) {
     this.eventHandler = new ZRenderEventHandler(storage, painter, handerProxy, painter.root);
 
     /**
-     * @type {GlobalAnimationMgr}
+     * @property {GlobalAnimationMgr}
      * 利用 GlobalAnimationMgr 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
      * FROM MDN：
      * The window.requestAnimationFrame() method tells the browser that you wish 
@@ -167,7 +167,7 @@ let ZRender = function (id, dom, opts) {
     this.globalAnimationMgr.start();
 
     /**
-     * @type {boolean}
+     * @property {boolean}
      * @private
      */
     this._needsRefresh;

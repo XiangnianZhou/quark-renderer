@@ -3,10 +3,10 @@ import Gradient from './Gradient';
 
 /**
  * x, y, r are all percent from 0 to 1
- * @param {number} [x=0.5]
- * @param {number} [y=0.5]
- * @param {number} [r=0.5]
- * @param {Array.<Object>} [colorStops]
+ * @param {Number} [x=0.5]
+ * @param {Number} [y=0.5]
+ * @param {Number} [r=0.5]
+ * @param {Array<Object>} [colorStops]
  * @param {boolean} [globalCoord=false]
  */
 var RadialGradient = function (x, y, r, colorStops, globalCoord) {

@@ -58,7 +58,7 @@ Storage.prototype = {
      * @param {boolean} [includeIgnore=false] 是否包含 ignore 的数组, 在 update 为 true 的时候有效
      *
      * 详见{@link Displayable.prototype.updateDisplayList}
-     * @return {Array.<Displayable>}
+     * @return {Array<Displayable>}
      */
     getDisplayList: function (update, includeIgnore) {
         includeIgnore = includeIgnore || false;
@@ -168,7 +168,7 @@ Storage.prototype = {
     /**
      * @method
      * 删除指定的图形(Shape)或者组(Group)
-     * @param {string|Array.<string>} [el] 如果为空清空整个Storage
+     * @param {string|Array.<String>} [el] 如果为空清空整个Storage
      */
     delRoot: function (el) {
         if (el == null) {

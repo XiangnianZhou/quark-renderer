@@ -8,12 +8,12 @@
 var LinkedList = function () {
 
     /**
-     * @type {module:zrender/core/LRU~Entry}
+     * @property {module:zrender/core/LRU~Entry}
      */
     this.head = null;
 
     /**
-     * @type {module:zrender/core/LRU~Entry}
+     * @property {module:zrender/core/LRU~Entry}
      */
     this.tail = null;
 
@@ -75,7 +75,7 @@ linkedListProto.remove = function (entry) {
 };
 
 /**
- * @return {number}
+ * @return {Number}
  */
 linkedListProto.len = function () {
     return this._len;
@@ -95,17 +95,17 @@ linkedListProto.clear = function () {
  */
 var Entry = function (val) {
     /**
-     * @type {}
+     * @property {}
      */
     this.value = val;
 
     /**
-     * @type {module:zrender/core/LRU~Entry}
+     * @property {module:zrender/core/LRU~Entry}
      */
     this.next;
 
     /**
-     * @type {module:zrender/core/LRU~Entry}
+     * @property {module:zrender/core/LRU~Entry}
      */
     this.prev;
 };
@@ -129,7 +129,7 @@ var LRU = function (maxSize) {
 var LRUProto = LRU.prototype;
 
 /**
- * @param  {string} key
+ * @param  {String} key
  * @param  {} value
  * @return {} Removed value
  */
@@ -167,7 +167,7 @@ LRUProto.put = function (key, value) {
 };
 
 /**
- * @param  {string} key
+ * @param  {String} key
  * @return {}
  */
 LRUProto.get = function (key) {

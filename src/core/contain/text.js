@@ -25,9 +25,9 @@ export function $override(name, fn) {
 
 /**
  * @public
- * @param {string} text
- * @param {string} font
- * @return {number} width
+ * @param {String} text
+ * @param {String} font
+ * @return {Number} width
  */
 export function getWidth(text, font) {
     font = font || DEFAULT_FONT;
@@ -56,11 +56,11 @@ export function getWidth(text, font) {
 
 /**
  * @public
- * @param {string} text
- * @param {string} font
- * @param {string} [textAlign='left']
- * @param {string} [textVerticalAlign='top']
- * @param {Array.<number>} [textPadding]
+ * @param {String} text
+ * @param {String} font
+ * @param {String} [textAlign='left']
+ * @param {String} [textVerticalAlign='top']
+ * @param {Array<Number>} [textPadding]
  * @param {Object} [rich]
  * @param {Object} [truncate]
  * @return {Object} {x, y, width, height, lineHeight}
@@ -108,10 +108,10 @@ function getRichTextRect(text, font, textAlign, textVerticalAlign, textPadding, 
 
 /**
  * @public
- * @param {number} x
- * @param {number} width
- * @param {string} [textAlign='left']
- * @return {number} Adjusted x.
+ * @param {Number} x
+ * @param {Number} width
+ * @param {String} [textAlign='left']
+ * @return {Number} Adjusted x.
  */
 export function adjustTextX(x, width, textAlign) {
     // FIXME Right to left language
@@ -126,10 +126,10 @@ export function adjustTextX(x, width, textAlign) {
 
 /**
  * @public
- * @param {number} y
- * @param {number} height
- * @param {string} [textVerticalAlign='top']
- * @return {number} Adjusted y.
+ * @param {Number} y
+ * @param {Number} height
+ * @param {String} [textVerticalAlign='top']
+ * @return {Number} Adjusted y.
  */
 export function adjustTextY(y, height, textVerticalAlign) {
     if (textVerticalAlign === 'middle') {
@@ -252,7 +252,7 @@ export function calculateTextPosition(out, style, rect) {
  * @public
  * @param {stirng} textPosition
  * @param {Object} rect {x, y, width, height}
- * @param {number} distance
+ * @param {Number} distance
  * @return {Object} {x, y, textAlign, textVerticalAlign}
  */
 export function adjustTextPositionOnRect(textPosition, rect, distance) {
@@ -264,17 +264,17 @@ export function adjustTextPositionOnRect(textPosition, rect, distance) {
  * Show ellipsis if overflow.
  *
  * @public
- * @param  {string} text
- * @param  {string} containerWidth
- * @param  {string} font
- * @param  {number} [ellipsis='...']
+ * @param  {String} text
+ * @param  {String} containerWidth
+ * @param  {String} font
+ * @param  {Number} [ellipsis='...']
  * @param  {Object} [options]
- * @param  {number} [options.maxIterations=3]
- * @param  {number} [options.minChar=0] If truncate result are less
+ * @param  {Number} [options.maxIterations=3]
+ * @param  {Number} [options.minChar=0] If truncate result are less
  *                  then minChar, ellipsis will not show, which is
  *                  better for user hint in some cases.
- * @param  {number} [options.placeholder=''] When all truncated, use the placeholder.
- * @return {string}
+ * @param  {Number} [options.placeholder=''] When all truncated, use the placeholder.
+ * @return {String}
  */
 export function truncateText(text, containerWidth, font, ellipsis, options) {
     if (!containerWidth) {
@@ -381,8 +381,8 @@ function estimateLength(text, contentWidth, ascCharWidth, cnCharWidth) {
 
 /**
  * @public
- * @param {string} font
- * @return {number} line height
+ * @param {String} font
+ * @return {Number} line height
  */
 export function getLineHeight(font) {
     // FIXME A rough approach.
@@ -391,8 +391,8 @@ export function getLineHeight(font) {
 
 /**
  * @public
- * @param {string} text
- * @param {string} font
+ * @param {String} text
+ * @param {String} font
  * @return {Object} width
  */
 export function measureText(text, font) {
@@ -408,8 +408,8 @@ methods.measureText = function (text, font) {
 
 /**
  * @public
- * @param {string} text
- * @param {string} font
+ * @param {String} text
+ * @param {String} font
  * @param {Object} [truncate]
  * @return {Object} block: {lineHeight, lines, height, outerHeight, canCacheByTextString}
  *  Notice: for performance, do not calculate outerWidth util needed.
@@ -468,7 +468,7 @@ export function parsePlainText(text, font, padding, textLineHeight, truncate) {
  * Also consider 'bbbb{a|xxx\nzzz}xxxx\naaaa'.
  *
  * @public
- * @param {string} text
+ * @param {String} text
  * @param {Object} style
  * @return {Object} block
  * {

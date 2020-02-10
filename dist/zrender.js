@@ -735,8 +735,8 @@ function retrieve3(value0, value1, value2) {
 /**
  * @memberOf module:zrender/core/dataStructureUtil
  * @param {Array} arr
- * @param {number} startIndex
- * @param {number} endIndex
+ * @param {Number} startIndex
+ * @param {Number} endIndex
  * @return {Array}
  */
 function slice() {
@@ -749,8 +749,8 @@ function slice() {
  *  3 => [3, 3, 3, 3]
  *  [4, 2] => [4, 2, 4, 2]
  *  [4, 3, 2] => [4, 3, 2, 3]
- * @param {number|Array.<number>} val
- * @return {Array.<number>}
+ * @param {number|Array.<Number>} val
+ * @return {Array<Number>}
  */
 function normalizeCssArray(val) {
     if (typeof (val) === 'number') {
@@ -771,7 +771,7 @@ function normalizeCssArray(val) {
 /**
  * @memberOf module:zrender/core/dataStructureUtil
  * @param {boolean} condition
- * @param {string} message
+ * @param {String} message
  */
 function assert(condition, message) {
     if (!condition) {
@@ -781,8 +781,8 @@ function assert(condition, message) {
 
 /**
  * @memberOf module:zrender/core/dataStructureUtil
- * @param {string} str string to be trimed
- * @return {string} trimed string
+ * @param {String} str string to be trimed
+ * @return {String} trimed string
  */
 function trim(str) {
     if (str == null) {
@@ -877,20 +877,20 @@ function concatArray(a, b) {
 function noop() {}
 
 /**
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} percent
- * @return {number}
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} percent
+ * @return {Number}
  */
 function interpolateNumber(p0, p1, percent) {
     return (p1 - p0) * percent + p0;
 }
 
 /**
- * @param  {string} p0
- * @param  {string} p1
- * @param  {number} percent
- * @return {string}
+ * @param  {String} p0
+ * @param  {String} p1
+ * @param  {Number} percent
+ * @return {String}
  */
 function interpolateString(p0, p1, percent) {
     return percent > 0.5 ? p1 : p0;
@@ -899,9 +899,9 @@ function interpolateString(p0, p1, percent) {
 /**
  * @param  {Array} p0
  * @param  {Array} p1
- * @param  {number} percent
+ * @param  {Number} percent
  * @param  {Array} out
- * @param  {number} arrDim
+ * @param  {Number} arrDim
  */
 function interpolateArray(p0, p1, percent, out, arrDim) {
     var len = p0.length;
@@ -965,7 +965,7 @@ function fillArr(arr0, arr1, arrDim) {
 /**
  * @param  {Array} arr0
  * @param  {Array} arr1
- * @param  {number} arrDim
+ * @param  {Number} arrDim
  * @return {boolean}
  */
 function isArraySame(arr0, arr1, arrDim) {
@@ -1002,11 +1002,11 @@ function isArraySame(arr0, arr1, arrDim) {
  * @param  {Array} p1
  * @param  {Array} p2
  * @param  {Array} p3
- * @param  {number} t
- * @param  {number} t2
- * @param  {number} t3
+ * @param  {Number} t
+ * @param  {Number} t2
+ * @param  {Number} t3
  * @param  {Array} out
- * @param  {number} arrDim
+ * @param  {Number} arrDim
  */
 function catmullRomInterpolateArray(
     p0, p1, p2, p3, t, t2, t3, out, arrDim
@@ -1034,14 +1034,14 @@ function catmullRomInterpolateArray(
 
 /**
  * Catmull Rom interpolate number
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {number} t
- * @param  {number} t2
- * @param  {number} t3
- * @return {number}
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} p3
+ * @param  {Number} t
+ * @param  {Number} t2
+ * @param  {Number} t3
+ * @return {Number}
  */
 function catmullRomInterpolate(p0, p1, p2, p3, t, t2, t3) {
     var v0 = (p2 - p0) * 0.5;
@@ -1147,8 +1147,8 @@ var ArrayCtor = typeof Float32Array === 'undefined'
 
 /**
  * 创建一个向量
- * @param {number} [x=0]
- * @param {number} [y=0]
+ * @param {Number} [x=0]
+ * @param {Number} [y=0]
  * @return {Vector2}
  */
 function create(x, y) {
@@ -1191,8 +1191,8 @@ function clone$1(v) {
 /**
  * 设置向量的两个项
  * @param {Vector2} out
- * @param {number} a
- * @param {number} b
+ * @param {Number} a
+ * @param {Number} b
  * @return {Vector2} 结果
  */
 function set(out, a, b) {
@@ -1218,7 +1218,7 @@ function add(out, v1, v2) {
  * @param {Vector2} out
  * @param {Vector2} v1
  * @param {Vector2} v2
- * @param {number} a
+ * @param {Number} a
  */
 function scaleAndAdd(out, v1, v2, a) {
     out[0] = v1[0] + v2[0] * a;
@@ -1241,7 +1241,7 @@ function sub(out, v1, v2) {
 /**
  * 向量长度
  * @param {Vector2} v
- * @return {number}
+ * @return {Number}
  */
 function len(v) {
     return Math.sqrt(lenSquare(v));
@@ -1251,7 +1251,7 @@ var length = len; // jshint ignore:line
 /**
  * 向量长度平方
  * @param {Vector2} v
- * @return {number}
+ * @return {Number}
  */
 function lenSquare(v) {
     return v[0] * v[0] + v[1] * v[1];
@@ -1286,7 +1286,7 @@ function div(out, v1, v2) {
  * 向量点乘
  * @param {Vector2} v1
  * @param {Vector2} v2
- * @return {number}
+ * @return {Number}
  */
 function dot(v1, v2) {
     return v1[0] * v2[0] + v1[1] * v2[1];
@@ -1296,7 +1296,7 @@ function dot(v1, v2) {
  * 向量缩放
  * @param {Vector2} out
  * @param {Vector2} v
- * @param {number} s
+ * @param {Number} s
  */
 function scale(out, v, s) {
     out[0] = v[0] * s;
@@ -1326,7 +1326,7 @@ function normalize(out, v) {
  * 计算向量间距离
  * @param {Vector2} v1
  * @param {Vector2} v2
- * @return {number}
+ * @return {Number}
  */
 function distance(v1, v2) {
     return Math.sqrt(
@@ -1340,7 +1340,7 @@ var dist = distance;
  * 向量距离平方
  * @param {Vector2} v1
  * @param {Vector2} v2
- * @return {number}
+ * @return {Number}
  */
 function distanceSquare(v1, v2) {
     return (v1[0] - v2[0]) * (v1[0] - v2[0])
@@ -1364,7 +1364,7 @@ function negate(out, v) {
  * @param {Vector2} out
  * @param {Vector2} v1
  * @param {Vector2} v2
- * @param {number} t
+ * @param {Number} t
  */
 function lerp(out, v1, v2, t) {
     out[0] = v1[0] + t * (v2[0] - v1[0]);
@@ -1830,8 +1830,8 @@ function determinant(rows, rank, rowStart, rowMask, colMask, detCache) {
  *
  * Notice: `buildTransformer` may take more than 10ms in some Android device.
  *
- * @param {Array.<number>} src source four points, [x0, y0, x1, y1, x2, y2, x3, y3]
- * @param {Array.<number>} dest destination four points, [x0, y0, x1, y1, x2, y2, x3, y3]
+ * @param {Array<Number>} src source four points, [x0, y0, x1, y1, x2, y2, x3, y3]
+ * @param {Array<Number>} dest destination four points, [x0, y0, x1, y1, x2, y2, x3, y3]
  * @return {Function} transformer If fail, return null/undefined.
  */
 function buildTransformer(src, dest) {
@@ -2107,7 +2107,7 @@ function normalizeEvent(el, e, calculate) {
 
 /**
  * @param {HTMLElement} el
- * @param {string} name
+ * @param {String} name
  * @param {Function} handler
  */
 function addEventListener(el, name, handler) {
@@ -2326,7 +2326,7 @@ var GestureMgr = function () {
 
     /**
      * @private
-     * @type {Array.<Object>}
+     * @property {Array<Object>}
      */
     this._track = [];
 };
@@ -2912,7 +2912,7 @@ var ArrayCtor$1 = typeof Float32Array === 'undefined'
 
 /**
  * Create a identity matrix.
- * @return {Float32Array|Array.<number>}
+ * @return {Float32Array|Array.<Number>}
  */
 function create$1() {
     var out = new ArrayCtor$1(6);
@@ -2923,7 +2923,7 @@ function create$1() {
 
 /**
  * 设置矩阵为单位矩阵
- * @param {Float32Array|Array.<number>} out
+ * @param {Float32Array|Array.<Number>} out
  */
 function identity(out) {
     out[0] = 1;
@@ -2937,8 +2937,8 @@ function identity(out) {
 
 /**
  * 复制矩阵
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} m
+ * @param {Float32Array|Array.<Number>} out
+ * @param {Float32Array|Array.<Number>} m
  */
 function copy$1(out, m) {
     out[0] = m[0];
@@ -2952,9 +2952,9 @@ function copy$1(out, m) {
 
 /**
  * 矩阵相乘
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} m1
- * @param {Float32Array|Array.<number>} m2
+ * @param {Float32Array|Array.<Number>} out
+ * @param {Float32Array|Array.<Number>} m1
+ * @param {Float32Array|Array.<Number>} m2
  */
 function mul$1(out, m1, m2) {
     // Consider matrix.mul(m, m2, m);
@@ -2977,9 +2977,9 @@ function mul$1(out, m1, m2) {
 
 /**
  * 平移变换
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} a
- * @param {Float32Array|Array.<number>} v
+ * @param {Float32Array|Array.<Number>} out
+ * @param {Float32Array|Array.<Number>} a
+ * @param {Float32Array|Array.<Number>} v
  */
 function translate(out, a, v) {
     out[0] = a[0];
@@ -2993,9 +2993,9 @@ function translate(out, a, v) {
 
 /**
  * 旋转变换
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} a
- * @param {number} rad
+ * @param {Float32Array|Array.<Number>} out
+ * @param {Float32Array|Array.<Number>} a
+ * @param {Number} rad
  */
 function rotate(out, a, rad) {
     var aa = a[0];
@@ -3018,9 +3018,9 @@ function rotate(out, a, rad) {
 
 /**
  * 缩放变换
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} a
- * @param {Float32Array|Array.<number>} v
+ * @param {Float32Array|Array.<Number>} out
+ * @param {Float32Array|Array.<Number>} a
+ * @param {Float32Array|Array.<Number>} v
  */
 function scale$1(out, a, v) {
     var vx = v[0];
@@ -3036,8 +3036,8 @@ function scale$1(out, a, v) {
 
 /**
  * 求逆矩阵
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} a
+ * @param {Float32Array|Array.<Number>} out
+ * @param {Float32Array|Array.<Number>} a
  */
 function invert(out, a) {
 
@@ -3065,7 +3065,7 @@ function invert(out, a) {
 
 /**
  * Clone a new matrix.
- * @param {Float32Array|Array.<number>} a
+ * @param {Float32Array|Array.<Number>} a
  */
 function clone$2(a) {
     var b = create$1();
@@ -3109,7 +3109,7 @@ var Transformable = function (opts) {
     if (!opts.position) {
         /**
          * 平移
-         * @type {Array.<number>}
+         * @property {Array<Number>}
          * @default [0, 0]
          */
         this.position = [0, 0];
@@ -3117,7 +3117,7 @@ var Transformable = function (opts) {
     if (opts.rotation == null) {
         /**
          * 旋转
-         * @type {Array.<number>}
+         * @property {Array<Number>}
          * @default 0
          */
         this.rotation = 0;
@@ -3125,14 +3125,14 @@ var Transformable = function (opts) {
     if (!opts.scale) {
         /**
          * 缩放
-         * @type {Array.<number>}
+         * @property {Array<Number>}
          * @default [1, 1]
          */
         this.scale = [1, 1];
     }
     /**
      * 旋转和缩放的原点
-     * @type {Array.<number>}
+     * @property {Array<Number>}
      * @default null
      */
     this.origin = this.origin || null;
@@ -3288,7 +3288,7 @@ transformableProto.decomposeTransform = function () {
 
 /**
  * Get global scale
- * @return {Array.<number>}
+ * @return {Array<Number>}
  */
 transformableProto.getGlobalScale = function (out) {
     var m = this.transform;
@@ -3311,9 +3311,9 @@ transformableProto.getGlobalScale = function (out) {
 /**
  * 变换坐标位置到 shape 的局部坐标空间
  * @method
- * @param {number} x
- * @param {number} y
- * @return {Array.<number>}
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Array<Number>}
  */
 transformableProto.transformCoordToLocal = function (x, y) {
     var v2 = [x, y];
@@ -3327,9 +3327,9 @@ transformableProto.transformCoordToLocal = function (x, y) {
 /**
  * 变换局部坐标位置到全局坐标空间
  * @method
- * @param {number} x
- * @param {number} y
- * @return {Array.<number>}
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Array<Number>}
  */
 transformableProto.transformCoordToGlobal = function (x, y) {
     var v2 = [x, y];
@@ -3343,10 +3343,10 @@ transformableProto.transformCoordToGlobal = function (x, y) {
 /**
  * @static
  * @param {Object} target
- * @param {Array.<number>} target.origin
- * @param {number} target.rotation
- * @param {Array.<number>} target.position
- * @param {Array.<number>} [m]
+ * @param {Array<Number>} target.origin
+ * @param {Number} target.rotation
+ * @param {Array<Number>} target.position
+ * @param {Array<Number>} [m]
  */
 Transformable.getLocalTransform = function (target, m) {
     m = m || [];
@@ -3386,30 +3386,30 @@ Transformable.getLocalTransform = function (target, m) {
  */
 var easing = {
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     linear: function (k) {
         return k;
     },
 
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quadraticIn: function (k) {
         return k * k;
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quadraticOut: function (k) {
         return k * (2 - k);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quadraticInOut: function (k) {
         if ((k *= 2) < 1) {
@@ -3420,22 +3420,22 @@ var easing = {
 
     // 三次方的缓动（t^3）
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     cubicIn: function (k) {
         return k * k * k;
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     cubicOut: function (k) {
         return --k * k * k + 1;
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     cubicInOut: function (k) {
         if ((k *= 2) < 1) {
@@ -3446,22 +3446,22 @@ var easing = {
 
     // 四次方的缓动（t^4）
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quarticIn: function (k) {
         return k * k * k * k;
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quarticOut: function (k) {
         return 1 - (--k * k * k * k);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quarticInOut: function (k) {
         if ((k *= 2) < 1) {
@@ -3472,22 +3472,22 @@ var easing = {
 
     // 五次方的缓动（t^5）
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quinticIn: function (k) {
         return k * k * k * k * k;
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quinticOut: function (k) {
         return --k * k * k * k * k + 1;
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     quinticInOut: function (k) {
         if ((k *= 2) < 1) {
@@ -3498,22 +3498,22 @@ var easing = {
 
     // 正弦曲线的缓动（sin(t)）
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     sinusoidalIn: function (k) {
         return 1 - Math.cos(k * Math.PI / 2);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     sinusoidalOut: function (k) {
         return Math.sin(k * Math.PI / 2);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     sinusoidalInOut: function (k) {
         return 0.5 * (1 - Math.cos(Math.PI * k));
@@ -3521,22 +3521,22 @@ var easing = {
 
     // 指数曲线的缓动（2^t）
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     exponentialIn: function (k) {
         return k === 0 ? 0 : Math.pow(1024, k - 1);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     exponentialOut: function (k) {
         return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     exponentialInOut: function (k) {
         if (k === 0) {
@@ -3553,22 +3553,22 @@ var easing = {
 
     // 圆形曲线的缓动（sqrt(1-t^2)）
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     circularIn: function (k) {
         return 1 - Math.sqrt(1 - k * k);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     circularOut: function (k) {
         return Math.sqrt(1 - (--k * k));
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     circularInOut: function (k) {
         if ((k *= 2) < 1) {
@@ -3579,8 +3579,8 @@ var easing = {
 
     // 创建类似于弹簧在停止前来回振荡的动画
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     elasticIn: function (k) {
         var s;
@@ -3603,8 +3603,8 @@ var easing = {
                     * Math.sin((k - s) * (2 * Math.PI) / p));
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     elasticOut: function (k) {
         var s;
@@ -3627,8 +3627,8 @@ var easing = {
                     * Math.sin((k - s) * (2 * Math.PI) / p) + 1);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     elasticInOut: function (k) {
         var s;
@@ -3658,24 +3658,24 @@ var easing = {
 
     // 在某一动画开始沿指示的路径进行动画处理前稍稍收回该动画的移动
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     backIn: function (k) {
         var s = 1.70158;
         return k * k * ((s + 1) * k - s);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     backOut: function (k) {
         var s = 1.70158;
         return --k * k * ((s + 1) * k + s) + 1;
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     backInOut: function (k) {
         var s = 1.70158 * 1.525;
@@ -3687,15 +3687,15 @@ var easing = {
 
     // 创建弹跳效果
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     bounceIn: function (k) {
         return 1 - easing.bounceOut(1 - k);
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     bounceOut: function (k) {
         if (k < (1 / 2.75)) {
@@ -3712,8 +3712,8 @@ var easing = {
         }
     },
     /**
-    * @param {number} k
-    * @return {number}
+    * @param {Number} k
+    * @return {Number}
     */
     bounceInOut: function (k) {
         if (k < 0.5) {
@@ -3856,12 +3856,12 @@ class Timeline{
 var LinkedList = function () {
 
     /**
-     * @type {module:zrender/core/LRU~Entry}
+     * @property {module:zrender/core/LRU~Entry}
      */
     this.head = null;
 
     /**
-     * @type {module:zrender/core/LRU~Entry}
+     * @property {module:zrender/core/LRU~Entry}
      */
     this.tail = null;
 
@@ -3923,7 +3923,7 @@ linkedListProto.remove = function (entry) {
 };
 
 /**
- * @return {number}
+ * @return {Number}
  */
 linkedListProto.len = function () {
     return this._len;
@@ -3943,17 +3943,17 @@ linkedListProto.clear = function () {
  */
 var Entry = function (val) {
     /**
-     * @type {}
+     * @property {}
      */
     this.value = val;
 
     /**
-     * @type {module:zrender/core/LRU~Entry}
+     * @property {module:zrender/core/LRU~Entry}
      */
     this.next;
 
     /**
-     * @type {module:zrender/core/LRU~Entry}
+     * @property {module:zrender/core/LRU~Entry}
      */
     this.prev;
 };
@@ -3977,7 +3977,7 @@ var LRU = function (maxSize) {
 var LRUProto = LRU.prototype;
 
 /**
- * @param  {string} key
+ * @param  {String} key
  * @param  {} value
  * @return {} Removed value
  */
@@ -4015,7 +4015,7 @@ LRUProto.put = function (key, value) {
 };
 
 /**
- * @param  {string} key
+ * @param  {String} key
  * @return {}
  */
 LRUProto.get = function (key) {
@@ -4196,9 +4196,9 @@ function putToCache(colorStr, rgbaArr) {
 }
 
 /**
- * @param {string} colorStr
- * @param {Array.<number>} out
- * @return {Array.<number>}
+ * @param {String} colorStr
+ * @param {Array<Number>} out
+ * @return {Array<Number>}
  * @memberOf module:zrender/util/color
  */
 function parse(colorStr, rgbaArr) {
@@ -4313,9 +4313,9 @@ function parse(colorStr, rgbaArr) {
 }
 
 /**
- * @param {Array.<number>} hsla
- * @param {Array.<number>} rgba
- * @return {Array.<number>} rgba
+ * @param {Array<Number>} hsla
+ * @param {Array<Number>} rgba
+ * @return {Array<Number>} rgba
  */
 function hsla2rgba(hsla, rgba) {
     var h = (((parseFloat(hsla[0]) % 360) + 360) % 360) / 360;  // 0 .. 1
@@ -4342,8 +4342,8 @@ function hsla2rgba(hsla, rgba) {
 }
 
 /**
- * @param {Array.<number>} rgba
- * @return {Array.<number>} hsla
+ * @param {Array<Number>} rgba
+ * @return {Array<Number>} hsla
  */
 function rgba2hsla(rgba) {
     if (!rgba) {
@@ -4408,9 +4408,9 @@ function rgba2hsla(rgba) {
 }
 
 /**
- * @param {string} color
- * @param {number} level
- * @return {string}
+ * @param {String} color
+ * @param {Number} level
+ * @return {String}
  * @memberOf module:zrender/util/color
  */
 function lift(color, level) {
@@ -4435,8 +4435,8 @@ function lift(color, level) {
 }
 
 /**
- * @param {string} color
- * @return {string}
+ * @param {String} color
+ * @return {String}
  * @memberOf module:zrender/util/color
  */
 function toHex(color) {
@@ -4448,10 +4448,10 @@ function toHex(color) {
 
 /**
  * Map value to color. Faster than lerp methods because color is represented by rgba array.
- * @param {number} normalizedValue A float between 0 and 1.
- * @param {Array.<Array.<number>>} colors List of rgba color array
- * @param {Array.<number>} [out] Mapped gba color array
- * @return {Array.<number>} will be null/undefined if input illegal.
+ * @param {Number} normalizedValue A float between 0 and 1.
+ * @param {Array<Array.<Number>>} colors List of rgba color array
+ * @param {Array<Number>} [out] Mapped gba color array
+ * @return {Array<Number>} will be null/undefined if input illegal.
  */
 function fastLerp(normalizedValue, colors, out) {
     if (!(colors && colors.length)
@@ -4482,8 +4482,8 @@ function fastLerp(normalizedValue, colors, out) {
 var fastMapToColor = fastLerp;
 
 /**
- * @param {number} normalizedValue A float between 0 and 1.
- * @param {Array.<string>} colors Color list.
+ * @param {Number} normalizedValue A float between 0 and 1.
+ * @param {Array<String>} colors Color list.
  * @param {boolean=} fullOutput Default false.
  * @return {(string|Object)} Result color. If fullOutput,
  *                           return {color: ..., leftIndex: ..., rightIndex: ..., value: ...},
@@ -4529,11 +4529,11 @@ function lerp$1(normalizedValue, colors, fullOutput) {
 var mapToColor = lerp$1;
 
 /**
- * @param {string} color
+ * @param {String} color
  * @param {number=} h 0 ~ 360, ignore when null.
  * @param {number=} s 0 ~ 1, ignore when null.
  * @param {number=} l 0 ~ 1, ignore when null.
- * @return {string} Color string in rgba format.
+ * @return {String} Color string in rgba format.
  * @memberOf module:zrender/util/color
  */
 function modifyHSL(color, h, s, l) {
@@ -4550,9 +4550,9 @@ function modifyHSL(color, h, s, l) {
 }
 
 /**
- * @param {string} color
+ * @param {String} color
  * @param {number=} alpha 0 ~ 1
- * @return {string} Color string in rgba format.
+ * @return {String} Color string in rgba format.
  * @memberOf module:zrender/util/color
  */
 function modifyAlpha(color, alpha) {
@@ -4565,9 +4565,9 @@ function modifyAlpha(color, alpha) {
 }
 
 /**
- * @param {Array.<number>} arrColor like [12,33,44,0.4]
- * @param {string} type 'rgba', 'hsva', ...
- * @return {string} Result color. (If input illegal, return undefined).
+ * @param {Array<Number>} arrColor like [12,33,44,0.4]
+ * @param {String} type 'rgba', 'hsva', ...
+ * @return {String} Result color. (If input illegal, return undefined).
  */
 function stringify(arrColor, type) {
     if (!arrColor || !arrColor.length) {
@@ -5178,7 +5178,7 @@ AnimationProcess.prototype = {
  */
 let Animatable = function () {
     /**
-     * @type {zrender.animation.AnimationProcess}
+     * @property {zrender.animation.AnimationProcess}
      * @readOnly
      */
     this.animationProcessList = [];
@@ -5943,7 +5943,7 @@ BoundingRect.create = function (rect) {
  * Group是一个容器，可以插入子节点，Group的变换也会被应用到子节点上。
  * Group 可以嵌套子节点，其它类型不能。
  * 
- *      @example preview small frame
+ *      @example small frame
  *      let Group = require('zrender/Group');
  *      let Circle = require('zrender/graphic/shape/Circle');
  *      let g = new Group();
@@ -7001,7 +7001,7 @@ Storage.prototype = {
      * @param {boolean} [includeIgnore=false] 是否包含 ignore 的数组, 在 update 为 true 的时候有效
      *
      * 详见{@link Displayable.prototype.updateDisplayList}
-     * @return {Array.<Displayable>}
+     * @return {Array<Displayable>}
      */
     getDisplayList: function (update, includeIgnore) {
         includeIgnore = includeIgnore || false;
@@ -7111,7 +7111,7 @@ Storage.prototype = {
     /**
      * @method
      * 删除指定的图形(Shape)或者组(Group)
-     * @param {string|Array.<string>} [el] 如果为空清空整个Storage
+     * @param {string|Array.<String>} [el] 如果为空清空整个Storage
      */
     delRoot: function (el) {
         if (el == null) {
@@ -7331,27 +7331,27 @@ Style.prototype = {
     constructor: Style,
 
     /**
-     * @type {string}
+     * @property {String}
      */
     fill: '#000',
 
     /**
-     * @type {string}
+     * @property {String}
      */
     stroke: null,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     opacity: 1,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     fillOpacity: null,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     strokeOpacity: null,
 
@@ -7361,45 +7361,45 @@ Style.prototype = {
      * `false` is used to remove lineDash in some
      * case that `null`/`undefined` can not be set.
      * (e.g., emphasis.lineStyle in echarts)
-     * @type {Array.<number>|boolean}
+     * @property {Array<Number>|boolean}
      */
     lineDash: null,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     lineDashOffset: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     shadowBlur: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     shadowOffsetX: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     shadowOffsetY: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     lineWidth: 1,
 
     /**
      * If stroke ignore scale
-     * @type {Boolean}
+     * @property {Boolean}
      */
     strokeNoScale: false,
 
     // Bounding rect text configuration
     // Not affected by element transform
     /**
-     * @type {string}
+     * @property {String}
      */
     text: null,
 
@@ -7408,66 +7408,66 @@ Style.prototype = {
      * `fontSize`, `fontStyle`, `fontWeight`, `fontFamily`.
      * So do not visit it directly in upper application (like echarts),
      * but use `contain/text#makeFont` instead.
-     * @type {string}
+     * @property {String}
      */
     font: null,
 
     /**
      * The same as font. Use font please.
      * @deprecated
-     * @type {string}
+     * @property {String}
      */
     textFont: null,
 
     /**
      * It helps merging respectively, rather than parsing an entire font string.
-     * @type {string}
+     * @property {String}
      */
     fontStyle: null,
 
     /**
      * It helps merging respectively, rather than parsing an entire font string.
-     * @type {string}
+     * @property {String}
      */
     fontWeight: null,
 
     /**
      * It helps merging respectively, rather than parsing an entire font string.
      * Should be 12 but not '12px'.
-     * @type {number}
+     * @property {Number}
      */
     fontSize: null,
 
     /**
      * It helps merging respectively, rather than parsing an entire font string.
-     * @type {string}
+     * @property {String}
      */
     fontFamily: null,
 
     /**
      * Reserved for special functinality, like 'hr'.
-     * @type {string}
+     * @property {String}
      */
     textTag: null,
 
     /**
-     * @type {string}
+     * @property {String}
      */
     textFill: '#000',
 
     /**
-     * @type {string}
+     * @property {String}
      */
     textStroke: null,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textWidth: null,
 
     /**
      * Only for textBackground.
-     * @type {number}
+     * @property {Number}
      */
     textHeight: null,
 
@@ -7476,12 +7476,12 @@ Style.prototype = {
      * value in upper applicaion, where the default value
      * of textStrokeWidth should be 0 to make sure that
      * user can choose to do not use text stroke.
-     * @type {number}
+     * @property {Number}
      */
     textStrokeWidth: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textLineHeight: null,
 
@@ -7489,75 +7489,75 @@ Style.prototype = {
      * 'inside', 'left', 'right', 'top', 'bottom'
      * [x, y]
      * Based on x, y of rect.
-     * @type {string|Array.<number>}
+     * @property {string|Array.<Number>}
      * @default 'inside'
      */
     textPosition: 'inside',
 
     /**
      * If not specified, use the boundingRect of a `displayable`.
-     * @type {Object}
+     * @property {Object}
      */
     textRect: null,
 
     /**
      * [x, y]
-     * @type {Array.<number>}
+     * @property {Array<Number>}
      */
     textOffset: null,
 
     /**
-     * @type {string}
+     * @property {String}
      */
     textAlign: null,
 
     /**
-     * @type {string}
+     * @property {String}
      */
     textVerticalAlign: null,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textDistance: 5,
 
     /**
-     * @type {string}
+     * @property {String}
      */
     textShadowColor: 'transparent',
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textShadowBlur: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textShadowOffsetX: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textShadowOffsetY: 0,
 
     /**
-     * @type {string}
+     * @property {String}
      */
     textBoxShadowColor: 'transparent',
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textBoxShadowBlur: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textBoxShadowOffsetX: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textBoxShadowOffsetY: 0,
 
@@ -7565,7 +7565,7 @@ Style.prototype = {
      * Whether transform text.
      * Only available in Path and Image element,
      * where the text is called as `RectText`.
-     * @type {boolean}
+     * @property {boolean}
      */
     transformText: false,
 
@@ -7588,51 +7588,51 @@ Style.prototype = {
      * + If specified as a string `center`, it is the center of the rect of
      * its host element.
      * + By default, this origin is the `textPosition`.
-     * @type {string|Array.<number>}
+     * @property {string|Array.<Number>}
      */
     textOrigin: null,
 
     /**
-     * @type {string}
+     * @property {String}
      */
     textBackgroundColor: null,
 
     /**
-     * @type {string}
+     * @property {String}
      */
     textBorderColor: null,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textBorderWidth: 0,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     textBorderRadius: 0,
 
     /**
      * Can be `2` or `[2, 4]` or `[2, 3, 4, 5]`
-     * @type {number|Array.<number>}
+     * @property {number|Array.<Number>}
      */
     textPadding: null,
 
     /**
      * Text styles for rich text.
-     * @type {Object}
+     * @property {Object}
      */
     rich: null,
 
     /**
      * {outerWidth, outerHeight, ellipsis, placeholder}
-     * @type {Object}
+     * @property {Object}
      */
     truncate: null,
 
     /**
      * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
-     * @type {string}
+     * @property {String}
      */
     blend: null,
 
@@ -8105,9 +8105,9 @@ function $override$1(name, fn) {
 
 /**
  * @public
- * @param {string} text
- * @param {string} font
- * @return {number} width
+ * @param {String} text
+ * @param {String} font
+ * @return {Number} width
  */
 function getWidth(text, font) {
     font = font || DEFAULT_FONT$1;
@@ -8136,11 +8136,11 @@ function getWidth(text, font) {
 
 /**
  * @public
- * @param {string} text
- * @param {string} font
- * @param {string} [textAlign='left']
- * @param {string} [textVerticalAlign='top']
- * @param {Array.<number>} [textPadding]
+ * @param {String} text
+ * @param {String} font
+ * @param {String} [textAlign='left']
+ * @param {String} [textVerticalAlign='top']
+ * @param {Array<Number>} [textPadding]
  * @param {Object} [rich]
  * @param {Object} [truncate]
  * @return {Object} {x, y, width, height, lineHeight}
@@ -8188,10 +8188,10 @@ function getRichTextRect(text, font, textAlign, textVerticalAlign, textPadding, 
 
 /**
  * @public
- * @param {number} x
- * @param {number} width
- * @param {string} [textAlign='left']
- * @return {number} Adjusted x.
+ * @param {Number} x
+ * @param {Number} width
+ * @param {String} [textAlign='left']
+ * @return {Number} Adjusted x.
  */
 function adjustTextX(x, width, textAlign) {
     // FIXME Right to left language
@@ -8206,10 +8206,10 @@ function adjustTextX(x, width, textAlign) {
 
 /**
  * @public
- * @param {number} y
- * @param {number} height
- * @param {string} [textVerticalAlign='top']
- * @return {number} Adjusted y.
+ * @param {Number} y
+ * @param {Number} height
+ * @param {String} [textVerticalAlign='top']
+ * @return {Number} Adjusted y.
  */
 function adjustTextY(y, height, textVerticalAlign) {
     if (textVerticalAlign === 'middle') {
@@ -8332,7 +8332,7 @@ function calculateTextPosition(out, style, rect) {
  * @public
  * @param {stirng} textPosition
  * @param {Object} rect {x, y, width, height}
- * @param {number} distance
+ * @param {Number} distance
  * @return {Object} {x, y, textAlign, textVerticalAlign}
  */
 
@@ -8341,17 +8341,17 @@ function calculateTextPosition(out, style, rect) {
  * Show ellipsis if overflow.
  *
  * @public
- * @param  {string} text
- * @param  {string} containerWidth
- * @param  {string} font
- * @param  {number} [ellipsis='...']
+ * @param  {String} text
+ * @param  {String} containerWidth
+ * @param  {String} font
+ * @param  {Number} [ellipsis='...']
  * @param  {Object} [options]
- * @param  {number} [options.maxIterations=3]
- * @param  {number} [options.minChar=0] If truncate result are less
+ * @param  {Number} [options.maxIterations=3]
+ * @param  {Number} [options.minChar=0] If truncate result are less
  *                  then minChar, ellipsis will not show, which is
  *                  better for user hint in some cases.
- * @param  {number} [options.placeholder=''] When all truncated, use the placeholder.
- * @return {string}
+ * @param  {Number} [options.placeholder=''] When all truncated, use the placeholder.
+ * @return {String}
  */
 function truncateText(text, containerWidth, font, ellipsis, options) {
     if (!containerWidth) {
@@ -8458,8 +8458,8 @@ function estimateLength(text, contentWidth, ascCharWidth, cnCharWidth) {
 
 /**
  * @public
- * @param {string} font
- * @return {number} line height
+ * @param {String} font
+ * @return {Number} line height
  */
 function getLineHeight(font) {
     // FIXME A rough approach.
@@ -8468,8 +8468,8 @@ function getLineHeight(font) {
 
 /**
  * @public
- * @param {string} text
- * @param {string} font
+ * @param {String} text
+ * @param {String} font
  * @return {Object} width
  */
 function measureText(text, font) {
@@ -8485,8 +8485,8 @@ methods$1.measureText = function (text, font) {
 
 /**
  * @public
- * @param {string} text
- * @param {string} font
+ * @param {String} text
+ * @param {String} font
  * @param {Object} [truncate]
  * @return {Object} block: {lineHeight, lines, height, outerHeight, canCacheByTextString}
  *  Notice: for performance, do not calculate outerWidth util needed.
@@ -8545,7 +8545,7 @@ function parsePlainText(text, font, padding, textLineHeight, truncate) {
  * Also consider 'bbbb{a|xxx\nzzz}xxxx\naaaa'.
  *
  * @public
- * @param {string} text
+ * @param {String} text
  * @param {Object} style
  * @return {Object} block
  * {
@@ -8787,11 +8787,11 @@ function makeFont(style) {
 /**
  * @param {Object} ctx
  * @param {Object} shape
- * @param {number} shape.x
- * @param {number} shape.y
- * @param {number} shape.width
- * @param {number} shape.height
- * @param {number} shape.r
+ * @param {Number} shape.x
+ * @param {Number} shape.y
+ * @param {Number} shape.width
+ * @param {Number} shape.height
+ * @param {Number} shape.r
  */
 function buildPath(ctx, shape) {
     var x = shape.x;
@@ -8926,7 +8926,7 @@ function normalizeStyle(style) {
 
 /**
  * @param {CanvasRenderingContext2D} ctx
- * @param {string} text
+ * @param {String} text
  * @param {module:zrender/graphic/Style} style
  * @param {Object|boolean} [rect] {x, y, width, height}
  *                  If set false, rect text is not used.
@@ -9400,9 +9400,9 @@ function setCtx(ctx, prop, value) {
 }
 
 /**
- * @param {string} [stroke] If specified, do not check style.textStroke.
- * @param {string} [lineWidth] If specified, do not check style.textStroke.
- * @param {number} style
+ * @param {String} [stroke] If specified, do not check style.textStroke.
+ * @param {String} [lineWidth] If specified, do not check style.textStroke.
+ * @param {Number} style
  */
 function getStroke(stroke, lineWidth) {
     return (stroke == null || lineWidth <= 0 || stroke === 'transparent' || stroke === 'none')
@@ -9441,7 +9441,7 @@ function getTextXForPadding(x, textAlign, textPadding) {
 }
 
 /**
- * @param {string} text
+ * @param {String} text
  * @param {module:zrender/Style} style
  * @return {boolean}
  */
@@ -11603,7 +11603,7 @@ let globalDOMHandlers = {
  * @method mountDOMEventListeners
  * @param {DomEventProxy} domEventProxy
  * @param {DOMHandlerScope} domHandlerScope
- * @param {Object} nativeListenerNames {mouse: Array<string>, touch: Array<string>, poiner: Array<string>}
+ * @param {Object} nativeListenerNames {mouse: Array<String>, touch: Array<String>, poiner: Array<String>}
  * @param {Boolean} localOrGlobal `true`: target local, `false`: target global.
  */
 function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlobal) {
@@ -11823,7 +11823,7 @@ let painterCtors = {
 let instances = {};
 
 /**
- * @type {String}
+ * @property {String}
  */
 let version = '4.1.2';
 
@@ -11897,19 +11897,19 @@ let ZRender = function (id, dom, opts) {
     opts = opts || {};
 
     /**
-     * @type {HTMLDomElement}
+     * @property {HTMLDomElement}
      */
     this.dom = dom;
 
     /**
-     * @type {String}
+     * @property {String}
      */
     this.id = id;
 
     let self = this;
 
     /**
-     * @type {Storage}
+     * @property {Storage}
      */
     let storage = new Storage();
 
@@ -11935,7 +11935,7 @@ let ZRender = function (id, dom, opts) {
     this.eventHandler = new ZRenderEventHandler(storage, painter, handerProxy, painter.root);
 
     /**
-     * @type {GlobalAnimationMgr}
+     * @property {GlobalAnimationMgr}
      * 利用 GlobalAnimationMgr 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
      * FROM MDN：
      * The window.requestAnimationFrame() method tells the browser that you wish 
@@ -11957,7 +11957,7 @@ let ZRender = function (id, dom, opts) {
     this.globalAnimationMgr.start();
 
     /**
-     * @type {boolean}
+     * @property {boolean}
      * @private
      */
     this._needsRefresh;
@@ -12385,12 +12385,12 @@ function isNotAroundZero$1(val) {
 /**
  * 计算三次贝塞尔值
  * @memberOf module:zrender/core/curveUtil
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {number} t
- * @return {number}
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} p3
+ * @param  {Number} t
+ * @return {Number}
  */
 function cubicAt(p0, p1, p2, p3, t) {
     var onet = 1 - t;
@@ -12401,12 +12401,12 @@ function cubicAt(p0, p1, p2, p3, t) {
 /**
  * 计算三次贝塞尔导数值
  * @memberOf module:zrender/core/curveUtil
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {number} t
- * @return {number}
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} p3
+ * @param  {Number} t
+ * @return {Number}
  */
 function cubicDerivativeAt(p0, p1, p2, p3, t) {
     var onet = 1 - t;
@@ -12419,13 +12419,13 @@ function cubicDerivativeAt(p0, p1, p2, p3, t) {
 /**
  * 计算三次贝塞尔方程根，使用盛金公式
  * @memberOf module:zrender/core/curveUtil
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {number} val
- * @param  {Array.<number>} roots
- * @return {number} 有效根数目
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} p3
+ * @param  {Number} val
+ * @param  {Array<Number>} roots
+ * @return {Number} 有效根数目
  */
 function cubicRootAt(p0, p1, p2, p3, val, roots) {
     // Evaluate roots of cubic functions
@@ -12512,12 +12512,12 @@ function cubicRootAt(p0, p1, p2, p3, val, roots) {
 /**
  * 计算三次贝塞尔方程极限值的位置
  * @memberOf module:zrender/core/curveUtil
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {Array.<number>} extrema
- * @return {number} 有效数目
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} p3
+ * @param  {Array<Number>} extrema
+ * @return {Number} 有效数目
  */
 function cubicExtrema(p0, p1, p2, p3, extrema) {
     var b = 6 * p2 - 12 * p1 + 6 * p0;
@@ -12556,12 +12556,12 @@ function cubicExtrema(p0, p1, p2, p3, extrema) {
 /**
  * 细分三次贝塞尔曲线
  * @memberOf module:zrender/core/curveUtil
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {number} t
- * @param  {Array.<number>} out
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} p3
+ * @param  {Number} t
+ * @param  {Array<Number>} out
  */
 function cubicSubdivide(p0, p1, p2, p3, t, out) {
     var p01 = (p1 - p0) * t + p0;
@@ -12587,18 +12587,18 @@ function cubicSubdivide(p0, p1, p2, p3, t, out) {
 /**
  * 投射点到三次贝塞尔曲线上，返回投射距离。
  * 投射点有可能会有一个或者多个，这里只返回其中距离最短的一个。
- * @param {number} x0
- * @param {number} y0
- * @param {number} x1
- * @param {number} y1
- * @param {number} x2
- * @param {number} y2
- * @param {number} x3
- * @param {number} y3
- * @param {number} x
- * @param {number} y
- * @param {Array.<number>} [out] 投射点
- * @return {number}
+ * @param {Number} x0
+ * @param {Number} y0
+ * @param {Number} x1
+ * @param {Number} y1
+ * @param {Number} x2
+ * @param {Number} y2
+ * @param {Number} x3
+ * @param {Number} y3
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Array<Number>} [out] 投射点
+ * @return {Number}
  */
 function cubicProjectPoint(
     x0, y0, x1, y1, x2, y2, x3, y3,
@@ -12672,11 +12672,11 @@ function cubicProjectPoint(
 
 /**
  * 计算二次方贝塞尔值
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} t
- * @return {number}
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} t
+ * @return {Number}
  */
 function quadraticAt(p0, p1, p2, t) {
     var onet = 1 - t;
@@ -12685,11 +12685,11 @@ function quadraticAt(p0, p1, p2, t) {
 
 /**
  * 计算二次方贝塞尔导数值
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} t
- * @return {number}
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} t
+ * @return {Number}
  */
 function quadraticDerivativeAt(p0, p1, p2, t) {
     return 2 * ((1 - t) * (p1 - p0) + t * (p2 - p1));
@@ -12697,12 +12697,12 @@ function quadraticDerivativeAt(p0, p1, p2, t) {
 
 /**
  * 计算二次方贝塞尔方程根
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} t
- * @param  {Array.<number>} roots
- * @return {number} 有效根数目
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} t
+ * @param  {Array<Number>} roots
+ * @return {Number} 有效根数目
  */
 function quadraticRootAt(p0, p1, p2, val, roots) {
     var a = p0 - 2 * p1 + p2;
@@ -12744,10 +12744,10 @@ function quadraticRootAt(p0, p1, p2, val, roots) {
 /**
  * 计算二次贝塞尔方程极限值
  * @memberOf module:zrender/core/curveUtil
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @return {number}
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @return {Number}
  */
 function quadraticExtremum(p0, p1, p2) {
     var divider = p0 + p2 - 2 * p1;
@@ -12763,11 +12763,11 @@ function quadraticExtremum(p0, p1, p2) {
 /**
  * 细分二次贝塞尔曲线
  * @memberOf module:zrender/core/curveUtil
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} t
- * @param  {Array.<number>} out
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} t
+ * @param  {Array<Number>} out
  */
 function quadraticSubdivide(p0, p1, p2, t, out) {
     var p01 = (p1 - p0) * t + p0;
@@ -12788,16 +12788,16 @@ function quadraticSubdivide(p0, p1, p2, t, out) {
 /**
  * 投射点到二次贝塞尔曲线上，返回投射距离。
  * 投射点有可能会有一个或者多个，这里只返回其中距离最短的一个。
- * @param {number} x0
- * @param {number} y0
- * @param {number} x1
- * @param {number} y1
- * @param {number} x2
- * @param {number} y2
- * @param {number} x
- * @param {number} y
- * @param {Array.<number>} out 投射点
- * @return {number}
+ * @param {Number} x0
+ * @param {Number} y0
+ * @param {Number} x1
+ * @param {Number} y1
+ * @param {Number} x2
+ * @param {Number} y2
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Array<Number>} out 投射点
+ * @return {Number}
  */
 function quadraticProjectPoint(
     x0, y0, x1, y1, x2, y2,
@@ -12882,19 +12882,19 @@ var extremity = create();
  * 从顶点数组中计算出最小包围盒，写入`min`和`max`中
  * @module zrender/core/bboxUtil
  * @param {Array<Object>} points 顶点数组
- * @param {number} min
- * @param {number} max
+ * @param {Number} min
+ * @param {Number} max
  */
 
 
 /**
  * @memberOf module:zrender/core/bboxUtil
- * @param {number} x0
- * @param {number} y0
- * @param {number} x1
- * @param {number} y1
- * @param {Array.<number>} min
- * @param {Array.<number>} max
+ * @param {Number} x0
+ * @param {Number} y0
+ * @param {Number} x1
+ * @param {Number} y1
+ * @param {Array<Number>} min
+ * @param {Array<Number>} max
  */
 function fromLine(x0, y0, x1, y1, min$$1, max$$1) {
     min$$1[0] = mathMin$2(x0, x1);
@@ -12908,16 +12908,16 @@ var yDim = [];
 /**
  * 从三阶贝塞尔曲线(p0, p1, p2, p3)中计算出最小包围盒，写入`min`和`max`中
  * @memberOf module:zrender/core/bboxUtil
- * @param {number} x0
- * @param {number} y0
- * @param {number} x1
- * @param {number} y1
- * @param {number} x2
- * @param {number} y2
- * @param {number} x3
- * @param {number} y3
- * @param {Array.<number>} min
- * @param {Array.<number>} max
+ * @param {Number} x0
+ * @param {Number} y0
+ * @param {Number} x1
+ * @param {Number} y1
+ * @param {Number} x2
+ * @param {Number} y2
+ * @param {Number} x3
+ * @param {Number} y3
+ * @param {Array<Number>} min
+ * @param {Array<Number>} max
  */
 function fromCubic(
     x0, y0, x1, y1, x2, y2, x3, y3, min$$1, max$$1
@@ -12957,14 +12957,14 @@ function fromCubic(
 /**
  * 从二阶贝塞尔曲线(p0, p1, p2)中计算出最小包围盒，写入`min`和`max`中
  * @memberOf module:zrender/core/bboxUtil
- * @param {number} x0
- * @param {number} y0
- * @param {number} x1
- * @param {number} y1
- * @param {number} x2
- * @param {number} y2
- * @param {Array.<number>} min
- * @param {Array.<number>} max
+ * @param {Number} x0
+ * @param {Number} y0
+ * @param {Number} x1
+ * @param {Number} y1
+ * @param {Number} x2
+ * @param {Number} y2
+ * @param {Array<Number>} min
+ * @param {Array<Number>} max
  */
 function fromQuadratic(x0, y0, x1, y1, x2, y2, min$$1, max$$1) {
     var quadraticExtremum$$1 = quadraticExtremum;
@@ -12992,15 +12992,15 @@ function fromQuadratic(x0, y0, x1, y1, x2, y2, min$$1, max$$1) {
  * 从圆弧中计算出最小包围盒，写入`min`和`max`中
  * @method
  * @memberOf module:zrender/core/bboxUtil
- * @param {number} x
- * @param {number} y
- * @param {number} rx
- * @param {number} ry
- * @param {number} startAngle
- * @param {number} endAngle
- * @param {number} anticlockwise
- * @param {Array.<number>} min
- * @param {Array.<number>} max
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Number} rx
+ * @param {Number} ry
+ * @param {Number} startAngle
+ * @param {Number} endAngle
+ * @param {Number} anticlockwise
+ * @param {Array<Number>} min
+ * @param {Array<Number>} max
  */
 function fromArc(
     x, y, rx, ry, startAngle, endAngle, anticlockwise, min$$1, max$$1
@@ -13121,7 +13121,7 @@ var PathProxy = function (notSaveData) {
     if (this._saveData) {
         /**
          * Path data. Stored as flat array
-         * @type {Array.<Object>}
+         * @property {Array<Object>}
          */
         this.data = [];
     }
@@ -13197,8 +13197,8 @@ PathProxy.prototype = {
     },
 
     /**
-     * @param  {number} x
-     * @param  {number} y
+     * @param  {Number} x
+     * @param  {Number} y
      * @return {module:zrender/core/PathProxy}
      */
     moveTo: function (x, y) {
@@ -13219,8 +13219,8 @@ PathProxy.prototype = {
     },
 
     /**
-     * @param  {number} x
-     * @param  {number} y
+     * @param  {Number} x
+     * @param  {Number} y
      * @return {module:zrender/core/PathProxy}
      */
     lineTo: function (x, y) {
@@ -13244,12 +13244,12 @@ PathProxy.prototype = {
     },
 
     /**
-     * @param  {number} x1
-     * @param  {number} y1
-     * @param  {number} x2
-     * @param  {number} y2
-     * @param  {number} x3
-     * @param  {number} y3
+     * @param  {Number} x1
+     * @param  {Number} y1
+     * @param  {Number} x2
+     * @param  {Number} y2
+     * @param  {Number} x3
+     * @param  {Number} y3
      * @return {module:zrender/core/PathProxy}
      */
     bezierCurveTo: function (x1, y1, x2, y2, x3, y3) {
@@ -13264,10 +13264,10 @@ PathProxy.prototype = {
     },
 
     /**
-     * @param  {number} x1
-     * @param  {number} y1
-     * @param  {number} x2
-     * @param  {number} y2
+     * @param  {Number} x1
+     * @param  {Number} y1
+     * @param  {Number} x2
+     * @param  {Number} y2
      * @return {module:zrender/core/PathProxy}
      */
     quadraticCurveTo: function (x1, y1, x2, y2) {
@@ -13282,11 +13282,11 @@ PathProxy.prototype = {
     },
 
     /**
-     * @param  {number} cx
-     * @param  {number} cy
-     * @param  {number} r
-     * @param  {number} startAngle
-     * @param  {number} endAngle
+     * @param  {Number} cx
+     * @param  {Number} cy
+     * @param  {Number} r
+     * @param  {Number} startAngle
+     * @param  {Number} endAngle
      * @param  {boolean} anticlockwise
      * @return {module:zrender/core/PathProxy}
      */
@@ -13852,13 +13852,13 @@ PathProxy.CMD = CMD;
 
 /**
  * 线段包含判断
- * @param  {number}  x0
- * @param  {number}  y0
- * @param  {number}  x1
- * @param  {number}  y1
- * @param  {number}  lineWidth
- * @param  {number}  x
- * @param  {number}  y
+ * @param  {Number}  x0
+ * @param  {Number}  y0
+ * @param  {Number}  x1
+ * @param  {Number}  y1
+ * @param  {Number}  lineWidth
+ * @param  {Number}  x
+ * @param  {Number}  y
  * @return {boolean}
  */
 function containStroke$1(x0, y0, x1, y1, lineWidth, x, y) {
@@ -13892,17 +13892,17 @@ function containStroke$1(x0, y0, x1, y1, lineWidth, x, y) {
 
 /**
  * 三次贝塞尔曲线描边包含判断
- * @param  {number}  x0
- * @param  {number}  y0
- * @param  {number}  x1
- * @param  {number}  y1
- * @param  {number}  x2
- * @param  {number}  y2
- * @param  {number}  x3
- * @param  {number}  y3
- * @param  {number}  lineWidth
- * @param  {number}  x
- * @param  {number}  y
+ * @param  {Number}  x0
+ * @param  {Number}  y0
+ * @param  {Number}  x1
+ * @param  {Number}  y1
+ * @param  {Number}  x2
+ * @param  {Number}  y2
+ * @param  {Number}  x3
+ * @param  {Number}  y3
+ * @param  {Number}  lineWidth
+ * @param  {Number}  x
+ * @param  {Number}  y
  * @return {boolean}
  */
 function containStroke$2(x0, y0, x1, y1, x2, y2, x3, y3, lineWidth, x, y) {
@@ -13928,15 +13928,15 @@ function containStroke$2(x0, y0, x1, y1, x2, y2, x3, y3, lineWidth, x, y) {
 
 /**
  * 二次贝塞尔曲线描边包含判断
- * @param  {number}  x0
- * @param  {number}  y0
- * @param  {number}  x1
- * @param  {number}  y1
- * @param  {number}  x2
- * @param  {number}  y2
- * @param  {number}  lineWidth
- * @param  {number}  x
- * @param  {number}  y
+ * @param  {Number}  x0
+ * @param  {Number}  y0
+ * @param  {Number}  x1
+ * @param  {Number}  y1
+ * @param  {Number}  x2
+ * @param  {Number}  y2
+ * @param  {Number}  lineWidth
+ * @param  {Number}  x
+ * @param  {Number}  y
  * @return {boolean}
  */
 function containStroke$3(x0, y0, x1, y1, x2, y2, lineWidth, x, y) {
@@ -13974,15 +13974,15 @@ var PI2$2 = Math.PI * 2;
 
 /**
  * 圆弧描边包含判断
- * @param  {number}  cx
- * @param  {number}  cy
- * @param  {number}  r
- * @param  {number}  startAngle
- * @param  {number}  endAngle
+ * @param  {Number}  cx
+ * @param  {Number}  cy
+ * @param  {Number}  r
+ * @param  {Number}  startAngle
+ * @param  {Number}  endAngle
  * @param  {boolean}  anticlockwise
- * @param  {number} lineWidth
- * @param  {number}  x
- * @param  {number}  y
+ * @param  {Number} lineWidth
+ * @param  {Number}  x
+ * @param  {Number}  y
  * @return {Boolean}
  */
 function containStroke$4(
@@ -14805,7 +14805,7 @@ Path.prototype = {
  * 扩展一个 Path element, 比如星形，圆等。
  * Extend a path element
  * @param {Object} props
- * @param {string} props.type Path type
+ * @param {String} props.type Path type
  * @param {Function} props.init Initialize
  * @param {Function} props.buildPath Overwrite buildPath method
  * @param {Object} [props.style] Extended default style config
@@ -15336,7 +15336,7 @@ function createFromString(str, opts) {
 
 /**
  * Create a Path class from path string data
- * @param  {string} str
+ * @param  {String} str
  * @param  {Object} opts Other options
  */
 function extendFromString(str, opts) {
@@ -15521,12 +15521,12 @@ var round = Math.round;
  *                 `outputShape` object can be used repeatly, because all of
  *                 the `x1`, `x2`, `y1`, `y2` will be assigned in this method.
  * @param {Object} [inputShape]
- * @param {number} [inputShape.x1]
- * @param {number} [inputShape.y1]
- * @param {number} [inputShape.x2]
- * @param {number} [inputShape.y2]
+ * @param {Number} [inputShape.x1]
+ * @param {Number} [inputShape.y1]
+ * @param {Number} [inputShape.x2]
+ * @param {Number} [inputShape.y2]
  * @param {Object} [style]
- * @param {number} [style.lineWidth]
+ * @param {Number} [style.lineWidth]
  */
 function subPixelOptimizeLine(outputShape, inputShape, style) {
     var lineWidth = style && style.lineWidth;
@@ -15564,12 +15564,12 @@ function subPixelOptimizeLine(outputShape, inputShape, style) {
  *                 `outputShape` object can be used repeatly, because all of
  *                 the `x`, `y`, `width`, `height` will be assigned in this method.
  * @param {Object} [inputShape]
- * @param {number} [inputShape.x]
- * @param {number} [inputShape.y]
- * @param {number} [inputShape.width]
- * @param {number} [inputShape.height]
+ * @param {Number} [inputShape.x]
+ * @param {Number} [inputShape.y]
+ * @param {Number} [inputShape.width]
+ * @param {Number} [inputShape.height]
  * @param {Object} [style]
- * @param {number} [style.lineWidth]
+ * @param {Number} [style.lineWidth]
  */
 function subPixelOptimizeRect(outputShape, inputShape, style) {
     var lineWidth = style && style.lineWidth;
@@ -15598,10 +15598,10 @@ function subPixelOptimizeRect(outputShape, inputShape, style) {
 /**
  * Sub pixel optimize for canvas
  *
- * @param {number} position Coordinate, such as x, y
- * @param {number} lineWidth Should be nonnegative integer.
+ * @param {Number} position Coordinate, such as x, y
+ * @param {Number} lineWidth Should be nonnegative integer.
  * @param {boolean=} positiveOrNegative Default false (negative).
- * @return {number} Optimized position.
+ * @return {Number} Optimized position.
  */
 function subPixelOptimize(position, lineWidth, positiveOrNegative) {
     // Assure that (position + lineWidth / 2) is near integer edge,
@@ -15768,8 +15768,8 @@ var Line = Path.extend({
 
     /**
      * Get point at percent
-     * @param  {number} percent
-     * @return {Array.<number>}
+     * @param  {Number} percent
+     * @return {Array<Number>}
      */
     pointAt: function (p) {
         var shape = this.shape;
@@ -15860,7 +15860,7 @@ var smoothSpline = function (points, isLoop) {
  * 贝塞尔平滑曲线
  * @alias module:zrender/shape/util/smoothBezier
  * @param {Array} points 线段顶点数组
- * @param {number} smooth 平滑等级, 0-1
+ * @param {Number} smooth 平滑等级, 0-1
  * @param {boolean} isLoop
  * @param {Array} constraint 将计算出来的控制点约束在一个包围盒内
  *                           比如 [[0, 0], [100, 100]], 这个包围盒会与
@@ -16027,7 +16027,7 @@ var Polyline = Path.extend({
 });
 
 /**
- * @param {Array.<Object>} colorStops
+ * @param {Array<Object>} colorStops
  */
 var Gradient = function (colorStops) {
 
@@ -16052,11 +16052,11 @@ Gradient.prototype = {
 
 /**
  * x, y, x2, y2 are all percent from 0 to 1
- * @param {number} [x=0]
- * @param {number} [y=0]
- * @param {number} [x2=1]
- * @param {number} [y2=0]
- * @param {Array.<Object>} colorStops
+ * @param {Number} [x=0]
+ * @param {Number} [y=0]
+ * @param {Number} [x2=1]
+ * @param {Number} [y2=0]
+ * @param {Array<Object>} colorStops
  * @param {boolean} [globalCoord=false]
  */
 var LinearGradient = function (x, y, x2, y2, colorStops, globalCoord) {
@@ -16094,7 +16094,7 @@ var DILIMITER_REG = /[\s,]+/;
 /**
  * For big svg string, this method might be time consuming.
  *
- * @param {string} svg xml string
+ * @param {String} svg xml string
  * @return {Object} xml root.
  */
 function parseXML(svg) {
@@ -16713,9 +16713,9 @@ function parseStyleAttribute(xmlNode) {
 }
 
 /**
- * @param {Array.<number>} viewBoxRect
- * @param {number} width
- * @param {number} height
+ * @param {Array<Number>} viewBoxRect
+ * @param {Number} width
+ * @param {Number} height
  * @return {Object} {scale, position}
  */
 function makeViewBoxTransform(viewBoxRect, width, height) {
@@ -16738,8 +16738,8 @@ function makeViewBoxTransform(viewBoxRect, width, height) {
 /**
  * @param {string|XMLElement} xml
  * @param {Object} [opt]
- * @param {number} [opt.width] Default width if svg width not specified or is a percent value.
- * @param {number} [opt.height] Default height if svg height not specified or is a percent value.
+ * @param {Number} [opt.width] Default width if svg width not specified or is a percent value.
+ * @param {Number} [opt.height] Default height if svg height not specified or is a percent value.
  * @param {boolean} [opt.ignoreViewBox]
  * @param {boolean} [opt.ignoreRootClip]
  * @return {Object} result:
@@ -17098,8 +17098,8 @@ var BezierCurve = Path.extend({
 
     /**
      * Get point at percent
-     * @param  {number} t
-     * @return {Array.<number>}
+     * @param  {Number} t
+     * @return {Array<Number>}
      */
     pointAt: function (t) {
         return someVectorAt(this.shape, t, false);
@@ -17107,8 +17107,8 @@ var BezierCurve = Path.extend({
 
     /**
      * Get tangent at percent
-     * @param  {number} t
-     * @return {Array.<number>}
+     * @param  {Number} t
+     * @return {Array<Number>}
      */
     tangentAt: function (t) {
         var p = someVectorAt(this.shape, t, true);
@@ -17584,10 +17584,10 @@ var Trochoid = Path.extend({
 
 /**
  * x, y, r are all percent from 0 to 1
- * @param {number} [x=0.5]
- * @param {number} [y=0.5]
- * @param {number} [r=0.5]
- * @param {Array.<Object>} [colorStops]
+ * @param {Number} [x=0.5]
+ * @param {Number} [y=0.5]
+ * @param {Number} [r=0.5]
+ * @param {Array<Object>} [colorStops]
  * @param {boolean} [globalCoord=false]
  */
 var RadialGradient = function (x, y, r, colorStops, globalCoord) {
@@ -18337,10 +18337,10 @@ var MARK_USED = '1';
  * e.g., gradients, clip path, etc.
  *
  * @class
- * @param {number}          zrId      zrender instance id
+ * @param {Number}          zrId      zrender instance id
  * @param {SVGElement}      svgRoot   root of SVG document
  * @param {string|string[]} tagNames  possible tag names
- * @param {string}          markLabel label name to make if the element
+ * @param {String}          markLabel label name to make if the element
  *                                    is used
  */
 function Definable(
@@ -18585,7 +18585,7 @@ Definable.prototype.getSvgElement = function (displayable) {
  *
  * @class
  * @extends Definable
- * @param   {number}     zrId    zrender instance id
+ * @param   {Number}     zrId    zrender instance id
  * @param   {SVGElement} svgRoot root of SVG document
  */
 function GradientManager(zrId, svgRoot) {
@@ -18806,7 +18806,7 @@ GradientManager.prototype.markUsed = function (displayable) {
  *
  * @class
  * @extends Definable
- * @param   {number}     zrId    zrender instance id
+ * @param   {Number}     zrId    zrender instance id
  * @param   {SVGElement} svgRoot root of SVG document
  */
 function ClippathManager(zrId, svgRoot) {
@@ -18973,7 +18973,7 @@ ClippathManager.prototype.markUsed = function (displayable) {
  *
  * @class
  * @extends Definable
- * @param   {number}     zrId    zrender instance id
+ * @param   {Number}     zrId    zrender instance id
  * @param   {SVGElement} svgRoot root of SVG document
  */
 function ShadowManager(zrId, svgRoot) {

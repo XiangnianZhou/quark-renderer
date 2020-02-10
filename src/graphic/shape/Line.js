@@ -66,8 +66,8 @@ export default Path.extend({
 
     /**
      * Get point at percent
-     * @param  {number} percent
-     * @return {Array.<number>}
+     * @param  {Number} percent
+     * @return {Array<Number>}
      */
     pointAt: function (p) {
         var shape = this.shape;

@@ -15,7 +15,7 @@ import * as dataUtil from '../core/utils/dataStructureUtil';
  */
 let Animatable = function () {
     /**
-     * @type {zrender.animation.AnimationProcess}
+     * @property {zrender.animation.AnimationProcess}
      * @readOnly
      */
     this.animationProcessList = [];

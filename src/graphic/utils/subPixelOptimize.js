@@ -13,12 +13,12 @@ var round = Math.round;
  *                 `outputShape` object can be used repeatly, because all of
  *                 the `x1`, `x2`, `y1`, `y2` will be assigned in this method.
  * @param {Object} [inputShape]
- * @param {number} [inputShape.x1]
- * @param {number} [inputShape.y1]
- * @param {number} [inputShape.x2]
- * @param {number} [inputShape.y2]
+ * @param {Number} [inputShape.x1]
+ * @param {Number} [inputShape.y1]
+ * @param {Number} [inputShape.x2]
+ * @param {Number} [inputShape.y2]
  * @param {Object} [style]
- * @param {number} [style.lineWidth]
+ * @param {Number} [style.lineWidth]
  */
 export function subPixelOptimizeLine(outputShape, inputShape, style) {
     var lineWidth = style && style.lineWidth;
@@ -56,12 +56,12 @@ export function subPixelOptimizeLine(outputShape, inputShape, style) {
  *                 `outputShape` object can be used repeatly, because all of
  *                 the `x`, `y`, `width`, `height` will be assigned in this method.
  * @param {Object} [inputShape]
- * @param {number} [inputShape.x]
- * @param {number} [inputShape.y]
- * @param {number} [inputShape.width]
- * @param {number} [inputShape.height]
+ * @param {Number} [inputShape.x]
+ * @param {Number} [inputShape.y]
+ * @param {Number} [inputShape.width]
+ * @param {Number} [inputShape.height]
  * @param {Object} [style]
- * @param {number} [style.lineWidth]
+ * @param {Number} [style.lineWidth]
  */
 export function subPixelOptimizeRect(outputShape, inputShape, style) {
     var lineWidth = style && style.lineWidth;
@@ -90,10 +90,10 @@ export function subPixelOptimizeRect(outputShape, inputShape, style) {
 /**
  * Sub pixel optimize for canvas
  *
- * @param {number} position Coordinate, such as x, y
- * @param {number} lineWidth Should be nonnegative integer.
+ * @param {Number} position Coordinate, such as x, y
+ * @param {Number} lineWidth Should be nonnegative integer.
  * @param {boolean=} positiveOrNegative Default false (negative).
- * @return {number} Optimized position.
+ * @return {Number} Optimized position.
  */
 export function subPixelOptimize(position, lineWidth, positiveOrNegative) {
     // Assure that (position + lineWidth / 2) is near integer edge,

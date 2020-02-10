@@ -32,12 +32,12 @@ function isNotAroundZero(val) {
 /**
  * 计算三次贝塞尔值
  * @memberOf module:zrender/core/curveUtil
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {number} t
- * @return {number}
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} p3
+ * @param  {Number} t
+ * @return {Number}
  */
 export function cubicAt(p0, p1, p2, p3, t) {
     var onet = 1 - t;
@@ -48,12 +48,12 @@ export function cubicAt(p0, p1, p2, p3, t) {
 /**
  * 计算三次贝塞尔导数值
  * @memberOf module:zrender/core/curveUtil
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {number} t
- * @return {number}
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} p3
+ * @param  {Number} t
+ * @return {Number}
  */
 export function cubicDerivativeAt(p0, p1, p2, p3, t) {
     var onet = 1 - t;
@@ -66,13 +66,13 @@ export function cubicDerivativeAt(p0, p1, p2, p3, t) {
 /**
  * 计算三次贝塞尔方程根，使用盛金公式
  * @memberOf module:zrender/core/curveUtil
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {number} val
- * @param  {Array.<number>} roots
- * @return {number} 有效根数目
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} p3
+ * @param  {Number} val
+ * @param  {Array<Number>} roots
+ * @return {Number} 有效根数目
  */
 export function cubicRootAt(p0, p1, p2, p3, val, roots) {
     // Evaluate roots of cubic functions
@@ -159,12 +159,12 @@ export function cubicRootAt(p0, p1, p2, p3, val, roots) {
 /**
  * 计算三次贝塞尔方程极限值的位置
  * @memberOf module:zrender/core/curveUtil
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {Array.<number>} extrema
- * @return {number} 有效数目
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} p3
+ * @param  {Array<Number>} extrema
+ * @return {Number} 有效数目
  */
 export function cubicExtrema(p0, p1, p2, p3, extrema) {
     var b = 6 * p2 - 12 * p1 + 6 * p0;
@@ -203,12 +203,12 @@ export function cubicExtrema(p0, p1, p2, p3, extrema) {
 /**
  * 细分三次贝塞尔曲线
  * @memberOf module:zrender/core/curveUtil
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {number} t
- * @param  {Array.<number>} out
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} p3
+ * @param  {Number} t
+ * @param  {Array<Number>} out
  */
 export function cubicSubdivide(p0, p1, p2, p3, t, out) {
     var p01 = (p1 - p0) * t + p0;
@@ -234,18 +234,18 @@ export function cubicSubdivide(p0, p1, p2, p3, t, out) {
 /**
  * 投射点到三次贝塞尔曲线上，返回投射距离。
  * 投射点有可能会有一个或者多个，这里只返回其中距离最短的一个。
- * @param {number} x0
- * @param {number} y0
- * @param {number} x1
- * @param {number} y1
- * @param {number} x2
- * @param {number} y2
- * @param {number} x3
- * @param {number} y3
- * @param {number} x
- * @param {number} y
- * @param {Array.<number>} [out] 投射点
- * @return {number}
+ * @param {Number} x0
+ * @param {Number} y0
+ * @param {Number} x1
+ * @param {Number} y1
+ * @param {Number} x2
+ * @param {Number} y2
+ * @param {Number} x3
+ * @param {Number} y3
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Array<Number>} [out] 投射点
+ * @return {Number}
  */
 export function cubicProjectPoint(
     x0, y0, x1, y1, x2, y2, x3, y3,
@@ -319,11 +319,11 @@ export function cubicProjectPoint(
 
 /**
  * 计算二次方贝塞尔值
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} t
- * @return {number}
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} t
+ * @return {Number}
  */
 export function quadraticAt(p0, p1, p2, t) {
     var onet = 1 - t;
@@ -332,11 +332,11 @@ export function quadraticAt(p0, p1, p2, t) {
 
 /**
  * 计算二次方贝塞尔导数值
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} t
- * @return {number}
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} t
+ * @return {Number}
  */
 export function quadraticDerivativeAt(p0, p1, p2, t) {
     return 2 * ((1 - t) * (p1 - p0) + t * (p2 - p1));
@@ -344,12 +344,12 @@ export function quadraticDerivativeAt(p0, p1, p2, t) {
 
 /**
  * 计算二次方贝塞尔方程根
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} t
- * @param  {Array.<number>} roots
- * @return {number} 有效根数目
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} t
+ * @param  {Array<Number>} roots
+ * @return {Number} 有效根数目
  */
 export function quadraticRootAt(p0, p1, p2, val, roots) {
     var a = p0 - 2 * p1 + p2;
@@ -391,10 +391,10 @@ export function quadraticRootAt(p0, p1, p2, val, roots) {
 /**
  * 计算二次贝塞尔方程极限值
  * @memberOf module:zrender/core/curveUtil
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @return {number}
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @return {Number}
  */
 export function quadraticExtremum(p0, p1, p2) {
     var divider = p0 + p2 - 2 * p1;
@@ -410,11 +410,11 @@ export function quadraticExtremum(p0, p1, p2) {
 /**
  * 细分二次贝塞尔曲线
  * @memberOf module:zrender/core/curveUtil
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} t
- * @param  {Array.<number>} out
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} t
+ * @param  {Array<Number>} out
  */
 export function quadraticSubdivide(p0, p1, p2, t, out) {
     var p01 = (p1 - p0) * t + p0;
@@ -435,16 +435,16 @@ export function quadraticSubdivide(p0, p1, p2, t, out) {
 /**
  * 投射点到二次贝塞尔曲线上，返回投射距离。
  * 投射点有可能会有一个或者多个，这里只返回其中距离最短的一个。
- * @param {number} x0
- * @param {number} y0
- * @param {number} x1
- * @param {number} y1
- * @param {number} x2
- * @param {number} y2
- * @param {number} x
- * @param {number} y
- * @param {Array.<number>} out 投射点
- * @return {number}
+ * @param {Number} x0
+ * @param {Number} y0
+ * @param {Number} x1
+ * @param {Number} y1
+ * @param {Number} x2
+ * @param {Number} y2
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Array<Number>} out 投射点
+ * @return {Number}
  */
 export function quadraticProjectPoint(
     x0, y0, x1, y1, x2, y2,

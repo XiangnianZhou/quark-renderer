@@ -4,17 +4,17 @@
 
 /**
  * @typedef {Object} IGraphicState
- * @property {number} [zlevel]
- * @property {number} [z]
- * @property {Array.<number>} {position}
- * @property {Array.<number>|number} {rotation}
- * @property {Array.<number>} {scale}
+ * @property {Number} [zlevel]
+ * @property {Number} [z]
+ * @property {Array<Number>} {position}
+ * @property {Array<Number>|number} {rotation}
+ * @property {Array<Number>} {scale}
  * @property {Object} style
  *
  * @property {Function} onenter
  * @property {Function} onleave
  * @property {Function} ontransition
- * @property {Array.<IGraphicStateTransition|string>} transition
+ * @property {Array<IGraphicStateTransition|string>} transition
  *           Transition object or a string descriptor like '* 30 0 Linear'
  */
 
@@ -51,25 +51,25 @@ TransitionObject.prototype = {
     /**
      * List of all transition properties. Splitted by comma. Must not have spaces in the string.
      * e.g. 'position,style.color'. '*' will match all the valid properties.
-     * @type {string}
+     * @property {String}
      * @default *
      */
     property: '*',
 
     /**
-     * @type {string}
+     * @property {String}
      * @default 'Linear'
      */
     easing: 'Linear',
 
     /**
-     * @type {number}
+     * @property {Number}
      * @default 'number'
      */
     duration: 500,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     delay: 0,
 
@@ -94,7 +94,7 @@ var GraphicStates = function (opts) {
 
     /**
      * Target element
-     * @type {zrender/graphic/Displayable|zrender/Group}
+     * @property {zrender/graphic/Displayable|zrender/Group}
      */
     this._el = opts.el;
 
@@ -125,14 +125,14 @@ GraphicStates.prototype = {
 
     /**
      * All other state will be extended from initial state
-     * @type {string}
+     * @property {String}
      * @private
      */
     _initialState: 'normal',
 
     /**
      * Current state
-     * @type {string}
+     * @property {String}
      * @private
      */
     _currentState: '',
@@ -352,8 +352,8 @@ GraphicStates.prototype = {
     /**
      * Do transition animation of particular property
      * @param {Object} state
-     * @param {string} subPropKey
-     * @param {string} key
+     * @param {String} subPropKey
+     * @param {String} key
      * @param {Object} transitionCfg
      * @param {Function} done
      * @private

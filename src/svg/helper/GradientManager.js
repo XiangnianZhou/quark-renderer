@@ -12,7 +12,7 @@ import * as colorTool from '../../core/utils/colorUtil';
  *
  * @class
  * @extends Definable
- * @param   {number}     zrId    zrender instance id
+ * @param   {Number}     zrId    zrender instance id
  * @param   {SVGElement} svgRoot root of SVG document
  */
 function GradientManager(zrId, svgRoot) {

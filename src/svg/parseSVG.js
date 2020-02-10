@@ -20,7 +20,7 @@ var DILIMITER_REG = /[\s,]+/;
 /**
  * For big svg string, this method might be time consuming.
  *
- * @param {string} svg xml string
+ * @param {String} svg xml string
  * @return {Object} xml root.
  */
 export function parseXML(svg) {
@@ -639,9 +639,9 @@ function parseStyleAttribute(xmlNode) {
 }
 
 /**
- * @param {Array.<number>} viewBoxRect
- * @param {number} width
- * @param {number} height
+ * @param {Array<Number>} viewBoxRect
+ * @param {Number} width
+ * @param {Number} height
  * @return {Object} {scale, position}
  */
 export function makeViewBoxTransform(viewBoxRect, width, height) {
@@ -664,8 +664,8 @@ export function makeViewBoxTransform(viewBoxRect, width, height) {
 /**
  * @param {string|XMLElement} xml
  * @param {Object} [opt]
- * @param {number} [opt.width] Default width if svg width not specified or is a percent value.
- * @param {number} [opt.height] Default height if svg height not specified or is a percent value.
+ * @param {Number} [opt.width] Default width if svg width not specified or is a percent value.
+ * @param {Number} [opt.height] Default height if svg height not specified or is a percent value.
  * @param {boolean} [opt.ignoreViewBox]
  * @param {boolean} [opt.ignoreRootClip]
  * @return {Object} result:

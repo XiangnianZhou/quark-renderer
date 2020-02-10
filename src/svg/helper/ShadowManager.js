@@ -11,7 +11,7 @@ import * as dataUtil from '../../core/utils/dataStructureUtil';
  *
  * @class
  * @extends Definable
- * @param   {number}     zrId    zrender instance id
+ * @param   {Number}     zrId    zrender instance id
  * @param   {SVGElement} svgRoot root of SVG document
  */
 function ShadowManager(zrId, svgRoot) {

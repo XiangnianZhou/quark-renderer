@@ -24,10 +24,10 @@ var MARK_USED = '1';
  * e.g., gradients, clip path, etc.
  *
  * @class
- * @param {number}          zrId      zrender instance id
+ * @param {Number}          zrId      zrender instance id
  * @param {SVGElement}      svgRoot   root of SVG document
  * @param {string|string[]} tagNames  possible tag names
- * @param {string}          markLabel label name to make if the element
+ * @param {String}          markLabel label name to make if the element
  *                                    is used
  */
 function Definable(

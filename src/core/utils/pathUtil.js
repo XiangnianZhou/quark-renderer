@@ -393,7 +393,7 @@ export function createFromString(str, opts) {
 
 /**
  * Create a Path class from path string data
- * @param  {string} str
+ * @param  {String} str
  * @param  {Object} opts Other options
  */
 export function extendFromString(str, opts) {

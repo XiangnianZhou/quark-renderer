@@ -5,15 +5,15 @@ var PI2 = Math.PI * 2;
 
 /**
  * 圆弧描边包含判断
- * @param  {number}  cx
- * @param  {number}  cy
- * @param  {number}  r
- * @param  {number}  startAngle
- * @param  {number}  endAngle
+ * @param  {Number}  cx
+ * @param  {Number}  cy
+ * @param  {Number}  r
+ * @param  {Number}  startAngle
+ * @param  {Number}  endAngle
  * @param  {boolean}  anticlockwise
- * @param  {number} lineWidth
- * @param  {number}  x
- * @param  {number}  y
+ * @param  {Number} lineWidth
+ * @param  {Number}  x
+ * @param  {Number}  y
  * @return {Boolean}
  */
 export function containStroke(

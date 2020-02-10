@@ -8,7 +8,7 @@ var GestureMgr = function () {
 
     /**
      * @private
-     * @type {Array.<Object>}
+     * @property {Array<Object>}
      */
     this._track = [];
 };

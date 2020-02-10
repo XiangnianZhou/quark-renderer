@@ -59,7 +59,7 @@ function normalizeStyle(style) {
 
 /**
  * @param {CanvasRenderingContext2D} ctx
- * @param {string} text
+ * @param {String} text
  * @param {module:zrender/graphic/Style} style
  * @param {Object|boolean} [rect] {x, y, width, height}
  *                  If set false, rect text is not used.
@@ -533,9 +533,9 @@ function setCtx(ctx, prop, value) {
 }
 
 /**
- * @param {string} [stroke] If specified, do not check style.textStroke.
- * @param {string} [lineWidth] If specified, do not check style.textStroke.
- * @param {number} style
+ * @param {String} [stroke] If specified, do not check style.textStroke.
+ * @param {String} [lineWidth] If specified, do not check style.textStroke.
+ * @param {Number} style
  */
 export function getStroke(stroke, lineWidth) {
     return (stroke == null || lineWidth <= 0 || stroke === 'transparent' || stroke === 'none')
@@ -574,7 +574,7 @@ function getTextXForPadding(x, textAlign, textPadding) {
 }
 
 /**
- * @param {string} text
+ * @param {String} text
  * @param {module:zrender/Style} style
  * @return {boolean}
  */

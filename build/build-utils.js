@@ -12,7 +12,7 @@ const esm2cjsPlugin = require('./babel-plugin-transform-modules-commonjs-ec');
 const removeDEVPlugin = require('./babel-plugin-transform-remove-dev');
 
 /**
- * @param {Array.<Object>} configs A list of rollup configs:
+ * @param {Array<Object>} configs A list of rollup configs:
  *  See: <https://rollupjs.org/#big-list-of-options>
  *  For example:
  *  [
@@ -106,7 +106,7 @@ exports.watch = function (singleConfig) {
 };
 
 /**
- * @param {string} srcDir Absolute directory path.
+ * @param {String} srcDir Absolute directory path.
  * @param {Function} [cb] Params: {
  *      fileName: like 'some.js', without dir path.
  *      relativePath: relative to srcDir.
@@ -143,10 +143,10 @@ exports.travelSrcDir = function (srcDir, cb) {
 
 
 /**
- * @param {string} [opt]
- * @param {string} [opt.inputPath] Absolute input path.
- * @param {string} [opt.outputPath] Absolute output path.
- * @param {string} [opt.preamble]
+ * @param {String} [opt]
+ * @param {String} [opt.inputPath] Absolute input path.
+ * @param {String} [opt.outputPath] Absolute output path.
+ * @param {String} [opt.preamble]
  * @param {Function} [opt.transform]
  * @param {Function} [opt.reserveDEV]
  */

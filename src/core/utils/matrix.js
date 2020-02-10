@@ -11,7 +11,7 @@ var ArrayCtor = typeof Float32Array === 'undefined'
 
 /**
  * Create a identity matrix.
- * @return {Float32Array|Array.<number>}
+ * @return {Float32Array|Array.<Number>}
  */
 export function create() {
     var out = new ArrayCtor(6);
@@ -22,7 +22,7 @@ export function create() {
 
 /**
  * 设置矩阵为单位矩阵
- * @param {Float32Array|Array.<number>} out
+ * @param {Float32Array|Array.<Number>} out
  */
 export function identity(out) {
     out[0] = 1;
@@ -36,8 +36,8 @@ export function identity(out) {
 
 /**
  * 复制矩阵
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} m
+ * @param {Float32Array|Array.<Number>} out
+ * @param {Float32Array|Array.<Number>} m
  */
 export function copy(out, m) {
     out[0] = m[0];
@@ -51,9 +51,9 @@ export function copy(out, m) {
 
 /**
  * 矩阵相乘
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} m1
- * @param {Float32Array|Array.<number>} m2
+ * @param {Float32Array|Array.<Number>} out
+ * @param {Float32Array|Array.<Number>} m1
+ * @param {Float32Array|Array.<Number>} m2
  */
 export function mul(out, m1, m2) {
     // Consider matrix.mul(m, m2, m);
@@ -76,9 +76,9 @@ export function mul(out, m1, m2) {
 
 /**
  * 平移变换
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} a
- * @param {Float32Array|Array.<number>} v
+ * @param {Float32Array|Array.<Number>} out
+ * @param {Float32Array|Array.<Number>} a
+ * @param {Float32Array|Array.<Number>} v
  */
 export function translate(out, a, v) {
     out[0] = a[0];
@@ -92,9 +92,9 @@ export function translate(out, a, v) {
 
 /**
  * 旋转变换
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} a
- * @param {number} rad
+ * @param {Float32Array|Array.<Number>} out
+ * @param {Float32Array|Array.<Number>} a
+ * @param {Number} rad
  */
 export function rotate(out, a, rad) {
     var aa = a[0];
@@ -117,9 +117,9 @@ export function rotate(out, a, rad) {
 
 /**
  * 缩放变换
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} a
- * @param {Float32Array|Array.<number>} v
+ * @param {Float32Array|Array.<Number>} out
+ * @param {Float32Array|Array.<Number>} a
+ * @param {Float32Array|Array.<Number>} v
  */
 export function scale(out, a, v) {
     var vx = v[0];
@@ -135,8 +135,8 @@ export function scale(out, a, v) {
 
 /**
  * 求逆矩阵
- * @param {Float32Array|Array.<number>} out
- * @param {Float32Array|Array.<number>} a
+ * @param {Float32Array|Array.<Number>} out
+ * @param {Float32Array|Array.<Number>} a
  */
 export function invert(out, a) {
 
@@ -164,7 +164,7 @@ export function invert(out, a) {
 
 /**
  * Clone a new matrix.
- * @param {Float32Array|Array.<number>} a
+ * @param {Float32Array|Array.<Number>} a
  */
 export function clone(a) {
     var b = create();

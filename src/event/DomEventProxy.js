@@ -341,7 +341,7 @@ let globalDOMHandlers = {
  * @method mountDOMEventListeners
  * @param {DomEventProxy} domEventProxy
  * @param {DOMHandlerScope} domHandlerScope
- * @param {Object} nativeListenerNames {mouse: Array<string>, touch: Array<string>, poiner: Array<string>}
+ * @param {Object} nativeListenerNames {mouse: Array<String>, touch: Array<String>, poiner: Array<String>}
  * @param {Boolean} localOrGlobal `true`: target local, `false`: target global.
  */
 function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlobal) {

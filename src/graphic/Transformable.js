@@ -25,7 +25,7 @@ var Transformable = function (opts) {
     if (!opts.position) {
         /**
          * 平移
-         * @type {Array.<number>}
+         * @property {Array<Number>}
          * @default [0, 0]
          */
         this.position = [0, 0];
@@ -33,7 +33,7 @@ var Transformable = function (opts) {
     if (opts.rotation == null) {
         /**
          * 旋转
-         * @type {Array.<number>}
+         * @property {Array<Number>}
          * @default 0
          */
         this.rotation = 0;
@@ -41,14 +41,14 @@ var Transformable = function (opts) {
     if (!opts.scale) {
         /**
          * 缩放
-         * @type {Array.<number>}
+         * @property {Array<Number>}
          * @default [1, 1]
          */
         this.scale = [1, 1];
     }
     /**
      * 旋转和缩放的原点
-     * @type {Array.<number>}
+     * @property {Array<Number>}
      * @default null
      */
     this.origin = this.origin || null;
@@ -204,7 +204,7 @@ transformableProto.decomposeTransform = function () {
 
 /**
  * Get global scale
- * @return {Array.<number>}
+ * @return {Array<Number>}
  */
 transformableProto.getGlobalScale = function (out) {
     var m = this.transform;
@@ -227,9 +227,9 @@ transformableProto.getGlobalScale = function (out) {
 /**
  * 变换坐标位置到 shape 的局部坐标空间
  * @method
- * @param {number} x
- * @param {number} y
- * @return {Array.<number>}
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Array<Number>}
  */
 transformableProto.transformCoordToLocal = function (x, y) {
     var v2 = [x, y];
@@ -243,9 +243,9 @@ transformableProto.transformCoordToLocal = function (x, y) {
 /**
  * 变换局部坐标位置到全局坐标空间
  * @method
- * @param {number} x
- * @param {number} y
- * @return {Array.<number>}
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Array<Number>}
  */
 transformableProto.transformCoordToGlobal = function (x, y) {
     var v2 = [x, y];
@@ -259,10 +259,10 @@ transformableProto.transformCoordToGlobal = function (x, y) {
 /**
  * @static
  * @param {Object} target
- * @param {Array.<number>} target.origin
- * @param {number} target.rotation
- * @param {Array.<number>} target.position
- * @param {Array.<number>} [m]
+ * @param {Array<Number>} target.origin
+ * @param {Number} target.rotation
+ * @param {Array<Number>} target.position
+ * @param {Array<Number>} [m]
  */
 Transformable.getLocalTransform = function (target, m) {
     m = m || [];
