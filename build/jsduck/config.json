@@ -55,6 +55,13 @@
     "../../lib/graphic/shape/Rose.js",
     "../../lib/graphic/shape/Sector.js",
     "../../lib/graphic/shape/Star.js",
-    "../../lib/graphic/shape/Trochoid.js"
+    "../../lib/graphic/shape/Trochoid.js",
+    "../../lib/svg/parseSVG.js",
+    "../../lib/svg/Painter.js",
+    "../../lib/svg/graphic.js",
+    "../../lib/svg/helper/ClippathManager.js",
+    "../../lib/svg/helper/Definable.js",
+    "../../lib/svg/helper/GradientManager.js",
+    "../../lib/svg/helper/ShadowManager.js"
   ]
 }

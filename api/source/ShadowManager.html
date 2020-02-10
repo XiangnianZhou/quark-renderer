@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var Definable = require(&quot;./Definable&quot;);
+
+var dataUtil = require(&quot;../../core/utils/dataStructureUtil&quot;);
+
+<span id='zrender-svg-helper-ShadowManager'>/**
+</span> * @class zrender.svg.helper.ShadowManager
+ * 
+ * Manages SVG shadow elements.
+ * 
+ * @author Zhang Wenli
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ */
+
+<span id='zrender-svg-helper-ShadowManager-method-constructor'>/**
+</span> * @method constructor ShadowManager
+ * 
+ * Manages SVG shadow elements.
+ *
+ * @param   {Number}     zrId    zrender instance id
+ * @param   {SVGElement} svgRoot root of SVG document
+ */
+function ShadowManager(zrId, svgRoot) {
+  Definable.call(this, zrId, svgRoot, [&#39;filter&#39;], &#39;__filter_in_use__&#39;, &#39;_shadowDom&#39;);
+}
+
+function hasShadow(style) {
+  // TODO: textBoxShadowBlur is not supported yet
+  return style &amp;&amp; (style.shadowBlur || style.shadowOffsetX || style.shadowOffsetY || style.textShadowBlur || style.textShadowOffsetX || style.textShadowOffsetY);
+}
+
+ShadowManager.prototype = {
+  constructor: ShadowManager,
+
+<span id='zrender-svg-helper-ShadowManager-method-addWithoutUpdate'>  /**
+</span>   * Create new shadow DOM for fill or stroke if not exist,
+   * but will not update shadow if exists.
+   *
+   * @param {SvgElement}  svgElement   SVG element to paint
+   * @param {Displayable} displayable  zrender displayable element
+   */
+  addWithoutUpdate: function addWithoutUpdate(svgElement, displayable) {
+    if (displayable &amp;&amp; hasShadow(displayable.style)) {
+      // Create dom in &lt;defs&gt; if not exists
+      var dom;
+
+      if (displayable._shadowDom) {
+        // Gradient exists
+        dom = displayable._shadowDom;
+        var defs = this.getDefs(true);
+
+        if (!defs.contains(displayable._shadowDom)) {
+          // _shadowDom is no longer in defs, recreate
+          this.addDom(dom);
+        }
+      } else {
+        // New dom
+        dom = this.add(displayable);
+      }
+
+      this.markUsed(displayable);
+      var id = dom.getAttribute(&#39;id&#39;);
+      svgElement.style.filter = &#39;url(#&#39; + id + &#39;)&#39;;
+    }
+  },
+
+<span id='zrender-svg-helper-ShadowManager-method-add'>  /**
+</span>   * Add a new shadow tag in &lt;defs&gt;
+   *
+   * @param {Displayable} displayable  zrender displayable element
+   * @return {SVGFilterElement} created DOM
+   */
+  add: function add(displayable) {
+    var dom = this.createElement(&#39;filter&#39;); // Set dom id with shadow id, since each shadow instance
+    // will have no more than one dom element.
+    // id may exists before for those dirty elements, in which case
+    // id should remain the same, and other attributes should be
+    // updated.
+
+    displayable._shadowDomId = displayable._shadowDomId || this.nextId++;
+    dom.setAttribute(&#39;id&#39;, &#39;zr&#39; + this._zrId + &#39;-shadow-&#39; + displayable._shadowDomId);
+    this.updateDom(displayable, dom);
+    this.addDom(dom);
+    return dom;
+  },
+
+<span id='zrender-svg-helper-ShadowManager-method-update'>  /**
+</span>   * Update shadow.
+   *
+   * @param {Displayable} displayable  zrender displayable element
+   */
+  update: function update(svgElement, displayable) {
+    var style = displayable.style;
+
+    if (hasShadow(style)) {
+      var that = this;
+      Definable.prototype.update.call(this, displayable, function () {
+        that.updateDom(displayable, displayable._shadowDom);
+      });
+    } else {
+      // Remove shadow
+      this.remove(svgElement, displayable);
+    }
+  },
+
+<span id='zrender-svg-helper-ShadowManager-method-remove'>  /**
+</span>   * Remove DOM and clear parent filter
+   */
+  remove: function remove(svgElement, displayable) {
+    if (displayable._shadowDomId != null) {
+      this.removeDom(svgElement);
+      svgElement.style.filter = &#39;&#39;;
+    }
+  },
+
+<span id='zrender-svg-helper-ShadowManager-method-updateDom'>  /**
+</span>   * Update shadow dom
+   *
+   * @param {Displayable} displayable  zrender displayable element
+   * @param {SVGFilterElement} dom DOM to update
+   */
+  updateDom: function updateDom(displayable, dom) {
+    var domChild = dom.getElementsByTagName(&#39;feDropShadow&#39;);
+
+    if (domChild.length === 0) {
+      domChild = this.createElement(&#39;feDropShadow&#39;);
+    } else {
+      domChild = domChild[0];
+    }
+
+    var style = displayable.style;
+    var scaleX = displayable.scale ? displayable.scale[0] || 1 : 1;
+    var scaleY = displayable.scale ? displayable.scale[1] || 1 : 1; // TODO: textBoxShadowBlur is not supported yet
+
+    var offsetX;
+    var offsetY;
+    var blur;
+    var color;
+
+    if (style.shadowBlur || style.shadowOffsetX || style.shadowOffsetY) {
+      offsetX = style.shadowOffsetX || 0;
+      offsetY = style.shadowOffsetY || 0;
+      blur = style.shadowBlur;
+      color = style.shadowColor;
+    } else if (style.textShadowBlur) {
+      offsetX = style.textShadowOffsetX || 0;
+      offsetY = style.textShadowOffsetY || 0;
+      blur = style.textShadowBlur;
+      color = style.textShadowColor;
+    } else {
+      // Remove shadow
+      this.removeDom(dom, style);
+      return;
+    }
+
+    domChild.setAttribute(&#39;dx&#39;, offsetX / scaleX);
+    domChild.setAttribute(&#39;dy&#39;, offsetY / scaleY);
+    domChild.setAttribute(&#39;flood-color&#39;, color); // Divide by two here so that it looks the same as in canvas
+    // See: https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-shadowblur
+
+    var stdDx = blur / 2 / scaleX;
+    var stdDy = blur / 2 / scaleY;
+    var stdDeviation = stdDx + &#39; &#39; + stdDy;
+    domChild.setAttribute(&#39;stdDeviation&#39;, stdDeviation); // Fix filter clipping problem
+
+    dom.setAttribute(&#39;x&#39;, &#39;-100%&#39;);
+    dom.setAttribute(&#39;y&#39;, &#39;-100%&#39;);
+    dom.setAttribute(&#39;width&#39;, Math.ceil(blur / 2 * 200) + &#39;%&#39;);
+    dom.setAttribute(&#39;height&#39;, Math.ceil(blur / 2 * 200) + &#39;%&#39;);
+    dom.appendChild(domChild); // Store dom element in shadow, to avoid creating multiple
+    // dom instances for the same shadow element
+
+    displayable._shadowDom = dom;
+  },
+
+<span id='zrender-svg-helper-ShadowManager-method-markUsed'>  /**
+</span>   * Mark a single shadow to be used
+   *
+   * @param {Displayable} displayable displayable element
+   */
+  markUsed: function markUsed(displayable) {
+    if (displayable._shadowDom) {
+      Definable.prototype.markUsed.call(this, displayable._shadowDom);
+    }
+  }
+};
+dataUtil.inherits(ShadowManager, Definable);
+var _default = ShadowManager;
+module.exports = _default;</pre>
+</body>
+</html>

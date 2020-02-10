@@ -22,6 +22,7 @@ function ClippathManager(zrId, svgRoot) {
 
 ClippathManager.prototype={
     constructor:ClippathManager,
+
     /**
      * @method update
      * Update clipPath.
@@ -43,6 +44,7 @@ ClippathManager.prototype={
     
         this.markUsed(displayable);
     },
+
     /**
      * @method updateDom
      * Create an SVGElement of displayable and create a <clipPath> of its
@@ -143,6 +145,7 @@ ClippathManager.prototype={
             }
         }
     },
+    
     /**
      * @method markUsed
      * 

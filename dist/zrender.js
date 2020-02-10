@@ -18548,6 +18548,7 @@ function Definable(zrId,svgRoot,tagNames,markLabel,domName) {
 
 Definable.prototype={
     constructor:Definable,
+    
     createElement:createElement,
 
     /**
@@ -18775,15 +18776,18 @@ Definable.prototype={
 };
 
 /**
- * @file Manages SVG gradient elements.
+ * @class zrender.svg.helper.GradientManager
+ * 
+ * Manages SVG gradient elements.
+ * 
  * @author Zhang Wenli
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
 /**
+ * @method constructor GradientManager
  * Manages SVG gradient elements.
  *
- * @class
- * @extends Definable
  * @param   {Number}     zrId    zrender instance id
  * @param   {SVGElement} svgRoot root of SVG document
  */
@@ -18797,203 +18801,207 @@ function GradientManager(zrId, svgRoot) {
     );
 }
 
+GradientManager.prototype={
+    constructor:GradientManager,
 
-inherits(GradientManager, Definable);
+    /**
+     * @method addWithoutUpdate
+     * Create new gradient DOM for fill or stroke if not exist,
+     * but will not update gradient if exists.
+     *
+     * @param {SvgElement}  svgElement   SVG element to paint
+     * @param {Displayable} displayable  zrender displayable element
+     */
+    addWithoutUpdate:function (svgElement,displayable) {
+        if (displayable && displayable.style) {
+            var that = this;
+            each(['fill', 'stroke'], function (fillOrStroke) {
+                if (displayable.style[fillOrStroke]
+                    && (displayable.style[fillOrStroke].type === 'linear'
+                    || displayable.style[fillOrStroke].type === 'radial')
+                ) {
+                    var gradient = displayable.style[fillOrStroke];
+                    var defs = that.getDefs(true);
 
-
-/**
- * Create new gradient DOM for fill or stroke if not exist,
- * but will not update gradient if exists.
- *
- * @param {SvgElement}  svgElement   SVG element to paint
- * @param {Displayable} displayable  zrender displayable element
- */
-GradientManager.prototype.addWithoutUpdate = function (
-    svgElement,
-    displayable
-) {
-    if (displayable && displayable.style) {
-        var that = this;
-        each(['fill', 'stroke'], function (fillOrStroke) {
-            if (displayable.style[fillOrStroke]
-                && (displayable.style[fillOrStroke].type === 'linear'
-                || displayable.style[fillOrStroke].type === 'radial')
-            ) {
-                var gradient = displayable.style[fillOrStroke];
-                var defs = that.getDefs(true);
-
-                // Create dom in <defs> if not exists
-                var dom;
-                if (gradient._dom) {
-                    // Gradient exists
-                    dom = gradient._dom;
-                    if (!defs.contains(gradient._dom)) {
-                        // _dom is no longer in defs, recreate
-                        that.addDom(dom);
+                    // Create dom in <defs> if not exists
+                    var dom;
+                    if (gradient._dom) {
+                        // Gradient exists
+                        dom = gradient._dom;
+                        if (!defs.contains(gradient._dom)) {
+                            // _dom is no longer in defs, recreate
+                            that.addDom(dom);
+                        }
                     }
-                }
-                else {
-                    // New dom
-                    dom = that.add(gradient);
-                }
+                    else {
+                        // New dom
+                        dom = that.add(gradient);
+                    }
 
-                that.markUsed(displayable);
+                    that.markUsed(displayable);
 
-                var id = dom.getAttribute('id');
-                svgElement.setAttribute(fillOrStroke, 'url(#' + id + ')');
+                    var id = dom.getAttribute('id');
+                    svgElement.setAttribute(fillOrStroke, 'url(#' + id + ')');
+                }
+            });
+        }
+    },
+
+    /**
+     * @method add
+     * 
+     * Add a new gradient tag in <defs>
+     *
+     * @param   {Gradient} gradient zr gradient instance
+     * @return {SVGLinearGradientElement | SVGRadialGradientElement} created DOM
+     */
+    add:function (gradient) {
+        var dom;
+        if (gradient.type === 'linear') {
+            dom = this.createElement('linearGradient');
+        }
+        else if (gradient.type === 'radial') {
+            dom = this.createElement('radialGradient');
+        }
+        else {
+            console.log('Illegal gradient type.');
+            return null;
+        }
+
+        // Set dom id with gradient id, since each gradient instance
+        // will have no more than one dom element.
+        // id may exists before for those dirty elements, in which case
+        // id should remain the same, and other attributes should be
+        // updated.
+        gradient.id = gradient.id || this.nextId++;
+        dom.setAttribute('id', 'zr' + this._zrId
+            + '-gradient-' + gradient.id);
+
+        this.updateDom(gradient, dom);
+        this.addDom(dom);
+
+        return dom;
+    },
+
+    /**
+     * @method update
+     * 
+     * Update gradient.
+     *
+     * @param {Gradient} gradient zr gradient instance
+     */
+    update:function (gradient) {
+        var that = this;
+        Definable.prototype.update.call(this, gradient, function () {
+            var type = gradient.type;
+            var tagName = gradient._dom.tagName;
+            if (type === 'linear' && tagName === 'linearGradient'
+                || type === 'radial' && tagName === 'radialGradient'
+            ) {
+                // Gradient type is not changed, update gradient
+                that.updateDom(gradient, gradient._dom);
+            }
+            else {
+                // Remove and re-create if type is changed
+                that.removeDom(gradient);
+                that.add(gradient);
             }
         });
-    }
-};
+    },
 
-
-/**
- * Add a new gradient tag in <defs>
- *
- * @param   {Gradient} gradient zr gradient instance
- * @return {SVGLinearGradientElement | SVGRadialGradientElement}
- *                            created DOM
- */
-GradientManager.prototype.add = function (gradient) {
-    var dom;
-    if (gradient.type === 'linear') {
-        dom = this.createElement('linearGradient');
-    }
-    else if (gradient.type === 'radial') {
-        dom = this.createElement('radialGradient');
-    }
-    else {
-        console.log('Illegal gradient type.');
-        return null;
-    }
-
-    // Set dom id with gradient id, since each gradient instance
-    // will have no more than one dom element.
-    // id may exists before for those dirty elements, in which case
-    // id should remain the same, and other attributes should be
-    // updated.
-    gradient.id = gradient.id || this.nextId++;
-    dom.setAttribute('id', 'zr' + this._zrId
-        + '-gradient-' + gradient.id);
-
-    this.updateDom(gradient, dom);
-    this.addDom(dom);
-
-    return dom;
-};
-
-
-/**
- * Update gradient.
- *
- * @param {Gradient} gradient zr gradient instance
- */
-GradientManager.prototype.update = function (gradient) {
-    var that = this;
-    Definable.prototype.update.call(this, gradient, function () {
-        var type = gradient.type;
-        var tagName = gradient._dom.tagName;
-        if (type === 'linear' && tagName === 'linearGradient'
-            || type === 'radial' && tagName === 'radialGradient'
-        ) {
-            // Gradient type is not changed, update gradient
-            that.updateDom(gradient, gradient._dom);
+    /**
+     * @method updateDom
+     * 
+     * Update gradient dom
+     *
+     * @param {Gradient} gradient zr gradient instance
+     * @param {SVGLinearGradientElement | SVGRadialGradientElement} dom
+     *                            DOM to update
+     */
+    updateDom:function (gradient, dom) {
+        if (gradient.type === 'linear') {
+            dom.setAttribute('x1', gradient.x);
+            dom.setAttribute('y1', gradient.y);
+            dom.setAttribute('x2', gradient.x2);
+            dom.setAttribute('y2', gradient.y2);
+        }
+        else if (gradient.type === 'radial') {
+            dom.setAttribute('cx', gradient.x);
+            dom.setAttribute('cy', gradient.y);
+            dom.setAttribute('r', gradient.r);
         }
         else {
-            // Remove and re-create if type is changed
-            that.removeDom(gradient);
-            that.add(gradient);
+            console.log('Illegal gradient type.');
+            return;
         }
-    });
-};
 
-
-/**
- * Update gradient dom
- *
- * @param {Gradient} gradient zr gradient instance
- * @param {SVGLinearGradientElement | SVGRadialGradientElement} dom
- *                            DOM to update
- */
-GradientManager.prototype.updateDom = function (gradient, dom) {
-    if (gradient.type === 'linear') {
-        dom.setAttribute('x1', gradient.x);
-        dom.setAttribute('y1', gradient.y);
-        dom.setAttribute('x2', gradient.x2);
-        dom.setAttribute('y2', gradient.y2);
-    }
-    else if (gradient.type === 'radial') {
-        dom.setAttribute('cx', gradient.x);
-        dom.setAttribute('cy', gradient.y);
-        dom.setAttribute('r', gradient.r);
-    }
-    else {
-        console.log('Illegal gradient type.');
-        return;
-    }
-
-    if (gradient.global) {
-        // x1, x2, y1, y2 in range of 0 to canvas width or height
-        dom.setAttribute('gradientUnits', 'userSpaceOnUse');
-    }
-    else {
-        // x1, x2, y1, y2 in range of 0 to 1
-        dom.setAttribute('gradientUnits', 'objectBoundingBox');
-    }
-
-    // Remove color stops if exists
-    dom.innerHTML = '';
-
-    // Add color stops
-    var colors = gradient.colorStops;
-    for (var i = 0, len = colors.length; i < len; ++i) {
-        var stop = this.createElement('stop');
-        stop.setAttribute('offset', colors[i].offset * 100 + '%');
-
-        var color = colors[i].color;
-        if (color.indexOf('rgba' > -1)) {
-            // Fix Safari bug that stop-color not recognizing alpha #9014
-            var opacity = parse(color)[3];
-            var hex = toHex(color);
-
-            // stop-color cannot be color, since:
-            // The opacity value used for the gradient calculation is the
-            // *product* of the value of stop-opacity and the opacity of the
-            // value of stop-color.
-            // See https://www.w3.org/TR/SVG2/pservers.html#StopOpacityProperty
-            stop.setAttribute('stop-color', '#' + hex);
-            stop.setAttribute('stop-opacity', opacity);
+        if (gradient.global) {
+            // x1, x2, y1, y2 in range of 0 to canvas width or height
+            dom.setAttribute('gradientUnits', 'userSpaceOnUse');
         }
         else {
-            stop.setAttribute('stop-color', colors[i].color);
+            // x1, x2, y1, y2 in range of 0 to 1
+            dom.setAttribute('gradientUnits', 'objectBoundingBox');
         }
 
-        dom.appendChild(stop);
-    }
+        // Remove color stops if exists
+        dom.innerHTML = '';
 
-    // Store dom element in gradient, to avoid creating multiple
-    // dom instances for the same gradient element
-    gradient._dom = dom;
+        // Add color stops
+        var colors = gradient.colorStops;
+        for (var i = 0, len = colors.length; i < len; ++i) {
+            var stop = this.createElement('stop');
+            stop.setAttribute('offset', colors[i].offset * 100 + '%');
+
+            var color = colors[i].color;
+            if (color.indexOf('rgba' > -1)) {
+                // Fix Safari bug that stop-color not recognizing alpha #9014
+                var opacity = parse(color)[3];
+                var hex = toHex(color);
+
+                // stop-color cannot be color, since:
+                // The opacity value used for the gradient calculation is the
+                // *product* of the value of stop-opacity and the opacity of the
+                // value of stop-color.
+                // See https://www.w3.org/TR/SVG2/pservers.html#StopOpacityProperty
+                stop.setAttribute('stop-color', '#' + hex);
+                stop.setAttribute('stop-opacity', opacity);
+            }
+            else {
+                stop.setAttribute('stop-color', colors[i].color);
+            }
+
+            dom.appendChild(stop);
+        }
+
+        // Store dom element in gradient, to avoid creating multiple
+        // dom instances for the same gradient element
+        gradient._dom = dom;
+    },
+
+    /**
+     * @method markUsed
+     * 
+     * Mark a single gradient to be used
+     *
+     * @param {Displayable} displayable displayable element
+     */
+    markUsed:function (displayable) {
+        if (displayable.style) {
+            var gradient = displayable.style.fill;
+            if (gradient && gradient._dom) {
+                Definable.prototype.markUsed.call(this, gradient._dom);
+            }
+
+            gradient = displayable.style.stroke;
+            if (gradient && gradient._dom) {
+                Definable.prototype.markUsed.call(this, gradient._dom);
+            }
+        }
+    }
 };
 
-/**
- * Mark a single gradient to be used
- *
- * @param {Displayable} displayable displayable element
- */
-GradientManager.prototype.markUsed = function (displayable) {
-    if (displayable.style) {
-        var gradient = displayable.style.fill;
-        if (gradient && gradient._dom) {
-            Definable.prototype.markUsed.call(this, gradient._dom);
-        }
-
-        gradient = displayable.style.stroke;
-        if (gradient && gradient._dom) {
-            Definable.prototype.markUsed.call(this, gradient._dom);
-        }
-    }
-};
+inherits(GradientManager, Definable);
 
 /**
  * @class zrender.svg.helper.ClippathManager
@@ -19015,6 +19023,7 @@ function ClippathManager(zrId, svgRoot) {
 
 ClippathManager.prototype={
     constructor:ClippathManager,
+
     /**
      * @method update
      * Update clipPath.
@@ -19036,6 +19045,7 @@ ClippathManager.prototype={
     
         this.markUsed(displayable);
     },
+
     /**
      * @method updateDom
      * Create an SVGElement of displayable and create a <clipPath> of its
@@ -19136,6 +19146,7 @@ ClippathManager.prototype={
             }
         }
     },
+    
     /**
      * @method markUsed
      * 
@@ -19162,15 +19173,19 @@ ClippathManager.prototype={
 inherits(ClippathManager, Definable);
 
 /**
- * @file Manages SVG shadow elements.
+ * @class zrender.svg.helper.ShadowManager
+ * 
+ * Manages SVG shadow elements.
+ * 
  * @author Zhang Wenli
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
 /**
+ * @method constructor ShadowManager
+ * 
  * Manages SVG shadow elements.
  *
- * @class
- * @extends Definable
  * @param   {Number}     zrId    zrender instance id
  * @param   {SVGElement} svgRoot root of SVG document
  */
@@ -19185,181 +19200,6 @@ function ShadowManager(zrId, svgRoot) {
     );
 }
 
-
-inherits(ShadowManager, Definable);
-
-
-/**
- * Create new shadow DOM for fill or stroke if not exist,
- * but will not update shadow if exists.
- *
- * @param {SvgElement}  svgElement   SVG element to paint
- * @param {Displayable} displayable  zrender displayable element
- */
-ShadowManager.prototype.addWithoutUpdate = function (
-    svgElement,
-    displayable
-) {
-    if (displayable && hasShadow(displayable.style)) {
-
-        // Create dom in <defs> if not exists
-        var dom;
-        if (displayable._shadowDom) {
-            // Gradient exists
-            dom = displayable._shadowDom;
-
-            var defs = this.getDefs(true);
-            if (!defs.contains(displayable._shadowDom)) {
-                // _shadowDom is no longer in defs, recreate
-                this.addDom(dom);
-            }
-        }
-        else {
-            // New dom
-            dom = this.add(displayable);
-        }
-
-        this.markUsed(displayable);
-
-        var id = dom.getAttribute('id');
-        svgElement.style.filter = 'url(#' + id + ')';
-    }
-};
-
-
-/**
- * Add a new shadow tag in <defs>
- *
- * @param {Displayable} displayable  zrender displayable element
- * @return {SVGFilterElement} created DOM
- */
-ShadowManager.prototype.add = function (displayable) {
-    var dom = this.createElement('filter');
-
-    // Set dom id with shadow id, since each shadow instance
-    // will have no more than one dom element.
-    // id may exists before for those dirty elements, in which case
-    // id should remain the same, and other attributes should be
-    // updated.
-    displayable._shadowDomId = displayable._shadowDomId || this.nextId++;
-    dom.setAttribute('id', 'zr' + this._zrId
-        + '-shadow-' + displayable._shadowDomId);
-
-    this.updateDom(displayable, dom);
-    this.addDom(dom);
-
-    return dom;
-};
-
-
-/**
- * Update shadow.
- *
- * @param {Displayable} displayable  zrender displayable element
- */
-ShadowManager.prototype.update = function (svgElement, displayable) {
-    var style = displayable.style;
-    if (hasShadow(style)) {
-        var that = this;
-        Definable.prototype.update.call(this, displayable, function () {
-            that.updateDom(displayable, displayable._shadowDom);
-        });
-    }
-    else {
-        // Remove shadow
-        this.remove(svgElement, displayable);
-    }
-};
-
-
-/**
- * Remove DOM and clear parent filter
- */
-ShadowManager.prototype.remove = function (svgElement, displayable) {
-    if (displayable._shadowDomId != null) {
-        this.removeDom(svgElement);
-        svgElement.style.filter = '';
-    }
-};
-
-
-/**
- * Update shadow dom
- *
- * @param {Displayable} displayable  zrender displayable element
- * @param {SVGFilterElement} dom DOM to update
- */
-ShadowManager.prototype.updateDom = function (displayable, dom) {
-    var domChild = dom.getElementsByTagName('feDropShadow');
-    if (domChild.length === 0) {
-        domChild = this.createElement('feDropShadow');
-    }
-    else {
-        domChild = domChild[0];
-    }
-
-    var style = displayable.style;
-    var scaleX = displayable.scale ? (displayable.scale[0] || 1) : 1;
-    var scaleY = displayable.scale ? (displayable.scale[1] || 1) : 1;
-
-    // TODO: textBoxShadowBlur is not supported yet
-    var offsetX;
-    var offsetY;
-    var blur;
-    var color;
-    if (style.shadowBlur || style.shadowOffsetX || style.shadowOffsetY) {
-        offsetX = style.shadowOffsetX || 0;
-        offsetY = style.shadowOffsetY || 0;
-        blur = style.shadowBlur;
-        color = style.shadowColor;
-    }
-    else if (style.textShadowBlur) {
-        offsetX = style.textShadowOffsetX || 0;
-        offsetY = style.textShadowOffsetY || 0;
-        blur = style.textShadowBlur;
-        color = style.textShadowColor;
-    }
-    else {
-        // Remove shadow
-        this.removeDom(dom, style);
-        return;
-    }
-
-    domChild.setAttribute('dx', offsetX / scaleX);
-    domChild.setAttribute('dy', offsetY / scaleY);
-    domChild.setAttribute('flood-color', color);
-
-    // Divide by two here so that it looks the same as in canvas
-    // See: https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-shadowblur
-    var stdDx = blur / 2 / scaleX;
-    var stdDy = blur / 2 / scaleY;
-    var stdDeviation = stdDx + ' ' + stdDy;
-    domChild.setAttribute('stdDeviation', stdDeviation);
-
-    // Fix filter clipping problem
-    dom.setAttribute('x', '-100%');
-    dom.setAttribute('y', '-100%');
-    dom.setAttribute('width', Math.ceil(blur / 2 * 200) + '%');
-    dom.setAttribute('height', Math.ceil(blur / 2 * 200) + '%');
-
-    dom.appendChild(domChild);
-
-    // Store dom element in shadow, to avoid creating multiple
-    // dom instances for the same shadow element
-    displayable._shadowDom = dom;
-};
-
-/**
- * Mark a single shadow to be used
- *
- * @param {Displayable} displayable displayable element
- */
-ShadowManager.prototype.markUsed = function (displayable) {
-    if (displayable._shadowDom) {
-        Definable.prototype.markUsed.call(this, displayable._shadowDom);
-    }
-};
-
 function hasShadow(style) {
     // TODO: textBoxShadowBlur is not supported yet
     return style
@@ -19367,6 +19207,163 @@ function hasShadow(style) {
             || style.textShadowBlur || style.textShadowOffsetX
             || style.textShadowOffsetY);
 }
+
+ShadowManager.prototype={
+    constructor:ShadowManager,
+
+    /**
+     * Create new shadow DOM for fill or stroke if not exist,
+     * but will not update shadow if exists.
+     *
+     * @param {SvgElement}  svgElement   SVG element to paint
+     * @param {Displayable} displayable  zrender displayable element
+     */
+    addWithoutUpdate:function (svgElement,displayable) {
+        if (displayable && hasShadow(displayable.style)) {
+            // Create dom in <defs> if not exists
+            let dom;
+            if (displayable._shadowDom) {
+                // Gradient exists
+                dom = displayable._shadowDom;
+                let defs = this.getDefs(true);
+                if (!defs.contains(displayable._shadowDom)) {
+                    // _shadowDom is no longer in defs, recreate
+                    this.addDom(dom);
+                }
+            }else {
+                // New dom
+                dom = this.add(displayable);
+            }
+
+            this.markUsed(displayable);
+            let id = dom.getAttribute('id');
+            svgElement.style.filter = 'url(#' + id + ')';
+        }
+    },
+
+    /**
+     * Add a new shadow tag in <defs>
+     *
+     * @param {Displayable} displayable  zrender displayable element
+     * @return {SVGFilterElement} created DOM
+     */
+    add:function (displayable) {
+        let dom = this.createElement('filter');
+        // Set dom id with shadow id, since each shadow instance
+        // will have no more than one dom element.
+        // id may exists before for those dirty elements, in which case
+        // id should remain the same, and other attributes should be
+        // updated.
+        displayable._shadowDomId = displayable._shadowDomId || this.nextId++;
+        dom.setAttribute('id', 'zr' + this._zrId
+            + '-shadow-' + displayable._shadowDomId);
+        this.updateDom(displayable, dom);
+        this.addDom(dom);
+        return dom;
+    },
+
+    /**
+     * Update shadow.
+     *
+     * @param {Displayable} displayable  zrender displayable element
+     */
+    update:function (svgElement, displayable) {
+        let style = displayable.style;
+        if (hasShadow(style)) {
+            let that = this;
+            Definable.prototype.update.call(this, displayable, function () {
+                that.updateDom(displayable, displayable._shadowDom);
+            });
+        }else {
+            // Remove shadow
+            this.remove(svgElement, displayable);
+        }
+    },
+
+    /**
+     * Remove DOM and clear parent filter
+     */
+    remove:function (svgElement, displayable) {
+        if (displayable._shadowDomId != null) {
+            this.removeDom(svgElement);
+            svgElement.style.filter = '';
+        }
+    },
+
+    /**
+     * Update shadow dom
+     *
+     * @param {Displayable} displayable  zrender displayable element
+     * @param {SVGFilterElement} dom DOM to update
+     */
+    updateDom:function (displayable, dom) {
+        let domChild = dom.getElementsByTagName('feDropShadow');
+        if (domChild.length === 0) {
+            domChild = this.createElement('feDropShadow');
+        }else {
+            domChild = domChild[0];
+        }
+
+        let style = displayable.style;
+        let scaleX = displayable.scale ? (displayable.scale[0] || 1) : 1;
+        let scaleY = displayable.scale ? (displayable.scale[1] || 1) : 1;
+        // TODO: textBoxShadowBlur is not supported yet
+        let offsetX;
+        let offsetY;
+        let blur;
+        let color;
+        if (style.shadowBlur || style.shadowOffsetX || style.shadowOffsetY) {
+            offsetX = style.shadowOffsetX || 0;
+            offsetY = style.shadowOffsetY || 0;
+            blur = style.shadowBlur;
+            color = style.shadowColor;
+        }else if (style.textShadowBlur) {
+            offsetX = style.textShadowOffsetX || 0;
+            offsetY = style.textShadowOffsetY || 0;
+            blur = style.textShadowBlur;
+            color = style.textShadowColor;
+        }else {
+            // Remove shadow
+            this.removeDom(dom, style);
+            return;
+        }
+
+        domChild.setAttribute('dx', offsetX / scaleX);
+        domChild.setAttribute('dy', offsetY / scaleY);
+        domChild.setAttribute('flood-color', color);
+
+        // Divide by two here so that it looks the same as in canvas
+        // See: https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-shadowblur
+        let stdDx = blur / 2 / scaleX;
+        let stdDy = blur / 2 / scaleY;
+        let stdDeviation = stdDx + ' ' + stdDy;
+        domChild.setAttribute('stdDeviation', stdDeviation);
+
+        // Fix filter clipping problem
+        dom.setAttribute('x', '-100%');
+        dom.setAttribute('y', '-100%');
+        dom.setAttribute('width', Math.ceil(blur / 2 * 200) + '%');
+        dom.setAttribute('height', Math.ceil(blur / 2 * 200) + '%');
+        
+        dom.appendChild(domChild);
+        // Store dom element in shadow, to avoid creating multiple
+        // dom instances for the same shadow element
+        displayable._shadowDom = dom;
+    },
+
+    /**
+     * Mark a single shadow to be used
+     *
+     * @param {Displayable} displayable displayable element
+     */
+    markUsed:function (displayable) {
+        if (displayable._shadowDom) {
+            Definable.prototype.markUsed.call(this, displayable._shadowDom);
+        }
+    }
+};
+
+inherits(ShadowManager, Definable);
 
 /**
  * @class zrender.svg.SVGPainter

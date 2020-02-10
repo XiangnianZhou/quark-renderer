@@ -44,6 +44,7 @@ function Definable(zrId,svgRoot,tagNames,markLabel,domName) {
 
 Definable.prototype={
     constructor:Definable,
+    
     createElement:createElement,
 
     /**
