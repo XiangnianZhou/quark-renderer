@@ -33,12 +33,6 @@ function Displayable(opts) {
      * @property {Style} style
      */
     this.style = new Style(opts.style, this);
-
-    /**
-     * @private
-     * @property  _rect
-     */
-    this._rect = null;
     
     /**
      * @private
@@ -56,17 +50,11 @@ function Displayable(opts) {
 Displayable.prototype = {
 
     constructor: Displayable,
+
     /**
      * @property {String} type
      */
     type: 'displayable',
-
-    /**
-     * @property {Boolean} __dirty
-     * Dirty flag. From which painter will determine if this displayable object needs to be repainted.
-     * 这是一个非常重要的标志位，在绘制大量对象的时候，把 __dirty 标记为 false 可以节省大量操作。
-     */
-    __dirty: true,
 
     /**
      * @property {Boolean} invisible
@@ -194,16 +182,6 @@ Displayable.prototype = {
     },
 
     /**
-     * @method dirty
-     * Mark displayable element dirty and refresh next frame
-     */
-    dirty: function () {
-        this.__dirty = this.__dirtyText = true;
-        this._rect = null;
-        this.__zr && this.__zr.refresh();
-    },
-
-    /**
      * @method animateStyle
      * Alias for animate('style')
      * @param {Boolean} loop
@@ -220,8 +198,7 @@ Displayable.prototype = {
     attrKV: function (key, value) {
         if (key !== 'style') {
             Element.prototype.attrKV.call(this, key, value);
-        }
-        else {
+        }else {
             this.style.set(value);
         }
     },
