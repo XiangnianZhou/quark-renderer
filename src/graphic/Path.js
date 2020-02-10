@@ -370,8 +370,13 @@ Path.prototype = {
 };
 
 /**
- * 扩展一个 Path element, 比如星形，圆等。
- * Extend a path element
+ * @private
+ * @method extend
+ * 
+ * Extending tool function for Path class.
+ * 
+ * Path 类专用的继承工具函数。
+ * 
  * @param {Object} props
  * @param {String} props.type Path type
  * @param {Function} props.init Initialize
@@ -392,17 +397,12 @@ Path.extend = function (defaults) {
         let defaultShape = defaults.shape;
         if (defaultShape) {
             this.shape = this.shape || {};
-            let thisShape = this.shape;
             for (let name in defaultShape) {
-                if (
-                    !thisShape.hasOwnProperty(name)
-                    && defaultShape.hasOwnProperty(name)
-                ) {
-                    thisShape[name] = defaultShape[name];
+                if (!this.shape.hasOwnProperty(name)&&defaultShape.hasOwnProperty(name)){
+                    this.shape[name] = defaultShape[name];
                 }
             }
         }
-
         defaults.init && defaults.init.call(this, opts);
     };
 
