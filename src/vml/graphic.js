@@ -1,6 +1,3 @@
-// http://www.w3.org/TR/NOTE-VML
-// TODO Use proxy like svg instead of overwrite brush methods
-
 import env from '../core/env';
 import {applyTransform} from '../core/utils/vector';
 import BoundingRect from '../core/BoundingRect';
@@ -16,64 +13,64 @@ import PathProxy from '../core/PathProxy';
 import Gradient from '../graphic/Gradient';
 import * as vmlCore from './core';
 
-var CMD = PathProxy.CMD;
-var round = Math.round;
-var sqrt = Math.sqrt;
-var abs = Math.abs;
-var cos = Math.cos;
-var sin = Math.sin;
-var mathMax = Math.max;
+// http://www.w3.org/TR/NOTE-VML
+// TODO:Use proxy like svg instead of overwrite brush methods
+
+let CMD = PathProxy.CMD;
+let round = Math.round;
+let sqrt = Math.sqrt;
+let abs = Math.abs;
+let cos = Math.cos;
+let sin = Math.sin;
+let mathMax = Math.max;
 
 if (!env.canvasSupported) {
 
-    var comma = ',';
-    var imageTransformPrefix = 'progid:DXImageTransform.Microsoft';
+    let comma = ',';
+    let imageTransformPrefix = 'progid:DXImageTransform.Microsoft';
 
-    var Z = 21600;
-    var Z2 = Z / 2;
+    let Z = 21600;
+    let Z2 = Z / 2;
 
-    var ZLEVEL_BASE = 100000;
-    var Z_BASE = 1000;
+    let ZLEVEL_BASE = 100000;
+    let Z_BASE = 1000;
 
-    var initRootElStyle = function (el) {
+    let initRootElStyle = function (el) {
         el.style.cssText = 'position:absolute;left:0;top:0;width:1px;height:1px;';
         el.coordsize = Z + ',' + Z;
         el.coordorigin = '0,0';
     };
 
-    var encodeHtmlAttribute = function (s) {
+    let encodeHtmlAttribute = function (s) {
         return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
     };
 
-    var rgb2Str = function (r, g, b) {
+    let rgb2Str = function (r, g, b) {
         return 'rgb(' + [r, g, b].join(',') + ')';
     };
 
-    var append = function (parent, child) {
+    let append = function (parent, child) {
         if (child && parent && child.parentNode !== parent) {
             parent.appendChild(child);
         }
     };
 
-    var remove = function (parent, child) {
+    let remove = function (parent, child) {
         if (child && parent && child.parentNode === parent) {
             parent.removeChild(child);
         }
     };
 
-    var getZIndex = function (zlevel, z, z2) {
+    let getZIndex = function (zlevel, z, z2) {
         // z 的取值范围为 [0, 1000]
         return (parseFloat(zlevel) || 0) * ZLEVEL_BASE + (parseFloat(z) || 0) * Z_BASE + z2;
     };
 
-    var parsePercent = textHelper.parsePercent;
+    let parsePercent = textHelper.parsePercent;
 
-    /***************************************************
-     * PATH
-     **************************************************/
-
-    var setColorAndOpacity = function (el, color, opacity) {
-        var colorArr = colorTool.parse(color);
+    //--------------PATH----------------------
+    let setColorAndOpacity = function (el, color, opacity) {
+        let colorArr = colorTool.parse(color);
         opacity = +opacity;
         if (isNaN(opacity)) {
             opacity = 1;
@@ -84,41 +81,41 @@ if (!env.canvasSupported) {
         }
     };
 
-    var getColorAndAlpha = function (color) {
-        var colorArr = colorTool.parse(color);
+    let getColorAndAlpha = function (color) {
+        let colorArr = colorTool.parse(color);
         return [
             rgb2Str(colorArr[0], colorArr[1], colorArr[2]),
             colorArr[3]
         ];
     };
 
-    var updateFillNode = function (el, style, zrEl) {
+    let updateFillNode = function (el, style, zrEl) {
         // TODO pattern
-        var fill = style.fill;
+        let fill = style.fill;
         if (fill != null) {
             // Modified from excanvas
             if (fill instanceof Gradient) {
-                var gradientType;
-                var angle = 0;
-                var focus = [0, 0];
+                let gradientType;
+                let angle = 0;
+                let focus = [0, 0];
                 // additional offset
-                var shift = 0;
+                let shift = 0;
                 // scale factor for offset
-                var expansion = 1;
-                var rect = zrEl.getBoundingRect();
-                var rectWidth = rect.width;
-                var rectHeight = rect.height;
+                let expansion = 1;
+                let rect = zrEl.getBoundingRect();
+                let rectWidth = rect.width;
+                let rectHeight = rect.height;
                 if (fill.type === 'linear') {
                     gradientType = 'gradient';
-                    var transform = zrEl.transform;
-                    var p0 = [fill.x * rectWidth, fill.y * rectHeight];
-                    var p1 = [fill.x2 * rectWidth, fill.y2 * rectHeight];
+                    let transform = zrEl.transform;
+                    let p0 = [fill.x * rectWidth, fill.y * rectHeight];
+                    let p1 = [fill.x2 * rectWidth, fill.y2 * rectHeight];
                     if (transform) {
                         applyTransform(p0, p0, transform);
                         applyTransform(p1, p1, transform);
                     }
-                    var dx = p1[0] - p0[0];
-                    var dy = p1[1] - p0[1];
+                    let dx = p1[0] - p0[0];
+                    let dy = p1[1] - p0[1];
                     angle = Math.atan2(dx, dy) * 180 / Math.PI;
                     // The angle should be a non-negative number.
                     if (angle < 0) {
@@ -133,11 +130,11 @@ if (!env.canvasSupported) {
                 }
                 else {
                     gradientType = 'gradientradial';
-                    var p0 = [fill.x * rectWidth, fill.y * rectHeight];
-                    var transform = zrEl.transform;
-                    var scale = zrEl.scale;
-                    var width = rectWidth;
-                    var height = rectHeight;
+                    let p0 = [fill.x * rectWidth, fill.y * rectHeight];
+                    let transform = zrEl.transform;
+                    let scale = zrEl.scale;
+                    let width = rectWidth;
+                    let height = rectHeight;
                     focus = [
                         // Percent in bounding rect
                         (p0[0] - rect.x) / width,
@@ -149,25 +146,25 @@ if (!env.canvasSupported) {
 
                     width /= scale[0] * Z;
                     height /= scale[1] * Z;
-                    var dimension = mathMax(width, height);
+                    let dimension = mathMax(width, height);
                     shift = 2 * 0 / dimension;
                     expansion = 2 * fill.r / dimension - shift;
                 }
 
                 // We need to sort the color stops in ascending order by offset,
                 // otherwise IE won't interpret it correctly.
-                var stops = fill.colorStops.slice();
+                let stops = fill.colorStops.slice();
                 stops.sort(function (cs1, cs2) {
                     return cs1.offset - cs2.offset;
                 });
 
-                var length = stops.length;
+                let length = stops.length;
                 // Color and alpha list of first and last stop
-                var colorAndAlphaList = [];
-                var colors = [];
-                for (var i = 0; i < length; i++) {
-                    var stop = stops[i];
-                    var colorAndAlpha = getColorAndAlpha(stop.color);
+                let colorAndAlphaList = [];
+                let colors = [];
+                for (let i = 0; i < length; i++) {
+                    let stop = stops[i];
+                    let colorAndAlpha = getColorAndAlpha(stop.color);
                     colors.push(stop.offset * expansion + shift + ' ' + colorAndAlpha[0]);
                     if (i === 0 || i === length - 1) {
                         colorAndAlphaList.push(colorAndAlpha);
@@ -175,10 +172,10 @@ if (!env.canvasSupported) {
                 }
 
                 if (length >= 2) {
-                    var color1 = colorAndAlphaList[0][0];
-                    var color2 = colorAndAlphaList[1][0];
-                    var opacity1 = colorAndAlphaList[0][1] * style.opacity;
-                    var opacity2 = colorAndAlphaList[1][1] * style.opacity;
+                    let color1 = colorAndAlphaList[0][0];
+                    let color2 = colorAndAlphaList[1][0];
+                    let opacity1 = colorAndAlphaList[0][1] * style.opacity;
+                    let opacity2 = colorAndAlphaList[1][1] * style.opacity;
 
                     el.type = gradientType;
                     el.method = 'none';
@@ -204,7 +201,7 @@ if (!env.canvasSupported) {
         }
     };
 
-    var updateStrokeNode = function (el, style) {
+    let updateStrokeNode = function (el, style) {
         // if (style.lineJoin != null) {
         //     el.joinstyle = style.lineJoin;
         // }
@@ -222,9 +219,9 @@ if (!env.canvasSupported) {
         }
     };
 
-    var updateFillAndStroke = function (vmlEl, type, style, zrEl) {
-        var isFill = type === 'fill';
-        var el = vmlEl.getElementsByTagName(type)[0];
+    let updateFillAndStroke = function (vmlEl, type, style, zrEl) {
+        let isFill = type === 'fill';
+        let el = vmlEl.getElementsByTagName(type)[0];
         // Stroke must have lineWidth
         if (style[type] != null && style[type] !== 'none' && (isFill || (!isFill && style.lineWidth))) {
             vmlEl[isFill ? 'filled' : 'stroked'] = 'true';
@@ -245,23 +242,39 @@ if (!env.canvasSupported) {
         }
     };
 
-    var points = [[], [], []];
-    var pathDataToString = function (path, m) {
-        var M = CMD.M;
-        var C = CMD.C;
-        var L = CMD.L;
-        var A = CMD.A;
-        var Q = CMD.Q;
+    let points = [[], [], []];
+    let pathDataToString = function (path, m) {
+        let M = CMD.M;
+        let C = CMD.C;
+        let L = CMD.L;
+        let A = CMD.A;
+        let Q = CMD.Q;
 
-        var str = [];
-        var nPoint;
-        var cmdStr;
-        var cmd;
-        var i;
-        var xi;
-        var yi;
-        var data = path.data;
-        var dataLength = path.len();
+        let str = [];
+        let nPoint;
+        let cmdStr;
+        let cmd;
+        let i;
+        let xi;
+        let yi;
+        let data = path.data;
+        let dataLength = path.len();
+        let x;
+        let y;
+        let x0;
+        let y0;
+        let x1;
+        let y1;
+        let x2;
+        let y2;
+        let x3;
+        let y3;
+        let cx;
+        let cy;
+        let sx;
+        let sy;
+        let rx;
+        let ry;
         for (i = 0; i < dataLength;) {
             cmd = data[i++];
             cmdStr = '';
@@ -287,12 +300,10 @@ if (!env.canvasSupported) {
                 case C:
                     cmdStr = ' c ';
                     nPoint = 3;
-                    var x1 = data[i++];
-                    var y1 = data[i++];
-                    var x2 = data[i++];
-                    var y2 = data[i++];
-                    var x3;
-                    var y3;
+                    x1 = data[i++];
+                    y1 = data[i++];
+                    x2 = data[i++];
+                    y2 = data[i++];
                     if (cmd === Q) {
                         // Convert quadratic to cubic using degree elevation
                         x3 = x2;
@@ -317,11 +328,11 @@ if (!env.canvasSupported) {
                     yi = y3;
                     break;
                 case A:
-                    var x = 0;
-                    var y = 0;
-                    var sx = 1;
-                    var sy = 1;
-                    var angle = 0;
+                    x = 0;
+                    y = 0;
+                    sx = 1;
+                    sy = 1;
+                    let angle = 0;
                     if (m) {
                         // Extract SRT from matrix
                         x = m[4];
@@ -331,24 +342,24 @@ if (!env.canvasSupported) {
                         angle = Math.atan2(-m[1] / sy, m[0] / sx);
                     }
 
-                    var cx = data[i++];
-                    var cy = data[i++];
-                    var rx = data[i++];
-                    var ry = data[i++];
-                    var startAngle = data[i++] + angle;
-                    var endAngle = data[i++] + startAngle + angle;
+                    cx = data[i++];
+                    cy = data[i++];
+                    rx = data[i++];
+                    ry = data[i++];
+                    let startAngle = data[i++] + angle;
+                    let endAngle = data[i++] + startAngle + angle;
                     // FIXME
-                    // var psi = data[i++];
+                    // let psi = data[i++];
                     i++;
-                    var clockwise = data[i++];
+                    let clockwise = data[i++];
 
-                    var x0 = cx + cos(startAngle) * rx;
-                    var y0 = cy + sin(startAngle) * ry;
+                    x0 = cx + cos(startAngle) * rx;
+                    y0 = cy + sin(startAngle) * ry;
 
-                    var x1 = cx + cos(endAngle) * rx;
-                    var y1 = cy + sin(endAngle) * ry;
+                    x1 = cx + cos(endAngle) * rx;
+                    y1 = cy + sin(endAngle) * ry;
 
-                    var type = clockwise ? ' wa ' : ' at ';
+                    let type = clockwise ? ' wa ' : ' at ';
                     if (Math.abs(x0 - x1) < 1e-4) {
                         // IE won't render arches drawn counter clockwise if x0 == x1.
                         if (Math.abs(endAngle - startAngle) > 1e-2) {
@@ -363,15 +374,12 @@ if (!env.canvasSupported) {
                             if (Math.abs(y0 - cy) < 1e-4) {
                                 if ((clockwise && x0 < cx) || (!clockwise && x0 > cx)) {
                                     y1 -= 270 / Z;
-                                }
-                                else {
+                                }else {
                                     y1 += 270 / Z;
                                 }
-                            }
-                            else if ((clockwise && y0 < cy) || (!clockwise && y0 > cy)) {
+                            }else if ((clockwise && y0 < cy) || (!clockwise && y0 > cy)) {
                                 x1 += 270 / Z;
-                            }
-                            else {
+                            }else {
                                 x1 -= 270 / Z;
                             }
                         }
@@ -392,8 +400,8 @@ if (!env.canvasSupported) {
                     yi = y1;
                     break;
                 case CMD.R:
-                    var p0 = points[0];
-                    var p1 = points[1];
+                    let p0 = points[0];
+                    let p1 = points[1];
                     // x0, y0
                     p0[0] = data[i++];
                     p0[1] = data[i++];
@@ -428,9 +436,8 @@ if (!env.canvasSupported) {
 
             if (nPoint > 0) {
                 str.push(cmdStr);
-                for (var k = 0; k < nPoint; k++) {
-                    var p = points[k];
-
+                for (let k = 0; k < nPoint; k++) {
+                    let p = points[k];
                     m && applyTransform(p, p, m);
                     // 不 round 会非常慢
                     str.push(
@@ -440,15 +447,19 @@ if (!env.canvasSupported) {
                 }
             }
         }
-
         return str.join('');
     };
 
+    /**
+     * @class zrender.vml.Path
+     * 
+     * @docauthor 大漠穷秋 damoqiongqiu@126.com
+     */
+
     // Rewrite the original path method
     Path.prototype.brushVML = function (vmlRoot) {
-        var style = this.style;
-
-        var vmlEl = this._vmlEl;
+        let style = this.style;
+        let vmlEl = this._vmlEl;
         if (!vmlEl) {
             vmlEl = vmlCore.createNode('shape');
             initRootElStyle(vmlEl);
@@ -459,23 +470,23 @@ if (!env.canvasSupported) {
         updateFillAndStroke(vmlEl, 'fill', style, this);
         updateFillAndStroke(vmlEl, 'stroke', style, this);
 
-        var m = this.transform;
-        var needTransform = m != null;
-        var strokeEl = vmlEl.getElementsByTagName('stroke')[0];
+        let m = this.transform;
+        let needTransform = m != null;
+        let strokeEl = vmlEl.getElementsByTagName('stroke')[0];
         if (strokeEl) {
-            var lineWidth = style.lineWidth;
+            let lineWidth = style.lineWidth;
             // Get the line scale.
             // Determinant of this.m_ means how much the area is enlarged by the
             // transformation. So its square root can be used as a scale factor
             // for width.
             if (needTransform && !style.strokeNoScale) {
-                var det = m[0] * m[3] - m[1] * m[2];
+                let det = m[0] * m[3] - m[1] * m[2];
                 lineWidth *= sqrt(abs(det));
             }
             strokeEl.weight = lineWidth + 'px';
         }
 
-        var path = this.path || (this.path = new PathProxy());
+        let path = this.path || (this.path = new PathProxy());
         if (this.__dirtyPath) {
             path.beginPath();
             path.subPixelOptimize = false;
@@ -510,34 +521,37 @@ if (!env.canvasSupported) {
         this.appendRectText(vmlRoot);
     };
 
-    /***************************************************
-     * IMAGE
-     **************************************************/
-    var isImage = function (img) {
+    //--------------IMAGE----------------------
+    let isImage = function (img) {
         // FIXME img instanceof Image 如果 img 是一个字符串的时候，IE8 下会报错
         return (typeof img === 'object') && img.tagName && img.tagName.toUpperCase() === 'IMG';
         // return img instanceof Image;
     };
 
+    /**
+     * @class zrender.vml.ZImage
+     * 
+     * @docauthor 大漠穷秋 damoqiongqiu@126.com
+     */
     // Rewrite the original path method
     ZImage.prototype.brushVML = function (vmlRoot) {
-        var style = this.style;
-        var image = style.image;
+        let style = this.style;
+        let image = style.image;
 
         // Image original width, height
-        var ow;
-        var oh;
+        let ow;
+        let oh;
 
         if (isImage(image)) {
-            var src = image.src;
+            let src = image.src;
             if (src === this._imageSrc) {
                 ow = this._imageWidth;
                 oh = this._imageHeight;
             }
             else {
-                var imageRuntimeStyle = image.runtimeStyle;
-                var oldRuntimeWidth = imageRuntimeStyle.width;
-                var oldRuntimeHeight = imageRuntimeStyle.height;
+                let imageRuntimeStyle = image.runtimeStyle;
+                let oldRuntimeWidth = imageRuntimeStyle.width;
+                let oldRuntimeHeight = imageRuntimeStyle.height;
                 imageRuntimeStyle.width = 'auto';
                 imageRuntimeStyle.height = 'auto';
 
@@ -566,20 +580,20 @@ if (!env.canvasSupported) {
             return;
         }
 
-        var x = style.x || 0;
-        var y = style.y || 0;
+        let x = style.x || 0;
+        let y = style.y || 0;
 
-        var dw = style.width;
-        var dh = style.height;
+        let dw = style.width;
+        let dh = style.height;
 
-        var sw = style.sWidth;
-        var sh = style.sHeight;
-        var sx = style.sx || 0;
-        var sy = style.sy || 0;
+        let sw = style.sWidth;
+        let sh = style.sHeight;
+        let sx = style.sx || 0;
+        let sy = style.sy || 0;
 
-        var hasCrop = sw && sh;
+        let hasCrop = sw && sh;
 
-        var vmlEl = this._vmlEl;
+        let vmlEl = this._vmlEl;
         if (!vmlEl) {
             // FIXME 使用 group 在 left, top 都不是 0 的时候就无法显示了。
             // vmlEl = vmlCore.createNode('group');
@@ -589,11 +603,11 @@ if (!env.canvasSupported) {
             this._vmlEl = vmlEl;
         }
 
-        var vmlElStyle = vmlEl.style;
-        var hasRotation = false;
-        var m;
-        var scaleX = 1;
-        var scaleY = 1;
+        let vmlElStyle = vmlEl.style;
+        let hasRotation = false;
+        let m;
+        let scaleX = 1;
+        let scaleY = 1;
         if (this.transform) {
             m = this.transform;
             scaleX = sqrt(m[0] * m[0] + m[1] * m[1]);
@@ -607,19 +621,19 @@ if (!env.canvasSupported) {
             // The following check doesn't account for skews (which don't exist
             // in the canvas spec (yet) anyway.
             // From excanvas
-            var p0 = [x, y];
-            var p1 = [x + dw, y];
-            var p2 = [x, y + dh];
-            var p3 = [x + dw, y + dh];
+            let p0 = [x, y];
+            let p1 = [x + dw, y];
+            let p2 = [x, y + dh];
+            let p3 = [x + dw, y + dh];
             applyTransform(p0, p0, m);
             applyTransform(p1, p1, m);
             applyTransform(p2, p2, m);
             applyTransform(p3, p3, m);
 
-            var maxX = mathMax(p0[0], p1[0], p2[0], p3[0]);
-            var maxY = mathMax(p0[1], p1[1], p2[1], p3[1]);
+            let maxX = mathMax(p0[0], p1[0], p2[0], p3[0]);
+            let maxY = mathMax(p0[1], p1[1], p2[1], p3[1]);
 
-            var transformFilter = [];
+            let transformFilter = [];
             transformFilter.push('M11=', m[0] / scaleX, comma,
                         'M12=', m[2] / scaleY, comma,
                         'M21=', m[1] / scaleX, comma,
@@ -643,19 +657,19 @@ if (!env.canvasSupported) {
             vmlElStyle.top = round(y) + 'px';
         }
 
-        var imageEl = this._imageEl;
-        var cropEl = this._cropEl;
+        let imageEl = this._imageEl;
+        let cropEl = this._cropEl;
 
         if (!imageEl) {
             imageEl = vmlCore.doc.createElement('div');
             this._imageEl = imageEl;
         }
-        var imageELStyle = imageEl.style;
+        let imageELStyle = imageEl.style;
         if (hasCrop) {
             // Needs know image original width and height
             if (!(ow && oh)) {
-                var tmpImage = new Image();
-                var self = this;
+                let tmpImage = new Image();
+                let self = this;
                 tmpImage.onload = function () {
                     tmpImage.onload = null;
                     ow = tmpImage.width;
@@ -681,7 +695,7 @@ if (!env.canvasSupported) {
                 cropEl.style.overflow = 'hidden';
                 this._cropEl = cropEl;
             }
-            var cropElStyle = cropEl.style;
+            let cropElStyle = cropEl.style;
             cropElStyle.width = round((dw + sx * dw / sw) * scaleX);
             cropElStyle.height = round((dh + sy * dh / sh) * scaleY);
             cropElStyle.filter = imageTransformPrefix + '.Matrix(Dx='
@@ -706,8 +720,8 @@ if (!env.canvasSupported) {
             }
         }
 
-        var filterStr = '';
-        var alpha = style.opacity;
+        let filterStr = '';
+        let alpha = style.opacity;
         if (alpha < 1) {
             filterStr += '.Alpha(opacity=' + round(alpha * 100) + ') ';
         }
@@ -742,19 +756,15 @@ if (!env.canvasSupported) {
     };
 
 
-    /***************************************************
-     * TEXT
-     **************************************************/
+    //--------------TEXT----------------------
+    let DEFAULT_STYLE_NORMAL = 'normal';
+    let fontStyleCache = {};
+    let fontStyleCacheCount = 0;
+    let MAX_FONT_CACHE_SIZE = 100;
+    let fontEl = document.createElement('div');
 
-    var DEFAULT_STYLE_NORMAL = 'normal';
-
-    var fontStyleCache = {};
-    var fontStyleCacheCount = 0;
-    var MAX_FONT_CACHE_SIZE = 100;
-    var fontEl = document.createElement('div');
-
-    var getFontStyle = function (fontString) {
-        var fontStyle = fontStyleCache[fontString];
+    let getFontStyle = function (fontString) {
+        let fontStyle = fontStyleCache[fontString];
         if (!fontStyle) {
             // Clear cache
             if (fontStyleCacheCount > MAX_FONT_CACHE_SIZE) {
@@ -762,8 +772,8 @@ if (!env.canvasSupported) {
                 fontStyleCache = {};
             }
 
-            var style = fontEl.style;
-            var fontFamily;
+            let style = fontEl.style;
+            let fontFamily;
             try {
                 style.font = fontString;
                 fontFamily = style.fontFamily.split(',')[0];
@@ -785,10 +795,10 @@ if (!env.canvasSupported) {
         return fontStyle;
     };
 
-    var textMeasureEl;
+    let textMeasureEl;
     // Overwrite measure text method
     textContain.$override('measureText', function (text, textFont) {
-        var doc = vmlCore.doc;
+        let doc = vmlCore.doc;
         if (!textMeasureEl) {
             textMeasureEl = doc.createElement('div');
             textMeasureEl.style.cssText = 'position:absolute;top:-20000px;left:0;'
@@ -810,16 +820,16 @@ if (!env.canvasSupported) {
         };
     });
 
-    var tmpRect = new BoundingRect();
+    let tmpRect = new BoundingRect();
 
-    var drawRectText = function (vmlRoot, rect, textRect, fromTextEl) {
+    let drawRectText = function (vmlRoot, rect, textRect, fromTextEl) {
 
-        var style = this.style;
+        let style = this.style;
 
         // Optimize, avoid normalize every time.
         this.__dirty && textHelper.normalizeTextStyle(style, true);
 
-        var text = style.text;
+        let text = style.text;
         // Convert to string
         text != null && (text += '');
         if (!text) {
@@ -829,12 +839,12 @@ if (!env.canvasSupported) {
         // Convert rich text to plain text. Rich text is not supported in
         // IE8-, but tags in rich text template will be removed.
         if (style.rich) {
-            var contentBlock = textContain.parseRichText(text, style);
+            let contentBlock = textContain.parseRichText(text, style);
             text = [];
-            for (var i = 0; i < contentBlock.lines.length; i++) {
-                var tokens = contentBlock.lines[i].tokens;
-                var textLine = [];
-                for (var j = 0; j < tokens.length; j++) {
+            for (let i = 0; i < contentBlock.lines.length; i++) {
+                let tokens = contentBlock.lines[i].tokens;
+                let textLine = [];
+                for (let j = 0; j < tokens.length; j++) {
                     textLine.push(tokens[j].text);
                 }
                 text.push(textLine.join(''));
@@ -842,14 +852,14 @@ if (!env.canvasSupported) {
             text = text.join('\n');
         }
 
-        var x;
-        var y;
-        var align = style.textAlign;
-        var verticalAlign = style.textVerticalAlign;
+        let x;
+        let y;
+        let align = style.textAlign;
+        let verticalAlign = style.textVerticalAlign;
 
-        var fontStyle = getFontStyle(style.font);
+        let fontStyle = getFontStyle(style.font);
         // FIXME encodeHtmlAttribute ?
-        var font = fontStyle.style + ' ' + fontStyle.variant + ' ' + fontStyle.weight + ' '
+        let font = fontStyle.style + ' ' + fontStyle.variant + ' ' + fontStyle.weight + ' '
             + fontStyle.size + 'px "' + fontStyle.family + '"';
 
         textRect = textRect || textContain.getBoundingRect(
@@ -857,7 +867,7 @@ if (!env.canvasSupported) {
         );
 
         // Transform rect to view space
-        var m = this.transform;
+        let m = this.transform;
         // Ignore transform for text in other element
         if (m && !fromTextEl) {
             tmpRect.copy(rect);
@@ -866,7 +876,7 @@ if (!env.canvasSupported) {
         }
 
         if (!fromTextEl) {
-            var textPosition = style.textPosition;
+            let textPosition = style.textPosition;
             // Text position represented by coord
             if (textPosition instanceof Array) {
                 x = rect.x + parsePercent(textPosition[0], rect.width);
@@ -875,7 +885,7 @@ if (!env.canvasSupported) {
                 align = align || 'left';
             }
             else {
-                var res = this.calculateTextPosition
+                let res = this.calculateTextPosition
                     ? this.calculateTextPosition({}, style, rect)
                     : textContain.calculateTextPosition({}, style, rect);
                 x = res.x;
@@ -897,7 +907,7 @@ if (!env.canvasSupported) {
         // Force baseline 'middle'
         y += textRect.height / 2;
 
-        // var fontSize = fontStyle.size;
+        // let fontSize = fontStyle.size;
         // 1.75 is an arbitrary number, as there is no info about the text baseline
         // switch (baseline) {
             // case 'hanging':
@@ -934,12 +944,12 @@ if (!env.canvasSupported) {
             //     align = 'left';
         // }
 
-        var createNode = vmlCore.createNode;
+        let createNode = vmlCore.createNode;
 
-        var textVmlEl = this._textVmlEl;
-        var pathEl;
-        var textPathEl;
-        var skewEl;
+        let textVmlEl = this._textVmlEl;
+        let pathEl;
+        let textPathEl;
+        let skewEl;
         if (!textVmlEl) {
             textVmlEl = createNode('line');
             pathEl = createNode('path');
@@ -971,8 +981,8 @@ if (!env.canvasSupported) {
             textPathEl = pathEl.nextSibling;
         }
 
-        var coords = [x, y];
-        var textVmlElStyle = textVmlEl.style;
+        let coords = [x, y];
+        let textVmlElStyle = textVmlEl.style;
         // Ignore transform for text in other element
         if (m && fromTextEl) {
             applyTransform(coords, coords, m);
@@ -1020,27 +1030,32 @@ if (!env.canvasSupported) {
         append(vmlRoot, textVmlEl);
     };
 
-    var removeRectText = function (vmlRoot) {
+    let removeRectText = function (vmlRoot) {
         remove(vmlRoot, this._textVmlEl);
         this._textVmlEl = null;
     };
 
-    var appendRectText = function (vmlRoot) {
+    let appendRectText = function (vmlRoot) {
         append(vmlRoot, this._textVmlEl);
     };
 
-    var list = [RectText, Displayable, ZImage, Path, Text];
+    let list = [RectText, Displayable, ZImage, Path, Text];
 
     // In case Displayable has been mixed in RectText
-    for (var i = 0; i < list.length; i++) {
-        var proto = list[i].prototype;
+    for (let i = 0; i < list.length; i++) {
+        let proto = list[i].prototype;
         proto.drawRectText = drawRectText;
         proto.removeRectText = removeRectText;
         proto.appendRectText = appendRectText;
     }
 
+    /**
+     * @class zrender.vml.Text
+     * 
+     * @docauthor 大漠穷秋 damoqiongqiu@126.com
+     */
     Text.prototype.brushVML = function (vmlRoot) {
-        var style = this.style;
+        let style = this.style;
         if (style.text != null) {
             this.drawRectText(vmlRoot, {
                 x: style.x || 0, y: style.y || 0,
