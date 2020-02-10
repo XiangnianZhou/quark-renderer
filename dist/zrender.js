@@ -9924,10 +9924,10 @@ ZImage.prototype = {
 inherits(ZImage, Displayable);
 
 /**
- * @class zrender.canvas.Painter
- * 这是基于 canvas 接口的 Painter 类
- * @see 基于 SVG 接口的 Painter 类在 svg 目录下
- * @see 基于 VML 接口的 Painter 类在 vml 目录下
+ * @class zrender.canvas.CanvasPainter
+ * 这是基于 canvas 接口的 CanvasPainter 类
+ * @see 基于 SVG 接口的 CanvasPainter 类在 svg 目录下
+ * @see 基于 VML 接口的 CanvasPainter 类在 vml 目录下
  */
 
 let HOVER_LAYER_ZLEVEL = 1e5;
@@ -10054,7 +10054,7 @@ function createRoot(width, height) {
  * @param {Storage} storage
  * @param {Object} opts
  */
-let Painter = function (root, storage, opts) {
+let CanvasPainter = function (root, storage, opts) {
     this.type = 'canvas';
     // In node environment using node-canvas
     let singleCanvas = !root.nodeName // In node ?
@@ -10166,9 +10166,9 @@ let Painter = function (root, storage, opts) {
     this._hoverElements = [];
 };
 
-Painter.prototype = {
+CanvasPainter.prototype = {
 
-    constructor: Painter,
+    constructor: CanvasPainter,
 
     /**
      * @method getType
@@ -11832,8 +11832,8 @@ if(!env$1.canvasSupported){
 
 let useVML = !env$1.canvasSupported;
 
-let painterCtors = {
-    canvas: Painter
+let painterMap = {
+    canvas: CanvasPainter
 };
 
 // ZRender实例map索引，浏览器中同一个 window 下的 ZRender 实例都存在这里。
@@ -11894,8 +11894,8 @@ function getInstance(id) {
     return instances[id];
 }
 
-function registerPainter(name, Ctor) {
-    painterCtors[name] = Ctor;
+function registerPainter(name, PainterClass) {
+    painterMap[name] = PainterClass;
 }
 
 /**
@@ -11934,14 +11934,14 @@ let ZRender = function (id, dom, opts) {
     // TODO WebGL
     // TODO: remove vml
     if (useVML) {
-        if (!painterCtors.vml) {
+        if (!painterMap.vml) {
             throw new Error('You need to require \'zrender/vml/vml\' to support IE8');
         }
         rendererType = 'vml';
-    }else if (!rendererType || !painterCtors[rendererType]) {
+    }else if (!rendererType || !painterMap[rendererType]) {
         rendererType = 'canvas';
     }
-    let painter = new painterCtors[rendererType](dom, storage, opts, id);
+    let painter = new painterMap[rendererType](dom, storage, opts, id);
 
     this.storage = storage;
     this.painter = painter;
@@ -20902,7 +20902,7 @@ if (!env$1.canvasSupported) {
 /**
  * @class zrender.svg.VMLPainter
  * 
- * VML Painter.
+ * VMLPainter.
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */

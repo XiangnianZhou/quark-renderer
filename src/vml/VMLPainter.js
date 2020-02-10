@@ -5,7 +5,7 @@ import {each} from '../core/utils/dataStructureUtil';
 /**
  * @class zrender.svg.VMLPainter
  * 
- * VML Painter.
+ * VMLPainter.
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */

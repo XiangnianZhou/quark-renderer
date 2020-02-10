@@ -8,10 +8,10 @@ import Image from './graphic/Image';
 import env from './core/env';
 
 /**
- * @class zrender.canvas.Painter
- * 这是基于 canvas 接口的 Painter 类
- * @see 基于 SVG 接口的 Painter 类在 svg 目录下
- * @see 基于 VML 接口的 Painter 类在 vml 目录下
+ * @class zrender.canvas.CanvasPainter
+ * 这是基于 canvas 接口的 CanvasPainter 类
+ * @see 基于 SVG 接口的 CanvasPainter 类在 svg 目录下
+ * @see 基于 VML 接口的 CanvasPainter 类在 vml 目录下
  */
 
 let HOVER_LAYER_ZLEVEL = 1e5;
@@ -138,7 +138,7 @@ function createRoot(width, height) {
  * @param {Storage} storage
  * @param {Object} opts
  */
-let Painter = function (root, storage, opts) {
+let CanvasPainter = function (root, storage, opts) {
     this.type = 'canvas';
     // In node environment using node-canvas
     let singleCanvas = !root.nodeName // In node ?
@@ -250,9 +250,9 @@ let Painter = function (root, storage, opts) {
     this._hoverElements = [];
 };
 
-Painter.prototype = {
+CanvasPainter.prototype = {
 
-    constructor: Painter,
+    constructor: CanvasPainter,
 
     /**
      * @method getType
@@ -1200,4 +1200,4 @@ Painter.prototype = {
     }
 };
 
-export default Painter;
+export default CanvasPainter;

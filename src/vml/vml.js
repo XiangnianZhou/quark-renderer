@@ -1,5 +1,5 @@
 import './graphic';
 import {registerPainter} from '../zrender';
-import Painter from './Painter';
+import VMLPainter from './VMLPainter';
 
-registerPainter('vml', Painter);
+registerPainter('vml', VMLPainter);
