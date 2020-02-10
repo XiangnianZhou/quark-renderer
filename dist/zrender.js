@@ -9621,6 +9621,7 @@ function Displayable(opts) {
 Displayable.prototype = {
 
     constructor: Displayable,
+
     /**
      * @property {String} type
      */
@@ -9705,22 +9706,27 @@ Displayable.prototype = {
 
     beforeBrush: function (ctx) {},
 
-    afterBrush: function (ctx) {},
-
     /**
      * @property {Function} brush
      * Graphic drawing method.
      */
     brush: function (ctx, prevEl) {},
 
+    afterBrush: function (ctx) {},
+
     /**
-     * @property {Function} brush
+     * @property {Function} getBoundingRect
      */
     getBoundingRect: function () {},
 
     /**
      * @method contain
-     * If displayable element contain coord x, y
+     * 
+     * If displayable element contain coord x, y, this is an util function for
+     * determine where two elements overlap.
+     * 
+     * 图元是否包含坐标(x,y)，此工具方法用来判断两个图元是否重叠。
+     * 
      * @param  {Number} x
      * @param  {Number} y
      * @return {Boolean}
@@ -9730,17 +9736,10 @@ Displayable.prototype = {
     },
 
     /**
-     * @method traverse
-     * @param  {Function} cb
-     * @param  {}  context
-     */
-    traverse: function (cb, context) {
-        cb.call(context, this);
-    },
-
-    /**
      * @method rectContain
-     * If bounding rect of element contain coord x, y
+     * If bounding rect of element contain coord x, y.
+     * 
+     * 用来判断当前图元的外框矩形是否包含坐标点(x,y)。
      * @param  {Number} x
      * @param  {Number} y
      * @return {Boolean}
@@ -9749,6 +9748,15 @@ Displayable.prototype = {
         let coord = this.transformCoordToLocal(x, y);
         let rect = this.getBoundingRect();
         return rect.contain(coord[0], coord[1]);
+    },
+
+    /**
+     * @method traverse
+     * @param  {Function} cb
+     * @param  {Object}  context
+     */
+    traverse: function (cb, context) {
+        cb.call(context, this);
     },
 
     /**
@@ -9768,8 +9776,7 @@ Displayable.prototype = {
     attrKV: function (key, value) {
         if (key !== 'style') {
             Element.prototype.attrKV.call(this, key, value);
-        }
-        else {
+        }else {
             this.style.set(value);
         }
     },
