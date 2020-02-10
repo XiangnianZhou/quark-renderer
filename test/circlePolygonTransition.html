@@ -13,11 +13,10 @@
     requireES(
         [
             'zrender/src/zrender',
-            'zrender/src/animation/animation',
             'zrender/src/graphic/shape/Polygon',
-            'zrender/src/core/bboxUtil'
+            'zrender/src/core/utils/bboxUtil'
         ],
-        function (zrender, Animation, PolygonShape, bbox) {
+        function (zrender, PolygonShape, bbox) {
 
             // 初始化zrender
             var zr = zrender.init(document.getElementById('main'));
