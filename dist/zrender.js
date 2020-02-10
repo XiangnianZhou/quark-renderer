@@ -9551,7 +9551,7 @@ RectText.prototype = {
             return;
         }
         // FIXME
-        // Do not provide prevEl to `textHelper.renderText` for ctx prop cache,
+        // Do not provide prevEl to `textUtil.renderText` for ctx prop cache,
         // but use `ctx.save()` and `ctx.restore()`. Because the cache for rect
         // text propably break the cache for its host elements.
         ctx.save();
@@ -15438,7 +15438,7 @@ class Text extends Displayable{
         text != null && (text += '');
 
         // Do not apply style.bind in Text node. Because the real bind job
-        // is in textHelper.renderText, and performance of text render should
+        // is in textUtil.renderText, and performance of text render should
         // be considered.
         // style.bind(ctx, this, prevEl);
 

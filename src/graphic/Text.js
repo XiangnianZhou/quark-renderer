@@ -1,7 +1,7 @@
 import Displayable from './Displayable';
 import * as dataUtil from '../core/utils/dataStructureUtil';
 import * as textContain from '../core/contain/text';
-import * as textHelper from './utils/text';
+import * as textUtil from './utils/textUtil';
 import {ContextCachedBy} from './constants';
 
 /**
@@ -26,7 +26,7 @@ export default class Text extends Displayable{
         let style = this.style;
 
         // Optimize, avoid normalize every time.
-        this.__dirty && textHelper.normalizeTextStyle(style, true);
+        this.__dirty && textUtil.normalizeTextStyle(style, true);
 
         // Use props with prefix 'text'.
         style.fill = style.stroke = style.shadowBlur = style.shadowColor =
@@ -37,11 +37,11 @@ export default class Text extends Displayable{
         text != null && (text += '');
 
         // Do not apply style.bind in Text node. Because the real bind job
-        // is in textHelper.renderText, and performance of text render should
+        // is in textUtil.renderText, and performance of text render should
         // be considered.
         // style.bind(ctx, this, prevEl);
 
-        if (!textHelper.needDrawText(text, style)) {
+        if (!textUtil.needDrawText(text, style)) {
             // The current el.style is not applied
             // and should not be used as cache.
             ctx.__attrCachedBy = ContextCachedBy.NONE;
@@ -50,7 +50,7 @@ export default class Text extends Displayable{
 
         this.setTransform(ctx);
 
-        textHelper.renderText(this, ctx, text, style, null, prevEl);
+        textUtil.renderText(this, ctx, text, style, null, prevEl);
 
         this.restoreTransform(ctx);
     }
@@ -58,7 +58,7 @@ export default class Text extends Displayable{
     getBoundingRect() {
         let style = this.style;
         // Optimize, avoid normalize every time.
-        this.__dirty && textHelper.normalizeTextStyle(style, true);
+        this.__dirty && textUtil.normalizeTextStyle(style, true);
         if (!this._rect) {
             let text = style.text;
             text != null ? (text += '') : (text = '');
@@ -73,7 +73,7 @@ export default class Text extends Displayable{
             );
             rect.x += style.x || 0;
             rect.y += style.y || 0;
-            if (textHelper.getStroke(style.textStroke, style.textStrokeWidth)) {
+            if (textUtil.getStroke(style.textStroke, style.textStrokeWidth)) {
                 let w = style.textStrokeWidth;
                 rect.x -= w / 2;
                 rect.y -= w / 2;

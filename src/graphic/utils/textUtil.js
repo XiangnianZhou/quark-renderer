@@ -1,4 +1,3 @@
-
 import * as dataUtil from '../../core/utils/dataStructureUtil';
 import * as textContain from '../../core/contain/text';
 import * as roundRectHelper from './roundRect';

@@ -1,4 +1,4 @@
-import * as textHelper from './utils/text';
+import * as textUtil from './utils/textUtil';
 import BoundingRect from '../core/BoundingRect';
 import {WILL_BE_RESTORED} from './constants';
 /**
@@ -22,15 +22,15 @@ RectText.prototype = {
         let style = this.style;
         rect = style.textRect || rect;
         // Optimize, avoid normalize every time.
-        this.__dirty && textHelper.normalizeTextStyle(style, true);
+        this.__dirty && textUtil.normalizeTextStyle(style, true);
         let text = style.text;
         // Convert to string
         text != null && (text += '');
-        if (!textHelper.needDrawText(text, style)) {
+        if (!textUtil.needDrawText(text, style)) {
             return;
         }
         // FIXME
-        // Do not provide prevEl to `textHelper.renderText` for ctx prop cache,
+        // Do not provide prevEl to `textUtil.renderText` for ctx prop cache,
         // but use `ctx.save()` and `ctx.restore()`. Because the cache for rect
         // text propably break the cache for its host elements.
         ctx.save();
@@ -47,7 +47,7 @@ RectText.prototype = {
             this.setTransform(ctx);
         }
         // transformText and textRotation can not be used at the same time.
-        textHelper.renderText(this, ctx, text, style, rect, WILL_BE_RESTORED);
+        textUtil.renderText(this, ctx, text, style, rect, WILL_BE_RESTORED);
         ctx.restore();
     }
 };

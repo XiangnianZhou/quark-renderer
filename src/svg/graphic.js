@@ -3,7 +3,7 @@ import PathProxy from '../core/PathProxy';
 import BoundingRect from '../core/BoundingRect';
 import * as matrix from '../core/utils/matrix';
 import * as textContain from '../core/contain/text';
-import * as textHelper from '../graphic/utils/text';
+import * as textUtil from '../graphic/utils/textUtil';
 import Text from '../graphic/Text';
 
 // TODO
@@ -339,12 +339,12 @@ let svgTextDrawRectText = function (el, hostRect) {
     let elTransform = el.transform;
     let needTransformTextByHostEl = el instanceof Text || style.transformText;
 
-    el.__dirty && textHelper.normalizeTextStyle(style, true);
+    el.__dirty && textUtil.normalizeTextStyle(style, true);
 
     let text = style.text;
     // Convert to string
     text != null && (text += '');
-    if (!textHelper.needDrawText(text, style)) {
+    if (!textUtil.needDrawText(text, style)) {
         return;
     }
     // render empty text for svg if no text but need draw text.
@@ -387,7 +387,7 @@ let svgTextDrawRectText = function (el, hostRect) {
     let outerHeight = contentBlock.outerHeight;
     let lineHeight = contentBlock.lineHeight;
 
-    textHelper.getBoxPosition(_tmpTextBoxPos, el, style, hostRect);
+    textUtil.getBoxPosition(_tmpTextBoxPos, el, style, hostRect);
     let baseX = _tmpTextBoxPos.baseX;
     let baseY = _tmpTextBoxPos.baseY;
     let textAlign = _tmpTextBoxPos.textAlign || 'left';

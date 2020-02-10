@@ -3,7 +3,7 @@ import {applyTransform} from '../core/utils/vector';
 import BoundingRect from '../core/BoundingRect';
 import * as colorTool from '../core/utils/colorUtil';
 import * as textContain from '../core/contain/text';
-import * as textHelper from '../graphic/utils/text';
+import * as textUtil from '../graphic/utils/textUtil';
 import RectText from '../graphic/RectText';
 import Displayable from '../graphic/Displayable';
 import ZImage from '../graphic/Image';
@@ -66,7 +66,7 @@ if (!env.canvasSupported) {
         return (parseFloat(zlevel) || 0) * ZLEVEL_BASE + (parseFloat(z) || 0) * Z_BASE + z2;
     };
 
-    let parsePercent = textHelper.parsePercent;
+    let parsePercent = textUtil.parsePercent;
 
     //--------------PATH----------------------
     let setColorAndOpacity = function (el, color, opacity) {
@@ -827,7 +827,7 @@ if (!env.canvasSupported) {
         let style = this.style;
 
         // Optimize, avoid normalize every time.
-        this.__dirty && textHelper.normalizeTextStyle(style, true);
+        this.__dirty && textUtil.normalizeTextStyle(style, true);
 
         let text = style.text;
         // Convert to string
