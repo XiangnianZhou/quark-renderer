@@ -1,4 +1,4 @@
-import * as dataUtil from '../core/utils/dataStructureUtil';
+import * as classUtil from '../core/utils/classUtil';
 import Gradient from './Gradient';
 /**
  * @class zrender.graphic.RadialGradient 
@@ -31,6 +31,6 @@ RadialGradient.prototype = {
     constructor: RadialGradient
 };
 
-dataUtil.inherits(RadialGradient, Gradient);
+classUtil.inherits(RadialGradient, Gradient);
 
 export default RadialGradient;

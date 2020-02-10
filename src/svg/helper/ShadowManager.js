@@ -1,5 +1,5 @@
 import Definable from './Definable';
-import * as dataUtil from '../../core/utils/dataStructureUtil';
+import * as classUtil from '../../core/utils/classUtil';
 
 /**
  * @class zrender.svg.helper.ShadowManager
@@ -192,6 +192,6 @@ ShadowManager.prototype={
     }
 }
 
-dataUtil.inherits(ShadowManager, Definable);
+classUtil.inherits(ShadowManager, Definable);
 
 export default ShadowManager;

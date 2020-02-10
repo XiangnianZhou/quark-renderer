@@ -1,4 +1,4 @@
-import * as dataUtil from '../core/utils/dataStructureUtil';
+import * as classUtil from '../core/utils/classUtil';
 import Gradient from './Gradient';
 
 /**
@@ -34,6 +34,6 @@ LinearGradient.prototype = {
     constructor: LinearGradient
 };
 
-dataUtil.inherits(LinearGradient, Gradient);
+classUtil.inherits(LinearGradient, Gradient);
 
 export default LinearGradient;

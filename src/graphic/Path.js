@@ -1,5 +1,6 @@
 import Displayable from './Displayable';
 import * as dataUtil from '../core/utils/dataStructureUtil';
+import * as classUtil from '../core/utils/classUtil';
 import PathProxy from '../core/PathProxy';
 import * as pathContain from '../core/contain/path';
 import Pattern from './Pattern';
@@ -383,7 +384,7 @@ class Path extends Displayable{
  */
 Path.extend = function (defaults) {
     let Sub = function (opts) {
-        dataUtil.copyProperties(this,Path,opts);
+        classUtil.copyProperties(this,Path,opts);
 
         if (defaults.style) {
             // Extend default style
@@ -403,7 +404,7 @@ Path.extend = function (defaults) {
         defaults.init && defaults.init.call(this, opts);
     };
 
-    dataUtil.inherits(Sub, Path);
+    classUtil.inherits(Sub, Path);
 
     // FIXME 不能 extend position, rotation 等引用对象
     for (let name in defaults) {

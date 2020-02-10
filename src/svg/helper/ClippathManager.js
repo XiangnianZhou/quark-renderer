@@ -1,5 +1,6 @@
 import Definable from './Definable';
 import * as dataUtil from '../../core/utils/dataStructureUtil';
+import * as classUtil from '../../core/utils/classUtil';
 import * as matrix from '../../core/utils/matrix';
 
 /**
@@ -169,6 +170,6 @@ ClippathManager.prototype={
     }
 }
 
-dataUtil.inherits(ClippathManager, Definable);
+classUtil.inherits(ClippathManager, Definable);
 
 export default ClippathManager;

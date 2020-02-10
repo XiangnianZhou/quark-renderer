@@ -1,4 +1,4 @@
-import * as dataUtil from '../core/utils/dataStructureUtil';
+import * as classUtil from '../core/utils/classUtil';
 import Style from './Style';
 import Element from './Element';
 import RectText from './RectText';
@@ -270,7 +270,7 @@ Displayable.prototype = {
     calculateTextPosition: null
 };
 
-dataUtil.inherits(Displayable, Element);
-dataUtil.mixin(Displayable, RectText);
+classUtil.inherits(Displayable, Element);
+classUtil.mixin(Displayable, RectText);
 
 export default Displayable;

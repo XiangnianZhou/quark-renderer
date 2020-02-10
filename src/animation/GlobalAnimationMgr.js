@@ -1,5 +1,5 @@
-
 import * as dataUtil from '../core/utils/dataStructureUtil';
+import * as classUtil from '../core/utils/classUtil';
 import {Dispatcher} from '../core/utils/eventUtil';
 import requestAnimationFrame from './utils/requestAnimationFrame';
 import AnimationProcess from './AnimationProcess';
@@ -167,5 +167,5 @@ GlobalAnimationMgr.prototype = {
     }
 };
 
-dataUtil.mixin(GlobalAnimationMgr, Dispatcher);
+classUtil.mixin(GlobalAnimationMgr, Dispatcher);
 export default GlobalAnimationMgr;

@@ -3,6 +3,7 @@ import Eventful from '../event/Eventful';
 import Transformable from './Transformable';
 import Animatable from '../animation/Animatable';
 import * as dataUtil from '../core/utils/dataStructureUtil';
+import * as classUtil from '../core/utils/classUtil';
 /**
  * @class zrender.graphic.Element 
  * 图形顶级抽象类，关键继承结构为 Element<-Displayable<-Path，shape包中的所有形状对象
@@ -266,8 +267,8 @@ Element.prototype = {
     }
 };
 
-dataUtil.mixin(Element, Animatable);
-dataUtil.mixin(Element, Transformable);
-dataUtil.mixin(Element, Eventful);
+classUtil.mixin(Element, Animatable);
+classUtil.mixin(Element, Transformable);
+classUtil.mixin(Element, Eventful);
 
 export default Element;

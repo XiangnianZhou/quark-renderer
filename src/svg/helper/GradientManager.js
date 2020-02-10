@@ -1,5 +1,6 @@
 import Definable from './Definable';
 import * as dataUtil from '../../core/utils/dataStructureUtil';
+import * as classUtil from '../../core/utils/classUtil';
 import * as colorTool from '../../core/utils/colorUtil';
 
 /**
@@ -228,5 +229,5 @@ GradientManager.prototype={
     }
 }
 
-dataUtil.inherits(GradientManager, Definable);
+classUtil.inherits(GradientManager, Definable);
 export default GradientManager;

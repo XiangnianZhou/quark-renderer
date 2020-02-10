@@ -1,4 +1,4 @@
-import * as dataUtil from '../core/utils/dataStructureUtil';
+import * as classUtil from '../core/utils/classUtil';
 import Element from './Element';
 import BoundingRect from '../core/BoundingRect';
 
@@ -344,6 +344,6 @@ Group.prototype = {
     }
 };
 
-dataUtil.inherits(Group, Element);
+classUtil.inherits(Group, Element);
 
 export default Group;

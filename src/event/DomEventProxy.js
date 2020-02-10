@@ -1,6 +1,7 @@
 import Eventful from './Eventful';
 import * as eventUtil from '../core/utils/eventUtil';
 import * as dataUtil from '../core/utils/dataStructureUtil';
+import * as classUtil from '../core/utils/classUtil';
 import env from '../core/env';
 
 /**
@@ -532,6 +533,6 @@ DomEventProxy.prototype.togglePageEvent = function (enableOrDisable) {
 };
 
 //注意，DomEventProxy 也混入了 Eventful 里面提供的事件处理工具。
-dataUtil.mixin(DomEventProxy, Eventful);
+classUtil.mixin(DomEventProxy, Eventful);
 
 export default DomEventProxy;

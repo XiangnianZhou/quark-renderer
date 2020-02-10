@@ -1,4 +1,5 @@
-import * as util from '../core/utils/dataStructureUtil';
+import * as dataUtil from '../core/utils/dataStructureUtil';
+import * as classUtil from '../core/utils/classUtil';
 import * as vec2 from '../core/utils/vector';
 import * as eventTool from '../core/utils/eventUtil';
 import MultiDragDrop from './MultiDragDrop';
@@ -127,7 +128,7 @@ function afterListenerChanged(handlerInstance) {
  */
 var ZRenderEventHandler = function (storage, painter, proxy, painterRoot) {
     Eventful.call(this, {
-        afterListenerChanged: util.bind(afterListenerChanged, null, this)
+        afterListenerChanged: dataUtil.bind(afterListenerChanged, null, this)
     });
 
     /**
@@ -202,7 +203,7 @@ ZRenderEventHandler.prototype = {
         }
 
         if (proxy) {
-            util.each(handlerNames, function (name) {
+            dataUtil.each(handlerNames, function (name) {
                 // 监听 Proxy 上面派发的原生DOM事件，转发给本类的处理方法。
                 proxy.on && proxy.on(name, this[name], this);
             }, this);
@@ -276,13 +277,13 @@ ZRenderEventHandler.prototype = {
         !innerDom && this.trigger('globalout', {event: event});
     },
 
-    pagemousemove: util.curry(pageEventHandler, 'pagemousemove'),
+    pagemousemove: dataUtil.curry(pageEventHandler, 'pagemousemove'),
 
-    pagemouseup: util.curry(pageEventHandler, 'pagemouseup'),
+    pagemouseup: dataUtil.curry(pageEventHandler, 'pagemouseup'),
 
-    pagekeydown: util.curry(pageEventHandler, 'pagekeydown'),
+    pagekeydown: dataUtil.curry(pageEventHandler, 'pagekeydown'),
     
-    pagekeyup: util.curry(pageEventHandler, 'pagekeyup'),
+    pagekeyup: dataUtil.curry(pageEventHandler, 'pagekeyup'),
 
     /**
      * @method resize
@@ -433,7 +434,7 @@ ZRenderEventHandler.prototype = {
 };
 
 // Common handlers
-util.each(['click', 'mousedown', 
+dataUtil.each(['click', 'mousedown', 
     'mouseup', 'mousewheel', 
     'dblclick', 'contextmenu'], function (name) {
     ZRenderEventHandler.prototype[name] = function (event) {
@@ -470,6 +471,6 @@ util.each(['click', 'mousedown',
     };
 });
 
-util.mixin(ZRenderEventHandler, Eventful);
+classUtil.mixin(ZRenderEventHandler, Eventful);
 
 export default ZRenderEventHandler;

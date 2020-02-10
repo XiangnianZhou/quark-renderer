@@ -1,4 +1,4 @@
-import { inherits } from '../core/utils/dataStructureUtil';
+import { inherits } from '../core/utils/classUtil';
 import Displayble from './Displayable';
 import BoundingRect from '../core/BoundingRect';
 
