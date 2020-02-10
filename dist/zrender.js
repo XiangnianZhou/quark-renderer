@@ -464,6 +464,21 @@ function mixin(target, source, overlay) {
 }
 
 /**
+ * 拷贝父类上的属性
+ * @param {*} subInstance 子类的实例
+ * @param {*} SuperClass 父类的类型
+ * @param {*} opts 构造参数
+ */
+function copyProperties(subInstance,SuperClass,opts){
+    let sp=new SuperClass(opts);
+    for(let name in sp){
+        if(sp.hasOwnProperty(name)){
+            subInstance[name]=sp[name];
+        }
+    }
+}
+
+/**
  * Consider typed array.
  * @param {Array|TypedArray} data
  */
@@ -1097,6 +1112,7 @@ var dataStructureUtil = (Object.freeze || Object)({
 	indexOf: indexOf,
 	inherits: inherits,
 	mixin: mixin,
+	copyProperties: copyProperties,
 	isArrayLike: isArrayLike,
 	each: each,
 	map: map,
@@ -14441,49 +14457,57 @@ function containStroke(pathData, lineWidth, x, y) {
  * @class zrender.graphic.Path 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
+
 let getCanvasPattern = Pattern.prototype.getCanvasPattern;
-let abs = Math.abs;
-let pathProxyForDraw = new PathProxy(true);
 
-/**
- * @method constructor Path
- * @param {Object} opts
- */
-function Path(opts) {
-    Displayable.call(this, opts);
-
+class Path extends Displayable{
     /**
-     * @property {PathProxy}
-     * @readOnly
+     * @method constructor Path
+     * @param {Object} opts
      */
-    this.path = null;
-}
-
-Path.prototype = {
-    constructor: Path,
-    type: 'path',
-    __dirtyPath: true,
-    strokeContainThreshold: 5,
-
-    // This item default to be false. But in map series in echarts,
-    // in order to improve performance, it should be set to true,
-    // so the shorty segment won't draw.
-    segmentIgnoreThreshold: 0,
-
-    /**
-     * See `module:zrender/src/graphic/helper/subPixelOptimize`.
-     * @property {Boolean}
-     */
-    subPixelOptimize: false,
+    constructor(opts){
+        super(opts);
+        /**
+         * @property {PathProxy}
+         * @readOnly
+         */
+        this.path = null;
+        /**
+         * @property {String} type
+         */
+        this.type='path';
+        /**
+         * @private
+         * @property __dirtyPath
+         */
+        this.__dirtyPath=true;
+        /**
+         * @property {Number} strokeContainThreshold
+         */
+        this.strokeContainThreshold=5;
+        /**
+         * @property {Number} segmentIgnoreThreshold
+         * This item default to be false. But in map series in echarts,
+         * in order to improve performance, it should be set to true,
+         * so the shorty segment won't draw.
+         */
+        this.segmentIgnoreThreshold=0;
+    
+        /**
+         * @property {Boolean} subPixelOptimize
+         * See `module:zrender/src/graphic/helper/subPixelOptimize`.
+         */
+        this.subPixelOptimize=false;
+    }
 
     /**
      * @method brush
      * @param {Object} ctx 
      * @param {Element} prevEl 
      */
-    brush: function (ctx, prevEl) {
+    brush(ctx, prevEl) {
         let style = this.style;
-        let path = this.path || pathProxyForDraw;
+        let path = this.path || new PathProxy(true);
         let hasStroke = style.hasStroke();
         let hasFill = style.hasFill();
         let fill = style.fill;
@@ -14512,14 +14536,12 @@ Path.prototype = {
         if (hasFillGradient) {
             // PENDING If may have affect the state
             ctx.fillStyle = this._fillGradient;
-        }
-        else if (hasFillPattern) {
+        }else if (hasFillPattern) {
             ctx.fillStyle = getCanvasPattern.call(fill, ctx);
         }
         if (hasStrokeGradient) {
             ctx.strokeStyle = this._strokeGradient;
-        }
-        else if (hasStrokePattern) {
+        }else if (hasStrokePattern) {
             ctx.strokeStyle = getCanvasPattern.call(stroke, ctx);
         }
 
@@ -14538,24 +14560,19 @@ Path.prototype = {
         // 2. Path needs javascript implemented lineDash stroking.
         //    In this case, lineDash information will not be saved in PathProxy
         if (this.__dirtyPath
-            || (lineDash && !ctxLineDash && hasStroke)
-        ) {
+            || (lineDash && !ctxLineDash && hasStroke)) {
             path.beginPath(ctx);
-
             // Setting line dash before build path
             if (lineDash && !ctxLineDash) {
                 path.setLineDash(lineDash);
                 path.setLineDashOffset(lineDashOffset);
             }
-
             this.buildPath(path, this.shape, false);
-
             // Clear path dirty flag
             if (this.path) {
                 this.__dirtyPath = false;
             }
-        }
-        else {
+        }else {
             // Replay path building
             ctx.beginPath();
             this.path.rebuildPath(ctx);
@@ -14567,8 +14584,7 @@ Path.prototype = {
                 ctx.globalAlpha = style.fillOpacity * style.opacity;
                 path.fill(ctx);
                 ctx.globalAlpha = originalGlobalAlpha;
-            }
-            else {
+            }else {
                 path.fill(ctx);
             }
         }
@@ -14584,8 +14600,7 @@ Path.prototype = {
                 ctx.globalAlpha = style.strokeOpacity * style.opacity;
                 path.stroke(ctx);
                 ctx.globalAlpha = originalGlobalAlpha;
-            }
-            else {
+            }else {
                 path.stroke(ctx);
             }
         }
@@ -14602,7 +14617,7 @@ Path.prototype = {
             this.restoreTransform(ctx);
             this.drawRectText(ctx, this.getBoundingRect());
         }
-    },
+    }
 
     /**
      * @method buildPath
@@ -14612,19 +14627,19 @@ Path.prototype = {
      * @param {*} shapeCfg 
      * @param {*} inBundle 
      */
-    buildPath: function (ctx, shapeCfg, inBundle) {},
+    buildPath(ctx, shapeCfg, inBundle) {}
 
     /**
      * @method createPathProxy
      */
-    createPathProxy: function () {
+    createPathProxy() {
         this.path = new PathProxy();
-    },
+    }
 
     /**
      * @method getBoundingRect
      */
-    getBoundingRect: function () {
+    getBoundingRect() {
         let rect = this._rect;
         let style = this.style;
         let needsUpdateRect = !rect;
@@ -14673,14 +14688,14 @@ Path.prototype = {
         }
 
         return rect;
-    },
+    }
 
     /**
      * @method contain
      * @param {*} x 
      * @param {*} y 
      */
-    contain: function (x, y) {
+    contain(x, y) {
         let localPos = this.transformCoordToLocal(x, y);
         let rect = this.getBoundingRect();
         let style = this.style;
@@ -14710,13 +14725,13 @@ Path.prototype = {
             }
         }
         return false;
-    },
+    }
 
     /**
      * @method dirty
      * @param  {Boolean} dirtyPath
      */
-    dirty: function (dirtyPath) {
+    dirty(dirtyPath) {
         if (dirtyPath == null) {
             dirtyPath = true;
         }
@@ -14734,16 +14749,16 @@ Path.prototype = {
         if (this.__clipTarget) {
             this.__clipTarget.dirty();
         }
-    },
+    }
 
     /**
      * @method animateShape
      * Alias for animate('shape')
      * @param {Boolean} loop
      */
-    animateShape: function (loop) {
+    animateShape(loop) {
         return this.animate('shape', loop);
-    },
+    }
 
     /**
      * @method attrKV
@@ -14751,24 +14766,23 @@ Path.prototype = {
      * @param {*} key 
      * @param {Object} value 
      */
-    attrKV: function (key, value) {
+    attrKV(key, value) {
         // FIXME
         if (key === 'shape') {
             this.setShape(value);
             this.__dirtyPath = true;
             this._rect = null;
-        }
-        else {
+        }else {
             Displayable.prototype.attrKV.call(this, key, value);
         }
-    },
+    }
 
     /**
      * @method setShape
      * @param {Object|String} key
      * @param {Object} value
      */
-    setShape: function (key, value) {
+    setShape(key, value) {
         let shape = this.shape;
         // Path from string may not have shape
         if (shape) {
@@ -14778,32 +14792,31 @@ Path.prototype = {
                         shape[name] = key[name];
                     }
                 }
-            }
-            else {
+            }else {
                 shape[key] = value;
             }
             this.dirty(true);
         }
         return this;
-    },
+    }
 
     /**
      * @method getLineScale
      */
-    getLineScale: function () {
+    getLineScale() {
         let m = this.transform;
         // Get the line scale.
         // Determinant of `m` means how much the area is enlarged by the
         // transformation. So its square root can be used as a scale factor
         // for width.
-        return m && abs(m[0] - 1) > 1e-10 && abs(m[3] - 1) > 1e-10
-            ? Math.sqrt(abs(m[0] * m[3] - m[2] * m[1]))
+        return m && Math.abs(m[0] - 1) > 1e-10 && Math.abs(m[3] - 1) > 1e-10
+            ? Math.sqrt(Math.abs(m[0] * m[3] - m[2] * m[1]))
             : 1;
     }
-};
+}
 
 /**
- * @private
+ * @protected
  * @method extend
  * 
  * Extending tool function for Path class.
@@ -14819,7 +14832,7 @@ Path.prototype = {
  */
 Path.extend = function (defaults$$1) {
     let Sub = function (opts) {
-        Path.call(this, opts);
+        copyProperties(this,Path,opts);
 
         if (defaults$$1.style) {
             // Extend default style
@@ -14850,8 +14863,6 @@ Path.extend = function (defaults$$1) {
     }
     return Sub;
 };
-
-inherits(Path, Displayable);
 
 var CMD$2 = PathProxy.CMD;
 
@@ -15438,10 +15449,8 @@ class Text extends Displayable{
 
     getBoundingRect() {
         let style = this.style;
-
         // Optimize, avoid normalize every time.
         this.__dirty && normalizeTextStyle(style, true);
-
         if (!this._rect) {
             let text = style.text;
             text != null ? (text += '') : (text = '');
@@ -19820,7 +19829,7 @@ function createNode(tagName) {
 let CMD$4 = PathProxy.CMD;
 let round$1 = Math.round;
 let sqrt = Math.sqrt;
-let abs$1 = Math.abs;
+let abs = Math.abs;
 let cos$4 = Math.cos;
 let sin$4 = Math.sin;
 let mathMax$3 = Math.max;
@@ -20282,7 +20291,7 @@ if (!env$1.canvasSupported) {
             // for width.
             if (needTransform && !style.strokeNoScale) {
                 let det = m[0] * m[3] - m[1] * m[2];
-                lineWidth *= sqrt(abs$1(det));
+                lineWidth *= sqrt(abs(det));
             }
             strokeEl.weight = lineWidth + 'px';
         }
