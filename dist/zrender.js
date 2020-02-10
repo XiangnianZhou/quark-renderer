@@ -15390,19 +15390,20 @@ var pathUtil = (Object.freeze || Object)({
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-/**
- * @method constructor Text
- * @param {Object} opts 
- */
-let Text = function (opts) { // jshint ignore:line
-    Displayable.call(this, opts);
-};
+class Text extends Displayable{
+    /**
+     * @method constructor Text
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts);
+        /**
+         * @property {String} type
+         */
+        this.type='text';
+    }
 
-Text.prototype = {
-    constructor: Text,
-    type: 'text',
-
-    brush: function (ctx, prevEl) {
+    brush(ctx, prevEl) {
         let style = this.style;
 
         // Optimize, avoid normalize every time.
@@ -15433,9 +15434,9 @@ Text.prototype = {
         renderText(this, ctx, text, style, null, prevEl);
 
         this.restoreTransform(ctx);
-    },
+    }
 
-    getBoundingRect: function () {
+    getBoundingRect() {
         let style = this.style;
 
         // Optimize, avoid normalize every time.
@@ -15444,7 +15445,6 @@ Text.prototype = {
         if (!this._rect) {
             let text = style.text;
             text != null ? (text += '') : (text = '');
-
             let rect = getBoundingRect(
                 style.text + '',
                 style.font,
@@ -15454,10 +15454,8 @@ Text.prototype = {
                 style.textLineHeight,
                 style.rich
             );
-
             rect.x += style.x || 0;
             rect.y += style.y || 0;
-
             if (getStroke(style.textStroke, style.textStrokeWidth)) {
                 let w = style.textStrokeWidth;
                 rect.x -= w / 2;
@@ -15465,15 +15463,11 @@ Text.prototype = {
                 rect.width += w;
                 rect.height += w;
             }
-
             this._rect = rect;
         }
-
         return this._rect;
     }
-};
-
-inherits(Text, Displayable);
+}
 
 /**
  * @class zrender.graphic.shape.Circle 

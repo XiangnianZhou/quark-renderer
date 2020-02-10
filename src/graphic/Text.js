@@ -9,19 +9,20 @@ import {ContextCachedBy} from './constants';
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-/**
- * @method constructor Text
- * @param {Object} opts 
- */
-let Text = function (opts) { // jshint ignore:line
-    Displayable.call(this, opts);
-};
+export default class Text extends Displayable{
+    /**
+     * @method constructor Text
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts);
+        /**
+         * @property {String} type
+         */
+        this.type='text';
+    }
 
-Text.prototype = {
-    constructor: Text,
-    type: 'text',
-
-    brush: function (ctx, prevEl) {
+    brush(ctx, prevEl) {
         let style = this.style;
 
         // Optimize, avoid normalize every time.
@@ -52,18 +53,15 @@ Text.prototype = {
         textHelper.renderText(this, ctx, text, style, null, prevEl);
 
         this.restoreTransform(ctx);
-    },
+    }
 
-    getBoundingRect: function () {
+    getBoundingRect() {
         let style = this.style;
-
         // Optimize, avoid normalize every time.
         this.__dirty && textHelper.normalizeTextStyle(style, true);
-
         if (!this._rect) {
             let text = style.text;
             text != null ? (text += '') : (text = '');
-
             let rect = textContain.getBoundingRect(
                 style.text + '',
                 style.font,
@@ -73,10 +71,8 @@ Text.prototype = {
                 style.textLineHeight,
                 style.rich
             );
-
             rect.x += style.x || 0;
             rect.y += style.y || 0;
-
             if (textHelper.getStroke(style.textStroke, style.textStrokeWidth)) {
                 let w = style.textStrokeWidth;
                 rect.x -= w / 2;
@@ -84,14 +80,8 @@ Text.prototype = {
                 rect.width += w;
                 rect.height += w;
             }
-
             this._rect = rect;
         }
-
         return this._rect;
     }
-};
-
-dataUtil.inherits(Text, Displayable);
-
-export default Text;
+}
