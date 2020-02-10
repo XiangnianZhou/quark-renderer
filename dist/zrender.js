@@ -19355,13 +19355,12 @@ function hasShadow(style) {
 }
 
 /**
- * SVG Painter
- * @module zrender/svg/Painter
+ * @class zrender.svg.SVGPainter
+ * 
+ * SVG 画笔。
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
-
-function parseInt10$1(val) {
-    return parseInt(val, 10);
-}
 
 function getSvgProxy(el) {
     if (el instanceof Path) {
@@ -19384,7 +19383,7 @@ function checkParentAvailable(parent, child) {
 
 function insertAfter(parent, child, prevSibling) {
     if (checkParentAvailable(parent, child) && prevSibling) {
-        var nextSibling = prevSibling.nextSibling;
+        let nextSibling = prevSibling.nextSibling;
         nextSibling ? parent.insertBefore(child, nextSibling)
             : parent.appendChild(child);
     }
@@ -19392,17 +19391,11 @@ function insertAfter(parent, child, prevSibling) {
 
 function prepend(parent, child) {
     if (checkParentAvailable(parent, child)) {
-        var firstChild = parent.firstChild;
+        let firstChild = parent.firstChild;
         firstChild ? parent.insertBefore(child, firstChild)
             : parent.appendChild(child);
     }
 }
-
-// function append(parent, child) {
-//     if (checkParentAvailable(parent, child)) {
-//         parent.appendChild(child);
-//     }
-// }
 
 function remove(parent, child) {
     if (child && parent && child.parentNode === parent) {
@@ -19419,19 +19412,18 @@ function getSvgElement(displayable) {
 }
 
 /**
- * @alias module:zrender/svg/Painter
- * @constructor
+ * @method constructor SVGPainter
  * @param {HTMLElement} root 绘图容器
- * @param {module:zrender/Storage} storage
+ * @param {Storage} storage
  * @param {Object} opts
  */
-var SVGPainter = function (root, storage, opts, zrId) {
+let SVGPainter = function (root, storage, opts, zrId) {
 
     this.root = root;
     this.storage = storage;
     this._opts = opts = extend({}, opts || {});
 
-    var svgRoot = createElement('svg');
+    let svgRoot = createElement('svg');
     svgRoot.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
     svgRoot.setAttribute('version', '1.1');
     svgRoot.setAttribute('baseProfile', 'full');
@@ -19441,7 +19433,7 @@ var SVGPainter = function (root, storage, opts, zrId) {
     this.clipPathManager = new ClippathManager(zrId, svgRoot);
     this.shadowManager = new ShadowManager(zrId, svgRoot);
 
-    var viewport = document.createElement('div');
+    let viewport = document.createElement('div');
     viewport.style.cssText = 'overflow:hidden;position:relative';
 
     this._svgRoot = svgRoot;
@@ -19459,16 +19451,25 @@ SVGPainter.prototype = {
 
     constructor: SVGPainter,
 
+    /**
+     * @method getType
+     */
     getType: function () {
         return 'svg';
     },
 
+    /**
+     * @method getViewportRoot
+     */
     getViewportRoot: function () {
         return this._viewport;
     },
 
+    /**
+     * @method getViewportRootOffset
+     */
     getViewportRootOffset: function () {
-        var viewportRoot = this.getViewportRoot();
+        let viewportRoot = this.getViewportRoot();
         if (viewportRoot) {
             return {
                 offsetLeft: viewportRoot.offsetLeft || 0,
@@ -19477,33 +19478,45 @@ SVGPainter.prototype = {
         }
     },
 
+    /**
+     * @method refresh
+     */
     refresh: function () {
 
-        var list = this.storage.getDisplayList(true);
+        let list = this.storage.getDisplayList(true);
 
         this._paintList(list);
     },
 
+    /**
+     * @method setBackgroundColor
+     */
     setBackgroundColor: function (backgroundColor) {
         // TODO gradient
         this._viewport.style.background = backgroundColor;
     },
 
+    /**
+     * @private
+     * @method _paintList
+     */
     _paintList: function (list) {
         this.gradientManager.markAllUnused();
         this.clipPathManager.markAllUnused();
         this.shadowManager.markAllUnused();
 
-        var svgRoot = this._svgRoot;
-        var visibleList = this._visibleList;
-        var listLen = list.length;
+        let svgRoot = this._svgRoot;
+        let visibleList = this._visibleList;
+        let listLen = list.length;
 
-        var newVisibleList = [];
-        var i;
+        let newVisibleList = [];
+        let i;
+        let svgElement;
+        let textSvgElement;
         for (i = 0; i < listLen; i++) {
-            var displayable = list[i];
-            var svgProxy = getSvgProxy(displayable);
-            var svgElement = getSvgElement(displayable)
+            let displayable = list[i];
+            let svgProxy = getSvgProxy(displayable);
+            svgElement = getSvgElement(displayable)
                 || getTextSvgElement(displayable);
             if (!displayable.invisible) {
                 if (displayable.__dirty) {
@@ -19529,30 +19542,30 @@ SVGPainter.prototype = {
             }
         }
 
-        var diff = arrayDiff$1(visibleList, newVisibleList);
-        var prevSvgElement;
+        let diff = arrayDiff$1(visibleList, newVisibleList);
+        let prevSvgElement;
 
         // First do remove, in case element moved to the head and do remove
         // after add
         for (i = 0; i < diff.length; i++) {
-            var item = diff[i];
+            let item = diff[i];
             if (item.removed) {
-                for (var k = 0; k < item.count; k++) {
-                    var displayable = visibleList[item.indices[k]];
-                    var svgElement = getSvgElement(displayable);
-                    var textSvgElement = getTextSvgElement(displayable);
+                for (let k = 0; k < item.count; k++) {
+                    let displayable = visibleList[item.indices[k]];
+                    svgElement = getSvgElement(displayable);
+                    textSvgElement = getTextSvgElement(displayable);
                     remove(svgRoot, svgElement);
                     remove(svgRoot, textSvgElement);
                 }
             }
         }
         for (i = 0; i < diff.length; i++) {
-            var item = diff[i];
+            let item = diff[i];
             if (item.added) {
-                for (var k = 0; k < item.count; k++) {
-                    var displayable = newVisibleList[item.indices[k]];
-                    var svgElement = getSvgElement(displayable);
-                    var textSvgElement = getTextSvgElement(displayable);
+                for (let k = 0; k < item.count; k++) {
+                    let displayable = newVisibleList[item.indices[k]];
+                    svgElement = getSvgElement(displayable);
+                    textSvgElement = getTextSvgElement(displayable);
                     prevSvgElement
                         ? insertAfter(svgRoot, svgElement, prevSvgElement)
                         : prepend(svgRoot, svgElement);
@@ -19581,13 +19594,13 @@ SVGPainter.prototype = {
                 }
             }
             else if (!item.removed) {
-                for (var k = 0; k < item.count; k++) {
-                    var displayable = newVisibleList[item.indices[k]];
-                    var svgElement = getSvgElement(displayable);
-                    var textSvgElement = getTextSvgElement(displayable);
+                for (let k = 0; k < item.count; k++) {
+                    let displayable = newVisibleList[item.indices[k]];
+                    svgElement = getSvgElement(displayable);
+                    textSvgElement = getTextSvgElement(displayable);
 
-                    var svgElement = getSvgElement(displayable);
-                    var textSvgElement = getTextSvgElement(displayable);
+                    svgElement = getSvgElement(displayable);
+                    textSvgElement = getTextSvgElement(displayable);
 
                     this.gradientManager.markUsed(displayable);
                     this.gradientManager
@@ -19615,24 +19628,28 @@ SVGPainter.prototype = {
         this._visibleList = newVisibleList;
     },
 
+    /**
+     * @private
+     * @method _paintList
+     */
     _getDefs: function (isForceCreating) {
-        var svgRoot = this._svgRoot;
-        var defs = this._svgRoot.getElementsByTagName('defs');
+        let svgRoot = this._svgRoot;
+        let defs = this._svgRoot.getElementsByTagName('defs');
         if (defs.length === 0) {
             // Not exist
             if (isForceCreating) {
-                var defs = svgRoot.insertBefore(
+                let defs = svgRoot.insertBefore(
                     createElement('defs'), // Create new tag
                     svgRoot.firstChild // Insert in the front of svg
                 );
                 if (!defs.contains) {
                     // IE doesn't support contains method
                     defs.contains = function (el) {
-                        var children = defs.children;
+                        let children = defs.children;
                         if (!children) {
                             return false;
                         }
-                        for (var i = children.length - 1; i >= 0; --i) {
+                        for (let i = children.length - 1; i >= 0; --i) {
                             if (children[i] === el) {
                                 return true;
                             }
@@ -19651,13 +19668,16 @@ SVGPainter.prototype = {
         }
     },
 
+    /**
+     * @method resize
+     */
     resize: function (width, height) {
-        var viewport = this._viewport;
+        let viewport = this._viewport;
         // FIXME Why ?
         viewport.style.display = 'none';
 
         // Save input w/h
-        var opts = this._opts;
+        let opts = this._opts;
         width != null && (opts.width = width);
         height != null && (opts.height = height);
 
@@ -19670,11 +19690,11 @@ SVGPainter.prototype = {
             this._width = width;
             this._height = height;
 
-            var viewportStyle = viewport.style;
+            let viewportStyle = viewport.style;
             viewportStyle.width = width + 'px';
             viewportStyle.height = height + 'px';
 
-            var svgRoot = this._svgRoot;
+            let svgRoot = this._svgRoot;
             // Set width by 'svgRoot.width = width' is invalid
             svgRoot.setAttribute('width', width);
             svgRoot.setAttribute('height', height);
@@ -19682,6 +19702,7 @@ SVGPainter.prototype = {
     },
 
     /**
+     * @method getWidth
      * 获取绘图区域宽度
      */
     getWidth: function () {
@@ -19689,34 +19710,42 @@ SVGPainter.prototype = {
     },
 
     /**
+     * @method getHeight
      * 获取绘图区域高度
      */
     getHeight: function () {
         return this._height;
     },
 
+    /**
+     * @private
+     * @method _getSize
+     */
     _getSize: function (whIdx) {
-        var opts = this._opts;
-        var wh = ['width', 'height'][whIdx];
-        var cwh = ['clientWidth', 'clientHeight'][whIdx];
-        var plt = ['paddingLeft', 'paddingTop'][whIdx];
-        var prb = ['paddingRight', 'paddingBottom'][whIdx];
+        let opts = this._opts;
+        let wh = ['width', 'height'][whIdx];
+        let cwh = ['clientWidth', 'clientHeight'][whIdx];
+        let plt = ['paddingLeft', 'paddingTop'][whIdx];
+        let prb = ['paddingRight', 'paddingBottom'][whIdx];
 
         if (opts[wh] != null && opts[wh] !== 'auto') {
             return parseFloat(opts[wh]);
         }
 
-        var root = this.root;
+        let root = this.root;
         // IE8 does not support getComputedStyle, but it use VML.
-        var stl = document.defaultView.getComputedStyle(root);
+        let stl = document.defaultView.getComputedStyle(root);
 
         return (
-            (root[cwh] || parseInt10$1(stl[wh]) || parseInt10$1(root.style[wh]))
-            - (parseInt10$1(stl[plt]) || 0)
-            - (parseInt10$1(stl[prb]) || 0)
+            (root[cwh] || parseInt10(stl[wh]) || parseInt10(root.style[wh]))
+            - (parseInt10(stl[plt]) || 0)
+            - (parseInt10(stl[prb]) || 0)
         ) | 0;
     },
 
+    /**
+     * @method dispose
+     */
     dispose: function () {
         this.root.innerHTML = '';
 
@@ -19726,15 +19755,21 @@ SVGPainter.prototype = {
             null;
     },
 
+    /**
+     * @method clear
+     */
     clear: function () {
         if (this._viewport) {
             this.root.removeChild(this._viewport);
         }
     },
 
+    /**
+     * @method pathToDataUrl
+     */
     pathToDataUrl: function () {
         this.refresh();
-        var html = this._svgRoot.outerHTML;
+        let html = this._svgRoot.outerHTML;
         return 'data:image/svg+xml;charset=UTF-8,' + html;
     }
 };
@@ -19747,11 +19782,11 @@ function createMethodNotSupport(method) {
 }
 
 // Unsuppoted methods
-each([
+[
     'getLayer', 'insertLayer', 'eachLayer', 'eachBuiltinLayer',
     'eachOtherLayer', 'getLayers', 'modLayer', 'delLayer', 'clearLayer',
     'toDataURL', 'pathToImage'
-], function (name) {
+].forEach((name,index)=>{
     SVGPainter.prototype[name] = createMethodNotSupport(name);
 });
 
@@ -20855,7 +20890,7 @@ if (!env$1.canvasSupported) {
  *
  * @module zrender/vml/Painter
  */
-function parseInt10$2(val) {
+function parseInt10$1(val) {
     return parseInt(val, 10);
 }
 
@@ -21016,18 +21051,18 @@ VMLPainter.prototype = {
         var root = this.root;
         var stl = root.currentStyle;
 
-        return ((root.clientWidth || parseInt10$2(stl.width))
-                - parseInt10$2(stl.paddingLeft)
-                - parseInt10$2(stl.paddingRight)) | 0;
+        return ((root.clientWidth || parseInt10$1(stl.width))
+                - parseInt10$1(stl.paddingLeft)
+                - parseInt10$1(stl.paddingRight)) | 0;
     },
 
     _getHeight: function () {
         var root = this.root;
         var stl = root.currentStyle;
 
-        return ((root.clientHeight || parseInt10$2(stl.height))
-                - parseInt10$2(stl.paddingTop)
-                - parseInt10$2(stl.paddingBottom)) | 0;
+        return ((root.clientHeight || parseInt10$1(stl.height))
+                - parseInt10$1(stl.paddingTop)
+                - parseInt10$1(stl.paddingBottom)) | 0;
     }
 };
 
