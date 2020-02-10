@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var Path = require(&quot;./Path&quot;);
+
+<span id='zrender-graphic-CompoundPath'>/**
+</span> * @class zrender.graphic.CompoundPath 
+ * 
+ * CompoundPath to improve performance.
+ * 
+ * 复合路径，用来提升性能。
+ * 
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+var _default = Path.extend({
+<span id='zrender-graphic-CompoundPath-property-type'>  /**
+</span>   * @property {String} type
+   */
+  type: &#39;compound&#39;,
+  shape: {
+    paths: null
+  },
+
+<span id='zrender-graphic-CompoundPath-method-_updatePathDirty'>  /**
+</span>   * @private
+   * @method _updatePathDirty
+   */
+  _updatePathDirty: function _updatePathDirty() {
+    var dirtyPath = this.__dirtyPath;
+    var paths = this.shape.paths;
+
+    for (var i = 0; i &lt; paths.length; i++) {
+      // Mark as dirty if any subpath is dirty
+      dirtyPath = dirtyPath || paths[i].__dirtyPath;
+    }
+
+    this.__dirtyPath = dirtyPath;
+    this.__dirty = this.__dirty || dirtyPath;
+  },
+
+<span id='zrender-graphic-CompoundPath-method-beforeBrush'>  /**
+</span>   * @private
+   * @method beforeBrush
+   */
+  beforeBrush: function beforeBrush() {
+    this._updatePathDirty();
+
+    var paths = this.shape.paths || [];
+    var scale = this.getGlobalScale(); // Update path scale
+
+    for (var i = 0; i &lt; paths.length; i++) {
+      if (!paths[i].path) {
+        paths[i].createPathProxy();
+      }
+
+      paths[i].path.setScale(scale[0], scale[1], paths[i].segmentIgnoreThreshold);
+    }
+  },
+
+<span id='zrender-graphic-CompoundPath-method-buildPath'>  /**
+</span>   * @method buildPath
+   * 绘制图元路径
+   * @param {Object} ctx 
+   * @param {String} shape 
+   */
+  buildPath: function buildPath(ctx, shape) {
+    var paths = shape.paths || [];
+
+    for (var i = 0; i &lt; paths.length; i++) {
+      paths[i].buildPath(ctx, paths[i].shape, true);
+    }
+  },
+
+<span id='zrender-graphic-CompoundPath-method-afterBrush'>  /**
+</span>   * @private
+   * @method afterBrush
+   */
+  afterBrush: function afterBrush() {
+    var paths = this.shape.paths || [];
+
+    for (var i = 0; i &lt; paths.length; i++) {
+      paths[i].__dirtyPath = false;
+    }
+  },
+
+<span id='zrender-graphic-CompoundPath-method-getBoundingRect'>  /**
+</span>   * @private
+   * @method getBoundingRect
+   */
+  getBoundingRect: function getBoundingRect() {
+    this._updatePathDirty();
+
+    return Path.prototype.getBoundingRect.call(this);
+  }
+});
+
+module.exports = _default;</pre>
+</body>
+</html>

@@ -1,18 +1,20 @@
-/**
- * Stateful mixin for graphic object
- */
-
 import States from './States';
 
-var Stateful = function (opts) {
+/**
+ * @class zrender.graphic.Stateful
+ * 
+ * Stateful mixin for graphic object
+ * 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 
+let Stateful = function (opts) {
     if (opts.states) {
         this.initStates(opts.states);
     }
 };
 
 Stateful.prototype = {
-
     initStates: function (states) {
         this._states = new States({
             el: this,

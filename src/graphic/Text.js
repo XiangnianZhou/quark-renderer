@@ -5,23 +5,24 @@ import * as textHelper from './utils/text';
 import {ContextCachedBy} from './constants';
 
 /**
- * @alias zrender/graphic/Text
- * @extends module:zrender/graphic/Displayable
- * @constructor
- * @param {Object} opts
+ * @class zrender.graphic.Text
+ * 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-var Text = function (opts) { // jshint ignore:line
+/**
+ * @method constructor Text
+ * @param {Object} opts 
+ */
+let Text = function (opts) { // jshint ignore:line
     Displayable.call(this, opts);
 };
 
 Text.prototype = {
-
     constructor: Text,
-
     type: 'text',
 
     brush: function (ctx, prevEl) {
-        var style = this.style;
+        let style = this.style;
 
         // Optimize, avoid normalize every time.
         this.__dirty && textHelper.normalizeTextStyle(style, true);
@@ -30,7 +31,7 @@ Text.prototype = {
         style.fill = style.stroke = style.shadowBlur = style.shadowColor =
             style.shadowOffsetX = style.shadowOffsetY = null;
 
-        var text = style.text;
+        let text = style.text;
         // Convert to string
         text != null && (text += '');
 
@@ -54,16 +55,16 @@ Text.prototype = {
     },
 
     getBoundingRect: function () {
-        var style = this.style;
+        let style = this.style;
 
         // Optimize, avoid normalize every time.
         this.__dirty && textHelper.normalizeTextStyle(style, true);
 
         if (!this._rect) {
-            var text = style.text;
+            let text = style.text;
             text != null ? (text += '') : (text = '');
 
-            var rect = textContain.getBoundingRect(
+            let rect = textContain.getBoundingRect(
                 style.text + '',
                 style.font,
                 style.textAlign,
@@ -77,7 +78,7 @@ Text.prototype = {
             rect.y += style.y || 0;
 
             if (textHelper.getStroke(style.textStroke, style.textStrokeWidth)) {
-                var w = style.textStrokeWidth;
+                let w = style.textStrokeWidth;
                 rect.x -= w / 2;
                 rect.y -= w / 2;
                 rect.width += w;

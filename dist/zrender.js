@@ -3086,62 +3086,60 @@ var matrix = (Object.freeze || Object)({
 });
 
 /**
+ * @abstract
+ * @class zrender.graphic.Transformable
  * 提供变换扩展
- * @module zrender/mixin/Transformable
  * @author pissang (https://www.github.com/pissang)
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
-var mIdentity = identity;
+let mIdentity = identity;
 
-var EPSILON = 5e-5;
+let EPSILON = 5e-5;
 
 function isNotAroundZero(val) {
     return val > EPSILON || val < -EPSILON;
 }
 
 /**
- * @alias module:zrender/mixin/Transformable
- * @constructor
+ * @method constructor Transformable
  */
-var Transformable = function (opts) {
+let Transformable = function (opts) {
     opts = opts || {};
     // If there are no given position, rotation, scale
     if (!opts.position) {
         /**
-         * 平移
          * @property {Array<Number>}
-         * @default [0, 0]
+         * 平移
          */
         this.position = [0, 0];
     }
     if (opts.rotation == null) {
         /**
-         * 旋转
          * @property {Array<Number>}
-         * @default 0
+         * 旋转
          */
         this.rotation = 0;
     }
     if (!opts.scale) {
         /**
-         * 缩放
          * @property {Array<Number>}
-         * @default [1, 1]
+         * 缩放
          */
         this.scale = [1, 1];
     }
     /**
-     * 旋转和缩放的原点
      * @property {Array<Number>}
-     * @default null
+     * 旋转和缩放的原点
      */
     this.origin = this.origin || null;
 };
 
-var transformableProto = Transformable.prototype;
+let transformableProto = Transformable.prototype;
 transformableProto.transform = null;
 
 /**
+ * @method needLocalTransform
  * 判断是否需要有坐标变换
  * 如果有坐标变换, 则从position, rotation, scale以及父节点的transform计算出自身的transform矩阵
  */
@@ -3153,13 +3151,13 @@ transformableProto.needLocalTransform = function () {
         || isNotAroundZero(this.scale[1] - 1);
 };
 
-var scaleTmp = [];
+let scaleTmp = [];
 transformableProto.updateTransform = function () {
-    var parent = this.parent;
-    var parentHasTransform = parent && parent.transform;
-    var needLocalTransform = this.needLocalTransform();
+    let parent = this.parent;
+    let parentHasTransform = parent && parent.transform;
+    let needLocalTransform = this.needLocalTransform();
 
-    var m = this.transform;
+    let m = this.transform;
     if (!(needLocalTransform || parentHasTransform)) {
         m && mIdentity(m);
         return;
@@ -3186,13 +3184,13 @@ transformableProto.updateTransform = function () {
     // 保存这个变换矩阵
     this.transform = m;
 
-    var globalScaleRatio = this.globalScaleRatio;
+    let globalScaleRatio = this.globalScaleRatio;
     if (globalScaleRatio != null && globalScaleRatio !== 1) {
         this.getGlobalScale(scaleTmp);
-        var relX = scaleTmp[0] < 0 ? -1 : 1;
-        var relY = scaleTmp[1] < 0 ? -1 : 1;
-        var sx = ((scaleTmp[0] - relX) * globalScaleRatio + relX) / scaleTmp[0] || 0;
-        var sy = ((scaleTmp[1] - relY) * globalScaleRatio + relY) / scaleTmp[1] || 0;
+        let relX = scaleTmp[0] < 0 ? -1 : 1;
+        let relY = scaleTmp[1] < 0 ? -1 : 1;
+        let sx = ((scaleTmp[0] - relX) * globalScaleRatio + relX) / scaleTmp[0] || 0;
+        let sy = ((scaleTmp[1] - relY) * globalScaleRatio + relY) / scaleTmp[1] || 0;
 
         m[0] *= sx;
         m[1] *= sx;
@@ -3209,12 +3207,13 @@ transformableProto.getLocalTransform = function (m) {
 };
 
 /**
+ * @method setTransform
  * 将自己的transform应用到context上
  * @param {CanvasRenderingContext2D} ctx
  */
 transformableProto.setTransform = function (ctx) {
-    var m = this.transform;
-    var dpr = ctx.dpr || 1;
+    let m = this.transform;
+    let dpr = ctx.dpr || 1;
     if (m) {
         ctx.setTransform(dpr * m[0], dpr * m[1], dpr * m[2], dpr * m[3], dpr * m[4], dpr * m[5]);
     }
@@ -3224,22 +3223,22 @@ transformableProto.setTransform = function (ctx) {
 };
 
 transformableProto.restoreTransform = function (ctx) {
-    var dpr = ctx.dpr || 1;
+    let dpr = ctx.dpr || 1;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 };
 
-var tmpTransform = [];
-var originTransform = create$1();
+let tmpTransform = [];
+let originTransform = create$1();
 
 transformableProto.setLocalTransform = function (m) {
     if (!m) {
         // TODO return or set identity?
         return;
     }
-    var sx = m[0] * m[0] + m[1] * m[1];
-    var sy = m[2] * m[2] + m[3] * m[3];
-    var position = this.position;
-    var scale$$1 = this.scale;
+    let sx = m[0] * m[0] + m[1] * m[1];
+    let sy = m[2] * m[2] + m[3] * m[3];
+    let position = this.position;
+    let scale$$1 = this.scale;
     if (isNotAroundZero(sx - 1)) {
         sx = Math.sqrt(sx);
     }
@@ -3266,14 +3265,14 @@ transformableProto.decomposeTransform = function () {
     if (!this.transform) {
         return;
     }
-    var parent = this.parent;
-    var m = this.transform;
+    let parent = this.parent;
+    let m = this.transform;
     if (parent && parent.transform) {
         // Get local transform and decompose them to position, scale, rotation
         mul$1(tmpTransform, parent.invTransform, m);
         m = tmpTransform;
     }
-    var origin = this.origin;
+    let origin = this.origin;
     if (origin && (origin[0] || origin[1])) {
         originTransform[4] = origin[0];
         originTransform[5] = origin[1];
@@ -3287,11 +3286,12 @@ transformableProto.decomposeTransform = function () {
 };
 
 /**
+ * @method getGlobalScale
  * Get global scale
  * @return {Array<Number>}
  */
 transformableProto.getGlobalScale = function (out) {
-    var m = this.transform;
+    let m = this.transform;
     out = out || [];
     if (!m) {
         out[0] = 1;
@@ -3309,15 +3309,15 @@ transformableProto.getGlobalScale = function (out) {
     return out;
 };
 /**
+ * @method transformCoordToLocal
  * 变换坐标位置到 shape 的局部坐标空间
- * @method
  * @param {Number} x
  * @param {Number} y
  * @return {Array<Number>}
  */
 transformableProto.transformCoordToLocal = function (x, y) {
-    var v2 = [x, y];
-    var invTransform = this.invTransform;
+    let v2 = [x, y];
+    let invTransform = this.invTransform;
     if (invTransform) {
         applyTransform(v2, v2, invTransform);
     }
@@ -3325,15 +3325,15 @@ transformableProto.transformCoordToLocal = function (x, y) {
 };
 
 /**
+ * @method transformCoordToGlobal
  * 变换局部坐标位置到全局坐标空间
- * @method
  * @param {Number} x
  * @param {Number} y
  * @return {Array<Number>}
  */
 transformableProto.transformCoordToGlobal = function (x, y) {
-    var v2 = [x, y];
-    var transform = this.transform;
+    let v2 = [x, y];
+    let transform = this.transform;
     if (transform) {
         applyTransform(v2, v2, transform);
     }
@@ -3342,6 +3342,7 @@ transformableProto.transformCoordToGlobal = function (x, y) {
 
 /**
  * @static
+ * @method getLocalTransform
  * @param {Object} target
  * @param {Array<Number>} target.origin
  * @param {Number} target.rotation
@@ -3352,10 +3353,10 @@ Transformable.getLocalTransform = function (target, m) {
     m = m || [];
     mIdentity(m);
 
-    var origin = target.origin;
-    var scale$$1 = target.scale || [1, 1];
-    var rotation = target.rotation || 0;
-    var position = target.position || [0, 0];
+    let origin = target.origin;
+    let scale$$1 = target.scale || [1, 1];
+    let rotation = target.rotation || 0;
+    let position = target.position || [0, 0];
 
     if (origin) {
         // Translate to origin
@@ -7270,23 +7271,26 @@ var ContextCachedBy = {
 // Avoid confused with 0/false.
 var WILL_BE_RESTORED = 9;
 
-var STYLE_COMMON_PROPS = [
+/**
+ * @class zrender.graphic.Style
+ * 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
+
+let STYLE_COMMON_PROPS = [
     ['shadowBlur', 0], ['shadowOffsetX', 0], ['shadowOffsetY', 0], ['shadowColor', '#000'],
     ['lineCap', 'butt'], ['lineJoin', 'miter'], ['miterLimit', 10]
 ];
 
-// var SHADOW_PROPS = STYLE_COMMON_PROPS.slice(0, 4);
-// var LINE_PROPS = STYLE_COMMON_PROPS.slice(4);
-
-var Style = function (opts) {
+let Style = function (opts) {
     this.extendFrom(opts, false);
 };
 
 function createLinearGradient(ctx, obj, rect) {
-    var x = obj.x == null ? 0 : obj.x;
-    var x2 = obj.x2 == null ? 1 : obj.x2;
-    var y = obj.y == null ? 0 : obj.y;
-    var y2 = obj.y2 == null ? 0 : obj.y2;
+    let x = obj.x == null ? 0 : obj.x;
+    let x2 = obj.x2 == null ? 1 : obj.x2;
+    let y = obj.y == null ? 0 : obj.y;
+    let y2 = obj.y2 == null ? 0 : obj.y2;
 
     if (!obj.global) {
         x = x * rect.width + rect.x;
@@ -7301,275 +7305,274 @@ function createLinearGradient(ctx, obj, rect) {
     y = isNaN(y) ? 0 : y;
     y2 = isNaN(y2) ? 0 : y2;
 
-    var canvasGradient = ctx.createLinearGradient(x, y, x2, y2);
+    let canvasGradient = ctx.createLinearGradient(x, y, x2, y2);
 
     return canvasGradient;
 }
 
 function createRadialGradient(ctx, obj, rect) {
-    var width = rect.width;
-    var height = rect.height;
-    var min = Math.min(width, height);
+    let width = rect.width;
+    let height = rect.height;
+    let min = Math.min(width, height);
 
-    var x = obj.x == null ? 0.5 : obj.x;
-    var y = obj.y == null ? 0.5 : obj.y;
-    var r = obj.r == null ? 0.5 : obj.r;
+    let x = obj.x == null ? 0.5 : obj.x;
+    let y = obj.y == null ? 0.5 : obj.y;
+    let r = obj.r == null ? 0.5 : obj.r;
     if (!obj.global) {
         x = x * width + rect.x;
         y = y * height + rect.y;
         r = r * min;
     }
 
-    var canvasGradient = ctx.createRadialGradient(x, y, 0, x, y, r);
+    let canvasGradient = ctx.createRadialGradient(x, y, 0, x, y, r);
 
     return canvasGradient;
 }
 
 
 Style.prototype = {
-
     constructor: Style,
 
     /**
-     * @property {String}
+     * @property {String} fill
      */
     fill: '#000',
 
     /**
-     * @property {String}
+     * @property {String} stroke
      */
     stroke: null,
 
     /**
-     * @property {Number}
+     * @property {Number} opacity
      */
     opacity: 1,
 
     /**
-     * @property {Number}
+     * @property {Number} fillOpacity
      */
     fillOpacity: null,
 
     /**
-     * @property {Number}
+     * @property {Number} strokeOpacity
      */
     strokeOpacity: null,
 
     /**
+     * @property {Array<Number>|Boolean} lineDash
      * `true` is not supported.
      * `false`/`null`/`undefined` are the same.
      * `false` is used to remove lineDash in some
      * case that `null`/`undefined` can not be set.
      * (e.g., emphasis.lineStyle in echarts)
-     * @property {Array<Number>|boolean}
      */
     lineDash: null,
 
     /**
-     * @property {Number}
+     * @property {Number} lineDashOffset
      */
     lineDashOffset: 0,
 
     /**
-     * @property {Number}
+     * @property {Number} shadowBlur
      */
     shadowBlur: 0,
 
     /**
-     * @property {Number}
+     * @property {Number} shadowOffsetX
      */
     shadowOffsetX: 0,
 
     /**
-     * @property {Number}
+     * @property {Number} shadowOffsetY
      */
     shadowOffsetY: 0,
 
     /**
-     * @property {Number}
+     * @property {Number} lineWidth
      */
     lineWidth: 1,
 
     /**
+     * @property {Boolean} strokeNoScale
      * If stroke ignore scale
-     * @property {Boolean}
      */
     strokeNoScale: false,
 
     // Bounding rect text configuration
     // Not affected by element transform
     /**
-     * @property {String}
+     * @property {String} text
      */
     text: null,
 
     /**
+     * @property {String} font
      * If `fontSize` or `fontFamily` exists, `font` will be reset by
      * `fontSize`, `fontStyle`, `fontWeight`, `fontFamily`.
      * So do not visit it directly in upper application (like echarts),
      * but use `contain/text#makeFont` instead.
-     * @property {String}
      */
     font: null,
 
     /**
-     * The same as font. Use font please.
      * @deprecated
-     * @property {String}
+     * @property {String} textFont
+     * The same as font. Use font please.
      */
     textFont: null,
 
     /**
+     * @property {String} fontStyle
      * It helps merging respectively, rather than parsing an entire font string.
-     * @property {String}
      */
     fontStyle: null,
 
     /**
+     * @property {String} fontWeight
      * It helps merging respectively, rather than parsing an entire font string.
-     * @property {String}
      */
     fontWeight: null,
 
     /**
+     * @property {Number} fontSize
      * It helps merging respectively, rather than parsing an entire font string.
      * Should be 12 but not '12px'.
-     * @property {Number}
      */
     fontSize: null,
 
     /**
+     * @property {String} fontFamily
      * It helps merging respectively, rather than parsing an entire font string.
-     * @property {String}
      */
     fontFamily: null,
 
     /**
+     * @property {String} textTag
      * Reserved for special functinality, like 'hr'.
-     * @property {String}
      */
     textTag: null,
 
     /**
-     * @property {String}
+     * @property {String} textFill
      */
     textFill: '#000',
 
     /**
-     * @property {String}
+     * @property {String} textStroke
      */
     textStroke: null,
 
     /**
-     * @property {Number}
+     * @property {Number} textWidth
      */
     textWidth: null,
 
     /**
+     * @property {Number} textHeight
      * Only for textBackground.
-     * @property {Number}
      */
     textHeight: null,
 
     /**
+     * @property {Number} textStrokeWidth
      * textStroke may be set as some color as a default
      * value in upper applicaion, where the default value
      * of textStrokeWidth should be 0 to make sure that
      * user can choose to do not use text stroke.
-     * @property {Number}
      */
     textStrokeWidth: 0,
 
     /**
-     * @property {Number}
+     * @property {Number} textLineHeight
      */
     textLineHeight: null,
 
     /**
+     * @property {string|Array<Number>} textPosition
      * 'inside', 'left', 'right', 'top', 'bottom'
      * [x, y]
      * Based on x, y of rect.
-     * @property {string|Array.<Number>}
-     * @default 'inside'
      */
     textPosition: 'inside',
 
     /**
+     * @property {Object} textRect
      * If not specified, use the boundingRect of a `displayable`.
-     * @property {Object}
      */
     textRect: null,
 
     /**
+     * @property {Array<Number>} textOffset
      * [x, y]
-     * @property {Array<Number>}
      */
     textOffset: null,
 
     /**
-     * @property {String}
+     * @property {String} textAlign
      */
     textAlign: null,
 
     /**
-     * @property {String}
+     * @property {String} textVerticalAlign
      */
     textVerticalAlign: null,
 
     /**
-     * @property {Number}
+     * @property {Number} textDistance
      */
     textDistance: 5,
 
     /**
-     * @property {String}
+     * @property {String} textShadowColor
      */
     textShadowColor: 'transparent',
 
     /**
-     * @property {Number}
+     * @property {Number} textShadowBlur
      */
     textShadowBlur: 0,
 
     /**
-     * @property {Number}
+     * @property {Number} textShadowOffsetX
      */
     textShadowOffsetX: 0,
 
     /**
-     * @property {Number}
+     * @property {Number} textShadowOffsetY
      */
     textShadowOffsetY: 0,
 
     /**
-     * @property {String}
+     * @property {String} textBoxShadowColor
      */
     textBoxShadowColor: 'transparent',
 
     /**
-     * @property {Number}
+     * @property {Number} textBoxShadowBlur
      */
     textBoxShadowBlur: 0,
 
     /**
-     * @property {Number}
+     * @property {Number} textBoxShadowOffsetX
      */
     textBoxShadowOffsetX: 0,
 
     /**
-     * @property {Number}
+     * @property {Number} textBoxShadowOffsetY
      */
     textBoxShadowOffsetY: 0,
 
     /**
+     * @property {Boolean} transformText
      * Whether transform text.
      * Only available in Path and Image element,
      * where the text is called as `RectText`.
-     * @property {boolean}
      */
     transformText: false,
 
     /**
+     * @property {Number} textRotation
      * Text rotate around position of Path or Image.
      * The origin of the rotation can be specified by `textOrigin`.
      * Only available in Path and Image element,
@@ -7578,6 +7581,7 @@ Style.prototype = {
     textRotation: 0,
 
     /**
+     * @property {String|Array<Number>} textOrigin
      * Text origin of text rotation.
      * Useful in the case like label rotation of circular symbol.
      * Only available in Path and Image element, where the text is called
@@ -7588,69 +7592,71 @@ Style.prototype = {
      * + If specified as a string `center`, it is the center of the rect of
      * its host element.
      * + By default, this origin is the `textPosition`.
-     * @property {string|Array.<Number>}
      */
     textOrigin: null,
 
     /**
-     * @property {String}
+     * @property {String} textBackgroundColor
      */
     textBackgroundColor: null,
 
     /**
-     * @property {String}
+     * @property {String} textBorderColor
      */
     textBorderColor: null,
 
     /**
-     * @property {Number}
+     * @property {Number} textBorderWidth
      */
     textBorderWidth: 0,
 
     /**
-     * @property {Number}
+     * @property {Number} textBorderRadius
      */
     textBorderRadius: 0,
 
     /**
+     * @property {number|Array<Number>} textPadding
      * Can be `2` or `[2, 4]` or `[2, 3, 4, 5]`
-     * @property {number|Array.<Number>}
      */
     textPadding: null,
 
     /**
+     * @property {Object} rich
      * Text styles for rich text.
-     * @property {Object}
      */
     rich: null,
 
     /**
+     * @property {Object} truncate
      * {outerWidth, outerHeight, ellipsis, placeholder}
-     * @property {Object}
      */
     truncate: null,
 
     /**
+     * @property {String} blend
      * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
-     * @property {String}
      */
     blend: null,
 
     /**
+     * @method bind
      * @param {CanvasRenderingContext2D} ctx
+     * @param {Element} el
+     * @param {Element} prevEl
      */
     bind: function (ctx, el, prevEl) {
-        var style = this;
-        var prevStyle = prevEl && prevEl.style;
+        let style = this;
+        let prevStyle = prevEl && prevEl.style;
         // If no prevStyle, it means first draw.
         // Only apply cache if the last time cachced by this function.
-        var notCheckCache = !prevStyle || ctx.__attrCachedBy !== ContextCachedBy.STYLE_BIND;
+        let notCheckCache = !prevStyle || ctx.__attrCachedBy !== ContextCachedBy.STYLE_BIND;
 
         ctx.__attrCachedBy = ContextCachedBy.STYLE_BIND;
 
-        for (var i = 0; i < STYLE_COMMON_PROPS.length; i++) {
-            var prop = STYLE_COMMON_PROPS[i];
-            var styleName = prop[0];
+        for (let i = 0; i < STYLE_COMMON_PROPS.length; i++) {
+            let prop = STYLE_COMMON_PROPS[i];
+            let styleName = prop[0];
 
             if (notCheckCache || style[styleName] !== prevStyle[styleName]) {
                 // FIXME Invalid property value will cause style leak from previous element.
@@ -7673,33 +7679,40 @@ Style.prototype = {
             ctx.globalCompositeOperation = style.blend || 'source-over';
         }
         if (this.hasStroke()) {
-            var lineWidth = style.lineWidth;
+            let lineWidth = style.lineWidth;
             ctx.lineWidth = lineWidth / (
                 (this.strokeNoScale && el && el.getLineScale) ? el.getLineScale() : 1
             );
         }
     },
 
+    /**
+     * @method hasFill
+     */
     hasFill: function () {
-        var fill = this.fill;
+        let fill = this.fill;
         return fill != null && fill !== 'none';
     },
 
+    /**
+     * @method hasStroke
+     */
     hasStroke: function () {
-        var stroke = this.stroke;
+        let stroke = this.stroke;
         return stroke != null && stroke !== 'none' && this.lineWidth > 0;
     },
 
     /**
+     * @method extendFrom
      * Extend from other style
-     * @param {zrender/graphic/Style} otherStyle
-     * @param {boolean} overwrite true: overwrirte any way.
+     * @param {Style} otherStyle
+     * @param {Boolean} overwrite true: overwrirte any way.
      *                            false: overwrite only when !target.hasOwnProperty
      *                            others: overwrite when property is not null/undefined.
      */
     extendFrom: function (otherStyle, overwrite) {
         if (otherStyle) {
-            for (var name in otherStyle) {
+            for (let name in otherStyle) {
                 if (otherStyle.hasOwnProperty(name)
                     && (overwrite === true
                         || (
@@ -7716,8 +7729,9 @@ Style.prototype = {
     },
 
     /**
+     * @method set
      * Batch setting style with a given object
-     * @param {Object|string} obj
+     * @param {Object|String} obj
      * @param {*} [obj]
      */
     set: function (obj, value) {
@@ -7730,20 +7744,26 @@ Style.prototype = {
     },
 
     /**
-     * Clone
-     * @return {zrender/graphic/Style} [description]
+     * @method clone
+     * @return {Style}
      */
     clone: function () {
-        var newStyle = new this.constructor();
+        let newStyle = new this.constructor();
         newStyle.extendFrom(this, true);
         return newStyle;
     },
 
+    /**
+     * @method getGradient
+     * @param {*} ctx 
+     * @param {*} obj 
+     * @param {*} rect 
+     */
     getGradient: function (ctx, obj, rect) {
-        var method = obj.type === 'radial' ? createRadialGradient : createLinearGradient;
-        var canvasGradient = method(ctx, obj, rect);
-        var colorStops = obj.colorStops;
-        for (var i = 0; i < colorStops.length; i++) {
+        let method = obj.type === 'radial' ? createRadialGradient : createLinearGradient;
+        let canvasGradient = method(ctx, obj, rect);
+        let colorStops = obj.colorStops;
+        for (let i = 0; i < colorStops.length; i++) {
             canvasGradient.addColorStop(
                 colorStops[i].offset, colorStops[i].color
             );
@@ -7753,9 +7773,9 @@ Style.prototype = {
 
 };
 
-var styleProto = Style.prototype;
-for (var i = 0; i < STYLE_COMMON_PROPS.length; i++) {
-    var prop = STYLE_COMMON_PROPS[i];
+let styleProto = Style.prototype;
+for (let i = 0; i < STYLE_COMMON_PROPS.length; i++) {
+    let prop = STYLE_COMMON_PROPS[i];
     if (!(prop[0] in styleProto)) {
         styleProto[prop[0]] = prop[1];
     }
@@ -7764,13 +7784,20 @@ for (var i = 0; i < STYLE_COMMON_PROPS.length; i++) {
 // Provide for others
 Style.getGradient = styleProto.getGradient;
 
-var Pattern = function (image, repeat) {
+/**
+ * @class zrender.graphic.Pattern 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
+/**
+ * @method  constructor Pattern
+ * @param {*} image 
+ * @param {*} repeat 
+ */
+let Pattern = function (image, repeat) {
     // Should do nothing more in this constructor. Because gradient can be
     // declard by `color: {image: ...}`, where this constructor will not be called.
-
     this.image = image;
     this.repeat = repeat;
-
     // Can be cloned
     this.type = 'pattern';
 };
@@ -9455,40 +9482,33 @@ function needDrawText(text, style) {
 }
 
 /**
- * Mixin for drawing text in a element bounding rect
- * @module zrender/mixin/RectText
+ * @class zrender.graphic.RectText 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
-var tmpRect$1 = new BoundingRect();
-
-var RectText = function () {};
-
+let tmpRect$1 = new BoundingRect();
+let RectText = function () {};
+/**
+ * @method constructor RectText
+ */
 RectText.prototype = {
-
     constructor: RectText,
-
     /**
      * Draw text in a rect with specified position.
      * @param  {CanvasRenderingContext2D} ctx
      * @param  {Object} rect Displayable rect
      */
     drawRectText: function (ctx, rect) {
-        var style = this.style;
-
+        let style = this.style;
         rect = style.textRect || rect;
-
         // Optimize, avoid normalize every time.
         this.__dirty && normalizeTextStyle(style, true);
-
-        var text = style.text;
-
+        let text = style.text;
         // Convert to string
         text != null && (text += '');
-
         if (!needDrawText(text, style)) {
             return;
         }
-
         // FIXME
         // Do not provide prevEl to `textHelper.renderText` for ctx prop cache,
         // but use `ctx.save()` and `ctx.restore()`. Because the cache for rect
@@ -9496,21 +9516,18 @@ RectText.prototype = {
         ctx.save();
 
         // Transform rect to view space
-        var transform = this.transform;
+        let transform = this.transform;
         if (!style.transformText) {
             if (transform) {
                 tmpRect$1.copy(rect);
                 tmpRect$1.applyTransform(transform);
                 rect = tmpRect$1;
             }
-        }
-        else {
+        }else {
             this.setTransform(ctx);
         }
-
         // transformText and textRotation can not be used at the same time.
         renderText(this, ctx, text, style, rect, WILL_BE_RESTORED);
-
         ctx.restore();
     }
 };
@@ -15385,23 +15402,24 @@ var pathUtil = (Object.freeze || Object)({
 });
 
 /**
- * @alias zrender/graphic/Text
- * @extends module:zrender/graphic/Displayable
- * @constructor
- * @param {Object} opts
+ * @class zrender.graphic.Text
+ * 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-var Text = function (opts) { // jshint ignore:line
+/**
+ * @method constructor Text
+ * @param {Object} opts 
+ */
+let Text = function (opts) { // jshint ignore:line
     Displayable.call(this, opts);
 };
 
 Text.prototype = {
-
     constructor: Text,
-
     type: 'text',
 
     brush: function (ctx, prevEl) {
-        var style = this.style;
+        let style = this.style;
 
         // Optimize, avoid normalize every time.
         this.__dirty && normalizeTextStyle(style, true);
@@ -15410,7 +15428,7 @@ Text.prototype = {
         style.fill = style.stroke = style.shadowBlur = style.shadowColor =
             style.shadowOffsetX = style.shadowOffsetY = null;
 
-        var text = style.text;
+        let text = style.text;
         // Convert to string
         text != null && (text += '');
 
@@ -15434,16 +15452,16 @@ Text.prototype = {
     },
 
     getBoundingRect: function () {
-        var style = this.style;
+        let style = this.style;
 
         // Optimize, avoid normalize every time.
         this.__dirty && normalizeTextStyle(style, true);
 
         if (!this._rect) {
-            var text = style.text;
+            let text = style.text;
             text != null ? (text += '') : (text = '');
 
-            var rect = getBoundingRect(
+            let rect = getBoundingRect(
                 style.text + '',
                 style.font,
                 style.textAlign,
@@ -15457,7 +15475,7 @@ Text.prototype = {
             rect.y += style.y || 0;
 
             if (getStroke(style.textStroke, style.textStrokeWidth)) {
-                var w = style.textStrokeWidth;
+                let w = style.textStrokeWidth;
                 rect.x -= w / 2;
                 rect.y -= w / 2;
                 rect.width += w;
@@ -16105,7 +16123,12 @@ Gradient.prototype = {
 };
 
 /**
- * x, y, x2, y2 are all percent from 0 to 1
+ * @class zrender.graphic.LinearGradient 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
+
+/**
+ * @method constructor LinearGradient
  * @param {Number} [x=0]
  * @param {Number} [y=0]
  * @param {Number} [x2=1]
@@ -16117,26 +16140,18 @@ var LinearGradient = function (x, y, x2, y2, colorStops, globalCoord) {
     // Should do nothing more in this constructor. Because gradient can be
     // declard by `color: {type: 'linear', colorStops: ...}`, where
     // this constructor will not be called.
-
     this.x = x == null ? 0 : x;
-
     this.y = y == null ? 0 : y;
-
     this.x2 = x2 == null ? 1 : x2;
-
     this.y2 = y2 == null ? 0 : y2;
-
     // Can be cloned
     this.type = 'linear';
-
     // If use global coord
     this.global = globalCoord || false;
-
     Gradient.call(this, colorStops);
 };
 
 LinearGradient.prototype = {
-
     constructor: LinearGradient
 };
 
@@ -17754,35 +17769,33 @@ var Trochoid = Path.extend({
 });
 
 /**
- * x, y, r are all percent from 0 to 1
+ * @class zrender.graphic.RadialGradient 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
+
+/**
+ * @method constructor RadialGradient
  * @param {Number} [x=0.5]
  * @param {Number} [y=0.5]
  * @param {Number} [r=0.5]
  * @param {Array<Object>} [colorStops]
  * @param {boolean} [globalCoord=false]
  */
-var RadialGradient = function (x, y, r, colorStops, globalCoord) {
+let RadialGradient = function (x, y, r, colorStops, globalCoord) {
     // Should do nothing more in this constructor. Because gradient can be
     // declard by `color: {type: 'radial', colorStops: ...}`, where
     // this constructor will not be called.
-
     this.x = x == null ? 0.5 : x;
-
     this.y = y == null ? 0.5 : y;
-
     this.r = r == null ? 0.5 : r;
-
     // Can be cloned
     this.type = 'radial';
-
     // If use global coord
     this.global = globalCoord || false;
-
     Gradient.call(this, colorStops);
 };
 
 RadialGradient.prototype = {
-
     constructor: RadialGradient
 };
 
@@ -20808,8 +20821,8 @@ if (!env$1.canvasSupported) {
     var list = [RectText, Displayable, ZImage, Path, Text];
 
     // In case Displayable has been mixed in RectText
-    for (var i$1 = 0; i$1 < list.length; i$1++) {
-        var proto = list[i$1].prototype;
+    for (var i = 0; i < list.length; i++) {
+        var proto = list[i].prototype;
         proto.drawRectText = drawRectText;
         proto.removeRectText = removeRectText;
         proto.appendRectText = appendRectText;

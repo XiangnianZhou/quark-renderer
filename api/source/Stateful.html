@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var States = require(&quot;./States&quot;);
+
+<span id='zrender-graphic-Stateful'>/**
+</span> * @class zrender.graphic.Stateful
+ * 
+ * Stateful mixin for graphic object
+ * 
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+var Stateful = function Stateful(opts) {
+  if (opts.states) {
+    this.initStates(opts.states);
+  }
+};
+
+Stateful.prototype = {
+  initStates: function initStates(states) {
+    this._states = new States({
+      el: this,
+      states: states
+    });
+  },
+  setState: function setState(name) {
+    this._states &amp;&amp; this._states.setState(name);
+  },
+  getState: function getState() {
+    return this._states &amp;&amp; this._states.getState();
+  },
+  transitionState: function transitionState(name, done) {
+    this._states &amp;&amp; this._states.transitionState(name, done);
+  }
+};
+var _default = Stateful;
+module.exports = _default;</pre>
+</body>
+</html>
