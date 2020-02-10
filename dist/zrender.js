@@ -18514,255 +18514,264 @@ var arrayDiff$1 = function (oldArr, newArr, callback) {
 };
 
 /**
- * @file Manages elements that can be defined in <defs> in SVG,
+ * @class zrender.svg.helper.Definable
+ * 
+ * Manages elements that can be defined in <defs> in SVG,
  *       e.g., gradients, clip path, etc.
  * @author Zhang Wenli
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
-var MARK_UNUSED = '0';
-var MARK_USED = '1';
+let MARK_UNUSED = '0';
+let MARK_USED = '1';
 
 /**
+ * @method constructor Definable
+ * 
  * Manages elements that can be defined in <defs> in SVG,
  * e.g., gradients, clip path, etc.
  *
- * @class
  * @param {Number}          zrId      zrender instance id
  * @param {SVGElement}      svgRoot   root of SVG document
- * @param {string|string[]} tagNames  possible tag names
+ * @param {String|String[]} tagNames  possible tag names
  * @param {String}          markLabel label name to make if the element
  *                                    is used
  */
-function Definable(
-    zrId,
-    svgRoot,
-    tagNames,
-    markLabel,
-    domName
-) {
+function Definable(zrId,svgRoot,tagNames,markLabel,domName) {
     this._zrId = zrId;
     this._svgRoot = svgRoot;
     this._tagNames = typeof tagNames === 'string' ? [tagNames] : tagNames;
     this._markLabel = markLabel;
     this._domName = domName || '_dom';
-
     this.nextId = 0;
 }
 
+Definable.prototype={
+    constructor:Definable,
+    createElement:createElement,
 
-Definable.prototype.createElement = createElement;
-
-
-/**
- * Get the <defs> tag for svgRoot; optionally creates one if not exists.
- *
- * @param {boolean} isForceCreating if need to create when not exists
- * @return {SVGDefsElement} SVG <defs> element, null if it doesn't
- * exist and isForceCreating is false
- */
-Definable.prototype.getDefs = function (isForceCreating) {
-    var svgRoot = this._svgRoot;
-    var defs = this._svgRoot.getElementsByTagName('defs');
-    if (defs.length === 0) {
-        // Not exist
-        if (isForceCreating) {
-            defs = svgRoot.insertBefore(
-                this.createElement('defs'), // Create new tag
-                svgRoot.firstChild // Insert in the front of svg
-            );
-            if (!defs.contains) {
-                // IE doesn't support contains method
-                defs.contains = function (el) {
-                    var children = defs.children;
-                    if (!children) {
-                        return false;
-                    }
-                    for (var i = children.length - 1; i >= 0; --i) {
-                        if (children[i] === el) {
-                            return true;
+    /**
+     * @method getDefs
+     * 
+     * Get the <defs> tag for svgRoot; optionally creates one if not exists.
+     *
+     * @param {Boolean} isForceCreating if need to create when not exists
+     * @return {SVGDefsElement} SVG <defs> element, null if it doesn't exist and isForceCreating is false
+     */
+    getDefs:function (isForceCreating) {
+        let svgRoot = this._svgRoot;
+        let defs = this._svgRoot.getElementsByTagName('defs');
+        if (defs.length === 0) {
+            // Not exist
+            if (isForceCreating) {
+                defs = svgRoot.insertBefore(
+                    this.createElement('defs'), // Create new tag
+                    svgRoot.firstChild // Insert in the front of svg
+                );
+                if (!defs.contains) {
+                    // IE doesn't support contains method
+                    defs.contains = function (el) {
+                        let children = defs.children;
+                        if (!children) {
+                            return false;
                         }
-                    }
-                    return false;
-                };
+                        for (let i = children.length - 1; i >= 0; --i) {
+                            if (children[i] === el) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    };
+                }
+                return defs;
             }
-            return defs;
+            else {
+                return null;
+            }
         }
         else {
-            return null;
+            return defs[0];
         }
-    }
-    else {
-        return defs[0];
-    }
-};
+    },
 
-
-/**
- * Update DOM element if necessary.
- *
- * @param {Object|string} element style element. e.g., for gradient,
- *                                it may be '#ccc' or {type: 'linear', ...}
- * @param {Function|undefined} onUpdate update callback
- */
-Definable.prototype.update = function (element, onUpdate) {
-    if (!element) {
-        return;
-    }
-
-    var defs = this.getDefs(false);
-    if (element[this._domName] && defs.contains(element[this._domName])) {
-        // Update DOM
-        if (typeof onUpdate === 'function') {
-            onUpdate(element);
+    /**
+     * @method update
+     * 
+     * Update DOM element if necessary.
+     *
+     * @param {Object|String} element style element. e.g., for gradient,
+     *                                it may be '#ccc' or {type: 'linear', ...}
+     * @param {Function|undefined} onUpdate update callback
+     */
+    update:function (element, onUpdate) {
+        if (!element) {
+            return;
         }
-    }
-    else {
-        // No previous dom, create new
-        var dom = this.add(element);
+    
+        let defs = this.getDefs(false);
+        if (element[this._domName] && defs.contains(element[this._domName])) {
+            // Update DOM
+            if (typeof onUpdate === 'function') {
+                onUpdate(element);
+            }
+        }
+        else {
+            // No previous dom, create new
+            let dom = this.add(element);
+            if (dom) {
+                element[this._domName] = dom;
+            }
+        }
+    },
+
+    /**
+     * @method addDom
+     * 
+     * Add gradient dom to defs
+     *
+     * @param {SVGElement} dom DOM to be added to <defs>
+     */
+    addDom:function (dom) {
+        let defs = this.getDefs(true);
+        defs.appendChild(dom);
+    },
+
+    /**
+     * @method removeDom
+     * 
+     * Remove DOM of a given element.
+     *
+     * @param {SVGElement} element element to remove dom
+     */
+    removeDom:function (element) {
+        let defs = this.getDefs(false);
+        if (defs && element[this._domName]) {
+            defs.removeChild(element[this._domName]);
+            element[this._domName] = null;
+        }
+    },
+
+    /**
+     * @method getDoms
+     * 
+     * Get DOMs of this element.
+     *
+     * @return {HTMLDomElement} doms of this defineable elements in <defs>
+     */
+    getDoms:function () {
+        let defs = this.getDefs(false);
+        if (!defs) {
+            // No dom when defs is not defined
+            return [];
+        }
+    
+        let doms = [];
+        each(this._tagNames, function (tagName) {
+            let tags = defs.getElementsByTagName(tagName);
+            // Note that tags is HTMLCollection, which is array-like
+            // rather than real array.
+            // So `doms.concat(tags)` add tags as one object.
+            doms = doms.concat([].slice.call(tags));
+        });
+    
+        return doms;
+    },
+
+    /**
+     * @method markAllUnused
+     * 
+     * Mark DOMs to be unused before painting, and clear unused ones at the end
+     * of the painting.
+     */
+    markAllUnused:function () {
+        let doms = this.getDoms();
+        let that = this;
+        each(doms, function (dom) {
+            dom[that._markLabel] = MARK_UNUSED;
+        });
+    },
+
+    /**
+     * @method markUsed
+     * 
+     * Mark a single DOM to be used.
+     *
+     * @param {SVGElement} dom DOM to mark
+     */
+    markUsed:function (dom) {
         if (dom) {
-            element[this._domName] = dom;
+            dom[this._markLabel] = MARK_USED;
         }
-    }
-};
+    },
 
-
-/**
- * Add gradient dom to defs
- *
- * @param {SVGElement} dom DOM to be added to <defs>
- */
-Definable.prototype.addDom = function (dom) {
-    var defs = this.getDefs(true);
-    defs.appendChild(dom);
-};
-
-
-/**
- * Remove DOM of a given element.
- *
- * @param {SVGElement} element element to remove dom
- */
-Definable.prototype.removeDom = function (element) {
-    var defs = this.getDefs(false);
-    if (defs && element[this._domName]) {
-        defs.removeChild(element[this._domName]);
-        element[this._domName] = null;
-    }
-};
-
-
-/**
- * Get DOMs of this element.
- *
- * @return {HTMLDomElement} doms of this defineable elements in <defs>
- */
-Definable.prototype.getDoms = function () {
-    var defs = this.getDefs(false);
-    if (!defs) {
-        // No dom when defs is not defined
-        return [];
-    }
-
-    var doms = [];
-    each(this._tagNames, function (tagName) {
-        var tags = defs.getElementsByTagName(tagName);
-        // Note that tags is HTMLCollection, which is array-like
-        // rather than real array.
-        // So `doms.concat(tags)` add tags as one object.
-        doms = doms.concat([].slice.call(tags));
-    });
-
-    return doms;
-};
-
-
-/**
- * Mark DOMs to be unused before painting, and clear unused ones at the end
- * of the painting.
- */
-Definable.prototype.markAllUnused = function () {
-    var doms = this.getDoms();
-    var that = this;
-    each(doms, function (dom) {
-        dom[that._markLabel] = MARK_UNUSED;
-    });
-};
-
-
-/**
- * Mark a single DOM to be used.
- *
- * @param {SVGElement} dom DOM to mark
- */
-Definable.prototype.markUsed = function (dom) {
-    if (dom) {
-        dom[this._markLabel] = MARK_USED;
-    }
-};
-
-
-/**
- * Remove unused DOMs defined in <defs>
- */
-Definable.prototype.removeUnused = function () {
-    var defs = this.getDefs(false);
-    if (!defs) {
-        // Nothing to remove
-        return;
-    }
-
-    var doms = this.getDoms();
-    var that = this;
-    each(doms, function (dom) {
-        if (dom[that._markLabel] !== MARK_USED) {
-            // Remove gradient
-            defs.removeChild(dom);
+    /**
+     * @method removeUnused
+     * 
+     * Remove unused DOMs defined in <defs>
+     */
+    removeUnused:function () {
+        let defs = this.getDefs(false);
+        if (!defs) {
+            // Nothing to remove
+            return;
         }
-    });
-};
+    
+        let doms = this.getDoms();
+        let that = this;
+        each(doms, function (dom) {
+            if (dom[that._markLabel] !== MARK_USED) {
+                // Remove gradient
+                defs.removeChild(dom);
+            }
+        });
+    },
 
+    /**
+     * @method getSvgProxy
+     * 
+     * Get SVG proxy.
+     *
+     * @param {Displayable} displayable displayable element
+     * @return {Path|Image|Text} svg proxy of given element
+     */
+    getSvgProxy:function (displayable) {
+        if (displayable instanceof Path) {
+            return svgPath;
+        }
+        else if (displayable instanceof ZImage) {
+            return svgImage;
+        }
+        else if (displayable instanceof Text) {
+            return svgText;
+        }
+        else {
+            return svgPath;
+        }
+    },
 
-/**
- * Get SVG proxy.
- *
- * @param {Displayable} displayable displayable element
- * @return {Path|Image|Text} svg proxy of given element
- */
-Definable.prototype.getSvgProxy = function (displayable) {
-    if (displayable instanceof Path) {
-        return svgPath;
+    /**
+     * @method getTextSvgElement
+     * 
+     * Get text SVG element.
+     *
+     * @param {Displayable} displayable displayable element
+     * @return {SVGElement} SVG element of text
+     */
+    getTextSvgElement:function (displayable) {
+        return displayable.__textSvgEl;
+    },
+
+    /**
+     * @method getSvgElement
+     * 
+     * Get SVG element.
+     *
+     * @param {Displayable} displayable displayable element
+     * @return {SVGElement} SVG element
+     */
+    getSvgElement:function (displayable) {
+        return displayable.__svgEl;
     }
-    else if (displayable instanceof ZImage) {
-        return svgImage;
-    }
-    else if (displayable instanceof Text) {
-        return svgText;
-    }
-    else {
-        return svgPath;
-    }
-};
-
-
-/**
- * Get text SVG element.
- *
- * @param {Displayable} displayable displayable element
- * @return {SVGElement} SVG element of text
- */
-Definable.prototype.getTextSvgElement = function (displayable) {
-    return displayable.__textSvgEl;
-};
-
-
-/**
- * Get SVG element.
- *
- * @param {Displayable} displayable displayable element
- * @return {SVGElement} SVG element
- */
-Definable.prototype.getSvgElement = function (displayable) {
-    return displayable.__svgEl;
 };
 
 /**
@@ -18987,15 +18996,16 @@ GradientManager.prototype.markUsed = function (displayable) {
 };
 
 /**
- * @file Manages SVG clipPath elements.
+ * @class zrender.svg.helper.ClippathManager
+ * 
+ * Manages SVG clipPath elements.
+ * 
  * @author Zhang Wenli
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
 /**
- * Manages SVG clipPath elements.
- *
- * @class
- * @extends Definable
+ * @method constructor ClippathManager
  * @param   {Number}     zrId    zrender instance id
  * @param   {SVGElement} svgRoot root of SVG document
  */
@@ -19003,155 +19013,153 @@ function ClippathManager(zrId, svgRoot) {
     Definable.call(this, zrId, svgRoot, 'clipPath', '__clippath_in_use__');
 }
 
+ClippathManager.prototype={
+    constructor:ClippathManager,
+    /**
+     * @method update
+     * Update clipPath.
+     *
+     * @param {Displayable} displayable displayable element
+     */
+    update:function (displayable) {
+        let svgEl = this.getSvgElement(displayable);
+        if (svgEl) {
+            this.updateDom(svgEl, displayable.__clipPaths, false);
+        }
+    
+        let textEl = this.getTextSvgElement(displayable);
+        if (textEl) {
+            // Make another clipPath for text, since it's transform
+            // matrix is not the same with svgElement
+            this.updateDom(textEl, displayable.__clipPaths, true);
+        }
+    
+        this.markUsed(displayable);
+    },
+    /**
+     * @method updateDom
+     * Create an SVGElement of displayable and create a <clipPath> of its
+     * clipPath
+     *
+     * @param {Displayable} parentEl  parent element
+     * @param {ClipPath[]}  clipPaths clipPaths of parent element
+     * @param {boolean}     isText    if parent element is Text
+     */
+    updateDom:function (parentEl,clipPaths,isText) {
+        if (clipPaths && clipPaths.length > 0) {
+            // Has clipPath, create <clipPath> with the first clipPath
+            let defs = this.getDefs(true);
+            let clipPath = clipPaths[0];
+            let clipPathEl;
+            let id;
+    
+            let dom = isText ? '_textDom' : '_dom';
+    
+            if (clipPath[dom]) {
+                // Use a dom that is already in <defs>
+                id = clipPath[dom].getAttribute('id');
+                clipPathEl = clipPath[dom];
+    
+                // Use a dom that is already in <defs>
+                if (!defs.contains(clipPathEl)) {
+                    // This happens when set old clipPath that has
+                    // been previously removed
+                    defs.appendChild(clipPathEl);
+                }
+            }
+            else {
+                // New <clipPath>
+                id = 'zr' + this._zrId + '-clip-' + this.nextId;
+                ++this.nextId;
+                clipPathEl = this.createElement('clipPath');
+                clipPathEl.setAttribute('id', id);
+                defs.appendChild(clipPathEl);
+    
+                clipPath[dom] = clipPathEl;
+            }
+    
+            // Build path and add to <clipPath>
+            let svgProxy = this.getSvgProxy(clipPath);
+            if (clipPath.transform
+                && clipPath.parent.invTransform
+                && !isText
+            ) {
+                /**
+                 * If a clipPath has a parent with transform, the transform
+                 * of parent should not be considered when setting transform
+                 * of clipPath. So we need to transform back from parent's
+                 * transform, which is done by multiplying parent's inverse
+                 * transform.
+                 */
+                // Store old transform
+                let transform = Array.prototype.slice.call(
+                    clipPath.transform
+                );
+    
+                // Transform back from parent, and brush path
+                mul$1(
+                    clipPath.transform,
+                    clipPath.parent.invTransform,
+                    clipPath.transform
+                );
+                svgProxy.brush(clipPath);
+    
+                // Set back transform of clipPath
+                clipPath.transform = transform;
+            }
+            else {
+                svgProxy.brush(clipPath);
+            }
+    
+            let pathEl = this.getSvgElement(clipPath);
+    
+            clipPathEl.innerHTML = '';
+            /**
+             * Use `cloneNode()` here to appendChild to multiple parents,
+             * which may happend when Text and other shapes are using the same
+             * clipPath. Since Text will create an extra clipPath DOM due to
+             * different transform rules.
+             */
+            clipPathEl.appendChild(pathEl.cloneNode());
+    
+            parentEl.setAttribute('clip-path', 'url(#' + id + ')');
+    
+            if (clipPaths.length > 1) {
+                // Make the other clipPaths recursively
+                this.updateDom(clipPathEl, clipPaths.slice(1), isText);
+            }
+        }
+        else {
+            // No clipPath
+            if (parentEl) {
+                parentEl.setAttribute('clip-path', 'none');
+            }
+        }
+    },
+    /**
+     * @method markUsed
+     * 
+     * Mark a single clipPath to be used
+     *
+     * @param {Displayable} displayable displayable element
+     */
+    markUsed:function (displayable) {
+        let that = this;
+        // displayable.__clipPaths can only be `null`/`undefined` or an non-empty array.
+        if (displayable.__clipPaths) {
+            each(displayable.__clipPaths, function (clipPath) {
+                if (clipPath._dom) {
+                    Definable.prototype.markUsed.call(that, clipPath._dom);
+                }
+                if (clipPath._textDom) {
+                    Definable.prototype.markUsed.call(that, clipPath._textDom);
+                }
+            });
+        }
+    }
+};
 
 inherits(ClippathManager, Definable);
-
-
-/**
- * Update clipPath.
- *
- * @param {Displayable} displayable displayable element
- */
-ClippathManager.prototype.update = function (displayable) {
-    var svgEl = this.getSvgElement(displayable);
-    if (svgEl) {
-        this.updateDom(svgEl, displayable.__clipPaths, false);
-    }
-
-    var textEl = this.getTextSvgElement(displayable);
-    if (textEl) {
-        // Make another clipPath for text, since it's transform
-        // matrix is not the same with svgElement
-        this.updateDom(textEl, displayable.__clipPaths, true);
-    }
-
-    this.markUsed(displayable);
-};
-
-
-/**
- * Create an SVGElement of displayable and create a <clipPath> of its
- * clipPath
- *
- * @param {Displayable} parentEl  parent element
- * @param {ClipPath[]}  clipPaths clipPaths of parent element
- * @param {boolean}     isText    if parent element is Text
- */
-ClippathManager.prototype.updateDom = function (
-    parentEl,
-    clipPaths,
-    isText
-) {
-    if (clipPaths && clipPaths.length > 0) {
-        // Has clipPath, create <clipPath> with the first clipPath
-        var defs = this.getDefs(true);
-        var clipPath = clipPaths[0];
-        var clipPathEl;
-        var id;
-
-        var dom = isText ? '_textDom' : '_dom';
-
-        if (clipPath[dom]) {
-            // Use a dom that is already in <defs>
-            id = clipPath[dom].getAttribute('id');
-            clipPathEl = clipPath[dom];
-
-            // Use a dom that is already in <defs>
-            if (!defs.contains(clipPathEl)) {
-                // This happens when set old clipPath that has
-                // been previously removed
-                defs.appendChild(clipPathEl);
-            }
-        }
-        else {
-            // New <clipPath>
-            id = 'zr' + this._zrId + '-clip-' + this.nextId;
-            ++this.nextId;
-            clipPathEl = this.createElement('clipPath');
-            clipPathEl.setAttribute('id', id);
-            defs.appendChild(clipPathEl);
-
-            clipPath[dom] = clipPathEl;
-        }
-
-        // Build path and add to <clipPath>
-        var svgProxy = this.getSvgProxy(clipPath);
-        if (clipPath.transform
-            && clipPath.parent.invTransform
-            && !isText
-        ) {
-            /**
-             * If a clipPath has a parent with transform, the transform
-             * of parent should not be considered when setting transform
-             * of clipPath. So we need to transform back from parent's
-             * transform, which is done by multiplying parent's inverse
-             * transform.
-             */
-            // Store old transform
-            var transform = Array.prototype.slice.call(
-                clipPath.transform
-            );
-
-            // Transform back from parent, and brush path
-            mul$1(
-                clipPath.transform,
-                clipPath.parent.invTransform,
-                clipPath.transform
-            );
-            svgProxy.brush(clipPath);
-
-            // Set back transform of clipPath
-            clipPath.transform = transform;
-        }
-        else {
-            svgProxy.brush(clipPath);
-        }
-
-        var pathEl = this.getSvgElement(clipPath);
-
-        clipPathEl.innerHTML = '';
-        /**
-         * Use `cloneNode()` here to appendChild to multiple parents,
-         * which may happend when Text and other shapes are using the same
-         * clipPath. Since Text will create an extra clipPath DOM due to
-         * different transform rules.
-         */
-        clipPathEl.appendChild(pathEl.cloneNode());
-
-        parentEl.setAttribute('clip-path', 'url(#' + id + ')');
-
-        if (clipPaths.length > 1) {
-            // Make the other clipPaths recursively
-            this.updateDom(clipPathEl, clipPaths.slice(1), isText);
-        }
-    }
-    else {
-        // No clipPath
-        if (parentEl) {
-            parentEl.setAttribute('clip-path', 'none');
-        }
-    }
-};
-
-/**
- * Mark a single clipPath to be used
- *
- * @param {Displayable} displayable displayable element
- */
-ClippathManager.prototype.markUsed = function (displayable) {
-    var that = this;
-    // displayable.__clipPaths can only be `null`/`undefined` or an non-empty array.
-    if (displayable.__clipPaths) {
-        each(displayable.__clipPaths, function (clipPath) {
-            if (clipPath._dom) {
-                Definable.prototype.markUsed.call(that, clipPath._dom);
-            }
-            if (clipPath._textDom) {
-                Definable.prototype.markUsed.call(that, clipPath._textDom);
-            }
-        });
-    }
-};
 
 /**
  * @file Manages SVG shadow elements.
