@@ -10,7 +10,7 @@ import ZImage from '../graphic/Image';
 import Text from '../graphic/Text';
 import Path from '../graphic/Path';
 import PathProxy from '../core/PathProxy';
-import Gradient from '../graphic/Gradient';
+import Gradient from '../graphic/gradient/Gradient';
 import * as vmlCore from './core';
 
 // http://www.w3.org/TR/NOTE-VML

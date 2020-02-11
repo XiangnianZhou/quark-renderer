@@ -1,4 +1,4 @@
-import * as classUtil from '../core/utils/classUtil';
+import * as classUtil from '../../core/utils/classUtil';
 import Gradient from './Gradient';
 /**
  * @class zrender.graphic.RadialGradient 

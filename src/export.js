@@ -32,8 +32,8 @@ export {default as Sector} from './graphic/shape/Sector';
 export {default as Star} from './graphic/shape/Star';
 export {default as Trochoid} from './graphic/shape/Trochoid';
 
-export {default as LinearGradient} from './graphic/LinearGradient';
-export {default as RadialGradient} from './graphic/RadialGradient';
+export {default as LinearGradient} from './graphic/gradient/LinearGradient';
+export {default as RadialGradient} from './graphic/gradient/RadialGradient';
 export {default as Pattern} from './graphic/Pattern';
 export {default as BoundingRect} from './core/BoundingRect';
 
