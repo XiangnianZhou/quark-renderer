@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var Definable = require(&quot;./Definable&quot;);
+
+var dataUtil = require(&quot;../../core/utils/dataStructureUtil&quot;);
+
+var classUtil = require(&quot;../../core/utils/classUtil&quot;);
+
+var matrix = require(&quot;../../core/utils/matrix&quot;);
+
+<span id='zrender-svg-helper-ClippathManager'>/**
+</span> * @class zrender.svg.helper.ClippathManager
+ * 
+ * Manages SVG clipPath elements.
+ * 
+ * @author Zhang Wenli
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ */
+
+<span id='zrender-svg-helper-ClippathManager-method-constructor'>/**
+</span> * @method constructor ClippathManager
+ * @param   {Number}     zrId    zrender instance id
+ * @param   {SVGElement} svgRoot root of SVG document
+ */
+function ClippathManager(zrId, svgRoot) {
+  Definable.call(this, zrId, svgRoot, &#39;clipPath&#39;, &#39;__clippath_in_use__&#39;);
+}
+
+ClippathManager.prototype = {
+  constructor: ClippathManager,
+
+<span id='zrender-svg-helper-ClippathManager-method-update'>  /**
+</span>   * @method update
+   * Update clipPath.
+   *
+   * @param {Displayable} displayable displayable element
+   */
+  update: function update(displayable) {
+    var svgEl = this.getSvgElement(displayable);
+
+    if (svgEl) {
+      this.updateDom(svgEl, displayable.__clipPaths, false);
+    }
+
+    var textEl = this.getTextSvgElement(displayable);
+
+    if (textEl) {
+      // Make another clipPath for text, since it&#39;s transform
+      // matrix is not the same with svgElement
+      this.updateDom(textEl, displayable.__clipPaths, true);
+    }
+
+    this.markUsed(displayable);
+  },
+
+<span id='zrender-svg-helper-ClippathManager-method-updateDom'>  /**
+</span>   * @method updateDom
+   * Create an SVGElement of displayable and create a &lt;clipPath&gt; of its
+   * clipPath
+   *
+   * @param {Displayable} parentEl  parent element
+   * @param {ClipPath[]}  clipPaths clipPaths of parent element
+   * @param {boolean}     isText    if parent element is Text
+   */
+  updateDom: function updateDom(parentEl, clipPaths, isText) {
+    if (clipPaths &amp;&amp; clipPaths.length &gt; 0) {
+      // Has clipPath, create &lt;clipPath&gt; with the first clipPath
+      var defs = this.getDefs(true);
+      var clipPath = clipPaths[0];
+      var clipPathEl;
+      var id;
+      var dom = isText ? &#39;_textDom&#39; : &#39;_dom&#39;;
+
+      if (clipPath[dom]) {
+        // Use a dom that is already in &lt;defs&gt;
+        id = clipPath[dom].getAttribute(&#39;id&#39;);
+        clipPathEl = clipPath[dom]; // Use a dom that is already in &lt;defs&gt;
+
+        if (!defs.contains(clipPathEl)) {
+          // This happens when set old clipPath that has
+          // been previously removed
+          defs.appendChild(clipPathEl);
+        }
+      } else {
+        // New &lt;clipPath&gt;
+        id = &#39;zr&#39; + this._zrId + &#39;-clip-&#39; + this.nextId;
+        ++this.nextId;
+        clipPathEl = this.createElement(&#39;clipPath&#39;);
+        clipPathEl.setAttribute(&#39;id&#39;, id);
+        defs.appendChild(clipPathEl);
+        clipPath[dom] = clipPathEl;
+      } // Build path and add to &lt;clipPath&gt;
+
+
+      var svgProxy = this.getSvgProxy(clipPath);
+
+      if (clipPath.transform &amp;&amp; clipPath.parent.invTransform &amp;&amp; !isText) {
+<span id='zrender-svg-helper-ClippathManager-property-'>        /**
+</span>         * If a clipPath has a parent with transform, the transform
+         * of parent should not be considered when setting transform
+         * of clipPath. So we need to transform back from parent&#39;s
+         * transform, which is done by multiplying parent&#39;s inverse
+         * transform.
+         */
+        // Store old transform
+        var transform = Array.prototype.slice.call(clipPath.transform); // Transform back from parent, and brush path
+
+        matrix.mul(clipPath.transform, clipPath.parent.invTransform, clipPath.transform);
+        svgProxy.brush(clipPath); // Set back transform of clipPath
+
+        clipPath.transform = transform;
+      } else {
+        svgProxy.brush(clipPath);
+      }
+
+      var pathEl = this.getSvgElement(clipPath);
+      clipPathEl.innerHTML = &#39;&#39;;
+<span id='zrender-svg-helper-ClippathManager-property-'>      /**
+</span>       * Use `cloneNode()` here to appendChild to multiple parents,
+       * which may happend when Text and other shapes are using the same
+       * clipPath. Since Text will create an extra clipPath DOM due to
+       * different transform rules.
+       */
+
+      clipPathEl.appendChild(pathEl.cloneNode());
+      parentEl.setAttribute(&#39;clip-path&#39;, &#39;url(#&#39; + id + &#39;)&#39;);
+
+      if (clipPaths.length &gt; 1) {
+        // Make the other clipPaths recursively
+        this.updateDom(clipPathEl, clipPaths.slice(1), isText);
+      }
+    } else {
+      // No clipPath
+      if (parentEl) {
+        parentEl.setAttribute(&#39;clip-path&#39;, &#39;none&#39;);
+      }
+    }
+  },
+
+<span id='zrender-svg-helper-ClippathManager-method-markUsed'>  /**
+</span>   * @method markUsed
+   * 
+   * Mark a single clipPath to be used
+   *
+   * @param {Displayable} displayable displayable element
+   */
+  markUsed: function markUsed(displayable) {
+    var that = this; // displayable.__clipPaths can only be `null`/`undefined` or an non-empty array.
+
+    if (displayable.__clipPaths) {
+      dataUtil.each(displayable.__clipPaths, function (clipPath) {
+        if (clipPath._dom) {
+          Definable.prototype.markUsed.call(that, clipPath._dom);
+        }
+
+        if (clipPath._textDom) {
+          Definable.prototype.markUsed.call(that, clipPath._textDom);
+        }
+      });
+    }
+  }
+};
+classUtil.inherits(ClippathManager, Definable);
+var _default = ClippathManager;
+module.exports = _default;</pre>
+</body>
+</html>

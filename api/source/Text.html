@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var Displayable = require(&quot;./Displayable&quot;);
+
+var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
+
+var textContain = require(&quot;../core/contain/text&quot;);
+
+var textUtil = require(&quot;./utils/textUtil&quot;);
+
+var _constants = require(&quot;./constants&quot;);
+
+var ContextCachedBy = _constants.ContextCachedBy;
+
+function _typeof(obj) { if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
+
+function _defineProperties(target, props) { for (var i = 0; i &lt; props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (&quot;value&quot; in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call &amp;&amp; (_typeof(call) === &quot;object&quot; || typeof call === &quot;function&quot;)) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(&quot;this hasn&#39;t been initialised - super() hasn&#39;t been called&quot;); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== &quot;function&quot; &amp;&amp; superClass !== null) { throw new TypeError(&quot;Super expression must either be null or a function&quot;); } subClass.prototype = Object.create(superClass &amp;&amp; superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+<span id='zrender-graphic-Text'>/**
+</span> * @class zrender.graphic.Text
+ * 
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+var Text =
+/*#__PURE__*/
+function (_Displayable) {
+  _inherits(Text, _Displayable);
+
+<span id='zrender-graphic-Text-method-constructor'>  /**
+</span>   * @method constructor Text
+   * @param {Object} opts 
+   */
+  function Text(opts) {
+    var _this;
+
+    _classCallCheck(this, Text);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Text).call(this, opts));
+<span id='zrender-graphic-Text-property-type'>    /**
+</span>     * @property {String} type
+     */
+
+    _this.type = &#39;text&#39;;
+    return _this;
+  }
+
+  _createClass(Text, [{
+    key: &quot;brush&quot;,
+    value: function brush(ctx, prevEl) {
+      var style = this.style; // Optimize, avoid normalize every time.
+
+      this.__dirty &amp;&amp; textUtil.normalizeTextStyle(style, true); // Use props with prefix &#39;text&#39;.
+
+      style.fill = style.stroke = style.shadowBlur = style.shadowColor = style.shadowOffsetX = style.shadowOffsetY = null;
+      var text = style.text; // Convert to string
+
+      text != null &amp;&amp; (text += &#39;&#39;); // Do not apply style.bind in Text node. Because the real bind job
+      // is in textUtil.renderText, and performance of text render should
+      // be considered.
+      // style.bind(ctx, this, prevEl);
+
+      if (!textUtil.needDrawText(text, style)) {
+        // The current el.style is not applied
+        // and should not be used as cache.
+        ctx.__attrCachedBy = ContextCachedBy.NONE;
+        return;
+      }
+
+      this.setTransform(ctx);
+      textUtil.renderText(this, ctx, text, style, null, prevEl);
+      this.restoreTransform(ctx);
+    }
+  }, {
+    key: &quot;getBoundingRect&quot;,
+    value: function getBoundingRect() {
+      var style = this.style; // Optimize, avoid normalize every time.
+
+      this.__dirty &amp;&amp; textUtil.normalizeTextStyle(style, true);
+
+      if (!this._rect) {
+        var text = style.text;
+        text != null ? text += &#39;&#39; : text = &#39;&#39;;
+        var rect = textContain.getBoundingRect(style.text + &#39;&#39;, style.font, style.textAlign, style.textVerticalAlign, style.textPadding, style.textLineHeight, style.rich);
+        rect.x += style.x || 0;
+        rect.y += style.y || 0;
+
+        if (textUtil.getStroke(style.textStroke, style.textStrokeWidth)) {
+          var w = style.textStrokeWidth;
+          rect.x -= w / 2;
+          rect.y -= w / 2;
+          rect.width += w;
+          rect.height += w;
+        }
+
+        this._rect = rect;
+      }
+
+      return this._rect;
+    }
+  }]);
+
+  return Text;
+}(Displayable);
+
+module.exports = Text;</pre>
+</body>
+</html>

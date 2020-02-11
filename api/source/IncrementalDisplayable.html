@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var classUtil = require(&quot;../core/utils/classUtil&quot;);
+
+var Displayble = require(&quot;./Displayable&quot;);
+
+var BoundingRect = require(&quot;../core/BoundingRect&quot;);
+
+<span id='zrender-graphic-IncrementalDisplayble'>/**
+</span> * @class zrender.graphic.IncrementalDisplayble 
+ * Displayable for incremental rendering. It will be rendered in a separate layer
+ * IncrementalDisplay have two main methods. `clearDisplayables` and `addDisplayables`
+ * addDisplayables will render the added displayables incremetally.
+ *
+ * It use a not clearFlag to tell the painter don&#39;t clear the layer if it&#39;s the first element.
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+
+<span id='zrender-graphic-IncrementalDisplayble-method-constructor'>/**
+</span> * @method constructor IncrementalDisplayble
+ * @param {Object} opts 
+ */
+// TODO Style override ?
+function IncrementalDisplayble(opts) {
+  classUtil.copyProperties(this, Displayble, opts);
+  this._displayables = [];
+  this._temporaryDisplayables = [];
+  this._cursor = 0;
+  this.notClear = true;
+}
+
+var m = [];
+IncrementalDisplayble.prototype = {
+  constructor: IncrementalDisplayble,
+  incremental: true,
+  clearDisplaybles: function clearDisplaybles() {
+    this._displayables = [];
+    this._temporaryDisplayables = [];
+    this._cursor = 0;
+    this.dirty();
+    this.notClear = false;
+  },
+  addDisplayable: function addDisplayable(displayable, notPersistent) {
+    if (notPersistent) {
+      this._temporaryDisplayables.push(displayable);
+    } else {
+      this._displayables.push(displayable);
+    }
+
+    this.dirty();
+  },
+  addDisplayables: function addDisplayables(displayables, notPersistent) {
+    notPersistent = notPersistent || false;
+
+    for (var i = 0; i &lt; displayables.length; i++) {
+      this.addDisplayable(displayables[i], notPersistent);
+    }
+  },
+  eachPendingDisplayable: function eachPendingDisplayable(cb) {
+    for (var i = this._cursor; i &lt; this._displayables.length; i++) {
+      cb &amp;&amp; cb(this._displayables[i]);
+    }
+
+    for (var _i = 0; _i &lt; this._temporaryDisplayables.length; _i++) {
+      cb &amp;&amp; cb(this._temporaryDisplayables[_i]);
+    }
+  },
+  update: function update() {
+    this.updateTransform();
+
+    for (var i = this._cursor; i &lt; this._displayables.length; i++) {
+      var displayable = this._displayables[i]; // PENDING
+
+      displayable.parent = this;
+      displayable.update();
+      displayable.parent = null;
+    }
+
+    for (var _i2 = 0; _i2 &lt; this._temporaryDisplayables.length; _i2++) {
+      var _displayable = this._temporaryDisplayables[_i2]; // PENDING
+
+      _displayable.parent = this;
+
+      _displayable.update();
+
+      _displayable.parent = null;
+    }
+  },
+  brush: function brush(ctx, prevEl) {
+    // Render persistant displayables.
+    var i = this._cursor;
+
+    for (; i &lt; this._displayables.length; i++) {
+      var displayable = this._displayables[i];
+      displayable.beforeBrush &amp;&amp; displayable.beforeBrush(ctx);
+      displayable.brush(ctx, i === this._cursor ? null : this._displayables[i - 1]);
+      displayable.afterBrush &amp;&amp; displayable.afterBrush(ctx);
+    }
+
+    this._cursor = i; // Render temporary displayables.
+
+    for (var _i3 = 0; _i3 &lt; this._temporaryDisplayables.length; _i3++) {
+      var _displayable2 = this._temporaryDisplayables[_i3];
+      _displayable2.beforeBrush &amp;&amp; _displayable2.beforeBrush(ctx);
+
+      _displayable2.brush(ctx, _i3 === 0 ? null : this._temporaryDisplayables[_i3 - 1]);
+
+      _displayable2.afterBrush &amp;&amp; _displayable2.afterBrush(ctx);
+    }
+
+    this._temporaryDisplayables = [];
+    this.notClear = true;
+  },
+  getBoundingRect: function getBoundingRect() {
+    if (!this._rect) {
+      var rect = new BoundingRect(Infinity, Infinity, -Infinity, -Infinity);
+
+      for (var i = 0; i &lt; this._displayables.length; i++) {
+        var displayable = this._displayables[i];
+        var childRect = displayable.getBoundingRect().clone();
+
+        if (displayable.needLocalTransform()) {
+          childRect.applyTransform(displayable.getLocalTransform(m));
+        }
+
+        rect.union(childRect);
+      }
+
+      this._rect = rect;
+    }
+
+    return this._rect;
+  },
+  contain: function contain(x, y) {
+    var localPos = this.transformCoordToLocal(x, y);
+    var rect = this.getBoundingRect();
+
+    if (rect.contain(localPos[0], localPos[1])) {
+      for (var i = 0; i &lt; this._displayables.length; i++) {
+        var displayable = this._displayables[i];
+
+        if (displayable.contain(x, y)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+};
+classUtil.inherits(IncrementalDisplayble, Displayble);
+var _default = IncrementalDisplayble;
+module.exports = _default;</pre>
+</body>
+</html>

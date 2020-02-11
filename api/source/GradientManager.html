@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var Definable = require(&quot;./Definable&quot;);
+
+var dataUtil = require(&quot;../../core/utils/dataStructureUtil&quot;);
+
+var classUtil = require(&quot;../../core/utils/classUtil&quot;);
+
+var colorTool = require(&quot;../../core/utils/colorUtil&quot;);
+
+<span id='zrender-svg-helper-GradientManager'>/**
+</span> * @class zrender.svg.helper.GradientManager
+ * 
+ * Manages SVG gradient elements.
+ * 
+ * @author Zhang Wenli
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ */
+
+<span id='zrender-svg-helper-GradientManager-method-constructor'>/**
+</span> * @method constructor GradientManager
+ * Manages SVG gradient elements.
+ *
+ * @param   {Number}     zrId    zrender instance id
+ * @param   {SVGElement} svgRoot root of SVG document
+ */
+function GradientManager(zrId, svgRoot) {
+  Definable.call(this, zrId, svgRoot, [&#39;linearGradient&#39;, &#39;radialGradient&#39;], &#39;__gradient_in_use__&#39;);
+}
+
+GradientManager.prototype = {
+  constructor: GradientManager,
+
+<span id='zrender-svg-helper-GradientManager-method-addWithoutUpdate'>  /**
+</span>   * @method addWithoutUpdate
+   * Create new gradient DOM for fill or stroke if not exist,
+   * but will not update gradient if exists.
+   *
+   * @param {SvgElement}  svgElement   SVG element to paint
+   * @param {Displayable} displayable  zrender displayable element
+   */
+  addWithoutUpdate: function addWithoutUpdate(svgElement, displayable) {
+    if (displayable &amp;&amp; displayable.style) {
+      var that = this;
+      dataUtil.each([&#39;fill&#39;, &#39;stroke&#39;], function (fillOrStroke) {
+        if (displayable.style[fillOrStroke] &amp;&amp; (displayable.style[fillOrStroke].type === &#39;linear&#39; || displayable.style[fillOrStroke].type === &#39;radial&#39;)) {
+          var gradient = displayable.style[fillOrStroke];
+          var defs = that.getDefs(true); // Create dom in &lt;defs&gt; if not exists
+
+          var dom;
+
+          if (gradient._dom) {
+            // Gradient exists
+            dom = gradient._dom;
+
+            if (!defs.contains(gradient._dom)) {
+              // _dom is no longer in defs, recreate
+              that.addDom(dom);
+            }
+          } else {
+            // New dom
+            dom = that.add(gradient);
+          }
+
+          that.markUsed(displayable);
+          var id = dom.getAttribute(&#39;id&#39;);
+          svgElement.setAttribute(fillOrStroke, &#39;url(#&#39; + id + &#39;)&#39;);
+        }
+      });
+    }
+  },
+
+<span id='zrender-svg-helper-GradientManager-method-add'>  /**
+</span>   * @method add
+   * 
+   * Add a new gradient tag in &lt;defs&gt;
+   *
+   * @param   {Gradient} gradient zr gradient instance
+   * @return {SVGLinearGradientElement | SVGRadialGradientElement} created DOM
+   */
+  add: function add(gradient) {
+    var dom;
+
+    if (gradient.type === &#39;linear&#39;) {
+      dom = this.createElement(&#39;linearGradient&#39;);
+    } else if (gradient.type === &#39;radial&#39;) {
+      dom = this.createElement(&#39;radialGradient&#39;);
+    } else {
+      console.log(&#39;Illegal gradient type.&#39;);
+      return null;
+    } // Set dom id with gradient id, since each gradient instance
+    // will have no more than one dom element.
+    // id may exists before for those dirty elements, in which case
+    // id should remain the same, and other attributes should be
+    // updated.
+
+
+    gradient.id = gradient.id || this.nextId++;
+    dom.setAttribute(&#39;id&#39;, &#39;zr&#39; + this._zrId + &#39;-gradient-&#39; + gradient.id);
+    this.updateDom(gradient, dom);
+    this.addDom(dom);
+    return dom;
+  },
+
+<span id='zrender-svg-helper-GradientManager-method-update'>  /**
+</span>   * @method update
+   * 
+   * Update gradient.
+   *
+   * @param {Gradient} gradient zr gradient instance
+   */
+  update: function update(gradient) {
+    var that = this;
+    Definable.prototype.update.call(this, gradient, function () {
+      var type = gradient.type;
+      var tagName = gradient._dom.tagName;
+
+      if (type === &#39;linear&#39; &amp;&amp; tagName === &#39;linearGradient&#39; || type === &#39;radial&#39; &amp;&amp; tagName === &#39;radialGradient&#39;) {
+        // Gradient type is not changed, update gradient
+        that.updateDom(gradient, gradient._dom);
+      } else {
+        // Remove and re-create if type is changed
+        that.removeDom(gradient);
+        that.add(gradient);
+      }
+    });
+  },
+
+<span id='zrender-svg-helper-GradientManager-method-updateDom'>  /**
+</span>   * @method updateDom
+   * 
+   * Update gradient dom
+   *
+   * @param {Gradient} gradient zr gradient instance
+   * @param {SVGLinearGradientElement | SVGRadialGradientElement} dom
+   *                            DOM to update
+   */
+  updateDom: function updateDom(gradient, dom) {
+    if (gradient.type === &#39;linear&#39;) {
+      dom.setAttribute(&#39;x1&#39;, gradient.x);
+      dom.setAttribute(&#39;y1&#39;, gradient.y);
+      dom.setAttribute(&#39;x2&#39;, gradient.x2);
+      dom.setAttribute(&#39;y2&#39;, gradient.y2);
+    } else if (gradient.type === &#39;radial&#39;) {
+      dom.setAttribute(&#39;cx&#39;, gradient.x);
+      dom.setAttribute(&#39;cy&#39;, gradient.y);
+      dom.setAttribute(&#39;r&#39;, gradient.r);
+    } else {
+      console.log(&#39;Illegal gradient type.&#39;);
+      return;
+    }
+
+    if (gradient.global) {
+      // x1, x2, y1, y2 in range of 0 to canvas width or height
+      dom.setAttribute(&#39;gradientUnits&#39;, &#39;userSpaceOnUse&#39;);
+    } else {
+      // x1, x2, y1, y2 in range of 0 to 1
+      dom.setAttribute(&#39;gradientUnits&#39;, &#39;objectBoundingBox&#39;);
+    } // Remove color stops if exists
+
+
+    dom.innerHTML = &#39;&#39;; // Add color stops
+
+    var colors = gradient.colorStops;
+
+    for (var i = 0, len = colors.length; i &lt; len; ++i) {
+      var stop = this.createElement(&#39;stop&#39;);
+      stop.setAttribute(&#39;offset&#39;, colors[i].offset * 100 + &#39;%&#39;);
+      var color = colors[i].color;
+
+      if (color.indexOf(&#39;rgba&#39; &gt; -1)) {
+        // Fix Safari bug that stop-color not recognizing alpha #9014
+        var opacity = colorTool.parse(color)[3];
+        var hex = colorTool.toHex(color); // stop-color cannot be color, since:
+        // The opacity value used for the gradient calculation is the
+        // *product* of the value of stop-opacity and the opacity of the
+        // value of stop-color.
+        // See https://www.w3.org/TR/SVG2/pservers.html#StopOpacityProperty
+
+        stop.setAttribute(&#39;stop-color&#39;, &#39;#&#39; + hex);
+        stop.setAttribute(&#39;stop-opacity&#39;, opacity);
+      } else {
+        stop.setAttribute(&#39;stop-color&#39;, colors[i].color);
+      }
+
+      dom.appendChild(stop);
+    } // Store dom element in gradient, to avoid creating multiple
+    // dom instances for the same gradient element
+
+
+    gradient._dom = dom;
+  },
+
+<span id='zrender-svg-helper-GradientManager-method-markUsed'>  /**
+</span>   * @method markUsed
+   * 
+   * Mark a single gradient to be used
+   *
+   * @param {Displayable} displayable displayable element
+   */
+  markUsed: function markUsed(displayable) {
+    if (displayable.style) {
+      var gradient = displayable.style.fill;
+
+      if (gradient &amp;&amp; gradient._dom) {
+        Definable.prototype.markUsed.call(this, gradient._dom);
+      }
+
+      gradient = displayable.style.stroke;
+
+      if (gradient &amp;&amp; gradient._dom) {
+        Definable.prototype.markUsed.call(this, gradient._dom);
+      }
+    }
+  }
+};
+classUtil.inherits(GradientManager, Definable);
+var _default = GradientManager;
+module.exports = _default;</pre>
+</body>
+</html>

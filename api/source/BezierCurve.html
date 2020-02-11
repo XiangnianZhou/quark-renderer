@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var Path = require(&quot;../Path&quot;);
+
+var vec2 = require(&quot;../../core/utils/vector&quot;);
+
+var curveUtil = require(&quot;../../core/utils/curveUtil&quot;);
+
+function _typeof(obj) { if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
+
+function _defineProperties(target, props) { for (var i = 0; i &lt; props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (&quot;value&quot; in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call &amp;&amp; (_typeof(call) === &quot;object&quot; || typeof call === &quot;function&quot;)) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(&quot;this hasn&#39;t been initialised - super() hasn&#39;t been called&quot;); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== &quot;function&quot; &amp;&amp; superClass !== null) { throw new TypeError(&quot;Super expression must either be null or a function&quot;); } subClass.prototype = Object.create(superClass &amp;&amp; superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+<span id='zrender-graphic-shape-BezierCurve'>/**
+</span> * @class zrender.graphic.shape.BezierCurve 
+ * 贝塞尔曲线
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+var defaultConfig = {
+<span id='zrender-graphic-shape-BezierCurve-property-type'>  /**
+</span>   * @property {String} type
+   */
+  type: &#39;bezier-curve&#39;,
+  shape: {
+    x1: 0,
+    y1: 0,
+    x2: 0,
+    y2: 0,
+    cpx1: 0,
+    cpy1: 0,
+    percent: 1
+  },
+  style: {
+    stroke: &#39;#000&#39;,
+    fill: null
+  }
+};
+var out = [];
+
+function someVectorAt(shape, t, isTangent) {
+  var cpx2 = shape.cpx2;
+  var cpy2 = shape.cpy2;
+
+  if (cpx2 === null || cpy2 === null) {
+    return [(isTangent ? curveUtil.cubicDerivativeAt : curveUtil.cubicAt)(shape.x1, shape.cpx1, shape.cpx2, shape.x2, t), (isTangent ? curveUtil.cubicDerivativeAt : curveUtil.cubicAt)(shape.y1, shape.cpy1, shape.cpy2, shape.y2, t)];
+  } else {
+    return [(isTangent ? curveUtil.quadraticDerivativeAt : curveUtil.quadraticAt)(shape.x1, shape.cpx1, shape.x2, t), (isTangent ? curveUtil.quadraticDerivativeAt : curveUtil.quadraticAt)(shape.y1, shape.cpy1, shape.y2, t)];
+  }
+}
+
+var BezierCurve =
+/*#__PURE__*/
+function (_Path) {
+  _inherits(BezierCurve, _Path);
+
+<span id='zrender-graphic-shape-BezierCurve-method-constructor'>  /**
+</span>   * @method constructor BezierCurve
+   * @param {Object} opts 
+   */
+  function BezierCurve(opts) {
+    _classCallCheck(this, BezierCurve);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(BezierCurve).call(this, opts, defaultConfig));
+  }
+<span id='zrender-graphic-shape-BezierCurve-method-buildPath'>  /**
+</span>   * @method buildPath
+   * 绘制图元路径
+   * @param {Object} ctx 
+   * @param {String} shape 
+   */
+
+
+  _createClass(BezierCurve, [{
+    key: &quot;buildPath&quot;,
+    value: function buildPath(ctx, shape) {
+      var x1 = shape.x1;
+      var y1 = shape.y1;
+      var x2 = shape.x2;
+      var y2 = shape.y2;
+      var cpx1 = shape.cpx1;
+      var cpy1 = shape.cpy1;
+      var cpx2 = shape.cpx2;
+      var cpy2 = shape.cpy2;
+      var percent = shape.percent;
+
+      if (percent === 0) {
+        return;
+      }
+
+      ctx.moveTo(x1, y1);
+
+      if (cpx2 == null || cpy2 == null) {
+        if (percent &lt; 1) {
+          curveUtil.quadraticSubdivide(x1, cpx1, x2, percent, out);
+          cpx1 = out[1];
+          x2 = out[2];
+          curveUtil.quadraticSubdivide(y1, cpy1, y2, percent, out);
+          cpy1 = out[1];
+          y2 = out[2];
+        }
+
+        ctx.quadraticCurveTo(cpx1, cpy1, x2, y2);
+      } else {
+        if (percent &lt; 1) {
+          curveUtil.cubicSubdivide(x1, cpx1, cpx2, x2, percent, out);
+          cpx1 = out[1];
+          cpx2 = out[2];
+          x2 = out[3];
+          curveUtil.cubicSubdivide(y1, cpy1, cpy2, y2, percent, out);
+          cpy1 = out[1];
+          cpy2 = out[2];
+          y2 = out[3];
+        }
+
+        ctx.bezierCurveTo(cpx1, cpy1, cpx2, cpy2, x2, y2);
+      }
+    }
+<span id='zrender-graphic-shape-BezierCurve-method-'>    /**
+</span>     * Get point at percent
+     * @param  {Number} t
+     * @return {Array&lt;Number&gt;}
+     */
+
+  }, {
+    key: &quot;pointAt&quot;,
+    value: function pointAt(t) {
+      return someVectorAt(this.shape, t, false);
+    }
+<span id='zrender-graphic-shape-BezierCurve-method-'>    /**
+</span>     * Get tangent at percent
+     * @param  {Number} t
+     * @return {Array&lt;Number&gt;}
+     */
+
+  }, {
+    key: &quot;tangentAt&quot;,
+    value: function tangentAt(t) {
+      var p = someVectorAt(this.shape, t, true);
+      return vec2.normalize(p, p);
+    }
+  }]);
+
+  return BezierCurve;
+}(Path);
+
+module.exports = BezierCurve;</pre>
+</body>
+</html>

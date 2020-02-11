@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
+
+function _defineProperties(target, props) { for (var i = 0; i &lt; props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (&quot;value&quot; in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+<span id='zrender-event-MultiDragDrop'>/**
+</span> * @class zrender.event.MultiDragDrop
+ * 支持同时拖拽多个图元，按住 Ctrl 键可以多选。
+ * 
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+var MultiDragDrop =
+/*#__PURE__*/
+function () {
+<span id='zrender-event-MultiDragDrop-method-constructor'>  /**
+</span>   * @method constructor MultiDragDrop
+   * @param {ZRenderEventHandler} handler 
+   */
+  function MultiDragDrop(handler) {
+    _classCallCheck(this, MultiDragDrop);
+
+    this.selectionMap = new Map();
+    this.handler = handler;
+    this.handler.on(&#39;mousedown&#39;, this._dragStart, this);
+  }
+<span id='zrender-event-MultiDragDrop-method-param'>  /**
+</span>   * @private
+   * @method param
+   * @param {Element} target 
+   * @param {Event} e 
+   */
+
+
+  _createClass(MultiDragDrop, [{
+    key: &quot;param&quot;,
+    value: function param(target, e) {
+      return {
+        target: target,
+        topTarget: e &amp;&amp; e.topTarget
+      };
+    }
+<span id='zrender-event-MultiDragDrop-method-getSelectedItems'>    /**
+</span>     * @method getSelectedItems
+     * 获取当前选中的图元
+     * @return {Map} selectionMap
+     */
+
+  }, {
+    key: &quot;getSelectedItems&quot;,
+    value: function getSelectedItems() {
+      return this.selectionMap;
+    }
+<span id='zrender-event-MultiDragDrop-method-clearSelectionMap'>    /**
+</span>     * @method clearSelectionMap
+     * 清除选中
+     */
+
+  }, {
+    key: &quot;clearSelectionMap&quot;,
+    value: function clearSelectionMap() {
+      this.selectionMap.forEach(function (el, key) {
+        el.dragging = false;
+      });
+      this.selectionMap.clear();
+    }
+<span id='zrender-event-MultiDragDrop-method-_dragStart'>    /**
+</span>     * @private
+     * @method _dragStart
+     * 开始拖动
+     * @param {Event} e 
+     */
+
+  }, {
+    key: &quot;_dragStart&quot;,
+    value: function _dragStart(e) {
+      var _this = this;
+
+      var el = e.target;
+      var event = e.event;
+      this._draggingItem = el;
+
+      if (!el) {
+        this.clearSelectionMap();
+        return;
+      }
+
+      if (!el.draggable) {
+        return;
+      }
+
+      if (!event.ctrlKey &amp;&amp; !this.selectionMap.get(el.id)) {
+        this.clearSelectionMap();
+      }
+
+      el.dragging = true;
+      this.selectionMap.set(el.id, el);
+      this._x = e.offsetX;
+      this._y = e.offsetY;
+      this.handler.on(&#39;pagemousemove&#39;, this._drag, this);
+      this.handler.on(&#39;pagemouseup&#39;, this._dragEnd, this);
+      this.selectionMap.forEach(function (el, key) {
+        console.log(el);
+
+        _this.handler.dispatchToElement(_this.param(el, e), &#39;dragstart&#39;, e.event);
+      });
+    }
+<span id='zrender-event-MultiDragDrop-method-_drag'>    /**
+</span>     * @private
+     * @method _drag
+     * 拖动过程中
+     * @param {Event} e 
+     */
+
+  }, {
+    key: &quot;_drag&quot;,
+    value: function _drag(e) {
+      var _this2 = this;
+
+      var x = e.offsetX;
+      var y = e.offsetY;
+      var dx = x - this._x;
+      var dy = y - this._y;
+      this._x = x;
+      this._y = y;
+      this.selectionMap.forEach(function (el, key) {
+        el.drift(dx, dy, e);
+
+        _this2.handler.dispatchToElement(_this2.param(el, e), &#39;drag&#39;, e.event);
+      });
+      var dropTarget = this.handler.findHover(x, y, this._draggingItem).target;
+      var lastDropTarget = this._dropTarget;
+      this._dropTarget = dropTarget;
+
+      if (this._draggingItem !== dropTarget) {
+        if (lastDropTarget &amp;&amp; dropTarget !== lastDropTarget) {
+          this.handler.dispatchToElement(this.param(lastDropTarget, e), &#39;dragleave&#39;, e.event);
+        }
+
+        if (dropTarget &amp;&amp; dropTarget !== lastDropTarget) {
+          this.handler.dispatchToElement(this.param(dropTarget, e), &#39;dragenter&#39;, e.event);
+        }
+      }
+    }
+<span id='zrender-event-MultiDragDrop-method-_dragEnd'>    /**
+</span>     * @private
+     * @method _dragEnd
+     * 拖动结束
+     * @param {Event} e 
+     */
+
+  }, {
+    key: &quot;_dragEnd&quot;,
+    value: function _dragEnd(e) {
+      var _this3 = this;
+
+      this.selectionMap.forEach(function (el, key) {
+        el.dragging = false;
+
+        _this3.handler.dispatchToElement(_this3.param(el, e), &#39;dragend&#39;, e.event);
+      });
+      this.handler.off(&#39;pagemousemove&#39;, this._drag);
+      this.handler.off(&#39;pagemouseup&#39;, this._dragEnd);
+
+      if (this._dropTarget) {
+        this.handler.dispatchToElement(this.param(this._dropTarget, e), &#39;drop&#39;, e.event);
+      }
+
+      this._dropTarget = null;
+    }
+  }]);
+
+  return MultiDragDrop;
+}();
+
+module.exports = MultiDragDrop;</pre>
+</body>
+</html>

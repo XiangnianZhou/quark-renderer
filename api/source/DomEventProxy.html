@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var Eventful = require(&quot;./Eventful&quot;);
+
+var eventUtil = require(&quot;../core/utils/eventUtil&quot;);
+
+var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
+
+var classUtil = require(&quot;../core/utils/classUtil&quot;);
+
+var env = require(&quot;../core/env&quot;);
+
+<span id='zrender-event-DomEventProxy'>/**
+</span> * @class zrender.event.DomEventProxy
+ * DomEventProxy 的主要功能是：把原生的 DOM 事件代理（转发）到 ZRender 实例上，
+ * 在 ZRenderEventHandler 类中会把事件进一步分发给 canvas 中绘制的图元。
+ * 需要转发的大部分 DOM 事件挂载在 canvas 的外层容器 div 上面，例如：click, dbclick ；
+ * 少部分 DOM 事件挂载在 document 对象上，例如：mousemove, mouseout。因为在实现拖拽和
+ * 键盘交互的过程中，鼠标指针可能已经脱离了 canvas 所在的区域。
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+var TOUCH_CLICK_DELAY = 300; // &quot;page event&quot; is defined in the comment of `[Page Event]`.
+
+var pageEventSupported = env.domSupported;
+<span id='zrender-event-DomEventProxy-property-localNativeListenerNames'>/**
+</span> * [Page Event]
+ * &quot;page events&quot; are `pagemousemove` and `pagemouseup`.
+ * They are triggered when a user pointer interacts on the whole webpage
+ * rather than only inside the zrender area.
+ *
+ * The use case of page events can be, for example, if we are implementing a dragging feature:
+ * ```js
+ * zr.on(&#39;mousedown&#39;, function (event) {
+ *     let dragging = true;
+ *
+ *     // Listen to `pagemousemove` and `pagemouseup` rather than `mousemove` and `mouseup`,
+ *     // because `mousemove` and `mouseup` will not be triggered when the pointer is out
+ *     // of the zrender area.
+ *     zr.on(&#39;pagemousemove&#39;, handleMouseMove);
+ *     zr.on(&#39;pagemouseup&#39;, handleMouseUp);
+ *
+ *     function handleMouseMove(event) {
+ *         if (dragging) { ... }
+ *     }
+ *     function handleMouseUp(event) {
+ *         dragging = false; ...
+ *         zr.off(&#39;pagemousemove&#39;, handleMouseMove);
+ *         zr.off(&#39;pagemouseup&#39;, handleMouseUp);
+ *     }
+ * });
+ * ```
+ *
+ * [NOTICE]:
+ * (1) There are cases that `pagemousexxx` will not be triggered when the pointer is out of
+ * zrender area:
+ * &quot;document.eventUtil.addEventListener&quot; is not available in the current runtime environment,
+ * or there is any `stopPropagation` called at some user defined listeners on the ancestors
+ * of the zrender dom.
+ * (2) Although those bad cases exist, users do not need to worry about that. That is, if you
+ * listen to `pagemousexxx`, you do not need to listen to the correspoinding event `mousexxx`
+ * any more.
+ * Becuase inside zrender area, `pagemousexxx` will always be triggered, where they are
+ * triggered just after `mousexxx` triggered and sharing the same event object. Those bad
+ * cases only happen when the pointer is out of zrender area.
+ */
+
+var localNativeListenerNames = function () {
+  var mouseHandlerNames = [&#39;click&#39;, &#39;dblclick&#39;, &#39;mousewheel&#39;, &#39;mouseout&#39;, &#39;mouseup&#39;, &#39;mousedown&#39;, &#39;mousemove&#39;, &#39;contextmenu&#39;];
+  var touchHandlerNames = [&#39;touchstart&#39;, &#39;touchend&#39;, &#39;touchmove&#39;];
+  var pointerEventNameMap = {
+    pointerdown: 1,
+    pointerup: 1,
+    pointermove: 1,
+    pointerout: 1
+  };
+  var pointerHandlerNames = dataUtil.map(mouseHandlerNames, function (name) {
+    var nm = name.replace(&#39;mouse&#39;, &#39;pointer&#39;);
+    return pointerEventNameMap.hasOwnProperty(nm) ? nm : name;
+  });
+  return {
+    mouse: mouseHandlerNames,
+    touch: touchHandlerNames,
+    pointer: pointerHandlerNames
+  };
+}();
+
+var globalNativeListenerNames = {
+  keyboard: [&#39;keydown&#39;, &#39;keyup&#39;],
+  mouse: [&#39;mousemove&#39;, &#39;mouseup&#39;],
+  touch: [&#39;touchmove&#39;, &#39;touchend&#39;],
+  pointer: [&#39;pointermove&#39;, &#39;pointerup&#39;]
+};
+
+function eventNameFix(name) {
+  return name === &#39;mousewheel&#39; &amp;&amp; env.browser.firefox ? &#39;DOMMouseScroll&#39; : name;
+}
+
+function isPointerFromTouch(event) {
+  var pointerType = event.pointerType;
+  return pointerType === &#39;pen&#39; || pointerType === &#39;touch&#39;;
+}
+<span id='zrender-event-DomEventProxy-method-setTouchTimer'>/**
+</span> * Prevent mouse event from being dispatched after Touch Events action
+ * @see &lt;https://github.com/deltakosh/handjs/blob/master/src/hand.base.js&gt;
+ * 1. Mobile browsers dispatch mouse events 300ms after touchend.
+ * 2. Chrome for Android dispatch mousedown for long-touch about 650ms
+ * Result: Blocking Mouse Events for 700ms.
+ *
+ * @param {DOMHandlerScope} scope
+ */
+
+
+function setTouchTimer(scope) {
+  scope.touching = true;
+
+  if (scope.touchTimer != null) {
+    clearTimeout(scope.touchTimer);
+    scope.touchTimer = null;
+  }
+
+  scope.touchTimer = setTimeout(function () {
+    scope.touching = false;
+    scope.touchTimer = null;
+  }, 700);
+}
+
+function markTriggeredFromLocal(event) {
+  event &amp;&amp; (event.zrIsFromLocal = true);
+}
+
+function isTriggeredFromLocal(event) {
+  return !!(event &amp;&amp; event.zrIsFromLocal);
+} // Mark touch, which is useful in distinguish touch and
+// mouse event in upper applicatoin.
+
+
+function markTouch(event) {
+  event &amp;&amp; (event.zrByTouch = true);
+} // ----------------------------
+// Native event handlers BEGIN
+// ----------------------------
+
+<span id='zrender-event-DomEventProxy-property-localDOMHandlers'>/**
+</span> * Local 指的是 Canvas 内部的区域。
+ * Local DOM Handlers
+ * @this {DomEventProxy}
+ */
+
+
+var localDOMHandlers = {
+  mouseout: function mouseout(event) {
+    event = eventUtil.normalizeEvent(this.dom, event);
+    var element = event.toElement || event.relatedTarget;
+
+    if (element !== this.dom) {
+      while (element &amp;&amp; element.nodeType !== 9) {
+        // 忽略包含在root中的dom引起的mouseOut
+        if (element === this.dom) {
+          return;
+        }
+
+        element = element.parentNode;
+      }
+    } // 这里的 trigger() 方法是从 Eventful 里面的 mixin 进来的，调用这个 trigger() 方法的时候，是在 ZRender 内部，也就是 canvas 里面触发事件。
+    // 这里实现的目的是：把接受到的 HTML 事件转发到了 canvas 内部。
+
+
+    this.trigger(&#39;mouseout&#39;, event);
+  },
+  touchstart: function touchstart(event) {
+    // Default mouse behaviour should not be disabled here.
+    // For example, page may needs to be slided.
+    event = eventUtil.normalizeEvent(this.dom, event);
+    markTouch(event);
+    this._lastTouchMoment = new Date();
+    this.handler.processGesture(event, &#39;start&#39;); // For consistent event listener for both touch device and mouse device,
+    // we simulate &quot;mouseover--&gt;mousedown&quot; in touch device. So we trigger
+    // `mousemove` here (to trigger `mouseover` inside), and then trigger
+    // `mousedown`.
+
+    localDOMHandlers.mousemove.call(this, event);
+    localDOMHandlers.mousedown.call(this, event);
+  },
+  touchmove: function touchmove(event) {
+    event = eventUtil.normalizeEvent(this.dom, event);
+    markTouch(event);
+    this.handler.processGesture(event, &#39;change&#39;); // Mouse move should always be triggered no matter whether
+    // there is gestrue event, because mouse move and pinch may
+    // be used at the same time.
+
+    localDOMHandlers.mousemove.call(this, event);
+  },
+  touchend: function touchend(event) {
+    event = eventUtil.normalizeEvent(this.dom, event);
+    markTouch(event);
+    this.handler.processGesture(event, &#39;end&#39;);
+    localDOMHandlers.mouseup.call(this, event); // Do not trigger `mouseout` here, in spite of `mousemove`(`mouseover`) is
+    // triggered in `touchstart`. This seems to be illogical, but by this mechanism,
+    // we can conveniently implement &quot;hover style&quot; in both PC and touch device just
+    // by listening to `mouseover` to add &quot;hover style&quot; and listening to `mouseout`
+    // to remove &quot;hover style&quot; on an element, without any additional code for
+    // compatibility. (`mouseout` will not be triggered in `touchend`, so &quot;hover
+    // style&quot; will remain for user view)
+    // click event should always be triggered no matter whether
+    // there is gestrue event. System click can not be prevented.
+
+    if (+new Date() - this._lastTouchMoment &lt; TOUCH_CLICK_DELAY) {
+      localDOMHandlers.click.call(this, event);
+    }
+  },
+  pointerdown: function pointerdown(event) {
+    localDOMHandlers.mousedown.call(this, event); // if (useMSGuesture(this, event)) {
+    //     this._msGesture.addPointer(event.pointerId);
+    // }
+  },
+  pointermove: function pointermove(event) {
+    // FIXME
+    // pointermove is so sensitive that it always triggered when
+    // tap(click) on touch screen, which affect some judgement in
+    // upper application. So, we dont support mousemove on MS touch
+    // device yet.
+    if (!isPointerFromTouch(event)) {
+      localDOMHandlers.mousemove.call(this, event);
+    }
+  },
+  pointerup: function pointerup(event) {
+    localDOMHandlers.mouseup.call(this, event);
+  },
+  pointerout: function pointerout(event) {
+    // pointerout will be triggered when tap on touch screen
+    // (IE11+/Edge on MS Surface) after click event triggered,
+    // which is inconsistent with the mousout behavior we defined
+    // in touchend. So we unify them.
+    // (check localDOMHandlers.touchend for detailed explanation)
+    if (!isPointerFromTouch(event)) {
+      localDOMHandlers.mouseout.call(this, event);
+    }
+  }
+};
+<span id='zrender-event-DomEventProxy-property-'>/**
+</span> * Othere DOM UI Event handlers for zr dom.
+ * ZRender 内部的 DOM 结构默认支持以下7个事件。
+ * @this {DomEventProxy}
+ */
+
+dataUtil.each([&#39;click&#39;, &#39;mousemove&#39;, &#39;mousedown&#39;, &#39;mouseup&#39;, &#39;mousewheel&#39;, &#39;dblclick&#39;, &#39;contextmenu&#39;], function (name) {
+  localDOMHandlers[name] = function (event) {
+    event = eventUtil.normalizeEvent(this.dom, event);
+    this.trigger(name, event);
+
+    if (name === &#39;mousemove&#39; || name === &#39;mouseup&#39;) {
+      // Trigger `pagemousexxx` immediately with the same event object.
+      // See the reason described in the comment of `[Page Event]`.
+      this.trigger(&#39;page&#39; + name, event);
+    }
+  };
+});
+<span id='zrender-event-DomEventProxy-property-globalDOMHandlers'>/**
+</span> * 这里用来监听外层 HTML 里面的 DOM 事件。监听这些事件的目的是为了方便实现拖拽功能，因为
+ * 一旦鼠标离开 Canvas 的区域，就无法触发 Canvas 内部的 mousemove 和 mouseup 事件，这里直接
+ * 监听外层 HTML 上的 mousemove 和 mouseup，绕开这种问题。
+ * 
+ * Page DOM UI Event handlers for global page.
+ * @this {DomEventProxy}
+ */
+
+var globalDOMHandlers = {
+  touchmove: function touchmove(event) {
+    markTouch(event);
+    globalDOMHandlers.mousemove.call(this, event);
+  },
+  touchend: function touchend(event) {
+    markTouch(event);
+    globalDOMHandlers.mouseup.call(this, event);
+  },
+  pointermove: function pointermove(event) {
+    // FIXME
+    // pointermove is so sensitive that it always triggered when
+    // tap(click) on touch screen, which affect some judgement in
+    // upper application. So, we dont support mousemove on MS touch
+    // device yet.
+    if (!isPointerFromTouch(event)) {
+      globalDOMHandlers.mousemove.call(this, event);
+    }
+  },
+  pointerup: function pointerup(event) {
+    globalDOMHandlers.mouseup.call(this, event);
+  },
+  mousemove: function mousemove(event) {
+    event = eventUtil.normalizeEvent(this.dom, event, true);
+    this.trigger(&#39;pagemousemove&#39;, event);
+  },
+  mouseup: function mouseup(event) {
+    event = eventUtil.normalizeEvent(this.dom, event, true);
+    this.trigger(&#39;pagemouseup&#39;, event);
+  },
+  keyup: function keyup(event) {
+    event = eventUtil.normalizeEvent(this.dom, event, true);
+    this.trigger(&#39;pagekeyup&#39;, event);
+  },
+  keydown: function keydown(event) {
+    event = eventUtil.normalizeEvent(this.dom, event, true);
+    this.trigger(&#39;pagekeydown&#39;, event);
+  }
+}; // ----------------------------
+// Native event handlers END
+// ----------------------------
+
+<span id='zrender-event-DomEventProxy-method-mountDOMEventListeners'>/**
+</span> * @private
+ * @method mountDOMEventListeners
+ * @param {DomEventProxy} domEventProxy
+ * @param {DOMHandlerScope} domHandlerScope
+ * @param {Object} nativeListenerNames {mouse: Array&lt;String&gt;, touch: Array&lt;String&gt;, poiner: Array&lt;String&gt;}
+ * @param {Boolean} localOrGlobal `true`: target local, `false`: target global.
+ */
+
+function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlobal) {
+  var domHandlers = scope.domHandlers;
+  var domTarget = scope.domTarget;
+
+  if (env.pointerEventsSupported) {
+    // Only IE11+/Edge
+    // 1. On devices that both enable touch and mouse (e.g., MS Surface and lenovo X240),
+    // IE11+/Edge do not trigger touch event, but trigger pointer event and mouse event
+    // at the same time.
+    // 2. On MS Surface, it probablely only trigger mousedown but no mouseup when tap on
+    // screen, which do not occurs in pointer event.
+    // So we use pointer event to both detect touch gesture and mouse behavior.
+    dataUtil.each(nativeListenerNames.pointer, function (nativeEventName) {
+      mountSingle(nativeEventName, function (event) {
+        if (localOrGlobal || !isTriggeredFromLocal(event)) {
+          localOrGlobal &amp;&amp; markTriggeredFromLocal(event);
+          domHandlers[nativeEventName].call(instance, event);
+        }
+      });
+    }); // FIXME
+    // Note: MS Gesture require CSS touch-action set. But touch-action is not reliable,
+    // which does not prevent defuault behavior occasionally (which may cause view port
+    // zoomed in but use can not zoom it back). And event.preventDefault() does not work.
+    // So we have to not to use MSGesture and not to support touchmove and pinch on MS
+    // touch screen. And we only support click behavior on MS touch screen now.
+    // MS Gesture Event is only supported on IE11+/Edge and on Windows 8+.
+    // We dont support touch on IE on win7.
+    // See &lt;https://msdn.microsoft.com/en-us/library/dn433243(v=vs.85).aspx&gt;
+    // if (typeof MSGesture === &#39;function&#39;) {
+    //     (this._msGesture = new MSGesture()).target = dom; // jshint ignore:line
+    //     dom.eventUtil.addEventListener(&#39;MSGestureChange&#39;, onMSGestureChange);
+    // }
+  } else {
+    if (env.touchEventsSupported) {
+      dataUtil.each(nativeListenerNames.touch, function (nativeEventName) {
+        mountSingle(nativeEventName, function (event) {
+          if (localOrGlobal || !isTriggeredFromLocal(event)) {
+            localOrGlobal &amp;&amp; markTriggeredFromLocal(event);
+            domHandlers[nativeEventName].call(instance, event);
+            setTouchTimer(scope);
+          }
+        });
+      }); // Handler of &#39;mouseout&#39; event is needed in touch mode, which will be mounted below.
+      // eventUtil.addEventListener(root, &#39;mouseout&#39;, this._mouseoutHandler);
+    } // 1. Considering some devices that both enable touch and mouse event (like on MS Surface
+    // and lenovo X240, @see #2350), we make mouse event be always listened, otherwise
+    // mouse event can not be handle in those devices.
+    // 2. On MS Surface, Chrome will trigger both touch event and mouse event. How to prevent
+    // mouseevent after touch event triggered, see `setTouchTimer`.
+
+
+    dataUtil.each(nativeListenerNames.mouse, function (nativeEventName) {
+      mountSingle(nativeEventName, function (event) {
+        event = eventUtil.getNativeEvent(event);
+
+        if (!scope.touching &amp;&amp; (localOrGlobal || !isTriggeredFromLocal(event))) {
+          localOrGlobal &amp;&amp; markTriggeredFromLocal(event);
+          domHandlers[nativeEventName].call(instance, event);
+        }
+      });
+    }); //挂载键盘事件
+
+    dataUtil.each(nativeListenerNames.keyboard, function (nativeEventName) {
+      mountSingle(nativeEventName, function (event) {
+        if (localOrGlobal || !isTriggeredFromLocal(event)) {
+          localOrGlobal &amp;&amp; markTriggeredFromLocal(event);
+          domHandlers[nativeEventName].call(instance, event);
+        }
+      });
+    });
+  } //用来监听原生 DOM 事件
+
+
+  function mountSingle(nativeEventName, listener) {
+    scope.mounted[nativeEventName] = listener;
+    eventUtil.addEventListener(domTarget, eventNameFix(nativeEventName), listener);
+  }
+}
+<span id='zrender-event-DomEventProxy-method-unmountDOMEventListeners'>/**
+</span> * @private
+ * @method unmountDOMEventListeners
+ * @param {Object} scope 
+ */
+
+
+function unmountDOMEventListeners(scope) {
+  var mounted = scope.mounted;
+
+  for (var nativeEventName in mounted) {
+    if (mounted.hasOwnProperty(nativeEventName)) {
+      eventUtil.removeEventListener(scope.domTarget, eventNameFix(nativeEventName), mounted[nativeEventName]);
+    }
+  }
+
+  scope.mounted = {};
+}
+
+function DOMHandlerScope(domTarget, domHandlers) {
+  this.domTarget = domTarget;
+  this.domHandlers = domHandlers; // Key: eventName
+  // value: mounted handler funcitons.
+  // Used for unmount.
+
+  this.mounted = {};
+  this.touchTimer = null;
+  this.touching = false;
+}
+<span id='zrender-event-DomEventProxy-method-constructor'>/**
+</span> * @method constructor
+ * @param dom 被代理的 DOM 节点
+ */
+
+
+function DomEventProxy(dom) {
+  Eventful.call(this);
+<span id='zrender-event-DomEventProxy-property-dom'>  /**
+</span>   * @property dom
+   */
+
+  this.dom = dom;
+<span id='zrender-event-DomEventProxy-property-_localHandlerScope'>  /**
+</span>   * @private
+   * @property _localHandlerScope
+   */
+
+  this._localHandlerScope = new DOMHandlerScope(dom, localDOMHandlers);
+
+  if (pageEventSupported) {
+<span id='zrender-event-DomEventProxy-property-_globalHandlerScope'>    /**
+</span>     * @private
+     * @property _globalHandlerScope
+     */
+    this._globalHandlerScope = new DOMHandlerScope(document, globalDOMHandlers); //注意，这里直接监听 document 上的事件
+  }
+<span id='zrender-event-DomEventProxy-property-_pageEventEnabled'>  /**
+</span>   * @private
+   * @property _pageEventEnabled
+   */
+
+
+  this._pageEventEnabled = false; //在构造 DomEventProxy 实例的时候，挂载 DOM 事件监听器。
+
+  mountDOMEventListeners(this, this._localHandlerScope, localNativeListenerNames, true);
+}
+<span id='zrender-event-DomEventProxy-method-dispose'>/**
+</span> * @private
+ * @method dispose
+ */
+
+
+DomEventProxy.prototype.dispose = function () {
+  unmountDOMEventListeners(this._localHandlerScope);
+
+  if (pageEventSupported) {
+    unmountDOMEventListeners(this._globalHandlerScope);
+  }
+};
+<span id='zrender-event-DomEventProxy-method-setCursor'>/**
+</span> * @private
+ * @method setCursor
+ */
+
+
+DomEventProxy.prototype.setCursor = function (cursorStyle) {
+  this.dom.style &amp;&amp; (this.dom.style.cursor = cursorStyle || &#39;default&#39;);
+};
+<span id='zrender-event-DomEventProxy-method-togglePageEvent'>/**
+</span> * @private
+ * @method togglePageEvent
+ * The implementation of page event depends on listening to document.
+ * So we should better only listen to that on needed, and remove the
+ * listeners when do not need them to escape unexpected side-effect.
+ * @param {Boolean} enableOrDisable `true`: enable page event. `false`: disable page event.
+ */
+
+
+DomEventProxy.prototype.togglePageEvent = function (enableOrDisable) {
+  dataUtil.assert(enableOrDisable != null);
+
+  if (pageEventSupported &amp;&amp; this._pageEventEnabled ^ enableOrDisable) {
+    this._pageEventEnabled = enableOrDisable;
+    var globalHandlerScope = this._globalHandlerScope;
+    enableOrDisable ? mountDOMEventListeners(this, globalHandlerScope, globalNativeListenerNames) : unmountDOMEventListeners(globalHandlerScope);
+  }
+}; //注意，DomEventProxy 也混入了 Eventful 里面提供的事件处理工具。
+
+
+classUtil.mixin(DomEventProxy, Eventful);
+var _default = DomEventProxy;
+module.exports = _default;</pre>
+</body>
+</html>
