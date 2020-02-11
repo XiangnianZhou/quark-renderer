@@ -1,46 +1,17 @@
 import Path from '../Path';
 import * as vec2 from '../../core/utils/vector';
-import {
-    quadraticSubdivide,
-    cubicSubdivide,
-    quadraticAt,
-    cubicAt,
-    quadraticDerivativeAt,
-    cubicDerivativeAt
-} from '../../core/utils/curveUtil';
+import * as curveUtil from '../../core/utils/curveUtil';
 
 /**
  * @class zrender.graphic.shape.BezierCurve 
  * 贝塞尔曲线
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-let out = [];
-
-function someVectorAt(shape, t, isTangent) {
-    let cpx2 = shape.cpx2;
-    let cpy2 = shape.cpy2;
-    if (cpx2 === null || cpy2 === null) {
-        return [
-            (isTangent ? cubicDerivativeAt : cubicAt)(shape.x1, shape.cpx1, shape.cpx2, shape.x2, t),
-            (isTangent ? cubicDerivativeAt : cubicAt)(shape.y1, shape.cpy1, shape.cpy2, shape.y2, t)
-        ];
-    }
-    else {
-        return [
-            (isTangent ? quadraticDerivativeAt : quadraticAt)(shape.x1, shape.cpx1, shape.x2, t),
-            (isTangent ? quadraticDerivativeAt : quadraticAt)(shape.y1, shape.cpy1, shape.y2, t)
-        ];
-    }
-}
-
-export default Path.extend({
-
+let defaultConfig={
     /**
      * @property {String} type
      */
     type: 'bezier-curve',
-
     shape: {
         x1: 0,
         y1: 0,
@@ -54,11 +25,39 @@ export default Path.extend({
         // Curve show percent, for animating
         percent: 1
     },
-
     style: {
         stroke: '#000',
         fill: null
-    },
+    }
+};
+
+let out = [];
+
+function someVectorAt(shape, t, isTangent) {
+    let cpx2 = shape.cpx2;
+    let cpy2 = shape.cpy2;
+    if (cpx2 === null || cpy2 === null) {
+        return [
+            (isTangent ? curveUtil.cubicDerivativeAt : curveUtil.cubicAt)(shape.x1, shape.cpx1, shape.cpx2, shape.x2, t),
+            (isTangent ? curveUtil.cubicDerivativeAt : curveUtil.cubicAt)(shape.y1, shape.cpy1, shape.cpy2, shape.y2, t)
+        ];
+    }
+    else {
+        return [
+            (isTangent ? curveUtil.quadraticDerivativeAt : curveUtil.quadraticAt)(shape.x1, shape.cpx1, shape.x2, t),
+            (isTangent ? curveUtil.quadraticDerivativeAt : curveUtil.quadraticAt)(shape.y1, shape.cpy1, shape.y2, t)
+        ];
+    }
+}
+
+export default class BezierCurve extends Path{
+    /**
+     * @method constructor BezierCurve
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @method buildPath
@@ -66,7 +65,7 @@ export default Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let x1 = shape.x1;
         let y1 = shape.y1;
         let x2 = shape.x2;
@@ -84,12 +83,12 @@ export default Path.extend({
 
         if (cpx2 == null || cpy2 == null) {
             if (percent < 1) {
-                quadraticSubdivide(
+                curveUtil.quadraticSubdivide(
                     x1, cpx1, x2, percent, out
                 );
                 cpx1 = out[1];
                 x2 = out[2];
-                quadraticSubdivide(
+                curveUtil.quadraticSubdivide(
                     y1, cpy1, y2, percent, out
                 );
                 cpy1 = out[1];
@@ -100,16 +99,15 @@ export default Path.extend({
                 cpx1, cpy1,
                 x2, y2
             );
-        }
-        else {
+        }else {
             if (percent < 1) {
-                cubicSubdivide(
+                curveUtil.cubicSubdivide(
                     x1, cpx1, cpx2, x2, percent, out
                 );
                 cpx1 = out[1];
                 cpx2 = out[2];
                 x2 = out[3];
-                cubicSubdivide(
+                curveUtil.cubicSubdivide(
                     y1, cpy1, cpy2, y2, percent, out
                 );
                 cpy1 = out[1];
@@ -122,24 +120,24 @@ export default Path.extend({
                 x2, y2
             );
         }
-    },
+    }
 
     /**
      * Get point at percent
      * @param  {Number} t
      * @return {Array<Number>}
      */
-    pointAt: function (t) {
+    pointAt(t) {
         return someVectorAt(this.shape, t, false);
-    },
+    }
 
     /**
      * Get tangent at percent
      * @param  {Number} t
      * @return {Array<Number>}
      */
-    tangentAt: function (t) {
+    tangentAt(t) {
         let p = someVectorAt(this.shape, t, true);
         return vec2.normalize(p, p);
     }
-});
+}

@@ -17140,6 +17140,29 @@ class Arc extends Path{
  * 贝塞尔曲线
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
+let defaultConfig$4={
+    /**
+     * @property {String} type
+     */
+    type: 'bezier-curve',
+    shape: {
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 0,
+        cpx1: 0,
+        cpy1: 0,
+        // cpx2: 0,
+        // cpy2: 0
+
+        // Curve show percent, for animating
+        percent: 1
+    },
+    style: {
+        stroke: '#000',
+        fill: null
+    }
+};
 
 let out = [];
 
@@ -17160,31 +17183,14 @@ function someVectorAt(shape, t, isTangent) {
     }
 }
 
-var BezierCurve = Path.extend({
-
+class BezierCurve extends Path{
     /**
-     * @property {String} type
+     * @method constructor BezierCurve
+     * @param {Object} opts 
      */
-    type: 'bezier-curve',
-
-    shape: {
-        x1: 0,
-        y1: 0,
-        x2: 0,
-        y2: 0,
-        cpx1: 0,
-        cpy1: 0,
-        // cpx2: 0,
-        // cpy2: 0
-
-        // Curve show percent, for animating
-        percent: 1
-    },
-
-    style: {
-        stroke: '#000',
-        fill: null
-    },
+    constructor(opts){
+        super(opts,defaultConfig$4);
+    }
 
     /**
      * @method buildPath
@@ -17192,7 +17198,7 @@ var BezierCurve = Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let x1 = shape.x1;
         let y1 = shape.y1;
         let x2 = shape.x2;
@@ -17226,8 +17232,7 @@ var BezierCurve = Path.extend({
                 cpx1, cpy1,
                 x2, y2
             );
-        }
-        else {
+        }else {
             if (percent < 1) {
                 cubicSubdivide(
                     x1, cpx1, cpx2, x2, percent, out
@@ -17248,27 +17253,27 @@ var BezierCurve = Path.extend({
                 x2, y2
             );
         }
-    },
+    }
 
     /**
      * Get point at percent
      * @param  {Number} t
      * @return {Array<Number>}
      */
-    pointAt: function (t) {
+    pointAt(t) {
         return someVectorAt(this.shape, t, false);
-    },
+    }
 
     /**
      * Get tangent at percent
      * @param  {Number} t
      * @return {Array<Number>}
      */
-    tangentAt: function (t) {
+    tangentAt(t) {
         let p = someVectorAt(this.shape, t, true);
         return normalize(p, p);
     }
-});
+}
 
 /**
  * 水滴形状
