@@ -5713,7 +5713,7 @@ class ExecutionPathOptions {
 	/**
 	 * Returns a new ExecutionPathOptions instance with the given option set to a new value.
 	 * Does not mutate the current instance. Also works in sub-classes.
-	 * @param {string} option - The name of an option
+	 * @param {String} option - The name of an option
 	 * @param {*} value - The new value of the option
 	 * @returns {ExecutionPathOptions} A new options instance
 	 */
@@ -5722,7 +5722,7 @@ class ExecutionPathOptions {
 	}
 
 	/**
-	 * @param {string} option - The name of an option
+	 * @param {String} option - The name of an option
 	 * @returns {*} Its value
 	 */
 	get ( option ) {
@@ -5747,7 +5747,7 @@ class ExecutionPathOptions {
 	}
 
 	/**
-	 * @param {string} labelName
+	 * @param {String} labelName
 	 * @return {boolean}
 	 */
 	ignoreLabel ( labelName ) {
@@ -5756,7 +5756,7 @@ class ExecutionPathOptions {
 	}
 
 	/**
-	 * @param {string} labelName
+	 * @param {String} labelName
 	 * @return {ExecutionPathOptions}
 	 */
 	setIgnoreLabel ( labelName ) {

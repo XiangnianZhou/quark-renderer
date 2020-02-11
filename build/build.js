@@ -67,8 +67,8 @@ function handleBuildError(err) {
 }
 
 /**
- * @param {string} relativePath Based on zrender directory.
- * @return {string} Absolute path.
+ * @param {String} relativePath Based on zrender directory.
+ * @return {String} Absolute path.
  */
 function getPath(relativePath) {
     return resolve(__dirname, '../', relativePath);

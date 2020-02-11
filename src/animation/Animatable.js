@@ -1,20 +1,21 @@
+import AnimationProcess from './AnimationProcess';
+import * as dataUtil from '../core/utils/dataStructureUtil';
+
 /**
  * @class zrender.animation.Animatable
  * 
  * 动画接口类，在 Element 类中 mixin 此类提供的功能，为图元提供动画功能。
  * 
- * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-import AnimationProcess from './AnimationProcess';
-import * as dataUtil from '../core/utils/dataStructureUtil';
 
 /**
  * @abstract
  * @method constructor Animatable
  */
-var Animatable = function () {
+let Animatable = function () {
     /**
-     * @type {Array.<module:zrender/animation/AnimationProcess>}
+     * @property {zrender.animation.AnimationProcess}
      * @readOnly
      */
     this.animationProcessList = [];
@@ -31,22 +32,21 @@ Animatable.prototype = {
      * @param {Boolean} [loop=false] Whether to loop animation.
      * @return {zrender.animation.AnimationProcess}
      * @example
-     *  el.animate('style', false)
-     *    .when(1000, {x: 10} )
-     *    .done(function(){ // Animation done })
-     *    .start()
+     * el.animate('style', false)
+     *   .when(1000, {x: 10} )
+     *   .done(function(){ // Animation done })
+     *   .start()
      */
     animate: function (path, loop) {
-        var target;
-        var animatingShape = false;
-        var el = this;
-        var zr = this.__zr;
+        let target;
+        let animatingShape = false;
+        let animatable = this;
         if (path) {
-            var pathSplitted = path.split('.');
-            var prop = el;
+            let pathSplitted = path.split('.');
+            let prop = animatable;
             // If animating shape
             animatingShape = pathSplitted[0] === 'shape';
-            for (var i = 0, l = pathSplitted.length; i < l; i++) {
+            for (let i = 0, l = pathSplitted.length; i < l; i++) {
                 if (!prop) {
                     continue;
                 }
@@ -55,9 +55,8 @@ Animatable.prototype = {
             if (prop) {
                 target = prop;
             }
-        }
-        else {
-            target = el;
+        }else {
+            target = animatable;
         }
 
         if (!target) {
@@ -65,28 +64,24 @@ Animatable.prototype = {
                 'Property "'
                 + path
                 + '" is not existed in element '
-                + el.id
+                + animatable.id
             );
             return;
         }
 
-        var animationProcessList = el.animationProcessList;
-
-        var animationProcess = new AnimationProcess(target, loop);
-
+        let animationProcess = new AnimationProcess(target, loop);
         animationProcess.during(function (target) {
-            el.dirty(animatingShape);
+            animatable.dirty(animatingShape);
         })
         .done(function () {
             // FIXME AnimationProcess will not be removed if use `AnimationProcess#stop` to stop animation
-            animationProcessList.splice(dataUtil.indexOf(animationProcessList, animationProcess), 1);
+            animatable.animationProcessList.splice(dataUtil.indexOf(animatable.animationProcessList, animationProcess), 1);
         });
-
-        animationProcessList.push(animationProcess);
+        animatable.animationProcessList.push(animationProcess);
 
         // If animate after added to the zrender
-        if (zr) {
-            zr.globalAnimationMgr.addAnimationProcess(animationProcess);
+        if (this.__zr) {
+            this.__zr.globalAnimationMgr.addAnimationProcess(animationProcess);
         }
 
         return animationProcess;
@@ -134,7 +129,6 @@ Animatable.prototype = {
      *      position: [10, 10]
      *  }, 100, 100, 'cubicOut', function () { // done })
      */
-    // TODO:Return animation key
     animateTo: function (target, time, delay, easing, callback, forceAnimate) {
         _doAnimation(this, target, time, delay, easing, callback, forceAnimate);
     },
@@ -201,8 +195,8 @@ function _doAnimation(animatable, target, time, delay, easing, callback, forceAn
 
     // AnimationProcess may be removed immediately after start
     // if there is nothing to animate
-    var animationProcessList = animatable.animationProcessList.slice();
-    var count = animationProcessList.length;
+    let animationProcessList = animatable.animationProcessList.slice();
+    let count = animationProcessList.length;
     function done() {
         count--;
         if (!count) {
@@ -217,7 +211,7 @@ function _doAnimation(animatable, target, time, delay, easing, callback, forceAn
     }
     // Start after all animationProcessList created
     // Incase any animationProcess is done immediately when all animation properties are not changed
-    for (var i = 0; i < animationProcessList.length; i++) {
+    for (let i = 0; i < animationProcessList.length; i++) {
         animationProcessList[i]
             .done(done)
             .start(easing, forceAnimate);
@@ -225,6 +219,10 @@ function _doAnimation(animatable, target, time, delay, easing, callback, forceAn
 }
 
 /**
+ * @private
+ * @method
+ * 
+ * @param {Element} animatable
  * @param {String} path=''
  * @param {Object} source=animatable
  * @param {Object} target
@@ -251,38 +249,35 @@ function _doAnimation(animatable, target, time, delay, easing, callback, forceAn
  *  }, 100, 100)
  */
 function animateToShallow(animatable, path, source, target, time, delay, reverse) {
-    var objShallow = {};
-    var propertyCount = 0;
-    for (var name in target) {
-        if (!target.hasOwnProperty(name)) {
+    let objShallow = {};
+    let propertyCount = 0;
+    for (let prop in target) {
+        if (!target.hasOwnProperty(prop)) {
             continue;
         }
 
-        if (source[name] != null) {
-            if (dataUtil.isObject(target[name]) && !dataUtil.isArrayLike(target[name])) {
+        if (source[prop] != null) {
+            if (dataUtil.isObject(target[prop]) && !dataUtil.isArrayLike(target[prop])) {
                 animateToShallow(
                     animatable,
-                    path ? path + '.' + name : name,
-                    source[name],
-                    target[name],
+                    path ? path + '.' + prop : prop,
+                    source[prop],
+                    target[prop],
                     time,
                     delay,
                     reverse
                 );
-            }
-            else {
+            }else {
                 if (reverse) {
-                    objShallow[name] = source[name];
-                    setAttrByPath(animatable, path, name, target[name]);
-                }
-                else {
-                    objShallow[name] = target[name];
+                    objShallow[prop] = source[prop];
+                    setAttrByPath(animatable, path, prop, target[prop]);
+                }else {
+                    objShallow[prop] = target[prop];
                 }
                 propertyCount++;
             }
-        }
-        else if (target[name] != null && !reverse) {
-            setAttrByPath(animatable, path, name, target[name]);
+        }else if (target[prop] != null && !reverse) {
+            setAttrByPath(animatable, path, prop, target[prop]);
         }
     }
 
@@ -293,17 +288,16 @@ function animateToShallow(animatable, path, source, target, time, delay, reverse
     }
 }
 
-function setAttrByPath(el, path, name, value) {
+function setAttrByPath(el, path, prop, value) {
     // Attr directly if not has property
     // FIXME, if some property not needed for element ?
     if (!path) {
-        el.attr(name, value);
-    }
-    else {
+        el.attr(prop, value);
+    }else {
         // Only support set shape or style
-        var props = {};
+        let props = {};
         props[path] = {};
-        props[path][name] = value;
+        props[path][prop] = value;
         el.attr(props);
     }
 }

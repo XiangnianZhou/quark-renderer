@@ -3,17 +3,17 @@ import * as curve from '../utils/curveUtil';
 
 /**
  * 三次贝塞尔曲线描边包含判断
- * @param  {number}  x0
- * @param  {number}  y0
- * @param  {number}  x1
- * @param  {number}  y1
- * @param  {number}  x2
- * @param  {number}  y2
- * @param  {number}  x3
- * @param  {number}  y3
- * @param  {number}  lineWidth
- * @param  {number}  x
- * @param  {number}  y
+ * @param  {Number}  x0
+ * @param  {Number}  y0
+ * @param  {Number}  x1
+ * @param  {Number}  y1
+ * @param  {Number}  x2
+ * @param  {Number}  y2
+ * @param  {Number}  x3
+ * @param  {Number}  y3
+ * @param  {Number}  lineWidth
+ * @param  {Number}  x
+ * @param  {Number}  y
  * @return {boolean}
  */
 export function containStroke(x0, y0, x1, y1, x2, y2, x3, y3, lineWidth, x, y) {

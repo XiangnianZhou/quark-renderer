@@ -71,11 +71,11 @@
      * @public
      * @param {Object} opt
      * @param {HTMLElement} opt.dom
-     * @param {Array.<string>} opt.pagePaths Relative paths.
-     * @param {string} [opt.baseURL='.']
-     * @param {string} [opt.disableRendererSelector]
-     * @param {string} [opt.disableDistSelector]
-     * @param {Array.<Object} [opt.filters] [{name: 'stream', whiteList: [...]}, ...]
+     * @param {Array<String>} opt.pagePaths Relative paths.
+     * @param {String} [opt.baseURL='.']
+     * @param {String} [opt.disableRendererSelector]
+     * @param {String} [opt.disableDistSelector]
+     * @param {Array<Object} [opt.filters] [{name: 'stream', whiteList: [...]}, ...]
      */
     caseFrame.init = function (opt) {
         renderHTML(opt.dom);

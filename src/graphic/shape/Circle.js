@@ -1,22 +1,38 @@
-/**
- * 圆形
- * @module zrender/shape/Circle
- */
-
 import Path from '../Path';
 
-export default Path.extend({
-
+/**
+ * @class zrender.graphic.shape.Circle 
+ * 圆形
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
+let defaultConfig={
+    /**
+     * @property {String} type
+     */
     type: 'circle',
-
     shape: {
         cx: 0,
         cy: 0,
         r: 0
-    },
+    }
+}
 
+export default class Circle extends Path{
+    /**
+     * @method constructor Rect
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
-    buildPath: function (ctx, shape, inBundle) {
+    /**
+     * @method buildPath
+     * 绘制图元路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
+    buildPath(ctx, shape, inBundle) {
         // Better stroking in ShapeBundle
         // Always do it may have performence issue ( fill may be 2x more cost)
         if (inBundle) {
@@ -31,4 +47,4 @@ export default Path.extend({
         // ctx.moveTo(shape.cx + shape.r, shape.cy);
         ctx.arc(shape.cx, shape.cy, shape.r, 0, Math.PI * 2, true);
     }
-});
+}

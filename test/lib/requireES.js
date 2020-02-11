@@ -54,10 +54,10 @@
      * Like AMD config.
      *
      * @param {Object} cfg {
-     * @param {string} [cfg.baseUrl='.']
+     * @param {String} [cfg.baseUrl='.']
      * @param {Object} [cfg.paths={}]
-     * @param {Array.<Object>} [cfg.packages=[]]
-     * @param {string} [cfg.urlArgs='']
+     * @param {Array<Object>} [cfg.packages=[]]
+     * @param {String} [cfg.urlArgs='']
      * @param {boolean} [cfg.sourceMap=false]
      */
     function amdConfig(cfg) {
@@ -84,7 +84,7 @@
     /**
      * Load es modules and convert to AMD modules.
      *
-     * @param {Array.<string>} moduleIds like ['./echarts', ...]
+     * @param {Array<String>} moduleIds like ['./echarts', ...]
      * @param {Function} onload Arguments: loaded modules,
      *  which has been converted to AMD module.
      */

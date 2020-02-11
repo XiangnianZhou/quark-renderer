@@ -1,292 +1,249 @@
-/**
- * Base class of all displayable graphic objects
- * 所有可见对象的根类，抽象类。
- * @module zrender/graphic/Displayable
- */
-
-import * as dataUtil from '../core/utils/dataStructureUtil';
+import * as classUtil from '../core/utils/classUtil';
 import Style from './Style';
 import Element from './Element';
 import RectText from './RectText';
-
 /**
- * @alias module:zrender/graphic/Displayable
- * @extends module:zrender/Element
- * @extends module:zrender/graphic/mixin/RectText
+ * @abstract
+ * @class zrender.graphic.Displayable 
+ * 
+ * Base class of all displayable graphic objects.
+ * 
+ * 所有图形对象的基类，抽象类。
+ * 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-function Displayable(opts) {
 
-    opts = opts || {};
+class Displayable extends Element{
+    /**
+     * @method constructor
+     * @param {*} opts 
+     */
+    constructor(opts={}){
+        super(opts);
+        
+        /**
+         * @property {Style} style
+         */
+        this.style = new Style(opts.style, this);
+        
+        /**
+         * @private
+         * @property  __clipPaths
+         * Shapes for cascade clipping.
+         * Can only be `null`/`undefined` or an non-empty array, MUST NOT be an empty array.
+         * because it is easy to only using null to check whether clipPaths changed.
+         */
+        this.__clipPaths = null;
 
-    Element.call(this, opts);
+        // FIXME Stateful must be mixined after style is setted
+        // Stateful.call(this, opts);
 
-    // Extend properties
-    for (var name in opts) {
-        if (
-            opts.hasOwnProperty(name)
-                && name !== 'style'
-        ) {
-            this[name] = opts[name];
+        /**
+         * The String value of `textPosition` needs to be calculated to a real postion.
+         * For example, `'inside'` is calculated to `[rect.width/2, rect.height/2]`
+         * by default. See `contain/text.js#calculateTextPosition` for more details.
+         * But some coutom shapes like "pin", "flag" have center that is not exactly
+         * `[width/2, height/2]`. So we provide this hook to customize the calculation
+         * for those shapes. It will be called if the `style.textPosition` is a String.
+         * @param {Obejct} [out] Prepared out object. If not provided, this method should
+         *        be responsible for creating one.
+         * @param {Style} style
+         * @param {Object} rect {x, y, width, height}
+         * @return {Obejct} out The same as the input out.
+         *         {
+         *             x: Number. mandatory.
+         *             y: Number. mandatory.
+         *             textAlign: String. optional. use style.textAlign by default.
+         *             textVerticalAlign: String. optional. use style.textVerticalAlign by default.
+         *         }
+         */
+        this.calculateTextPosition=null;
+
+        /**
+         * @property {String} type
+         */
+        this.type='displayable';
+
+        /**
+         * @property {Boolean} invisible
+         * Whether the displayable object is visible. when it is true, the displayable object
+         * is not drawn, but the mouse event can still trigger the object.
+         */
+        this.invisible=false;
+
+        /**
+         * @property {Number} z
+         */
+        this.z=0;
+
+        /**
+         * @property {Number} z2
+         */
+        this.z2=0;
+
+        /**
+         * @property {Number} zlevel
+         * The z level determines the displayable object can be drawn in which layer canvas.
+         */
+        this.zlevel=0;
+
+        /**
+         * @property {Boolean} draggable
+         * Whether it can be dragged.
+         */
+        this.draggable=false;
+
+        /**
+         * @property {Boolean} dragging
+         * Whether is it dragging.
+         */
+        this.dragging=false;
+
+        /**
+         * @property {Boolean} silent
+         * Whether to respond to mouse events.
+         */
+        this.silent=false;
+
+        /**
+         * @property {Boolean} culling
+         * If enable culling
+         */
+        this.culling=false;
+
+        /**
+         * @property {String} cursor
+         * Mouse cursor when hovered
+         */
+        this.cursor='pointer';
+
+        /**
+         * @property {String} rectHover
+         * If hover area is bounding rect
+         */
+        this.rectHover=false;
+
+        /**
+         * @property {Boolean} progressive
+         * Render the element progressively when the value >= 0,
+         * usefull for large data.
+         */
+        this.progressive=false;
+
+        /**
+         * @property {Boolean} incremental
+         */
+        this.incremental=false;
+
+        /**
+         * @property {Boolean} globalScaleRatio
+         * Scale ratio for global scale.
+         */
+        this.globalScaleRatio=1;
+
+        classUtil.copyOwnProperties(this,opts,['style']);
+    }
+
+    beforeBrush(ctx) {}
+
+    /**
+     * @property {Function} brush
+     * Graphic drawing method.
+     */
+    brush(ctx, prevEl) {}
+
+    afterBrush(ctx) {}
+
+    /**
+     * @property {Function} getBoundingRect
+     */
+    getBoundingRect() {}
+
+    /**
+     * @method contain
+     * 
+     * If displayable element contain coord x, y, this is an util function for
+     * determine where two elements overlap.
+     * 
+     * 图元是否包含坐标(x,y)，此工具方法用来判断两个图元是否重叠。
+     * 
+     * @param  {Number} x
+     * @param  {Number} y
+     * @return {Boolean}
+     */
+    contain(x, y) {
+        return this.rectContain(x, y);
+    }
+
+    /**
+     * @method rectContain
+     * If bounding rect of element contain coord x, y.
+     * 
+     * 用来判断当前图元的外框矩形是否包含坐标点(x,y)。
+     * @param  {Number} x
+     * @param  {Number} y
+     * @return {Boolean}
+     */
+    rectContain(x, y) {
+        let coord = this.transformCoordToLocal(x, y);
+        let rect = this.getBoundingRect();
+        return rect.contain(coord[0], coord[1]);
+    }
+
+    /**
+     * @method traverse
+     * @param  {Function} cb
+     * @param  {Object}  context
+     */
+    traverse(cb, context) {
+        cb.call(context, this);
+    }
+
+    /**
+     * @method animateStyle
+     * Alias for animate('style')
+     * @param {Boolean} loop
+     */
+    animateStyle(loop) {
+        return this.animate('style', loop);
+    }
+
+    /**
+     * @method attrKV
+     * @param {*} key 
+     * @param {*} value 
+     */
+    attrKV(key, value) {
+        if (key !== 'style') {
+            Element.prototype.attrKV.call(this, key, value);
+        }else {
+            this.style.set(value);
         }
     }
 
     /**
-     * @type {module:zrender/graphic/Style}
-     */
-    this.style = new Style(opts.style, this);
-
-    this._rect = null;
-    // Shapes for cascade clipping.
-    // Can only be `null`/`undefined` or an non-empty array, MUST NOT be an empty array.
-    // because it is easy to only using null to check whether clipPaths changed.
-    this.__clipPaths = null;
-
-    // FIXME Stateful must be mixined after style is setted
-    // Stateful.call(this, opts);
-}
-
-Displayable.prototype = {
-
-    constructor: Displayable,
-
-    type: 'displayable',
-
-    /**
-     * Dirty flag. From which painter will determine if this displayable object needs to be repainted.
-     * 这是一个非常重要的标志位，在绘制大量对象的时候，把 __dirty 标记为 false 可以节省大量操作。
-     * @name module:zrender/graphic/Displayable#__dirty
-     * @type {boolean}
-     */
-    __dirty: true,
-
-    /**
-     * Whether the displayable object is visible. when it is true, the displayable object
-     * is not drawn, but the mouse event can still trigger the object.
-     * @name module:/zrender/graphic/Displayable#invisible
-     * @type {boolean}
-     * @default false
-     */
-    invisible: false,
-
-    /**
-     * @name module:/zrender/graphic/Displayable#z
-     * @type {number}
-     * @default 0
-     */
-    z: 0,
-
-    /**
-     * @name module:/zrender/graphic/Displayable#z
-     * @type {number}
-     * @default 0
-     */
-    z2: 0,
-
-    /**
-     * The z level determines the displayable object can be drawn in which layer canvas.
-     * @name module:/zrender/graphic/Displayable#zlevel
-     * @type {number}
-     * @default 0
-     */
-    zlevel: 0,
-
-    /**
-     * Whether it can be dragged.
-     * @name module:/zrender/graphic/Displayable#draggable
-     * @type {boolean}
-     * @default false
-     */
-    draggable: false,
-
-    /**
-     * Whether is it dragging.
-     * @name module:/zrender/graphic/Displayable#draggable
-     * @type {boolean}
-     * @default false
-     */
-    dragging: false,
-
-    /**
-     * Whether to respond to mouse events.
-     * @name module:/zrender/graphic/Displayable#silent
-     * @type {boolean}
-     * @default false
-     */
-    silent: false,
-
-    /**
-     * If enable culling
-     * @type {boolean}
-     * @default false
-     */
-    culling: false,
-
-    /**
-     * Mouse cursor when hovered
-     * @name module:/zrender/graphic/Displayable#cursor
-     * @type {string}
-     */
-    cursor: 'pointer',
-
-    /**
-     * If hover area is bounding rect
-     * @name module:/zrender/graphic/Displayable#rectHover
-     * @type {string}
-     */
-    rectHover: false,
-
-    /**
-     * Render the element progressively when the value >= 0,
-     * usefull for large data.
-     * @type {boolean}
-     */
-    progressive: false,
-
-    /**
-     * @type {boolean}
-     */
-    incremental: false,
-    /**
-     * Scale ratio for global scale.
-     * @type {boolean}
-     */
-    globalScaleRatio: 1,
-
-    beforeBrush: function (ctx) {},
-
-    afterBrush: function (ctx) {},
-
-    /**
-     * Graphic drawing method.
-     * @param {CanvasRenderingContext2D} ctx
-     */
-    // Interface
-    brush: function (ctx, prevEl) {},
-
-    /**
-     * Get the minimum bounding box.
-     * @return {module:zrender/core/BoundingRect}
-     */
-    // Interface
-    getBoundingRect: function () {},
-
-    /**
-     * If displayable element contain coord x, y
-     * @param  {number} x
-     * @param  {number} y
-     * @return {boolean}
-     */
-    contain: function (x, y) {
-        return this.rectContain(x, y);
-    },
-
-    /**
-     * @param  {Function} cb
-     * @param  {}   context
-     */
-    traverse: function (cb, context) {
-        cb.call(context, this);
-    },
-
-    /**
-     * If bounding rect of element contain coord x, y
-     * @param  {number} x
-     * @param  {number} y
-     * @return {boolean}
-     */
-    rectContain: function (x, y) {
-        var coord = this.transformCoordToLocal(x, y);
-        var rect = this.getBoundingRect();
-        return rect.contain(coord[0], coord[1]);
-    },
-
-    /**
-     * Mark displayable element dirty and refresh next frame
-     */
-    dirty: function () {
-        this.__dirty = this.__dirtyText = true;
-
-        this._rect = null;
-
-        this.__zr && this.__zr.refresh();
-    },
-
-    /**
-     * If displayable object binded any event
-     * @return {boolean}
-     */
-    // TODO, events bound by bind
-    // isSilent: function () {
-    //     return !(
-    //         this.hoverable || this.draggable
-    //         || this.onmousemove || this.onmouseover || this.onmouseout
-    //         || this.onmousedown || this.onmouseup || this.onclick
-    //         || this.ondragenter || this.ondragover || this.ondragleave
-    //         || this.ondrop
-    //     );
-    // },
-    /**
-     * Alias for animate('style')
-     * @param {boolean} loop
-     */
-    animateStyle: function (loop) {
-        return this.animate('style', loop);
-    },
-
-    attrKV: function (key, value) {
-        if (key !== 'style') {
-            Element.prototype.attrKV.call(this, key, value);
-        }
-        else {
-            this.style.set(value);
-        }
-    },
-
-    /**
-     * @param {Object|string} key
+     * @method setStyle
+     * @param {Object|String} key
      * @param {*} value
      */
-    setStyle: function (key, value) {
+    setStyle(key, value) {
         this.style.set(key, value);
         this.dirty(false);
         return this;
-    },
+    }
 
     /**
+     * @method useStyle
      * Use given style object
      * @param  {Object} obj
      */
-    useStyle: function (obj) {
+    useStyle(obj) {
         this.style = new Style(obj, this);
         this.dirty(false);
         return this;
-    },
+    }
+}
 
-    /**
-     * The string value of `textPosition` needs to be calculated to a real postion.
-     * For example, `'inside'` is calculated to `[rect.width/2, rect.height/2]`
-     * by default. See `contain/text.js#calculateTextPosition` for more details.
-     * But some coutom shapes like "pin", "flag" have center that is not exactly
-     * `[width/2, height/2]`. So we provide this hook to customize the calculation
-     * for those shapes. It will be called if the `style.textPosition` is a string.
-     * @param {Obejct} [out] Prepared out object. If not provided, this method should
-     *        be responsible for creating one.
-     * @param {module:zrender/graphic/Style} style
-     * @param {Object} rect {x, y, width, height}
-     * @return {Obejct} out The same as the input out.
-     *         {
-     *             x: number. mandatory.
-     *             y: number. mandatory.
-     *             textAlign: string. optional. use style.textAlign by default.
-     *             textVerticalAlign: string. optional. use style.textVerticalAlign by default.
-     *         }
-     */
-    calculateTextPosition: null
-};
-
-dataUtil.inherits(Displayable, Element);
-
-dataUtil.mixin(Displayable, RectText);
-// dataUtil.mixin(Displayable, Stateful);
+classUtil.mixin(Displayable, RectText);
 
 export default Displayable;

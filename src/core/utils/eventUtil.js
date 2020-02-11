@@ -238,7 +238,7 @@ export function normalizeEvent(el, e, calculate) {
 
 /**
  * @param {HTMLElement} el
- * @param {string} name
+ * @param {String} name
  * @param {Function} handler
  */
 export function addEventListener(el, name, handler) {

@@ -1,32 +1,18 @@
-/**
- * States machine for managing graphic states
- */
-
-/**
- * @typedef {Object} IGraphicState
- * @property {number} [zlevel]
- * @property {number} [z]
- * @property {Array.<number>} {position}
- * @property {Array.<number>|number} {rotation}
- * @property {Array.<number>} {scale}
- * @property {Object} style
- *
- * @property {Function} onenter
- * @property {Function} onleave
- * @property {Function} ontransition
- * @property {Array.<IGraphicStateTransition|string>} transition
- *           Transition object or a string descriptor like '* 30 0 Linear'
- */
-
 import * as dataUtil from '../core/dataStructureUtil';
 import Style from './Style';
 import {copy as vec2Copy} from '../core/vector';
 
-var transitionProperties = ['position', 'rotation', 'scale', 'style', 'shape'];
 /**
- * @module zrender/graphic/States~TransitionObject
+ * @class zrender.graphic.GraphicStates
+ * 
+ * States machine for managing graphic states
+ * 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-var TransitionObject = function (opts) {
+
+let transitionProperties = ['position', 'rotation', 'scale', 'style', 'shape'];
+
+let TransitionObject = function (opts) {
     if (typeof opts === 'string') {
         this._fromStr(opts);
     }
@@ -51,30 +37,30 @@ TransitionObject.prototype = {
     /**
      * List of all transition properties. Splitted by comma. Must not have spaces in the string.
      * e.g. 'position,style.color'. '*' will match all the valid properties.
-     * @type {string}
+     * @property {String}
      * @default *
      */
     property: '*',
 
     /**
-     * @type {string}
+     * @property {String}
      * @default 'Linear'
      */
     easing: 'Linear',
 
     /**
-     * @type {number}
+     * @property {Number}
      * @default 'number'
      */
     duration: 500,
 
     /**
-     * @type {number}
+     * @property {Number}
      */
     delay: 0,
 
     _fromStr: function (str) {
-        var arr = str.split(/\s+/g);
+        let arr = str.split(/\s+/g);
         this.property = arr[0];
         this.duration = +arr[1];
         this.delay = +arr[2];
@@ -84,33 +70,37 @@ TransitionObject.prototype = {
 
 
 /**
- * @alias module:zrender/graphic/States
+ * @method constructor GraphicStates
+ * @property {Number} [zlevel]
+ * @property {Number} [z]
+ * @property {Array<Number>} {position}
+ * @property {Array<Number>|number} {rotation}
+ * @property {Array<Number>} {scale}
+ * @property {Object} style
+ * @property {Function} onenter
+ * @property {Function} onleave
+ * @property {Function} ontransition
+ * @property {Array<IGraphicStateTransition|string>} transition Transition object or a string descriptor like '* 30 0 Linear'
  */
-var GraphicStates = function (opts) {
-
+let GraphicStates = function (opts) {
     opts = opts || {};
-
     this._states = {};
-
     /**
-     * Target element
-     * @type {zrender/graphic/Displayable|zrender/Group}
+     * @property _el
      */
     this._el = opts.el;
-
     this._subStates = [];
-
     this._transitionAnimationProcess = [];
 
     if (opts.initialState) {
         this._initialState = opts.initialState;
     }
 
-    var optsStates = opts.states;
+    let optsStates = opts.states;
     if (optsStates) {
-        for (var name in optsStates) {
+        for (let name in optsStates) {
             if (optsStates.hasOwnProperty(name)) {
-                var state = optsStates[name];
+                let state = optsStates[name];
                 this._addState(name, state);
             }
         }
@@ -125,14 +115,14 @@ GraphicStates.prototype = {
 
     /**
      * All other state will be extended from initial state
-     * @type {string}
+     * @property {String}
      * @private
      */
     _initialState: 'normal',
 
     /**
      * Current state
-     * @type {string}
+     * @property {String}
      * @private
      */
     _currentState: '',
@@ -153,7 +143,7 @@ GraphicStates.prototype = {
             this._extendFromInitial(state);
         }
         else {
-            var el = this._el;
+            let el = this._el;
             // setState 的时候自带的 style 和 shape 都会被直接覆盖
             // 所以这边先把自带的 style 和 shape 扩展到初始状态中
             dataUtil.merge(state.style, el.style, false, false);
@@ -164,7 +154,7 @@ GraphicStates.prototype = {
                 state.shape = dataUtil.clone(el.shape, true);
             }
 
-            for (var name in this._states) {
+            for (let name in this._states) {
                 if (this._states.hasOwnProperty(name)) {
                     this._extendFromInitial(this._states[name]);
                 }
@@ -173,7 +163,7 @@ GraphicStates.prototype = {
     },
 
     _extendFromInitial: function (state) {
-        var initialState = this._states[this._initialState];
+        let initialState = this._states[this._initialState];
         if (initialState && state !== initialState) {
             dataUtil.merge(state, initialState, false, true);
         }
@@ -186,13 +176,13 @@ GraphicStates.prototype = {
             return;
         }
 
-        var state = this._states[name];
+        let state = this._states[name];
 
         if (state) {
             this._stopTransition();
 
             if (!silent) {
-                var prevState = this._states[this._currentState];
+                let prevState = this._states[this._currentState];
                 if (prevState) {
                     prevState.onleave && prevState.onleave.call(this);
                 }
@@ -203,7 +193,7 @@ GraphicStates.prototype = {
             this._currentState = name;
 
             if (this._el) {
-                var el = this._el;
+                let el = this._el;
 
                 // Setting attributes
                 if (state.zlevel != null) {
@@ -222,10 +212,10 @@ GraphicStates.prototype = {
 
                 // Style
                 if (state.style) {
-                    var initialState = this._states[this._initialState];
+                    let initialState = this._states[this._initialState];
                     el.style = new Style();
                     if (initialState) {
-                        el.style.extendFrom(initialState.style, false);
+                        el.style.extendStyle(initialState.style, false);
                     }
                     if (
                         // Not initial state
@@ -233,7 +223,7 @@ GraphicStates.prototype = {
                         // Not copied from initial state in _extendFromInitial method
                         && initialState.style !== state.style
                     ) {
-                        el.style.extendFrom(state.style, true);
+                        el.style.extendStyle(state.style, true);
                     }
                 }
                 if (state.shape) {
@@ -244,7 +234,7 @@ GraphicStates.prototype = {
             }
         }
 
-        for (var i = 0; i < this._subStates.length; i++) {
+        for (let i = 0; i < this._subStates.length; i++) {
             this._subStates.setState(name);
         }
     },
@@ -261,43 +251,43 @@ GraphicStates.prototype = {
             return;
         }
 
-        var state = this._states[target];
-        var styleShapeReg = /$[style|shape]\./;
-        var self = this;
+        let state = this._states[target];
+        let styleShapeReg = /$[style|shape]\./;
+        let self = this;
 
         // Animation 去重
-        var propPathMap = {};
+        let propPathMap = {};
 
         if (state) {
 
             self._stopTransition();
 
-            var el = self._el;
+            let el = self._el;
 
             if (state.transition && el && el.__zr) {// El can be animated
-                var transitionCfg = state.transition;
-                var property = transitionCfg.property;
+                let transitionCfg = state.transition;
+                let property = transitionCfg.property;
 
-                var animatingCount = 0;
-                var animationDone = function () {
+                let animatingCount = 0;
+                let animationDone = function () {
                     animatingCount--;
                     if (animatingCount === 0) {
                         self.setState(target);
                         done && done();
                     }
                 };
-                for (var i = 0; i < property.length; i++) {
-                    var propName = property[i];
+                for (let i = 0; i < property.length; i++) {
+                    let propName = property[i];
 
                     // Animating all the properties in style or shape
                     if (propName === 'style' || propName === 'shape') {
                         if (state[propName]) {
-                            for (var key in state[propName]) {
+                            for (let key in state[propName]) {
                                 /* eslint-disable max-depth */
                                 if (!state[propName].hasOwnProperty(key)) {
                                     continue;
                                 }
-                                var path = propName + '.' + key;
+                                let path = propName + '.' + key;
                                 if (propPathMap[path]) {
                                     continue;
                                 }
@@ -317,13 +307,12 @@ GraphicStates.prototype = {
                         // Animating particular property in style or style
                         if (propName.match(styleShapeReg)) {
                             // remove 'style.', 'shape.' prefix
-                            var subProp = propName.slice(0, 5);
+                            let subProp = propName.slice(0, 5);
                             propName = propName.slice(6);
                             animatingCount += self._animProp(
                                 state, subProp, propName, transitionCfg, animationDone
                             );
-                        }
-                        else {
+                        }else {
                             animatingCount += self._animProp(
                                 state, '', propName, transitionCfg, animationDone
                             );
@@ -336,15 +325,14 @@ GraphicStates.prototype = {
                     self.setState(target);
                     done && done();
                 }
-            }
-            else {
+            }else {
                 self.setState(target);
                 done && done();
             }
         }
 
-        var subStates = self._subStates;
-        for (var i = 0; i < subStates.length; i++) {
+        let subStates = self._subStates;
+        for (let i = 0; i < subStates.length; i++) {
             subStates.transitionState(target);
         }
     },
@@ -352,32 +340,32 @@ GraphicStates.prototype = {
     /**
      * Do transition animation of particular property
      * @param {Object} state
-     * @param {string} subPropKey
-     * @param {string} key
+     * @param {String} subPropKey
+     * @param {String} key
      * @param {Object} transitionCfg
      * @param {Function} done
      * @private
      */
     _animProp: function (state, subPropKey, key, transitionCfg, done) {
-        var el = this._el;
-        var stateObj = subPropKey ? state[subPropKey] : state;
-        var elObj = subPropKey ? el[subPropKey] : el;
-        var availableProp = stateObj && (key in stateObj)
+        let el = this._el;
+        let stateObj = subPropKey ? state[subPropKey] : state;
+        let elObj = subPropKey ? el[subPropKey] : el;
+        let availableProp = stateObj && (key in stateObj)
             && elObj && (key in elObj);
 
-        var taps = this._transitionAnimationProcess;
+        let taps = this._transitionAnimationProcess;
         if (availableProp) {
-            var obj = {};
+            let obj = {};
             if (stateObj[key] === elObj[key]) {
                 return 0;
             }
             obj[key] = stateObj[key];
 
-            var animationProcess = el.animate(subPropKey)
+            let animationProcess = el.animate(subPropKey)
                 .when(transitionCfg.duration, obj)
                 .delay(transitionCfg.dealy)
                 .done(function () {
-                    var idx = dataUtil.indexOf(taps, 1);
+                    let idx = dataUtil.indexOf(taps, 1);
                     if (idx > 0) {
                         taps.splice(idx, 1);
                     }
@@ -392,8 +380,8 @@ GraphicStates.prototype = {
     },
 
     _stopTransition: function () {
-        var taps = this._transitionAnimationProcess;
-        for (var i = 0; i < taps.length; i++) {
+        let taps = this._transitionAnimationProcess;
+        for (let i = 0; i < taps.length; i++) {
             taps[i].stop();
         }
         taps.length = 0;
@@ -408,7 +396,7 @@ GraphicStates.prototype = {
     },
 
     removeSubStates: function (states) {
-        var idx = dataUtil.indexOf(this._subStates, states);
+        let idx = dataUtil.indexOf(this._subStates, states);
         if (idx >= 0) {
             this._subStates.splice(states, 1);
         }

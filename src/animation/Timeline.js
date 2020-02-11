@@ -1,20 +1,24 @@
-/**
- * Timeline，时间线，用来计算图元上的某个属性在指定时间点的数值。
- * 
- * @config target 动画对象，可以是数组，如果是数组的话会批量分发onframe等事件
- * @config life(1000) 动画时长
- * @config delay(0) 动画延迟时间
- * @config loop(true)
- * @config gap(0) 循环的间隔时间
- * @config onframe
- * @config easing(optional)
- * @config ondestroy(optional)
- * @config onrestart(optional)
- *
- */
 import easingFuncs from './utils/easing';
+/**
+ * @class zrender.animation.Timeline
+ * Timeline，时间线，用来计算图元上的某个属性在指定时间点的数值。
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 
 export default class Timeline{
+    /**
+     * @method constructor Timeline
+     * @param {Object} options 
+     * @param {Element} options.target 动画对象，可以是数组，如果是数组的话会批量分发onframe等事件
+     * @param {Number} options.life(1000) 动画时长
+     * @param {Number} options.delay(0) 动画延迟时间
+     * @param {Boolean} options.loop(true)
+     * @param {Number} options.gap(0) 循环的间隔时间
+     * @param {Function} options.onframe
+     * @param {String} options.easing(optional)
+     * @param {Function} options.ondestroy(optional)
+     * @param {Function} options.onrestart(optional)
+     */
     constructor(options){
         this._target = options.target;
         this._lifeTime = options.lifeTime || 1000;
@@ -31,6 +35,12 @@ export default class Timeline{
         this._paused = false;
     }
 
+    /**
+     * @method nextFrame
+     * 进入下一帧
+     * @param {Number} globalTime 当前时间
+     * @param {Number} deltaTime  时间偏移量
+     */
     nextFrame(globalTime, deltaTime) {
         // Set startTime on first frame, or _startTime may has milleseconds different between clips
         // PENDING
@@ -71,12 +81,23 @@ export default class Timeline{
         return percent;
     }
 
+    /**
+     * @method restart
+     * 重新开始
+     * @param {Number} globalTime 
+     */
     restart(globalTime) {
         let remainder = (globalTime - this._startTime - this._pausedTime) % this._lifeTime;
         this._startTime = globalTime - remainder + this.gap;
         this._pausedTime = 0;
     }
 
+    /**
+     * @method fire
+     * 触发事件
+     * @param {String} eventType 
+     * @param {Object} arg 
+     */
     fire(eventType, arg) {
         eventType = 'on' + eventType;
         if (this[eventType]) {
@@ -84,10 +105,18 @@ export default class Timeline{
         }
     }
 
+    /**
+     * @method pause
+     * 暂停
+     */
     pause() {
         this._paused = true;
     }
 
+    /**
+     * @method resume
+     * 恢复运行
+     */
     resume() {
         this._paused = false;
     }

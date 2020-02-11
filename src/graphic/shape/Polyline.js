@@ -1,29 +1,42 @@
-/**
- * @module zrender/graphic/shape/Polyline
- */
-
 import Path from '../Path';
 import * as polyHelper from '../utils/poly';
-
-export default Path.extend({
-
+/**
+ * @class zrender.graphic.shape.Polyline 
+ * 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
+let defaultConfig={
+    /**
+     * @property {String} type
+     */
     type: 'polyline',
-
     shape: {
         points: null,
-
         smooth: false,
-
         smoothConstraint: null
     },
-
     style: {
         stroke: '#000',
-
         fill: null
-    },
+    }
+};
 
-    buildPath: function (ctx, shape) {
+export default class Polyline extends Path{
+    /**
+     * @method constructor Polyline
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
+
+    /**
+     * @method buildPath
+     * 绘制图元路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
+    buildPath(ctx, shape) {
         polyHelper.buildPath(ctx, shape, false);
     }
-});
+}

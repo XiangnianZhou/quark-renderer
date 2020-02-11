@@ -1,63 +1,61 @@
-/**
- * 提供变换扩展
- * @module zrender/mixin/Transformable
- * @author pissang (https://www.github.com/pissang)
- */
-
 import * as matrix from '../core/utils/matrix';
 import * as vector from '../core/utils/vector';
 
-var mIdentity = matrix.identity;
+/**
+ * @abstract
+ * @class zrender.graphic.Transformable
+ * 提供变换扩展
+ * @author pissang (https://www.github.com/pissang)
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 
-var EPSILON = 5e-5;
+let mIdentity = matrix.identity;
+
+let EPSILON = 5e-5;
 
 function isNotAroundZero(val) {
     return val > EPSILON || val < -EPSILON;
 }
 
 /**
- * @alias module:zrender/mixin/Transformable
- * @constructor
+ * @method constructor Transformable
  */
-var Transformable = function (opts) {
+let Transformable = function (opts) {
     opts = opts || {};
     // If there are no given position, rotation, scale
     if (!opts.position) {
         /**
+         * @property {Array<Number>}
          * 平移
-         * @type {Array.<number>}
-         * @default [0, 0]
          */
         this.position = [0, 0];
     }
     if (opts.rotation == null) {
         /**
+         * @property {Array<Number>}
          * 旋转
-         * @type {Array.<number>}
-         * @default 0
          */
         this.rotation = 0;
     }
     if (!opts.scale) {
         /**
+         * @property {Array<Number>}
          * 缩放
-         * @type {Array.<number>}
-         * @default [1, 1]
          */
         this.scale = [1, 1];
     }
     /**
+     * @property {Array<Number>}
      * 旋转和缩放的原点
-     * @type {Array.<number>}
-     * @default null
      */
     this.origin = this.origin || null;
 };
 
-var transformableProto = Transformable.prototype;
+let transformableProto = Transformable.prototype;
 transformableProto.transform = null;
 
 /**
+ * @method needLocalTransform
  * 判断是否需要有坐标变换
  * 如果有坐标变换, 则从position, rotation, scale以及父节点的transform计算出自身的transform矩阵
  */
@@ -69,13 +67,13 @@ transformableProto.needLocalTransform = function () {
         || isNotAroundZero(this.scale[1] - 1);
 };
 
-var scaleTmp = [];
+let scaleTmp = [];
 transformableProto.updateTransform = function () {
-    var parent = this.parent;
-    var parentHasTransform = parent && parent.transform;
-    var needLocalTransform = this.needLocalTransform();
+    let parent = this.parent;
+    let parentHasTransform = parent && parent.transform;
+    let needLocalTransform = this.needLocalTransform();
 
-    var m = this.transform;
+    let m = this.transform;
     if (!(needLocalTransform || parentHasTransform)) {
         m && mIdentity(m);
         return;
@@ -102,13 +100,13 @@ transformableProto.updateTransform = function () {
     // 保存这个变换矩阵
     this.transform = m;
 
-    var globalScaleRatio = this.globalScaleRatio;
+    let globalScaleRatio = this.globalScaleRatio;
     if (globalScaleRatio != null && globalScaleRatio !== 1) {
         this.getGlobalScale(scaleTmp);
-        var relX = scaleTmp[0] < 0 ? -1 : 1;
-        var relY = scaleTmp[1] < 0 ? -1 : 1;
-        var sx = ((scaleTmp[0] - relX) * globalScaleRatio + relX) / scaleTmp[0] || 0;
-        var sy = ((scaleTmp[1] - relY) * globalScaleRatio + relY) / scaleTmp[1] || 0;
+        let relX = scaleTmp[0] < 0 ? -1 : 1;
+        let relY = scaleTmp[1] < 0 ? -1 : 1;
+        let sx = ((scaleTmp[0] - relX) * globalScaleRatio + relX) / scaleTmp[0] || 0;
+        let sy = ((scaleTmp[1] - relY) * globalScaleRatio + relY) / scaleTmp[1] || 0;
 
         m[0] *= sx;
         m[1] *= sx;
@@ -125,12 +123,13 @@ transformableProto.getLocalTransform = function (m) {
 };
 
 /**
+ * @method setTransform
  * 将自己的transform应用到context上
  * @param {CanvasRenderingContext2D} ctx
  */
 transformableProto.setTransform = function (ctx) {
-    var m = this.transform;
-    var dpr = ctx.dpr || 1;
+    let m = this.transform;
+    let dpr = ctx.dpr || 1;
     if (m) {
         ctx.setTransform(dpr * m[0], dpr * m[1], dpr * m[2], dpr * m[3], dpr * m[4], dpr * m[5]);
     }
@@ -140,22 +139,22 @@ transformableProto.setTransform = function (ctx) {
 };
 
 transformableProto.restoreTransform = function (ctx) {
-    var dpr = ctx.dpr || 1;
+    let dpr = ctx.dpr || 1;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 };
 
-var tmpTransform = [];
-var originTransform = matrix.create();
+let tmpTransform = [];
+let originTransform = matrix.create();
 
 transformableProto.setLocalTransform = function (m) {
     if (!m) {
         // TODO return or set identity?
         return;
     }
-    var sx = m[0] * m[0] + m[1] * m[1];
-    var sy = m[2] * m[2] + m[3] * m[3];
-    var position = this.position;
-    var scale = this.scale;
+    let sx = m[0] * m[0] + m[1] * m[1];
+    let sy = m[2] * m[2] + m[3] * m[3];
+    let position = this.position;
+    let scale = this.scale;
     if (isNotAroundZero(sx - 1)) {
         sx = Math.sqrt(sx);
     }
@@ -182,14 +181,14 @@ transformableProto.decomposeTransform = function () {
     if (!this.transform) {
         return;
     }
-    var parent = this.parent;
-    var m = this.transform;
+    let parent = this.parent;
+    let m = this.transform;
     if (parent && parent.transform) {
         // Get local transform and decompose them to position, scale, rotation
         matrix.mul(tmpTransform, parent.invTransform, m);
         m = tmpTransform;
     }
-    var origin = this.origin;
+    let origin = this.origin;
     if (origin && (origin[0] || origin[1])) {
         originTransform[4] = origin[0];
         originTransform[5] = origin[1];
@@ -203,11 +202,12 @@ transformableProto.decomposeTransform = function () {
 };
 
 /**
+ * @method getGlobalScale
  * Get global scale
- * @return {Array.<number>}
+ * @return {Array<Number>}
  */
 transformableProto.getGlobalScale = function (out) {
-    var m = this.transform;
+    let m = this.transform;
     out = out || [];
     if (!m) {
         out[0] = 1;
@@ -225,15 +225,15 @@ transformableProto.getGlobalScale = function (out) {
     return out;
 };
 /**
+ * @method transformCoordToLocal
  * 变换坐标位置到 shape 的局部坐标空间
- * @method
- * @param {number} x
- * @param {number} y
- * @return {Array.<number>}
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Array<Number>}
  */
 transformableProto.transformCoordToLocal = function (x, y) {
-    var v2 = [x, y];
-    var invTransform = this.invTransform;
+    let v2 = [x, y];
+    let invTransform = this.invTransform;
     if (invTransform) {
         vector.applyTransform(v2, v2, invTransform);
     }
@@ -241,15 +241,15 @@ transformableProto.transformCoordToLocal = function (x, y) {
 };
 
 /**
+ * @method transformCoordToGlobal
  * 变换局部坐标位置到全局坐标空间
- * @method
- * @param {number} x
- * @param {number} y
- * @return {Array.<number>}
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Array<Number>}
  */
 transformableProto.transformCoordToGlobal = function (x, y) {
-    var v2 = [x, y];
-    var transform = this.transform;
+    let v2 = [x, y];
+    let transform = this.transform;
     if (transform) {
         vector.applyTransform(v2, v2, transform);
     }
@@ -258,20 +258,21 @@ transformableProto.transformCoordToGlobal = function (x, y) {
 
 /**
  * @static
+ * @method getLocalTransform
  * @param {Object} target
- * @param {Array.<number>} target.origin
- * @param {number} target.rotation
- * @param {Array.<number>} target.position
- * @param {Array.<number>} [m]
+ * @param {Array<Number>} target.origin
+ * @param {Number} target.rotation
+ * @param {Array<Number>} target.position
+ * @param {Array<Number>} [m]
  */
 Transformable.getLocalTransform = function (target, m) {
     m = m || [];
     mIdentity(m);
 
-    var origin = target.origin;
-    var scale = target.scale || [1, 1];
-    var rotation = target.rotation || 0;
-    var position = target.position || [0, 0];
+    let origin = target.origin;
+    let scale = target.scale || [1, 1];
+    let rotation = target.rotation || 0;
+    let position = target.position || [0, 0];
 
     if (origin) {
         // Translate to origin

@@ -177,23 +177,6 @@ export function extend(target, source) {
     return target;
 }
 
-/**
- * @param {*} target
- * @param {*} source
- * @param {boolean} [overlay=false]
- * @memberOf module:zrender/core/dataStructureUtil
- */
-export function defaults(target, source, overlay) {
-    for (var key in source) {
-        if (source.hasOwnProperty(key)
-            && (overlay ? source[key] != null : target[key] == null)
-        ) {
-            target[key] = source[key];
-        }
-    }
-    return target;
-}
-
 export var createCanvas = function () {
     return methods.createCanvas();
 };
@@ -230,42 +213,6 @@ export function indexOf(array, value) {
         }
     }
     return -1;
-}
-
-/**
- * 构造类继承关系
- *
- * @memberOf module:zrender/core/dataStructureUtil
- * @param {Function} clazz 源类
- * @param {Function} baseClazz 基类
- */
-export function inherits(clazz, baseClazz) {
-    var clazzPrototype = clazz.prototype;
-    function F() {}
-    F.prototype = baseClazz.prototype;
-    clazz.prototype = new F();
-
-    for (var prop in clazzPrototype) {
-        if (clazzPrototype.hasOwnProperty(prop)) {
-            clazz.prototype[prop] = clazzPrototype[prop];
-        }
-    }
-    clazz.prototype.constructor = clazz;
-    clazz.superClass = baseClazz;
-}
-
-/**
- * 这里的 mixin 只拷贝 prototype 上的属性。
- * @memberOf module:zrender/core/dataStructureUtil
- * @param {Object|Function} target
- * @param {Object|Function} sorce
- * @param {boolean} overlay
- */
-export function mixin(target, source, overlay) {
-    target = 'prototype' in target ? target.prototype : target;
-    source = 'prototype' in source ? source.prototype : source;
-
-    defaults(target, source, overlay);
 }
 
 /**
@@ -540,8 +487,8 @@ export function retrieve3(value0, value1, value2) {
 /**
  * @memberOf module:zrender/core/dataStructureUtil
  * @param {Array} arr
- * @param {number} startIndex
- * @param {number} endIndex
+ * @param {Number} startIndex
+ * @param {Number} endIndex
  * @return {Array}
  */
 export function slice() {
@@ -554,8 +501,8 @@ export function slice() {
  *  3 => [3, 3, 3, 3]
  *  [4, 2] => [4, 2, 4, 2]
  *  [4, 3, 2] => [4, 3, 2, 3]
- * @param {number|Array.<number>} val
- * @return {Array.<number>}
+ * @param {number|Array.<Number>} val
+ * @return {Array<Number>}
  */
 export function normalizeCssArray(val) {
     if (typeof (val) === 'number') {
@@ -576,7 +523,7 @@ export function normalizeCssArray(val) {
 /**
  * @memberOf module:zrender/core/dataStructureUtil
  * @param {boolean} condition
- * @param {string} message
+ * @param {String} message
  */
 export function assert(condition, message) {
     if (!condition) {
@@ -586,8 +533,8 @@ export function assert(condition, message) {
 
 /**
  * @memberOf module:zrender/core/dataStructureUtil
- * @param {string} str string to be trimed
- * @return {string} trimed string
+ * @param {String} str string to be trimed
+ * @return {String} trimed string
  */
 export function trim(str) {
     if (str == null) {
@@ -682,20 +629,20 @@ export function concatArray(a, b) {
 export function noop() {}
 
 /**
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} percent
- * @return {number}
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} percent
+ * @return {Number}
  */
 export function interpolateNumber(p0, p1, percent) {
     return (p1 - p0) * percent + p0;
 }
 
 /**
- * @param  {string} p0
- * @param  {string} p1
- * @param  {number} percent
- * @return {string}
+ * @param  {String} p0
+ * @param  {String} p1
+ * @param  {Number} percent
+ * @return {String}
  */
 export function interpolateString(p0, p1, percent) {
     return percent > 0.5 ? p1 : p0;
@@ -704,9 +651,9 @@ export function interpolateString(p0, p1, percent) {
 /**
  * @param  {Array} p0
  * @param  {Array} p1
- * @param  {number} percent
+ * @param  {Number} percent
  * @param  {Array} out
- * @param  {number} arrDim
+ * @param  {Number} arrDim
  */
 export function interpolateArray(p0, p1, percent, out, arrDim) {
     var len = p0.length;
@@ -770,7 +717,7 @@ export function fillArr(arr0, arr1, arrDim) {
 /**
  * @param  {Array} arr0
  * @param  {Array} arr1
- * @param  {number} arrDim
+ * @param  {Number} arrDim
  * @return {boolean}
  */
 export function isArraySame(arr0, arr1, arrDim) {
@@ -807,11 +754,11 @@ export function isArraySame(arr0, arr1, arrDim) {
  * @param  {Array} p1
  * @param  {Array} p2
  * @param  {Array} p3
- * @param  {number} t
- * @param  {number} t2
- * @param  {number} t3
+ * @param  {Number} t
+ * @param  {Number} t2
+ * @param  {Number} t3
  * @param  {Array} out
- * @param  {number} arrDim
+ * @param  {Number} arrDim
  */
 export function catmullRomInterpolateArray(
     p0, p1, p2, p3, t, t2, t3, out, arrDim
@@ -839,14 +786,14 @@ export function catmullRomInterpolateArray(
 
 /**
  * Catmull Rom interpolate number
- * @param  {number} p0
- * @param  {number} p1
- * @param  {number} p2
- * @param  {number} p3
- * @param  {number} t
- * @param  {number} t2
- * @param  {number} t3
- * @return {number}
+ * @param  {Number} p0
+ * @param  {Number} p1
+ * @param  {Number} p2
+ * @param  {Number} p3
+ * @param  {Number} t
+ * @param  {Number} t2
+ * @param  {Number} t3
+ * @return {Number}
  */
 export function catmullRomInterpolate(p0, p1, p2, p3, t, t2, t3) {
     var v0 = (p2 - p0) * 0.5;
@@ -884,4 +831,8 @@ export function rgba2String(rgba) {
 export function getArrayDim(keyframes) {
     var lastValue = keyframes[keyframes.length - 1].value;
     return isArrayLike(lastValue && lastValue[0]) ? 2 : 1;
+}
+
+export function parseInt10(val) {
+    return parseInt(val, 10);
 }

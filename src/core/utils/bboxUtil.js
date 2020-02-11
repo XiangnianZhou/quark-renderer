@@ -19,8 +19,8 @@ var extremity = vec2.create();
  * 从顶点数组中计算出最小包围盒，写入`min`和`max`中
  * @module zrender/core/bboxUtil
  * @param {Array<Object>} points 顶点数组
- * @param {number} min
- * @param {number} max
+ * @param {Number} min
+ * @param {Number} max
  */
 export function fromPoints(points, min, max) {
     if (points.length === 0) {
@@ -49,12 +49,12 @@ export function fromPoints(points, min, max) {
 
 /**
  * @memberOf module:zrender/core/bboxUtil
- * @param {number} x0
- * @param {number} y0
- * @param {number} x1
- * @param {number} y1
- * @param {Array.<number>} min
- * @param {Array.<number>} max
+ * @param {Number} x0
+ * @param {Number} y0
+ * @param {Number} x1
+ * @param {Number} y1
+ * @param {Array<Number>} min
+ * @param {Array<Number>} max
  */
 export function fromLine(x0, y0, x1, y1, min, max) {
     min[0] = mathMin(x0, x1);
@@ -68,16 +68,16 @@ var yDim = [];
 /**
  * 从三阶贝塞尔曲线(p0, p1, p2, p3)中计算出最小包围盒，写入`min`和`max`中
  * @memberOf module:zrender/core/bboxUtil
- * @param {number} x0
- * @param {number} y0
- * @param {number} x1
- * @param {number} y1
- * @param {number} x2
- * @param {number} y2
- * @param {number} x3
- * @param {number} y3
- * @param {Array.<number>} min
- * @param {Array.<number>} max
+ * @param {Number} x0
+ * @param {Number} y0
+ * @param {Number} x1
+ * @param {Number} y1
+ * @param {Number} x2
+ * @param {Number} y2
+ * @param {Number} x3
+ * @param {Number} y3
+ * @param {Array<Number>} min
+ * @param {Array<Number>} max
  */
 export function fromCubic(
     x0, y0, x1, y1, x2, y2, x3, y3, min, max
@@ -117,14 +117,14 @@ export function fromCubic(
 /**
  * 从二阶贝塞尔曲线(p0, p1, p2)中计算出最小包围盒，写入`min`和`max`中
  * @memberOf module:zrender/core/bboxUtil
- * @param {number} x0
- * @param {number} y0
- * @param {number} x1
- * @param {number} y1
- * @param {number} x2
- * @param {number} y2
- * @param {Array.<number>} min
- * @param {Array.<number>} max
+ * @param {Number} x0
+ * @param {Number} y0
+ * @param {Number} x1
+ * @param {Number} y1
+ * @param {Number} x2
+ * @param {Number} y2
+ * @param {Array<Number>} min
+ * @param {Array<Number>} max
  */
 export function fromQuadratic(x0, y0, x1, y1, x2, y2, min, max) {
     var quadraticExtremum = curve.quadraticExtremum;
@@ -152,15 +152,15 @@ export function fromQuadratic(x0, y0, x1, y1, x2, y2, min, max) {
  * 从圆弧中计算出最小包围盒，写入`min`和`max`中
  * @method
  * @memberOf module:zrender/core/bboxUtil
- * @param {number} x
- * @param {number} y
- * @param {number} rx
- * @param {number} ry
- * @param {number} startAngle
- * @param {number} endAngle
- * @param {number} anticlockwise
- * @param {Array.<number>} min
- * @param {Array.<number>} max
+ * @param {Number} x
+ * @param {Number} y
+ * @param {Number} rx
+ * @param {Number} ry
+ * @param {Number} startAngle
+ * @param {Number} endAngle
+ * @param {Number} anticlockwise
+ * @param {Array<Number>} min
+ * @param {Array<Number>} max
  */
 export function fromArc(
     x, y, rx, ry, startAngle, endAngle, anticlockwise, min, max

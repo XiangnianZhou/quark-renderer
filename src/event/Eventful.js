@@ -1,35 +1,37 @@
 /**
- * Canvas 内部绘制的对象默认不支持事件，这里提供对事件的封装。
+ * @abstract
+ * @class zrender.event.Eventful
  * 
- * Event Mixin
- * @module zrender/mixin/Eventful
- * @author Kener (@Kener-林峰, kener.linfeng@gmail.com)
- *         pissang (https://www.github.com/pissang)
+ * Provide event system for the classes that do not support events, the implementation here
+ * is similar to DOM events, the classes which need event support should mixin the functions
+ * here.
+ * 
+ * 为不支持事件机制的类提供事件支持，基本机制类似 DOM 事件，需要事件机制的类可以 mixin 此类中的工具函数。
+ * 
+ * @author @Kener-林峰 <kener.linfeng@gmail.com>
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
-var arrySlice = Array.prototype.slice;
+let arrySlice = Array.prototype.slice;
 
 /**
- * Event dispatcher.
- *
- * @alias module:zrender/mixin/Eventful
- * @constructor
+ * @method constructor Eventful
  * @param {Object} [eventProcessor] The object eventProcessor is the scope when
  *        `eventProcessor.xxx` called. 事件处理者，也就是当前事件处理函数执行时的作用域。
  * @param {Function} [eventProcessor.normalizeQuery]
- *        param: {string|Object} Raw query.
- *        return: {string|Object} Normalized query.
+ *        param: {String|Object} Raw query.
+ *        return: {String|Object} Normalized query.
  * @param {Function} [eventProcessor.filter] Event will be dispatched only
  *        if it returns `true`.
- *        param: {string} eventType
- *        param: {string|Object} query
- *        return: {boolean}
+ *        param: {String} eventType
+ *        param: {String|Object} query
+ *        return: {Boolean}
  * @param {Function} [eventProcessor.afterTrigger] Called after all handlers called.
- *        param: {string} eventType
+ *        param: {String} eventType
  * @param {Function} [eventProcessor.afterListenerChanged] Called when any listener added or removed.
- *        param: {string} eventType
+ *        param: {String} eventType
  */
-var Eventful = function (eventProcessor) {
+let Eventful = function (eventProcessor) {
     this._$handlers = {};
     this._$eventProcessor = eventProcessor;
 };
@@ -39,10 +41,11 @@ Eventful.prototype = {
     constructor: Eventful,
 
     /**
+     * @method
      * The handler can only be triggered once, then removed.
      *
-     * @param {string} event The event name.
-     * @param {string|Object} [query] Condition used on event filter.
+     * @param {String} event The event name.
+     * @param {String|Object} [query] Condition used on event filter.
      * @param {Function} handler The event handler.
      * @param {Object} context
      */
@@ -51,10 +54,11 @@ Eventful.prototype = {
     },
 
     /**
+     * @method
      * Bind a handler.
      *
-     * @param {string} event The event name.
-     * @param {string|Object} [query] Condition used on event filter.
+     * @param {String} event The event name.
+     * @param {String|Object} [query] Condition used on event filter.
      * @param {Function} handler The event handler.
      * @param {Object} [context]
      */
@@ -63,26 +67,28 @@ Eventful.prototype = {
     },
 
     /**
+     * @method
      * Whether any handler has bound.
      *
-     * @param  {string}  event
-     * @return {boolean}
+     * @param  {String}  event
+     * @return {Boolean}
      */
     isSilent: function (event) {
-        var _h = this._$handlers;
+        let _h = this._$handlers;
         return !_h[event] || !_h[event].length;
     },
 
     /**
+     * @method
      * Unbind a event.
      *
-     * @param {string} [event] The event name.
+     * @param {String} [event] The event name.
      *        If no `event` input, "off" all listeners.
      * @param {Function} [handler] The event handler.
      *        If no `handler` input, "off" all listeners of the `event`.
      */
     off: function (event, handler) {
-        var _h = this._$handlers;
+        let _h = this._$handlers;
 
         if (!event) {
             this._$handlers = {};
@@ -91,8 +97,8 @@ Eventful.prototype = {
 
         if (handler) {
             if (_h[event]) {
-                var newList = [];
-                for (var i = 0, l = _h[event].length; i < l; i++) {
+                let newList = [];
+                for (let i = 0, l = _h[event].length; i < l; i++) {
                     if (_h[event][i].h !== handler) {
                         newList.push(_h[event][i]);
                     }
@@ -114,25 +120,26 @@ Eventful.prototype = {
     },
 
     /**
+     * @method
      * Dispatch a event.
      *
-     * @param {string} type The event name.
+     * @param {String} type The event name.
      */
     trigger: function (type) {
-        var _h = this._$handlers[type];
-        var eventProcessor = this._$eventProcessor;
+        let _h = this._$handlers[type];
+        let eventProcessor = this._$eventProcessor;
 
         if (_h) {
-            var args = arguments;
-            var argLen = args.length;
+            let args = arguments;
+            let argLen = args.length;
 
             if (argLen > 3) {
                 args = arrySlice.call(args, 1);
             }
 
-            var len = _h.length;
-            for (var i = 0; i < len;) {
-                var hItem = _h[i];
+            let len = _h.length;
+            for (let i = 0; i < len;) {
+                let hItem = _h[i];
                 if (eventProcessor
                     && eventProcessor.filter
                     && hItem.query != null
@@ -176,26 +183,27 @@ Eventful.prototype = {
     },
 
     /**
+     * @method
      * Dispatch a event with context, which is specified at the last parameter.
      *
-     * @param {string} type The event name.
+     * @param {String} type The event name.
      */
     triggerWithContext: function (type) {
-        var _h = this._$handlers[type];
-        var eventProcessor = this._$eventProcessor;
+        let _h = this._$handlers[type];
+        let eventProcessor = this._$eventProcessor;
 
         if (_h) {
-            var args = arguments;
-            var argLen = args.length;
+            let args = arguments;
+            let argLen = args.length;
 
             if (argLen > 4) {
                 args = arrySlice.call(args, 1, args.length - 1);
             }
-            var ctx = args[args.length - 1];
+            let ctx = args[args.length - 1];
 
-            var len = _h.length;
-            for (var i = 0; i < len;) {
-                var hItem = _h[i];
+            let len = _h.length;
+            for (let i = 0; i < len;) {
+                let hItem = _h[i];
                 if (eventProcessor
                     && eventProcessor.filter
                     && hItem.query != null
@@ -239,24 +247,45 @@ Eventful.prototype = {
     }
 };
 
-
+/**
+ * @private
+ * @method
+ * @param {Element} eventful 
+ * @param {String} eventType 
+ */
 function callListenerChanged(eventful, eventType) {
-    var eventProcessor = eventful._$eventProcessor;
+    let eventProcessor = eventful._$eventProcessor;
     if (eventProcessor && eventProcessor.afterListenerChanged) {
         eventProcessor.afterListenerChanged(eventType);
     }
 }
 
+/**
+ * @private
+ * @method
+ * @param {*} host 
+ * @param {*} query 
+ */
 function normalizeQuery(host, query) {
-    var eventProcessor = host._$eventProcessor;
+    let eventProcessor = host._$eventProcessor;
     if (query != null && eventProcessor && eventProcessor.normalizeQuery) {
         query = eventProcessor.normalizeQuery(query);
     }
     return query;
 }
 
+/**
+ * @private
+ * @method
+ * @param {Element} eventful 
+ * @param {Event} event 
+ * @param {*} query 
+ * @param {Function} handler 
+ * @param {Object} context 
+ * @param {Boolean} isOnce 
+ */
 function on(eventful, event, query, handler, context, isOnce) {
-    var _h = eventful._$handlers;
+    let _h = eventful._$handlers;
 
     if (typeof query === 'function') {
         context = handler;
@@ -274,13 +303,13 @@ function on(eventful, event, query, handler, context, isOnce) {
         _h[event] = [];
     }
 
-    for (var i = 0; i < _h[event].length; i++) {
+    for (let i = 0; i < _h[event].length; i++) {
         if (_h[event][i].h === handler) {
             return eventful;
         }
     }
 
-    var wrap = {
+    let wrap = {
         h: handler,
         one: isOnce,
         query: query,
@@ -290,8 +319,8 @@ function on(eventful, event, query, handler, context, isOnce) {
         callAtLast: handler.zrEventfulCallAtLast
     };
 
-    var lastIndex = _h[event].length - 1;
-    var lastWrap = _h[event][lastIndex];
+    let lastIndex = _h[event].length - 1;
+    let lastWrap = _h[event][lastIndex];
     (lastWrap && lastWrap.callAtLast)
         ? _h[event].splice(lastIndex, 0, wrap)
         : _h[event].push(wrap);
@@ -300,90 +329,5 @@ function on(eventful, event, query, handler, context, isOnce) {
 
     return eventful;
 }
-
-// ----------------------
-// The events in zrender
-// ----------------------
-
-/**
- * @event module:zrender/mixin/Eventful#onclick
- * @type {Function}
- * @default null
- */
-/**
- * @event module:zrender/mixin/Eventful#onmouseover
- * @type {Function}
- * @default null
- */
-/**
- * @event module:zrender/mixin/Eventful#onmouseout
- * @type {Function}
- * @default null
- */
-/**
- * @event module:zrender/mixin/Eventful#onmousemove
- * @type {Function}
- * @default null
- */
-/**
- * @event module:zrender/mixin/Eventful#onmousewheel
- * @type {Function}
- * @default null
- */
-/**
- * @event module:zrender/mixin/Eventful#onmousedown
- * @type {Function}
- * @default null
- */
-/**
- * @event module:zrender/mixin/Eventful#onmouseup
- * @type {Function}
- * @default null
- */
-/**
- * @event module:zrender/mixin/Eventful#ondrag
- * @type {Function}
- * @default null
- */
-/**
- * @event module:zrender/mixin/Eventful#ondragstart
- * @type {Function}
- * @default null
- */
-/**
- * @event module:zrender/mixin/Eventful#ondragend
- * @type {Function}
- * @default null
- */
-/**
- * @event module:zrender/mixin/Eventful#ondragenter
- * @type {Function}
- * @default null
- */
-/**
- * @event module:zrender/mixin/Eventful#ondragleave
- * @type {Function}
- * @default null
- */
-/**
- * @event module:zrender/mixin/Eventful#ondragover
- * @type {Function}
- * @default null
- */
-/**
- * @event module:zrender/mixin/Eventful#ondrop
- * @type {Function}
- * @default null
- */
-/**
- * @event module:zrender/mixin/Eventful#onpagemousemove
- * @type {Function}
- * @default null
- */
-/**
- * @event module:zrender/mixin/Eventful#onpagemouseup
- * @type {Function}
- * @default null
- */
 
 export default Eventful;

@@ -1,17 +1,16 @@
-/**
- * 内外旋轮曲线
- * @module zrender/graphic/shape/Trochold
- */
-
 import Path from '../Path';
-
-var cos = Math.cos;
-var sin = Math.sin;
-
-export default Path.extend({
-
+/**
+ * @class zrender.graphic.shape.Trochold 
+ * 内外旋轮曲线
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
+let cos = Math.cos;
+let sin = Math.sin;
+let defaultConfig={
+    /**
+     * @property {String} type
+     */
     type: 'trochoid',
-
     shape: {
         cx: 0,
         cy: 0,
@@ -20,32 +19,46 @@ export default Path.extend({
         d: 0,
         location: 'out'
     },
-
     style: {
         stroke: '#000',
-
         fill: null
-    },
+    }
+};
 
-    buildPath: function (ctx, shape) {
-        var x1;
-        var y1;
-        var x2;
-        var y2;
-        var R = shape.r;
-        var r = shape.r0;
-        var d = shape.d;
-        var offsetX = shape.cx;
-        var offsetY = shape.cy;
-        var delta = shape.location === 'out' ? 1 : -1;
+export default class Trochold extends Path{
+    /**
+     * @method constructor Trochold
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
+
+    /**
+     * @method buildPath
+     * 绘制图元路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
+    buildPath(ctx, shape) {
+        let x1;
+        let y1;
+        let x2;
+        let y2;
+        let R = shape.r;
+        let r = shape.r0;
+        let d = shape.d;
+        let offsetX = shape.cx;
+        let offsetY = shape.cy;
+        let delta = shape.location === 'out' ? 1 : -1;
 
         if (shape.location && R <= r) {
             return;
         }
 
-        var num = 0;
-        var i = 1;
-        var theta;
+        let num = 0;
+        let i = 1;
+        let theta;
 
         x1 = (R + delta * r) * cos(0)
             - delta * d * cos(0) + offsetX;
@@ -74,4 +87,4 @@ export default Path.extend({
         while (i <= (r * num) / (R + delta * r) * 360);
 
     }
-});
+}

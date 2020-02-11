@@ -19,25 +19,15 @@
 
 var env = require(&quot;./core/env&quot;);
 
-var Handler = require(&quot;./event/Handler&quot;);
+var ZRenderEventHandler = require(&quot;./event/ZRenderEventHandler&quot;);
 
 var Storage = require(&quot;./Storage&quot;);
 
-var Painter = require(&quot;./Painter&quot;);
+var CanvasPainter = require(&quot;./CanvasPainter&quot;);
 
 var GlobalAnimationMgr = require(&quot;./animation/GlobalAnimationMgr&quot;);
 
-var HandlerDomProxy = require(&quot;./event/HandlerDomProxy&quot;);
-
-/*!
-* ZRender, a high performance 2d drawing library.
-*
-* Copyright (c) 2013, Baidu Inc.
-* All rights reserved.
-*
-* LICENSE
-* https://github.com/ecomfe/zrender/blob/master/LICENSE.txt
-*/
+var DomEventProxy = require(&quot;./event/DomEventProxy&quot;);
 
 <span id='zrender-core-ZRender'>/**
 </span> * @class zrender.core.ZRender
@@ -52,17 +42,17 @@ var HandlerDomProxy = require(&quot;./event/HandlerDomProxy&quot;);
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 if (!env.canvasSupported) {
-  throw new Error(&quot;Need Canvas Environments.&quot;);
+  throw new Error(&quot;Need Canvas Environment.&quot;);
 }
 
 var useVML = !env.canvasSupported;
-var painterCtors = {
-  canvas: Painter
+var painterMap = {
+  canvas: CanvasPainter
 }; // ZRender实例map索引，浏览器中同一个 window 下的 ZRender 实例都存在这里。
 
 var instances = {};
 <span id='zrender-core-ZRender-property-version'>/**
-</span> * @type {String}
+</span> * @property {String}
  */
 
 var version = &#39;4.1.2&#39;;
@@ -119,8 +109,8 @@ function getInstance(id) {
   return instances[id];
 }
 
-function registerPainter(name, Ctor) {
-  painterCtors[name] = Ctor;
+function registerPainter(name, PainterClass) {
+  painterMap[name] = PainterClass;
 }
 <span id='zrender-core-ZRender-method-constructor'>/**
 </span> * @method constructor ZRender
@@ -138,18 +128,18 @@ function registerPainter(name, Ctor) {
 var ZRender = function ZRender(id, dom, opts) {
   opts = opts || {};
 <span id='zrender-core-ZRender-property-dom'>  /**
-</span>   * @type {HTMLDomElement}
+</span>   * @property {HTMLDomElement}
    */
 
   this.dom = dom;
 <span id='zrender-core-ZRender-property-id'>  /**
-</span>   * @type {String}
+</span>   * @property {String}
    */
 
   this.id = id;
   var self = this;
 <span id='zrender-core-ZRender-property-storage'>  /**
-</span>   * @type {Storage}
+</span>   * @property {Storage}
    */
 
   var storage = new Storage();
@@ -157,24 +147,24 @@ var ZRender = function ZRender(id, dom, opts) {
   // TODO: remove vml
 
   if (useVML) {
-    if (!painterCtors.vml) {
+    if (!painterMap.vml) {
       throw new Error(&#39;You need to require \&#39;zrender/vml/vml\&#39; to support IE8&#39;);
     }
 
     rendererType = &#39;vml&#39;;
-  } else if (!rendererType || !painterCtors[rendererType]) {
+  } else if (!rendererType || !painterMap[rendererType]) {
     rendererType = &#39;canvas&#39;;
   }
 
-  var painter = new painterCtors[rendererType](dom, storage, opts, id);
+  var painter = new painterMap[rendererType](dom, storage, opts, id);
   this.storage = storage;
   this.painter = painter; //把DOM事件代理出来
 
-  var handerProxy = !env.node &amp;&amp; !env.worker ? new HandlerDomProxy(painter.getViewportRoot()) : null; //ZRender 自己封装的事件机制
+  var handerProxy = !env.node &amp;&amp; !env.worker ? new DomEventProxy(painter.getViewportRoot()) : null; //ZRender 自己封装的事件机制
 
-  this.handler = new Handler(storage, painter, handerProxy, painter.root);
+  this.eventHandler = new ZRenderEventHandler(storage, painter, handerProxy, painter.root);
 <span id='zrender-core-ZRender-property-globalAnimationMgr'>  /**
-</span>   * @type {GlobalAnimationMgr}
+</span>   * @property {GlobalAnimationMgr}
    * 利用 GlobalAnimationMgr 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
    * FROM MDN：
    * The window.requestAnimationFrame() method tells the browser that you wish 
@@ -196,7 +186,7 @@ var ZRender = function ZRender(id, dom, opts) {
   });
   this.globalAnimationMgr.start();
 <span id='zrender-core-ZRender-property-'>  /**
-</span>   * @type {boolean}
+</span>   * @property {boolean}
    * @private
    */
 
@@ -286,14 +276,14 @@ ZRender.prototype = {
    * Repaint the canvas immediately
    */
   refreshImmediately: function refreshImmediately() {
-    // var start = new Date();
+    // let start = new Date();
     // Clear needsRefresh ahead to avoid something wrong happens in refresh
     // Or it will cause zrender refreshes again and again.
     this._needsRefresh = this._needsRefreshHover = false;
     this.painter.refresh(); // Avoid trigger zr.refresh in Element#beforeUpdate hook
 
-    this._needsRefresh = this._needsRefreshHover = false; // var end = new Date();
-    // var log = document.getElementById(&#39;log&#39;);
+    this._needsRefresh = this._needsRefreshHover = false; // let end = new Date();
+    // let log = document.getElementById(&#39;log&#39;);
     // if (log) {
     //     log.innerHTML = log.innerHTML + &#39;&lt;br&gt;&#39; + (end - start);
     // }
@@ -373,7 +363,7 @@ ZRender.prototype = {
    * @return {Object} {target, topTarget}
    */
   findHover: function findHover(x, y) {
-    return this.handler.findHover(x, y);
+    return this.eventHandler.findHover(x, y);
   },
 
 <span id='zrender-core-ZRender-method-clearHover'>  /**
@@ -419,7 +409,7 @@ ZRender.prototype = {
   resize: function resize(opts) {
     opts = opts || {};
     this.painter.resize(opts.width, opts.height);
-    this.handler.resize();
+    this.eventHandler.resize();
   },
 
 <span id='zrender-core-ZRender-method-clearAnimation'>  /**
@@ -464,7 +454,7 @@ ZRender.prototype = {
    * @param {String} [cursorStyle=&#39;default&#39;] 例如 crosshair
    */
   setCursorStyle: function setCursorStyle(cursorStyle) {
-    this.handler.setCursorStyle(cursorStyle);
+    this.eventHandler.setCursorStyle(cursorStyle);
   },
 
 <span id='zrender-core-ZRender-method-on'>  /**
@@ -476,7 +466,7 @@ ZRender.prototype = {
    * @param {Object} [context] Context object
    */
   on: function on(eventName, eventHandler, context) {
-    this.handler.on(eventName, eventHandler, context);
+    this.eventHandler.on(eventName, eventHandler, context);
   },
 
 <span id='zrender-core-ZRender-method-off'>  /**
@@ -486,7 +476,7 @@ ZRender.prototype = {
    * @param {Function} [eventHandler] Handler function
    */
   off: function off(eventName, eventHandler) {
-    this.handler.off(eventName, eventHandler);
+    this.eventHandler.off(eventName, eventHandler);
   },
 
 <span id='zrender-core-ZRender-method-trigger'>  /**
@@ -497,7 +487,7 @@ ZRender.prototype = {
    * @param {event=} event Event object
    */
   trigger: function trigger(eventName, event) {
-    this.handler.trigger(eventName, event);
+    this.eventHandler.trigger(eventName, event);
   },
 
 <span id='zrender-core-ZRender-method-clear'>  /**
@@ -518,11 +508,94 @@ ZRender.prototype = {
     this.clear();
     this.storage.dispose();
     this.painter.dispose();
-    this.handler.dispose();
-    this.globalAnimationMgr = this.storage = this.painter = this.handler = null;
+    this.eventHandler.dispose();
+    this.globalAnimationMgr = this.storage = this.painter = this.eventHandler = null;
     delete instances[this.id];
   }
-};
+}; // ---------------------------
+// Events of zrender instance.
+// ---------------------------
+
+<span id='zrender-core-ZRender-event-onclick'>/**
+</span> * @event onclick
+ * @param {Function} null
+ */
+
+<span id='zrender-core-ZRender-event-onmouseover'>/**
+</span> * @event onmouseover
+ * @param {Function} null
+ */
+
+<span id='zrender-core-ZRender-event-onmouseout'>/**
+</span> * @event onmouseout
+ * @param {Function} null
+ */
+
+<span id='zrender-core-ZRender-event-onmousemove'>/**
+</span> * @event onmousemove
+ * @param {Function} null
+ */
+
+<span id='zrender-core-ZRender-event-onmousewheel'>/**
+</span> * @event onmousewheel
+ * @param {Function} null
+ */
+
+<span id='zrender-core-ZRender-event-onmousedown'>/**
+</span> * @event onmousedown
+ * @param {Function} null
+ */
+
+<span id='zrender-core-ZRender-event-onmouseup'>/**
+</span> * @event onmouseup
+ * @param {Function} null
+ */
+
+<span id='zrender-core-ZRender-event-ondrag'>/**
+</span> * @event ondrag
+ * @param {Function} null
+ */
+
+<span id='zrender-core-ZRender-event-ondragstart'>/**
+</span> * @event ondragstart
+ * @param {Function} null
+ */
+
+<span id='zrender-core-ZRender-event-ondragend'>/**
+</span> * @event ondragend
+ * @param {Function} null
+ */
+
+<span id='zrender-core-ZRender-event-ondragenter'>/**
+</span> * @event ondragenter
+ * @param {Function} null
+ */
+
+<span id='zrender-core-ZRender-event-ondragleave'>/**
+</span> * @event ondragleave
+ * @param {Function} null
+ */
+
+<span id='zrender-core-ZRender-event-ondragover'>/**
+</span> * @event ondragover
+ * @param {Function} null
+ */
+
+<span id='zrender-core-ZRender-event-ondrop'>/**
+</span> * @event ondrop
+ * @param {Function} null
+ */
+
+<span id='zrender-core-ZRender-event-onpagemousemove'>/**
+</span> * @event onpagemousemove
+ * @param {Function} null
+ */
+
+<span id='zrender-core-ZRender-event-onpagemouseup'>/**
+</span> * @event onpagemouseup
+ * @param {Function} null
+ */
+
 exports.version = version;
 exports.init = init;
 exports.dispose = dispose;

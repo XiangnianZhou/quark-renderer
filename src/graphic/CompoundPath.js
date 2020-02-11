@@ -1,56 +1,94 @@
-// CompoundPath to improve performance
-
 import Path from './Path';
-
-export default Path.extend({
-
+/**
+ * @class zrender.graphic.CompoundPath 
+ * 
+ * CompoundPath to improve performance.
+ * 
+ * 复合路径，用来提升性能。
+ * 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
+let defaultConfig={
+    /**
+     * @property {String} type
+     */
     type: 'compound',
-
     shape: {
-
         paths: null
-    },
+    }
+};
 
-    _updatePathDirty: function () {
-        var dirtyPath = this.__dirtyPath;
-        var paths = this.shape.paths;
-        for (var i = 0; i < paths.length; i++) {
+export default class CompoundPath extends Path{
+    /**
+     * @method constructor CompoundPath
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
+
+    /**
+     * @private
+     * @method _updatePathDirty
+     */
+    _updatePathDirty() {
+        let dirtyPath = this.__dirtyPath;
+        let paths = this.shape.paths;
+        for (let i = 0; i < paths.length; i++) {
             // Mark as dirty if any subpath is dirty
             dirtyPath = dirtyPath || paths[i].__dirtyPath;
         }
         this.__dirtyPath = dirtyPath;
         this.__dirty = this.__dirty || dirtyPath;
-    },
+    }
 
-    beforeBrush: function () {
+    /**
+     * @private
+     * @method beforeBrush
+     */
+    beforeBrush() {
         this._updatePathDirty();
-        var paths = this.shape.paths || [];
-        var scale = this.getGlobalScale();
+        let paths = this.shape.paths || [];
+        let scale = this.getGlobalScale();
         // Update path scale
-        for (var i = 0; i < paths.length; i++) {
+        for (let i = 0; i < paths.length; i++) {
             if (!paths[i].path) {
                 paths[i].createPathProxy();
             }
             paths[i].path.setScale(scale[0], scale[1], paths[i].segmentIgnoreThreshold);
         }
-    },
+    }
 
-    buildPath: function (ctx, shape) {
-        var paths = shape.paths || [];
-        for (var i = 0; i < paths.length; i++) {
+    /**
+     * @method buildPath
+     * 绘制图元路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
+    buildPath(ctx, shape) {
+        let paths = shape.paths || [];
+        for (let i = 0; i < paths.length; i++) {
             paths[i].buildPath(ctx, paths[i].shape, true);
         }
-    },
+    }
 
-    afterBrush: function () {
-        var paths = this.shape.paths || [];
-        for (var i = 0; i < paths.length; i++) {
+    /**
+     * @private
+     * @method afterBrush
+     */
+    afterBrush() {
+        let paths = this.shape.paths || [];
+        for (let i = 0; i < paths.length; i++) {
             paths[i].__dirtyPath = false;
         }
-    },
+    }
 
-    getBoundingRect: function () {
+    /**
+     * @private
+     * @method getBoundingRect
+     */
+    getBoundingRect() {
         this._updatePathDirty();
         return Path.prototype.getBoundingRect.call(this);
     }
-});
+}

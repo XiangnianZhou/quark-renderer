@@ -4,29 +4,35 @@ import * as dataUtil from '../core/utils/dataStructureUtil';
 import * as imageHelper from './utils/image';
 
 /**
- * @alias zrender/graphic/Image
- * @extends module:zrender/graphic/Displayable
- * @constructor
- * @param {Object} opts
+ * @class zrender.graphic.ZImage 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-function ZImage(opts) {
-    Displayable.call(this, opts);
-}
+export default class ZImage extends Displayable{
+    /**
+     * @method constructor ZImage
+     * @param {Object} opts
+     */
+    constructor(opts){
+        super(opts);
+        /**
+         * @property {String}
+         */
+        this.type='image';
+    }
 
-ZImage.prototype = {
-
-    constructor: ZImage,
-
-    type: 'image',
-
-    brush: function (ctx, prevEl) {
-        var style = this.style;
-        var src = style.image;
+    /**
+     * @method brush
+     * @param {Object} ctx 
+     * @param {Element} prevEl 
+     */
+    brush(ctx, prevEl) {
+        let style = this.style;
+        let src = style.image;
 
         // Must bind each time
         style.bind(ctx, this, prevEl);
 
-        var image = this._image = imageHelper.createOrUpdateImage(
+        let image = this._image = imageHelper.createOrUpdateImage(
             src,
             this._image,
             this,
@@ -37,27 +43,17 @@ ZImage.prototype = {
             return;
         }
 
-        // 图片已经加载完成
-        // if (image.nodeName.toUpperCase() == 'IMG') {
-        //     if (!image.complete) {
-        //         return;
-        //     }
-        // }
-        // Else is canvas
-
-        var x = style.x || 0;
-        var y = style.y || 0;
-        var width = style.width;
-        var height = style.height;
-        var aspect = image.width / image.height;
+        let x = style.x || 0;
+        let y = style.y || 0;
+        let width = style.width;
+        let height = style.height;
+        let aspect = image.width / image.height;
         if (width == null && height != null) {
             // Keep image/height ratio
             width = height * aspect;
-        }
-        else if (height == null && width != null) {
+        }else if (height == null && width != null) {
             height = width / aspect;
-        }
-        else if (width == null && height == null) {
+        }else if (width == null && height == null) {
             width = image.width;
             height = image.height;
         }
@@ -66,26 +62,24 @@ ZImage.prototype = {
         this.setTransform(ctx);
 
         if (style.sWidth && style.sHeight) {
-            var sx = style.sx || 0;
-            var sy = style.sy || 0;
+            let sx = style.sx || 0;
+            let sy = style.sy || 0;
             ctx.drawImage(
                 image,
                 sx, sy, style.sWidth, style.sHeight,
                 x, y, width, height
             );
-        }
-        else if (style.sx && style.sy) {
-            var sx = style.sx;
-            var sy = style.sy;
-            var sWidth = width - sx;
-            var sHeight = height - sy;
+        }else if (style.sx && style.sy) {
+            let sx = style.sx;
+            let sy = style.sy;
+            let sWidth = width - sx;
+            let sHeight = height - sy;
             ctx.drawImage(
                 image,
                 sx, sy, sWidth, sHeight,
                 x, y, width, height
             );
-        }
-        else {
+        }else {
             ctx.drawImage(image, x, y, width, height);
         }
 
@@ -95,10 +89,13 @@ ZImage.prototype = {
             this.restoreTransform(ctx);
             this.drawRectText(ctx, this.getBoundingRect());
         }
-    },
+    }
 
-    getBoundingRect: function () {
-        var style = this.style;
+    /**
+     * @method getBoundingRect
+     */
+    getBoundingRect() {
+        let style = this.style;
         if (!this._rect) {
             this._rect = new BoundingRect(
                 style.x || 0, style.y || 0, style.width || 0, style.height || 0
@@ -106,8 +103,4 @@ ZImage.prototype = {
         }
         return this._rect;
     }
-};
-
-dataUtil.inherits(ZImage, Displayable);
-
-export default ZImage;
+}

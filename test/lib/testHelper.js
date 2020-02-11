@@ -126,7 +126,7 @@
         /**
          * @public
          * @param {Object} params key-value map. value value Must be able to be JSON stringified.
-         * @return {string} segment enable in location.hash
+         * @return {String} segment enable in location.hash
          */
         exports.makeHashStorageSegment = function (params) {
             return makeStorageSegment('hash', _hashSegmentKey, params);
@@ -135,7 +135,7 @@
         /**
          * @public
          * @param {Object} params key-value map. value value Must be able to be JSON stringified.
-         * @return {string} segment enable in location.search
+         * @return {String} segment enable in location.search
          */
         exports.makeSearchStorageSegment = function (params) {
             return makeStorageSegment('search', _searchSegmentKey, params);

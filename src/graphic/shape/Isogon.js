@@ -1,38 +1,54 @@
-/**
- * 正多边形
- * @module zrender/shape/Isogon
- */
-
 import Path from '../Path';
+/**
+ * @class zrender.graphic.shape.Isogon 
+ * 正多边形
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
+let PI = Math.PI;
+let sin = Math.sin;
+let cos = Math.cos;
 
-var PI = Math.PI;
-var sin = Math.sin;
-var cos = Math.cos;
-
-export default Path.extend({
-
+let defaultConfig={
+    /**
+     * @property {String} type
+     */
     type: 'isogon',
-
     shape: {
         x: 0, y: 0,
         r: 0, n: 0
-    },
+    }
+};
 
-    buildPath: function (ctx, shape) {
-        var n = shape.n;
+export default class Isogon extends Path{
+    /**
+     * @method constructor Isogon
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
+
+    /**
+     * @method buildPath
+     * 绘制图元路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
+    buildPath(ctx, shape) {
+        let n = shape.n;
         if (!n || n < 2) {
             return;
         }
 
-        var x = shape.x;
-        var y = shape.y;
-        var r = shape.r;
+        let x = shape.x;
+        let y = shape.y;
+        let r = shape.r;
 
-        var dStep = 2 * PI / n;
-        var deg = -PI / 2;
+        let dStep = 2 * PI / n;
+        let deg = -PI / 2;
 
         ctx.moveTo(x + r * cos(deg), y + r * sin(deg));
-        for (var i = 0, end = n - 1; i < end; i++) {
+        for (let i = 0, end = n - 1; i < end; i++) {
             deg += dStep;
             ctx.lineTo(x + r * cos(deg), y + r * sin(deg));
         }
@@ -41,4 +57,4 @@ export default Path.extend({
 
         return;
     }
-});
+}

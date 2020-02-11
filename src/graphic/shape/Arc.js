@@ -1,49 +1,55 @@
-/**
- * 圆弧
- * @module zrender/graphic/shape/Arc
- */
-
 import Path from '../Path';
-
-export default Path.extend({
-
+/**
+ * @class zrender.graphic.shape.Arc 
+ * 圆弧
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
+let defaultConfig={
+    /**
+     * @property {String} type
+     */
     type: 'arc',
-
     shape: {
-
         cx: 0,
-
         cy: 0,
-
         r: 0,
-
         startAngle: 0,
-
         endAngle: Math.PI * 2,
-
         clockwise: true
     },
-
     style: {
-
         stroke: '#000',
-
         fill: null
-    },
+    }
+};
 
-    buildPath: function (ctx, shape) {
+export default class Arc extends Path{
+    /**
+     * @method constructor Line
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
-        var x = shape.cx;
-        var y = shape.cy;
-        var r = Math.max(shape.r, 0);
-        var startAngle = shape.startAngle;
-        var endAngle = shape.endAngle;
-        var clockwise = shape.clockwise;
+    /**
+     * @method buildPath
+     * 绘制图元路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
+    buildPath(ctx, shape) {
+        let x = shape.cx;
+        let y = shape.cy;
+        let r = Math.max(shape.r, 0);
+        let startAngle = shape.startAngle;
+        let endAngle = shape.endAngle;
+        let clockwise = shape.clockwise;
 
-        var unitX = Math.cos(startAngle);
-        var unitY = Math.sin(startAngle);
+        let unitX = Math.cos(startAngle);
+        let unitY = Math.sin(startAngle);
 
         ctx.moveTo(unitX * r + x, unitY * r + y);
         ctx.arc(x, y, r, startAngle, endAngle, !clockwise);
     }
-});
+}

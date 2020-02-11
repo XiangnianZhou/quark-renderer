@@ -2,7 +2,7 @@
 
     /**
      * @public
-     * @type {Object}
+     * @property {Object}
      */
     var helper = context.utHelper = {};
 
@@ -26,7 +26,7 @@
      * });
      *
      * @public
-     * @params {Array.<string>} [requireId] Like:
+     * @params {Array<String>} [requireId] Like:
      * @return {Function} testCase function wrap.
      */
     helper.prepare = function (requireId) {
@@ -164,7 +164,7 @@
     /**
      * Load javascript script
      *
-     * @param {string} resource Like 'xx/xx/xx.js';
+     * @param {String} resource Like 'xx/xx/xx.js';
      */
     helper.loadScript = function (url, id, callback) {
         var head = helper.getHeadEl();

@@ -57,8 +57,8 @@ function determinant(rows, rank, rowStart, rowMask, colMask, detCache) {
  *
  * Notice: `buildTransformer` may take more than 10ms in some Android device.
  *
- * @param {Array.<number>} src source four points, [x0, y0, x1, y1, x2, y2, x3, y3]
- * @param {Array.<number>} dest destination four points, [x0, y0, x1, y1, x2, y2, x3, y3]
+ * @param {Array<Number>} src source four points, [x0, y0, x1, y1, x2, y2, x3, y3]
+ * @param {Array<Number>} dest destination four points, [x0, y0, x1, y1, x2, y2, x3, y3]
  * @return {Function} transformer If fail, return null/undefined.
  */
 export function buildTransformer(src, dest) {

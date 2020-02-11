@@ -24,7 +24,7 @@ var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
  * 
  * 动画接口类，在 Element 类中 mixin 此类提供的功能，为图元提供动画功能。
  * 
- * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 
 <span id='zrender-animation-Animatable-method-constructor'>/**
@@ -33,7 +33,7 @@ var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
  */
 var Animatable = function Animatable() {
 <span id='zrender-animation-Animatable-property-animationProcessList'>  /**
-</span>   * @type {Array.&lt;module:zrender/animation/AnimationProcess&gt;}
+</span>   * @property {zrender.animation.AnimationProcess}
    * @readOnly
    */
   this.animationProcessList = [];
@@ -49,20 +49,19 @@ Animatable.prototype = {
    * @param {Boolean} [loop=false] Whether to loop animation.
    * @return {zrender.animation.AnimationProcess}
    * @example
-   *  el.animate(&#39;style&#39;, false)
-   *    .when(1000, {x: 10} )
-   *    .done(function(){ // Animation done })
-   *    .start()
+   * el.animate(&#39;style&#39;, false)
+   *   .when(1000, {x: 10} )
+   *   .done(function(){ // Animation done })
+   *   .start()
    */
   animate: function animate(path, loop) {
     var target;
     var animatingShape = false;
-    var el = this;
-    var zr = this.__zr;
+    var animatable = this;
 
     if (path) {
       var pathSplitted = path.split(&#39;.&#39;);
-      var prop = el; // If animating shape
+      var prop = animatable; // If animating shape
 
       animatingShape = pathSplitted[0] === &#39;shape&#39;;
 
@@ -78,26 +77,25 @@ Animatable.prototype = {
         target = prop;
       }
     } else {
-      target = el;
+      target = animatable;
     }
 
     if (!target) {
-      console.log(&#39;Property &quot;&#39; + path + &#39;&quot; is not existed in element &#39; + el.id);
+      console.log(&#39;Property &quot;&#39; + path + &#39;&quot; is not existed in element &#39; + animatable.id);
       return;
     }
 
-    var animationProcessList = el.animationProcessList;
     var animationProcess = new AnimationProcess(target, loop);
     animationProcess.during(function (target) {
-      el.dirty(animatingShape);
+      animatable.dirty(animatingShape);
     }).done(function () {
       // FIXME AnimationProcess will not be removed if use `AnimationProcess#stop` to stop animation
-      animationProcessList.splice(dataUtil.indexOf(animationProcessList, animationProcess), 1);
+      animatable.animationProcessList.splice(dataUtil.indexOf(animatable.animationProcessList, animationProcess), 1);
     });
-    animationProcessList.push(animationProcess); // If animate after added to the zrender
+    animatable.animationProcessList.push(animationProcess); // If animate after added to the zrender
 
-    if (zr) {
-      zr.globalAnimationMgr.addAnimationProcess(animationProcess);
+    if (this.__zr) {
+      this.__zr.globalAnimationMgr.addAnimationProcess(animationProcess);
     }
 
     return animationProcess;
@@ -116,7 +114,7 @@ Animatable.prototype = {
     return this;
   },
 
-<span id='zrender-animation-Animatable-method-'>  /**
+<span id='zrender-animation-Animatable-method-animateTo'>  /**
 </span>   * @method
    * Caution: this method will stop previous animation.
    * So do not use this method to one element twice before
@@ -145,7 +143,6 @@ Animatable.prototype = {
    *      position: [10, 10]
    *  }, 100, 100, &#39;cubicOut&#39;, function () { // done })
    */
-  // TODO:Return animation key
   animateTo: function animateTo(target, time, delay, easing, callback, forceAnimate) {
     _doAnimation(this, target, time, delay, easing, callback, forceAnimate);
   },
@@ -232,7 +229,11 @@ function _doAnimation(animatable, target, time, delay, easing, callback, forceAn
   }
 }
 <span id='zrender-animation-Animatable-method-animateToShallow'>/**
-</span> * @param {String} path=&#39;&#39;
+</span> * @private
+ * @method
+ * 
+ * @param {Element} animatable
+ * @param {String} path=&#39;&#39;
  * @param {Object} source=animatable
  * @param {Object} target
  * @param {Number} [time=500]
@@ -263,26 +264,26 @@ function animateToShallow(animatable, path, source, target, time, delay, reverse
   var objShallow = {};
   var propertyCount = 0;
 
-  for (var name in target) {
-    if (!target.hasOwnProperty(name)) {
+  for (var prop in target) {
+    if (!target.hasOwnProperty(prop)) {
       continue;
     }
 
-    if (source[name] != null) {
-      if (dataUtil.isObject(target[name]) &amp;&amp; !dataUtil.isArrayLike(target[name])) {
-        animateToShallow(animatable, path ? path + &#39;.&#39; + name : name, source[name], target[name], time, delay, reverse);
+    if (source[prop] != null) {
+      if (dataUtil.isObject(target[prop]) &amp;&amp; !dataUtil.isArrayLike(target[prop])) {
+        animateToShallow(animatable, path ? path + &#39;.&#39; + prop : prop, source[prop], target[prop], time, delay, reverse);
       } else {
         if (reverse) {
-          objShallow[name] = source[name];
-          setAttrByPath(animatable, path, name, target[name]);
+          objShallow[prop] = source[prop];
+          setAttrByPath(animatable, path, prop, target[prop]);
         } else {
-          objShallow[name] = target[name];
+          objShallow[prop] = target[prop];
         }
 
         propertyCount++;
       }
-    } else if (target[name] != null &amp;&amp; !reverse) {
-      setAttrByPath(animatable, path, name, target[name]);
+    } else if (target[prop] != null &amp;&amp; !reverse) {
+      setAttrByPath(animatable, path, prop, target[prop]);
     }
   }
 
@@ -291,16 +292,16 @@ function animateToShallow(animatable, path, source, target, time, delay, reverse
   }
 }
 
-function setAttrByPath(el, path, name, value) {
+function setAttrByPath(el, path, prop, value) {
   // Attr directly if not has property
   // FIXME, if some property not needed for element ?
   if (!path) {
-    el.attr(name, value);
+    el.attr(prop, value);
   } else {
     // Only support set shape or style
     var props = {};
     props[path] = {};
-    props[path][name] = value;
+    props[path][prop] = value;
     el.attr(props);
   }
 }

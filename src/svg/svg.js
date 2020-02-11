@@ -1,5 +1,5 @@
 import './graphic';
 import {registerPainter} from '../zrender';
-import Painter from './Painter';
+import SVGPainter from './SVGPainter';
 
-registerPainter('svg', Painter);
+registerPainter('svg', SVGPainter);

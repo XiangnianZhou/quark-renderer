@@ -1,12 +1,11 @@
-/*!
-* ZRender, a high performance 2d drawing library.
-*
-* Copyright (c) 2013, Baidu Inc.
-* All rights reserved.
-*
-* LICENSE
-* https://github.com/ecomfe/zrender/blob/master/LICENSE.txt
-*/
+import guid from './core/utils/guid';
+import env from './core/env';
+import ZRenderEventHandler from './event/ZRenderEventHandler';
+import Storage from './Storage';
+import CanvasPainter from './CanvasPainter';
+import GlobalAnimationMgr from './animation/GlobalAnimationMgr';
+import DomEventProxy from './event/DomEventProxy';
+
 /**
  * @class zrender.core.ZRender
  * ZRender, a high performance 2d drawing library.
@@ -19,31 +18,24 @@
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
-import guid from './core/utils/guid';
-import env from './core/env';
-import Handler from './event/Handler';
-import Storage from './Storage';
-import Painter from './Painter';
-import GlobalAnimationMgr from './animation/GlobalAnimationMgr';
-import HandlerDomProxy from './event/HandlerDomProxy';
 
 if(!env.canvasSupported){
-    throw new Error("Need Canvas Environments.");
+    throw new Error("Need Canvas Environment.");
 }
 
-var useVML = !env.canvasSupported;
+let useVML = !env.canvasSupported;
 
-var painterCtors = {
-    canvas: Painter
+let painterMap = {
+    canvas: CanvasPainter
 };
 
 // ZRender实例map索引，浏览器中同一个 window 下的 ZRender 实例都存在这里。
-var instances = {};
+let instances = {};
 
 /**
- * @type {String}
+ * @property {String}
  */
-export var version = '4.1.2';
+export let version = '4.1.2';
 
 /**
  * @method zrender.init()
@@ -60,7 +52,7 @@ export var version = '4.1.2';
  * @return {ZRender}
  */
 export function init(dom, opts) {
-    var zr = new ZRender(guid(), dom, opts);
+    let zr = new ZRender(guid(), dom, opts);
     instances[zr.id] = zr;
     return zr;
 }
@@ -75,7 +67,7 @@ export function dispose(zr) {
         zr.dispose();
     }
     else {
-        for (var key in instances) {
+        for (let key in instances) {
             if (instances.hasOwnProperty(key)) {
                 instances[key].dispose();
             }
@@ -95,8 +87,8 @@ export function getInstance(id) {
     return instances[id];
 }
 
-export function registerPainter(name, Ctor) {
-    painterCtors[name] = Ctor;
+export function registerPainter(name, PainterClass) {
+    painterMap[name] = PainterClass;
 }
 
 /**
@@ -110,50 +102,50 @@ export function registerPainter(name, Ctor) {
  * @param {Number} [opts.height] Can be 'auto' (the same as null/undefined)
  * @return {ZRender}
  */
-var ZRender = function (id, dom, opts) {
+let ZRender = function (id, dom, opts) {
 
     opts = opts || {};
 
     /**
-     * @type {HTMLDomElement}
+     * @property {HTMLDomElement}
      */
     this.dom = dom;
 
     /**
-     * @type {String}
+     * @property {String}
      */
     this.id = id;
 
-    var self = this;
+    let self = this;
 
     /**
-     * @type {Storage}
+     * @property {Storage}
      */
-    var storage = new Storage();
+    let storage = new Storage();
 
-    var rendererType = opts.renderer;
+    let rendererType = opts.renderer;
     // TODO WebGL
     // TODO: remove vml
     if (useVML) {
-        if (!painterCtors.vml) {
+        if (!painterMap.vml) {
             throw new Error('You need to require \'zrender/vml/vml\' to support IE8');
         }
         rendererType = 'vml';
-    }else if (!rendererType || !painterCtors[rendererType]) {
+    }else if (!rendererType || !painterMap[rendererType]) {
         rendererType = 'canvas';
     }
-    var painter = new painterCtors[rendererType](dom, storage, opts, id);
+    let painter = new painterMap[rendererType](dom, storage, opts, id);
 
     this.storage = storage;
     this.painter = painter;
 
     //把DOM事件代理出来
-    var handerProxy = (!env.node && !env.worker) ? new HandlerDomProxy(painter.getViewportRoot()) : null;
+    let handerProxy = (!env.node && !env.worker) ? new DomEventProxy(painter.getViewportRoot()) : null;
     //ZRender 自己封装的事件机制
-    this.handler = new Handler(storage, painter, handerProxy, painter.root);
+    this.eventHandler = new ZRenderEventHandler(storage, painter, handerProxy, painter.root);
 
     /**
-     * @type {GlobalAnimationMgr}
+     * @property {GlobalAnimationMgr}
      * 利用 GlobalAnimationMgr 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
      * FROM MDN：
      * The window.requestAnimationFrame() method tells the browser that you wish 
@@ -175,7 +167,7 @@ var ZRender = function (id, dom, opts) {
     this.globalAnimationMgr.start();
 
     /**
-     * @type {boolean}
+     * @property {boolean}
      * @private
      */
     this._needsRefresh;
@@ -263,7 +255,7 @@ ZRender.prototype = {
      * Repaint the canvas immediately
      */
     refreshImmediately: function () {
-        // var start = new Date();
+        // let start = new Date();
         // Clear needsRefresh ahead to avoid something wrong happens in refresh
         // Or it will cause zrender refreshes again and again.
         this._needsRefresh = this._needsRefreshHover = false;
@@ -271,8 +263,8 @@ ZRender.prototype = {
         // Avoid trigger zr.refresh in Element#beforeUpdate hook
         this._needsRefresh = this._needsRefreshHover = false;
 
-        // var end = new Date();
-        // var log = document.getElementById('log');
+        // let end = new Date();
+        // let log = document.getElementById('log');
         // if (log) {
         //     log.innerHTML = log.innerHTML + '<br>' + (end - start);
         // }
@@ -293,7 +285,7 @@ ZRender.prototype = {
      * 刷新 canvas 画面，此方法会在 window.requestAnimationFrame 方法中被不断调用。
      */
     flush: function () {
-        var triggerRendered;
+        let triggerRendered;
 
         if (this._needsRefresh) {      //是否需要全部重绘
             triggerRendered = true;
@@ -321,7 +313,7 @@ ZRender.prototype = {
      */
     addHover: function (el, style) {
         if (this.painter.addHover) {
-            var elMirror = this.painter.addHover(el, style);
+            let elMirror = this.painter.addHover(el, style);
             this.refreshHover();
             return elMirror;
         }
@@ -349,7 +341,7 @@ ZRender.prototype = {
      * @return {Object} {target, topTarget}
      */
     findHover: function (x, y) {
-        return this.handler.findHover(x, y);
+        return this.eventHandler.findHover(x, y);
     },
 
     /**
@@ -395,7 +387,7 @@ ZRender.prototype = {
     resize: function (opts) {
         opts = opts || {};
         this.painter.resize(opts.width, opts.height);
-        this.handler.resize();
+        this.eventHandler.resize();
     },
 
     /**
@@ -440,7 +432,7 @@ ZRender.prototype = {
      * @param {String} [cursorStyle='default'] 例如 crosshair
      */
     setCursorStyle: function (cursorStyle) {
-        this.handler.setCursorStyle(cursorStyle);
+        this.eventHandler.setCursorStyle(cursorStyle);
     },
 
     /**
@@ -452,7 +444,7 @@ ZRender.prototype = {
      * @param {Object} [context] Context object
      */
     on: function (eventName, eventHandler, context) {
-        this.handler.on(eventName, eventHandler, context);
+        this.eventHandler.on(eventName, eventHandler, context);
     },
 
     /**
@@ -462,7 +454,7 @@ ZRender.prototype = {
      * @param {Function} [eventHandler] Handler function
      */
     off: function (eventName, eventHandler) {
-        this.handler.off(eventName, eventHandler);
+        this.eventHandler.off(eventName, eventHandler);
     },
 
     /**
@@ -473,7 +465,7 @@ ZRender.prototype = {
      * @param {event=} event Event object
      */
     trigger: function (eventName, event) {
-        this.handler.trigger(eventName, event);
+        this.eventHandler.trigger(eventName, event);
     },
 
     /**
@@ -495,13 +487,81 @@ ZRender.prototype = {
         this.clear();
         this.storage.dispose();
         this.painter.dispose();
-        this.handler.dispose();
+        this.eventHandler.dispose();
 
         this.globalAnimationMgr =
         this.storage =
         this.painter =
-        this.handler = null;
+        this.eventHandler = null;
 
         delete instances[this.id];
     }
 };
+
+// ---------------------------
+// Events of zrender instance.
+// ---------------------------
+/**
+ * @event onclick
+ * @param {Function} null
+ */
+/**
+ * @event onmouseover
+ * @param {Function} null
+ */
+/**
+ * @event onmouseout
+ * @param {Function} null
+ */
+/**
+ * @event onmousemove
+ * @param {Function} null
+ */
+/**
+ * @event onmousewheel
+ * @param {Function} null
+ */
+/**
+ * @event onmousedown
+ * @param {Function} null
+ */
+/**
+ * @event onmouseup
+ * @param {Function} null
+ */
+/**
+ * @event ondrag
+ * @param {Function} null
+ */
+/**
+ * @event ondragstart
+ * @param {Function} null
+ */
+/**
+ * @event ondragend
+ * @param {Function} null
+ */
+/**
+ * @event ondragenter
+ * @param {Function} null
+ */
+/**
+ * @event ondragleave
+ * @param {Function} null
+ */
+/**
+ * @event ondragover
+ * @param {Function} null
+ */
+/**
+ * @event ondrop
+ * @param {Function} null
+ */
+/**
+ * @event onpagemousemove
+ * @param {Function} null
+ */
+/**
+ * @event onpagemouseup
+ * @param {Function} null
+ */

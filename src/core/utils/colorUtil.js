@@ -156,9 +156,9 @@ function putToCache(colorStr, rgbaArr) {
 }
 
 /**
- * @param {string} colorStr
- * @param {Array.<number>} out
- * @return {Array.<number>}
+ * @param {String} colorStr
+ * @param {Array<Number>} out
+ * @return {Array<Number>}
  * @memberOf module:zrender/util/color
  */
 export function parse(colorStr, rgbaArr) {
@@ -273,9 +273,9 @@ export function parse(colorStr, rgbaArr) {
 }
 
 /**
- * @param {Array.<number>} hsla
- * @param {Array.<number>} rgba
- * @return {Array.<number>} rgba
+ * @param {Array<Number>} hsla
+ * @param {Array<Number>} rgba
+ * @return {Array<Number>} rgba
  */
 function hsla2rgba(hsla, rgba) {
     var h = (((parseFloat(hsla[0]) % 360) + 360) % 360) / 360;  // 0 .. 1
@@ -302,8 +302,8 @@ function hsla2rgba(hsla, rgba) {
 }
 
 /**
- * @param {Array.<number>} rgba
- * @return {Array.<number>} hsla
+ * @param {Array<Number>} rgba
+ * @return {Array<Number>} hsla
  */
 function rgba2hsla(rgba) {
     if (!rgba) {
@@ -368,9 +368,9 @@ function rgba2hsla(rgba) {
 }
 
 /**
- * @param {string} color
- * @param {number} level
- * @return {string}
+ * @param {String} color
+ * @param {Number} level
+ * @return {String}
  * @memberOf module:zrender/util/color
  */
 export function lift(color, level) {
@@ -395,8 +395,8 @@ export function lift(color, level) {
 }
 
 /**
- * @param {string} color
- * @return {string}
+ * @param {String} color
+ * @return {String}
  * @memberOf module:zrender/util/color
  */
 export function toHex(color) {
@@ -408,10 +408,10 @@ export function toHex(color) {
 
 /**
  * Map value to color. Faster than lerp methods because color is represented by rgba array.
- * @param {number} normalizedValue A float between 0 and 1.
- * @param {Array.<Array.<number>>} colors List of rgba color array
- * @param {Array.<number>} [out] Mapped gba color array
- * @return {Array.<number>} will be null/undefined if input illegal.
+ * @param {Number} normalizedValue A float between 0 and 1.
+ * @param {Array<Array.<Number>>} colors List of rgba color array
+ * @param {Array<Number>} [out] Mapped gba color array
+ * @return {Array<Number>} will be null/undefined if input illegal.
  */
 export function fastLerp(normalizedValue, colors, out) {
     if (!(colors && colors.length)
@@ -442,8 +442,8 @@ export function fastLerp(normalizedValue, colors, out) {
 export var fastMapToColor = fastLerp;
 
 /**
- * @param {number} normalizedValue A float between 0 and 1.
- * @param {Array.<string>} colors Color list.
+ * @param {Number} normalizedValue A float between 0 and 1.
+ * @param {Array<String>} colors Color list.
  * @param {boolean=} fullOutput Default false.
  * @return {(string|Object)} Result color. If fullOutput,
  *                           return {color: ..., leftIndex: ..., rightIndex: ..., value: ...},
@@ -489,11 +489,11 @@ export function lerp(normalizedValue, colors, fullOutput) {
 export var mapToColor = lerp;
 
 /**
- * @param {string} color
+ * @param {String} color
  * @param {number=} h 0 ~ 360, ignore when null.
  * @param {number=} s 0 ~ 1, ignore when null.
  * @param {number=} l 0 ~ 1, ignore when null.
- * @return {string} Color string in rgba format.
+ * @return {String} Color string in rgba format.
  * @memberOf module:zrender/util/color
  */
 export function modifyHSL(color, h, s, l) {
@@ -510,9 +510,9 @@ export function modifyHSL(color, h, s, l) {
 }
 
 /**
- * @param {string} color
+ * @param {String} color
  * @param {number=} alpha 0 ~ 1
- * @return {string} Color string in rgba format.
+ * @return {String} Color string in rgba format.
  * @memberOf module:zrender/util/color
  */
 export function modifyAlpha(color, alpha) {
@@ -525,9 +525,9 @@ export function modifyAlpha(color, alpha) {
 }
 
 /**
- * @param {Array.<number>} arrColor like [12,33,44,0.4]
- * @param {string} type 'rgba', 'hsva', ...
- * @return {string} Result color. (If input illegal, return undefined).
+ * @param {Array<Number>} arrColor like [12,33,44,0.4]
+ * @param {String} type 'rgba', 'hsva', ...
+ * @return {String} Result color. (If input illegal, return undefined).
  */
 export function stringify(arrColor, type) {
     if (!arrColor || !arrColor.length) {

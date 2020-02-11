@@ -1,24 +1,41 @@
-/**
- * 水滴形状
- * @module zrender/graphic/shape/Droplet
- */
-
 import Path from '../Path';
-
-export default Path.extend({
-
+/**
+ * @class zrender.graphic.shape.Droplet 
+ * 水滴形状
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
+let defaultConfig={
+    /**
+     * @property {String} type
+     */
     type: 'droplet',
 
     shape: {
         cx: 0, cy: 0,
         width: 0, height: 0
-    },
+    }
+};
 
-    buildPath: function (ctx, shape) {
-        var x = shape.cx;
-        var y = shape.cy;
-        var a = shape.width;
-        var b = shape.height;
+export default class Droplet extends Path{
+    /**
+     * @method constructor Droplet
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
+
+    /**
+     * @method buildPath
+     * 绘制图元路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
+    buildPath(ctx, shape) {
+        let x = shape.cx;
+        let y = shape.cy;
+        let a = shape.width;
+        let b = shape.height;
 
         ctx.moveTo(x, y + a);
         ctx.bezierCurveTo(
@@ -39,4 +56,4 @@ export default Path.extend({
         );
         ctx.closePath();
     }
-});
+}
