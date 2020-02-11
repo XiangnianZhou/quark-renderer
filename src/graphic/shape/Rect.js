@@ -9,13 +9,11 @@ import {subPixelOptimizeRect} from '../utils/subPixelOptimize';
 // Avoid create repeatly.
 let subPixelOptimizeOutputShape = {};
 
-export default Path.extend({
-
+let defaultConfig={
     /**
      * @property {String} type
      */
     type: 'rect',
-
     shape: {
         // 左上、右上、右下、左下角的半径依次为r1、r2、r3、r4
         // r缩写为1         相当于 [1, 1, 1, 1]
@@ -23,12 +21,21 @@ export default Path.extend({
         // r缩写为[1, 2]    相当于 [1, 2, 1, 2]
         // r缩写为[1, 2, 3] 相当于 [1, 2, 3, 2]
         r: 0,
-
         x: 0,
         y: 0,
         width: 0,
         height: 0
-    },
+    }
+};
+
+export default class Rect extends Path{
+    /**
+     * @method constructor Rect
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @method buildPath
@@ -36,7 +43,7 @@ export default Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let x;
         let y;
         let width;
@@ -50,8 +57,7 @@ export default Path.extend({
             height = subPixelOptimizeOutputShape.height;
             subPixelOptimizeOutputShape.r = shape.r;
             shape = subPixelOptimizeOutputShape;
-        }
-        else {
+        }else {
             x = shape.x;
             y = shape.y;
             width = shape.width;
@@ -60,11 +66,11 @@ export default Path.extend({
 
         if (!shape.r) {
             ctx.rect(x, y, width, height);
-        }
-        else {
+        }else {
             roundRectHelper.buildPath(ctx, shape);
         }
+        
         ctx.closePath();
         return;
     }
-});
+}
