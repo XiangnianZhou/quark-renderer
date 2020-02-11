@@ -12,10 +12,6 @@ let STYLE_COMMON_PROPS = [
     ['lineCap', 'butt'], ['lineJoin', 'miter'], ['miterLimit', 10]
 ];
 
-let Style = function (opts) {
-    this.extendStyle(opts, false);
-};
-
 function createLinearGradient(ctx, obj, rect) {
     let x = obj.x == null ? 0 : obj.x;
     let x2 = obj.x2 == null ? 1 : obj.x2;
@@ -59,6 +55,9 @@ function createRadialGradient(ctx, obj, rect) {
     return canvasGradient;
 }
 
+let Style = function (opts) {
+    this.extendStyle(opts, false);
+};
 
 Style.prototype = {
     constructor: Style,

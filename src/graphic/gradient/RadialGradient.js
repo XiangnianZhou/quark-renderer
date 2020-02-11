@@ -1,7 +1,7 @@
 import * as classUtil from '../../core/utils/classUtil';
 import Gradient from './Gradient';
 /**
- * @class zrender.graphic.RadialGradient 
+ * @class zrender.graphic.gradient.RadialGradient 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 

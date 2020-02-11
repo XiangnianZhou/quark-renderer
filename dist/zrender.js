@@ -7339,10 +7339,6 @@ let STYLE_COMMON_PROPS = [
     ['lineCap', 'butt'], ['lineJoin', 'miter'], ['miterLimit', 10]
 ];
 
-let Style = function (opts) {
-    this.extendStyle(opts, false);
-};
-
 function createLinearGradient(ctx, obj, rect) {
     let x = obj.x == null ? 0 : obj.x;
     let x2 = obj.x2 == null ? 1 : obj.x2;
@@ -7386,6 +7382,9 @@ function createRadialGradient(ctx, obj, rect) {
     return canvasGradient;
 }
 
+let Style = function (opts) {
+    this.extendStyle(opts, false);
+};
 
 Style.prototype = {
     constructor: Style,
@@ -16118,7 +16117,7 @@ class Polyline extends Path{
 }
 
 /**
- * @class zrender.graphic.Gradient 
+ * @class zrender.graphic.gradient.Gradient 
  * 渐变
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
@@ -16141,7 +16140,7 @@ Gradient.prototype = {
 };
 
 /**
- * @class zrender.graphic.LinearGradient 
+ * @class zrender.graphic.gradient.LinearGradient 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
@@ -17836,7 +17835,7 @@ class Trochold extends Path{
 }
 
 /**
- * @class zrender.graphic.RadialGradient 
+ * @class zrender.graphic.gradient.RadialGradient 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
