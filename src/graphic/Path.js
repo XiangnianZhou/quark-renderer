@@ -206,8 +206,13 @@ class Path extends Displayable{
 
     /**
      * @method buildPath
-     * When bundling path, some shape may decide if use moveTo to begin a new subpath or closePath
-     * Like in circle
+     * 
+     * Each subclass should provide its own implement for this method.
+     * When build path, some shape may decide if use moveTo to begin a new subpath or closePath, like in circle.
+     * 
+     * 每个子类都需要为此方法提供自己的实现。
+     * 在构建路径时，某些形状需要根据情况决定使用 moveTo 来开始一段子路径，或者直接用 closePath 来封闭路径，比如圆形。
+     * 
      * @param {*} ctx 
      * @param {*} shapeCfg 
      * @param {*} inBundle 
