@@ -13,7 +13,7 @@ let STYLE_COMMON_PROPS = [
 ];
 
 let Style = function (opts) {
-    this.extendFrom(opts, false);
+    this.extendStyle(opts, false);
 };
 
 function createLinearGradient(ctx, obj, rect) {
@@ -433,14 +433,14 @@ Style.prototype = {
     },
 
     /**
-     * @method extendFrom
+     * @method extendStyle
      * Extend from other style
      * @param {Style} otherStyle
      * @param {Boolean} overwrite true: overwrirte any way.
      *                            false: overwrite only when !target.hasOwnProperty
      *                            others: overwrite when property is not null/undefined.
      */
-    extendFrom: function (otherStyle, overwrite) {
+    extendStyle: function (otherStyle, overwrite) {
         if (otherStyle) {
             for (let name in otherStyle) {
                 if (otherStyle.hasOwnProperty(name)
@@ -469,7 +469,7 @@ Style.prototype = {
             this[obj] = value;
         }
         else {
-            this.extendFrom(obj, true);
+            this.extendStyle(obj, true);
         }
     },
 
@@ -479,7 +479,7 @@ Style.prototype = {
      */
     clone: function () {
         let newStyle = new this.constructor();
-        newStyle.extendFrom(this, true);
+        newStyle.extendStyle(this, true);
         return newStyle;
     },
 

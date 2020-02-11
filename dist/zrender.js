@@ -7346,7 +7346,7 @@ let STYLE_COMMON_PROPS = [
 ];
 
 let Style = function (opts) {
-    this.extendFrom(opts, false);
+    this.extendStyle(opts, false);
 };
 
 function createLinearGradient(ctx, obj, rect) {
@@ -7766,14 +7766,14 @@ Style.prototype = {
     },
 
     /**
-     * @method extendFrom
+     * @method extendStyle
      * Extend from other style
      * @param {Style} otherStyle
      * @param {Boolean} overwrite true: overwrirte any way.
      *                            false: overwrite only when !target.hasOwnProperty
      *                            others: overwrite when property is not null/undefined.
      */
-    extendFrom: function (otherStyle, overwrite) {
+    extendStyle: function (otherStyle, overwrite) {
         if (otherStyle) {
             for (let name in otherStyle) {
                 if (otherStyle.hasOwnProperty(name)
@@ -7802,7 +7802,7 @@ Style.prototype = {
             this[obj] = value;
         }
         else {
-            this.extendFrom(obj, true);
+            this.extendStyle(obj, true);
         }
     },
 
@@ -7812,7 +7812,7 @@ Style.prototype = {
      */
     clone: function () {
         let newStyle = new this.constructor();
-        newStyle.extendFrom(this, true);
+        newStyle.extendStyle(this, true);
         return newStyle;
     },
 
@@ -14851,7 +14851,7 @@ Path.extend = function (defaults$$1) {
 
         if (defaults$$1.style) {
             // Extend default style
-            this.style.extendFrom(defaults$$1.style, false);
+            this.style.extendStyle(defaults$$1.style, false);
         }
 
         // Extend default shape
@@ -16928,7 +16928,6 @@ var CompoundPath = Path.extend({
  */
 // TODO Style override ?
 function IncrementalDisplayble(opts) {
-    // Displayble.call(this, opts);
     copyProperties(this,Displayable,opts);
     this._displayables = [];
     this._temporaryDisplayables = [];

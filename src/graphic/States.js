@@ -215,7 +215,7 @@ GraphicStates.prototype = {
                     let initialState = this._states[this._initialState];
                     el.style = new Style();
                     if (initialState) {
-                        el.style.extendFrom(initialState.style, false);
+                        el.style.extendStyle(initialState.style, false);
                     }
                     if (
                         // Not initial state
@@ -223,7 +223,7 @@ GraphicStates.prototype = {
                         // Not copied from initial state in _extendFromInitial method
                         && initialState.style !== state.style
                     ) {
-                        el.style.extendFrom(state.style, true);
+                        el.style.extendStyle(state.style, true);
                     }
                 }
                 if (state.shape) {

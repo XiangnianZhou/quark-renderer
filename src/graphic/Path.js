@@ -383,7 +383,7 @@ Path.extend = function (defaults) {
 
         if (defaults.style) {
             // Extend default style
-            this.style.extendFrom(defaults.style, false);
+            this.style.extendStyle(defaults.style, false);
         }
 
         // Extend default shape
