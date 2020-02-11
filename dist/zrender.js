@@ -6029,57 +6029,56 @@ BoundingRect.create = function (rect) {
  *      }));
  *      zr.add(g);
  */
-
-/**
- * @method constructor Group
- */
-let Group = function (opts={}) {
-    Group.superClass.call(this, opts);
-    copyOwnProperties(this,opts);
-
+class Group extends Element{
     /**
-     * @private
-     * @property _children
+     * @method constructor Group
      */
-    this._children = [];
-    /**
-     * @private
-     * @property __storage
-     */
-    this.__storage = null;
-    /**
-     * @private
-     * @property __dirty
-     */
-    this.__dirty = true;
-};
+    constructor(opts={}){
+        super(opts);
 
-Group.prototype = {
+        /**
+         * @private
+         * @property _children
+         */
+        this._children = [];
 
-    constructor: Group,
+        /**
+         * @private
+         * @property __storage
+         */
+        this.__storage = null;
 
-    /**
-     * @property isGroup
-     */
-    isGroup: true,
+        /**
+         * @private
+         * @property __dirty
+         */
+        this.__dirty = true;
 
-    /**
-     * @property {String}
-     */
-    type: 'group',
+        /**
+         * @property isGroup
+         */
+        this.isGroup=true;
+    
+        /**
+         * @property {String}
+         */
+        this.type='group';
+    
+        /**
+         * @property {Boolean} 所有子孙元素是否响应鼠标事件
+         */
+        this.silent=false;
 
-    /**
-     * @property {Boolean} 所有子孙元素是否响应鼠标事件
-     */
-    silent: false,
+        copyOwnProperties(this,opts);
+    }
 
     /**
      * @method children
      * @return {Array<Element>}
      */
-    children: function () {
+    children() {
         return this._children.slice();
-    },
+    }
 
     /**
      * @method childAt
@@ -6087,9 +6086,9 @@ Group.prototype = {
      * @param  {Number} idx
      * @return {Element}
      */
-    childAt: function (idx) {
+    childAt(idx) {
         return this._children[idx];
-    },
+    }
 
     /**
      * @method childOfName
@@ -6097,35 +6096,35 @@ Group.prototype = {
      * @param  {String} name
      * @return {Element}
      */
-    childOfName: function (name) {
+    childOfName(name) {
         let children = this._children;
         for (let i = 0; i < children.length; i++) {
             if (children[i].name === name) {
                 return children[i];
             }
         }
-    },
+    }
 
     /**
      * @method childCount
      * @return {Number}
      */
-    childCount: function () {
+    childCount() {
         return this._children.length;
-    },
+    }
 
     /**
      * @method add
      * 添加子节点到最后
      * @param {Element} child
      */
-    add: function (child) {
+    add(child) {
         if (child && child !== this && child.parent !== this) {
             this._children.push(child);
             this._doAdd(child);
         }
         return this;
-    },
+    }
 
     /**
      * @method addBefore
@@ -6133,7 +6132,7 @@ Group.prototype = {
      * @param {Element} child
      * @param {Element} nextSibling
      */
-    addBefore: function (child, nextSibling) {
+    addBefore(child, nextSibling) {
         if (child && child !== this && child.parent !== this
             && nextSibling && nextSibling.parent === this) {
 
@@ -6145,16 +6144,15 @@ Group.prototype = {
                 this._doAdd(child);
             }
         }
-
         return this;
-    },
+    }
 
     /**
      * @private
      * @method _doAdd
      * @param {*} child 
      */
-    _doAdd: function (child) {
+    _doAdd(child) {
         if (child.parent) {
             child.parent.remove(child);
         }
@@ -6171,16 +6169,15 @@ Group.prototype = {
                 child.addChildrenToStorage(storage);
             }
         }
-
         zr && zr.refresh();
-    },
+    }
 
     /**
      * @method remove
      * 移除子节点
      * @param {Element} child
      */
-    remove: function (child) {
+    remove(child) {
         let zr = this.__zr;
         let storage = this.__storage;
         let children = this._children;
@@ -6190,28 +6187,24 @@ Group.prototype = {
             return this;
         }
         children.splice(idx, 1);
-
         child.parent = null;
 
         if (storage) {
-
             storage.delFromStorage(child);
-
             if (child instanceof Group) {
                 child.delChildrenFromStorage(storage);
             }
         }
 
         zr && zr.refresh();
-
         return this;
-    },
+    }
 
     /**
      * @method removeAll
      * 移除所有子节点
      */
-    removeAll: function () {
+    removeAll() {
         let children = this._children;
         let storage = this.__storage;
         let child;
@@ -6229,7 +6222,7 @@ Group.prototype = {
         children.length = 0;
 
         return this;
-    },
+    }
 
     /**
      * @method eachChild
@@ -6237,14 +6230,14 @@ Group.prototype = {
      * @param  {Function} cb
      * @param  {Object}   context
      */
-    eachChild: function (cb, context) {
+    eachChild(cb, context) {
         let children = this._children;
         for (let i = 0; i < children.length; i++) {
             let child = children[i];
             cb.call(context, child, i);
         }
         return this;
-    },
+    }
 
     /**
      * @method traverse
@@ -6252,7 +6245,7 @@ Group.prototype = {
      * @param  {Function} cb
      * @param  {Object}   context
      */
-    traverse: function (cb, context) {
+    traverse(cb, context) {
         for (let i = 0; i < this._children.length; i++) {
             let child = this._children[i];
             cb.call(context, child);
@@ -6262,13 +6255,13 @@ Group.prototype = {
             }
         }
         return this;
-    },
+    }
 
     /**
      * @method addChildrenToStorage
      * @param {Storage} storage 
      */
-    addChildrenToStorage: function (storage) {
+    addChildrenToStorage(storage) {
         for (let i = 0; i < this._children.length; i++) {
             let child = this._children[i];
             storage.addToStorage(child);
@@ -6276,13 +6269,13 @@ Group.prototype = {
                 child.addChildrenToStorage(storage);
             }
         }
-    },
+    }
 
     /**
      * @method delChildrenFromStorage
      * @param {Storage} storage 
      */
-    delChildrenFromStorage: function (storage) {
+    delChildrenFromStorage(storage) {
         for (let i = 0; i < this._children.length; i++) {
             let child = this._children[i];
             storage.delFromStorage(child);
@@ -6290,23 +6283,23 @@ Group.prototype = {
                 child.delChildrenFromStorage(storage);
             }
         }
-    },
+    }
 
     /**
      * @method dirty
      * @return {Group}
      */
-    dirty: function () {
+    dirty() {
         this.__dirty = true;
         this.__zr && this.__zr.refresh();
         return this;
-    },
+    }
 
     /**
      * @method getBoundingRect
      * @return {BoundingRect}
      */
-    getBoundingRect: function (includeChildren) {
+    getBoundingRect(includeChildren) {
         // TODO Caching
         let rect = null;
         let tmpRect = new BoundingRect(0, 0, 0, 0);
@@ -6333,17 +6326,14 @@ Group.prototype = {
                 tmpRect.applyTransform(transform);
                 rect = rect || tmpRect.clone();
                 rect.union(tmpRect);
-            }
-            else {
+            }else {
                 rect = rect || childRect.clone();
                 rect.union(childRect);
             }
         }
         return rect || tmpRect;
     }
-};
-
-inherits(Group, Element);
+}
 
 // https://github.com/mziccard/node-timsort
 var DEFAULT_MIN_MERGE = 32;
