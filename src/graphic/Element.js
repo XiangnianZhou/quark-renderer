@@ -5,79 +5,83 @@ import Animatable from '../animation/Animatable';
 import * as dataUtil from '../core/utils/dataStructureUtil';
 import * as classUtil from '../core/utils/classUtil';
 /**
- * @class zrender.graphic.Element 
- * 图形顶级抽象类，关键继承结构为 Element<-Displayable<-Path，shape包中的所有形状对象
- * 都是 Path 的子类。
+ * @class zrender.graphic.Element
+ * 
+ * Root class, everything visable in ZRender is subclass of Element. 
+ * This is an abstract class, please don't creat an instance directly.
+ * 
+ * 根类，ZRender 中所有可见的对象都是 Element 的子类。这是一个抽象类，请不要
+ * 直接 new 这个类的示例。
+ * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-/**
- * @method constructor Element
- */
-let Element = function (opts) {
-    Transformable.call(this, opts);
-    Eventful.call(this, opts);
-    Animatable.call(this, opts);
-
+class Element{
     /**
-     * @property {String}
+     * @method constructor Element
      */
-    this.id = opts.id || guid();
-};
+    constructor(opts){
+        classUtil.copyProperties(this,Transformable,opts);
+        classUtil.copyProperties(this,Eventful,opts);
+        classUtil.copyProperties(this,Animatable,opts);
+    
+        /**
+         * @property {String}
+         */
+        this.id = opts.id || guid();
 
-Element.prototype = {
-    /**
-     * @property {String} type 元素类型
-     */
-    type: 'element',
-
-    /**
-     * @property {String} name 元素名字
-     */
-    name: '',
-
-    /**
-     * @private
-     * @property {ZRender} __zr
-     * ZRender instance will be assigned when element is associated with zrender
-     * ZRender 实例对象，会在 element 添加到 zrender 实例中后自动赋值
-     */
-    __zr: null,
-
-    /**
-     * @property {Boolean} __dirty
-     * Dirty flag. From which painter will determine if this displayable object needs to be repainted.
-     * 这是一个非常重要的标志位，在绘制大量对象的时候，把 __dirty 标记为 false 可以节省大量操作。
-     */
-    __dirty: true,
-
-    /**
-     * @private
-     * @property  _rect
-     */
-    _rect:null,
-
-    /**
-     * @property {Boolean} ignore
-     * If ignore drawing and events of the element object
-     * 图形是否忽略，为true时忽略图形的绘制以及事件触发
-     */
-    ignore: false,
-
-    /**
-     * @property {Path} clipPath
-     * 用于裁剪的路径(shape)，所有 Group 内的路径在绘制时都会被这个路径裁剪
-     * 该路径会继承被裁减对象的变换
-     * @readOnly
-     * @see http://www.w3.org/TR/2dcontext/#clipping-region
-     */
-    clipPath: null,
-
-    /**
-     * @property {Boolean} isGroup
-     * 是否是 Group
-     */
-    isGroup: false,
+        /**
+         * @property {String} type 元素类型
+         */
+        this.type='element';
+    
+        /**
+         * @property {String} name 元素名字
+         */
+        this.name='';
+    
+        /**
+         * @private
+         * @property {ZRender} __zr
+         * ZRender instance will be assigned when element is associated with zrender
+         * ZRender 实例对象，会在 element 添加到 zrender 实例中后自动赋值
+         */
+        this.__zr=null;
+    
+        /**
+         * @property {Boolean} __dirty
+         * Dirty flag. From which painter will determine if this displayable object needs to be repainted.
+         * 这是一个非常重要的标志位，在绘制大量对象的时候，把 __dirty 标记为 false 可以节省大量操作。
+         */
+        this.__dirty=true;
+    
+        /**
+         * @private
+         * @property  _rect
+         */
+        this._rect=null;
+    
+        /**
+         * @property {Boolean} ignore
+         * If ignore drawing and events of the element object
+         * 图形是否忽略，为true时忽略图形的绘制以及事件触发
+         */
+        this.ignore=false;
+    
+        /**
+         * @property {Path} clipPath
+         * 用于裁剪的路径(shape)，所有 Group 内的路径在绘制时都会被这个路径裁剪
+         * 该路径会继承被裁减对象的变换
+         * @readOnly
+         * @see http://www.w3.org/TR/2dcontext/#clipping-region
+         */
+        this.clipPath=null;
+    
+        /**
+         * @property {Boolean} isGroup
+         * 是否是 Group
+         */
+        this.isGroup=false;
+    }
 
     /**
      * @method
@@ -86,7 +90,7 @@ Element.prototype = {
      * @param  {Number} dx dx on the global space
      * @param  {Number} dy dy on the global space
      */
-    drift: function (dx, dy) {
+    drift(dx, dy) {
         switch (this.draggable) {
             case 'horizontal':
                 dy = 0;
@@ -105,7 +109,7 @@ Element.prototype = {
 
         this.decomposeTransform();
         this.dirty(false);
-    },
+    }
 
     /**
      * @property {Function} beforeUpdate
@@ -113,7 +117,7 @@ Element.prototype = {
      * 
      * 刷新之前回调
      */
-    beforeUpdate: function () {},
+    beforeUpdate() {}
 
     /**
      * @property {Function} update
@@ -121,9 +125,9 @@ Element.prototype = {
      * 
      * 刷新每一帧回调
      */
-    update: function () {
+    update() {
         this.updateTransform();
-    },
+    }
 
     /**
      * @property {Function} afterUpdate
@@ -131,14 +135,14 @@ Element.prototype = {
      * 
      * 刷新之后回调
      */
-    afterUpdate: function () {},
+    afterUpdate() {}
     
     /**
      * @property {Function} traverse
      * @param  {Function} cb
      * @param  {Object}   context
      */
-    traverse: function (cb, context) {},
+    traverse(cb, context) {}
 
     /**
      * @protected
@@ -146,7 +150,7 @@ Element.prototype = {
      * @param {String} key
      * @param {Object} value
      */
-    attrKV: function (key, value) {
+    attrKV(key, value) {
         if (key === 'position' || key === 'scale' || key === 'origin') {
             // Copy the array
             if (value) {
@@ -160,25 +164,25 @@ Element.prototype = {
         }else {
             this[key] = value;
         }
-    },
+    }
 
     /**
      * @method hide
      * Hide the element
      */
-    hide: function () {
+    hide() {
         this.ignore = true;
         this.__zr && this.__zr.refresh();
-    },
+    }
 
     /**
      * @method show
      * Show the element
      */
-    show: function () {
+    show() {
         this.ignore = false;
         this.__zr && this.__zr.refresh();
-    },
+    }
 
     /**
      * @method attr
@@ -186,7 +190,7 @@ Element.prototype = {
      * @param {String|Object} key
      * @param {*} value
      */
-    attr: function (key, value) {
+    attr(key, value) {
         if (typeof key === 'String') {
             this.attrKV(key, value);
         }else if (dataUtil.isObject(key)) {
@@ -198,13 +202,13 @@ Element.prototype = {
         }
         this.dirty(false);
         return this;
-    },
+    }
 
     /**
      * @method setClipPath
      * @param {Path} clipPath
      */
-    setClipPath: function (clipPath) {
+    setClipPath(clipPath) {
         let zr = this.__zr;
         if (zr) {
             clipPath.addSelfToZr(zr);
@@ -223,12 +227,12 @@ Element.prototype = {
         //dirty() 方法定义在子类 Displayable 中，这里似乎不应该直接调用，作为父类的 Element 不应该了解子类的实现，否则不易理解和维护。
         //另，Displayable 中的 dirty() 方法没有参数，而孙类 Path 中的 dirty() 方法有参数。
         this.dirty(false);
-    },
+    }
 
     /**
      * @method removeClipPath
      */
-    removeClipPath: function () {
+    removeClipPath() {
         let clipPath = this.clipPath;
         if (clipPath) {
             if (clipPath.__zr) {
@@ -241,17 +245,17 @@ Element.prototype = {
 
             this.dirty(false);
         }
-    },
+    }
 
     /**
      * @method dirty
      * Mark displayable element dirty and refresh next frame
      */
-    dirty: function () {
+    dirty() {
         this.__dirty = this.__dirtyText = true;
         this._rect = null;
         this.__zr && this.__zr.refresh();
-    },
+    }
 
     /**
      * @method addSelfToZr
@@ -259,7 +263,7 @@ Element.prototype = {
      * Not recursively because it will be invoked when element added to storage.
      * @param {ZRender} zr
      */
-    addSelfToZr: function (zr) {
+    addSelfToZr(zr) {
         this.__zr = zr;
         // 添加动画
         let animationProcessList = this.animationProcessList;
@@ -272,7 +276,7 @@ Element.prototype = {
         if (this.clipPath) {
             this.clipPath.addSelfToZr(zr);
         }
-    },
+    }
 
     /**
      * @method removeSelfFromZr
@@ -280,7 +284,7 @@ Element.prototype = {
      * Not recursively because it will be invoked when element added to storage.
      * @param {ZRender} zr
      */
-    removeSelfFromZr: function (zr) {
+    removeSelfFromZr(zr) {
         this.__zr = null;
         // 移除动画
         let animationProcessList = this.animationProcessList;
@@ -294,7 +298,7 @@ Element.prototype = {
             this.clipPath.removeSelfFromZr(zr);
         }
     }
-};
+}
 
 classUtil.mixin(Element, Animatable);
 classUtil.mixin(Element, Transformable);
