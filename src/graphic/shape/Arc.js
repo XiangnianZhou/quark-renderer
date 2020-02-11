@@ -4,35 +4,33 @@ import Path from '../Path';
  * 圆弧
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-export default Path.extend({
-
+let defaultConfig={
     /**
      * @property {String} type
      */
     type: 'arc',
-
     shape: {
-
         cx: 0,
-
         cy: 0,
-
         r: 0,
-
         startAngle: 0,
-
         endAngle: Math.PI * 2,
-
         clockwise: true
     },
-
     style: {
-
         stroke: '#000',
-
         fill: null
-    },
+    }
+};
+
+export default class Arc extends Path{
+    /**
+     * @method constructor Line
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @method buildPath
@@ -40,7 +38,7 @@ export default Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let x = shape.cx;
         let y = shape.cy;
         let r = Math.max(shape.r, 0);
@@ -54,4 +52,4 @@ export default Path.extend({
         ctx.moveTo(unitX * r + x, unitY * r + y);
         ctx.arc(x, y, r, startAngle, endAngle, !clockwise);
     }
-});
+}

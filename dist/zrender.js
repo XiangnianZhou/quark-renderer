@@ -15802,6 +15802,10 @@ let defaultConfig={
 };
 
 class Line extends Path{
+    /**
+     * @method constructor Line
+     * @param {Object} opts 
+     */
     constructor(opts){
         super(opts,defaultConfig);
     }
@@ -17068,35 +17072,33 @@ inherits(IncrementalDisplayble, Displayable);
  * 圆弧
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-var Arc = Path.extend({
-
+let defaultConfig$1={
     /**
      * @property {String} type
      */
     type: 'arc',
-
     shape: {
-
         cx: 0,
-
         cy: 0,
-
         r: 0,
-
         startAngle: 0,
-
         endAngle: Math.PI * 2,
-
         clockwise: true
     },
-
     style: {
-
         stroke: '#000',
-
         fill: null
-    },
+    }
+};
+
+class Arc extends Path{
+    /**
+     * @method constructor Line
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig$1);
+    }
 
     /**
      * @method buildPath
@@ -17104,7 +17106,7 @@ var Arc = Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let x = shape.cx;
         let y = shape.cy;
         let r = Math.max(shape.r, 0);
@@ -17118,7 +17120,7 @@ var Arc = Path.extend({
         ctx.moveTo(unitX * r + x, unitY * r + y);
         ctx.arc(x, y, r, startAngle, endAngle, !clockwise);
     }
-});
+}
 
 /**
  * @class zrender.graphic.shape.BezierCurve 
