@@ -15522,19 +15522,26 @@ class Text extends Displayable{
  * 圆形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-var Circle = Path.extend({
-
+let defaultConfig={
     /**
      * @property {String} type
      */
     type: 'circle',
-
     shape: {
         cx: 0,
         cy: 0,
         r: 0
-    },
+    }
+};
+
+class Circle extends Path{
+    /**
+     * @method constructor Rect
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @method buildPath
@@ -15542,7 +15549,7 @@ var Circle = Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape, inBundle) {
+    buildPath(ctx, shape, inBundle) {
         // Better stroking in ShapeBundle
         // Always do it may have performence issue ( fill may be 2x more cost)
         if (inBundle) {
@@ -15557,7 +15564,7 @@ var Circle = Path.extend({
         // ctx.moveTo(shape.cx + shape.r, shape.cy);
         ctx.arc(shape.cx, shape.cy, shape.r, 0, Math.PI * 2, true);
     }
-});
+}
 
 /**
  * Sub-pixel optimize for canvas rendering, prevent from blur
@@ -15673,7 +15680,7 @@ function subPixelOptimize(position, lineWidth, positiveOrNegative) {
 // Avoid create repeatly.
 let subPixelOptimizeOutputShape = {};
 
-let defaultConfig={
+let defaultConfig$1={
     /**
      * @property {String} type
      */
@@ -15698,7 +15705,7 @@ class Rect extends Path{
      * @param {Object} opts 
      */
     constructor(opts){
-        super(opts,defaultConfig);
+        super(opts,defaultConfig$1);
     }
 
     /**
@@ -15786,7 +15793,7 @@ var Ellipse = Path.extend({
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 //TODO:Avoid create repeatly.
-let defaultConfig$1={
+let defaultConfig$2={
     /**
      * @property {String} type
      */
@@ -15813,7 +15820,7 @@ class Line extends Path{
      * @param {Object} opts 
      */
     constructor(opts){
-        super(opts,defaultConfig$1);
+        super(opts,defaultConfig$2);
     }
 
     /**
@@ -17078,7 +17085,7 @@ inherits(IncrementalDisplayble, Displayable);
  * 圆弧
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig$2={
+let defaultConfig$3={
     /**
      * @property {String} type
      */
@@ -17103,7 +17110,7 @@ class Arc extends Path{
      * @param {Object} opts 
      */
     constructor(opts){
-        super(opts,defaultConfig$2);
+        super(opts,defaultConfig$3);
     }
 
     /**

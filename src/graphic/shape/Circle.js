@@ -5,19 +5,26 @@ import Path from '../Path';
  * 圆形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-export default Path.extend({
-
+let defaultConfig={
     /**
      * @property {String} type
      */
     type: 'circle',
-
     shape: {
         cx: 0,
         cy: 0,
         r: 0
-    },
+    }
+}
+
+export default class Circle extends Path{
+    /**
+     * @method constructor Rect
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @method buildPath
@@ -25,7 +32,7 @@ export default Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape, inBundle) {
+    buildPath(ctx, shape, inBundle) {
         // Better stroking in ShapeBundle
         // Always do it may have performence issue ( fill may be 2x more cost)
         if (inBundle) {
@@ -40,4 +47,4 @@ export default Path.extend({
         // ctx.moveTo(shape.cx + shape.r, shape.cy);
         ctx.arc(shape.cx, shape.cy, shape.r, 0, Math.PI * 2, true);
     }
-});
+}
