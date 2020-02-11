@@ -19,6 +19,8 @@
 
 var dataUtil = require(&quot;../../core/utils/dataStructureUtil&quot;);
 
+var classUtil = require(&quot;../../core/utils/classUtil&quot;);
+
 var matrix = require(&quot;../../core/utils/matrix&quot;);
 
 <span id='zrender-svg-helper-ClippathManager'>/**
@@ -173,7 +175,7 @@ ClippathManager.prototype = {
     }
   }
 };
-dataUtil.inherits(ClippathManager, Definable);
+classUtil.inherits(ClippathManager, Definable);
 var _default = ClippathManager;
 module.exports = _default;</pre>
 </body>

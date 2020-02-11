@@ -15,7 +15,9 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">var util = require(&quot;../core/utils/dataStructureUtil&quot;);
+  <pre class="prettyprint lang-js">var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
+
+var classUtil = require(&quot;../core/utils/classUtil&quot;);
 
 var vec2 = require(&quot;../core/utils/vector&quot;);
 
@@ -149,7 +151,7 @@ function afterListenerChanged(handlerInstance) {
 
 var ZRenderEventHandler = function ZRenderEventHandler(storage, painter, proxy, painterRoot) {
   Eventful.call(this, {
-    afterListenerChanged: util.bind(afterListenerChanged, null, this)
+    afterListenerChanged: dataUtil.bind(afterListenerChanged, null, this)
   });
 <span id='zrender-event-ZRenderEventHandler-property-storage'>  /**
 </span>   * @property storage
@@ -220,7 +222,7 @@ ZRenderEventHandler.prototype = {
     }
 
     if (proxy) {
-      util.each(handlerNames, function (name) {
+      dataUtil.each(handlerNames, function (name) {
         // 监听 Proxy 上面派发的原生DOM事件，转发给本类的处理方法。
         proxy.on &amp;&amp; proxy.on(name, this[name], this);
       }, this); // Attach handler
@@ -288,10 +290,10 @@ ZRenderEventHandler.prototype = {
       event: event
     });
   },
-  pagemousemove: util.curry(pageEventHandler, &#39;pagemousemove&#39;),
-  pagemouseup: util.curry(pageEventHandler, &#39;pagemouseup&#39;),
-  pagekeydown: util.curry(pageEventHandler, &#39;pagekeydown&#39;),
-  pagekeyup: util.curry(pageEventHandler, &#39;pagekeyup&#39;),
+  pagemousemove: dataUtil.curry(pageEventHandler, &#39;pagemousemove&#39;),
+  pagemouseup: dataUtil.curry(pageEventHandler, &#39;pagemouseup&#39;),
+  pagekeydown: dataUtil.curry(pageEventHandler, &#39;pagekeydown&#39;),
+  pagekeyup: dataUtil.curry(pageEventHandler, &#39;pagekeyup&#39;),
 
 <span id='zrender-event-ZRenderEventHandler-method-resize'>  /**
 </span>   * @method resize
@@ -435,7 +437,7 @@ ZRenderEventHandler.prototype = {
   }
 }; // Common handlers
 
-util.each([&#39;click&#39;, &#39;mousedown&#39;, &#39;mouseup&#39;, &#39;mousewheel&#39;, &#39;dblclick&#39;, &#39;contextmenu&#39;], function (name) {
+dataUtil.each([&#39;click&#39;, &#39;mousedown&#39;, &#39;mouseup&#39;, &#39;mousewheel&#39;, &#39;dblclick&#39;, &#39;contextmenu&#39;], function (name) {
   ZRenderEventHandler.prototype[name] = function (event) {
     // Find hover again to avoid click event is dispatched manually. Or click is triggered without mouseover
     var hovered = this.findHover(event.zrX, event.zrY);
@@ -465,7 +467,7 @@ util.each([&#39;click&#39;, &#39;mousedown&#39;, &#39;mouseup&#39;, &#39;mousewh
     this.dispatchToElement(hovered, name, event);
   };
 });
-util.mixin(ZRenderEventHandler, Eventful);
+classUtil.mixin(ZRenderEventHandler, Eventful);
 var _default = ZRenderEventHandler;
 module.exports = _default;</pre>
 </body>

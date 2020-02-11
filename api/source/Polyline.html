@@ -19,12 +19,30 @@
 
 var polyHelper = require(&quot;../utils/poly&quot;);
 
+function _typeof(obj) { if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
+
+function _defineProperties(target, props) { for (var i = 0; i &lt; props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (&quot;value&quot; in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call &amp;&amp; (_typeof(call) === &quot;object&quot; || typeof call === &quot;function&quot;)) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(&quot;this hasn&#39;t been initialised - super() hasn&#39;t been called&quot;); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== &quot;function&quot; &amp;&amp; superClass !== null) { throw new TypeError(&quot;Super expression must either be null or a function&quot;); } subClass.prototype = Object.create(superClass &amp;&amp; superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 <span id='zrender-graphic-shape-Polyline'>/**
 </span> * @class zrender.graphic.shape.Polyline 
  * 
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
-var _default = Path.extend({
+var defaultConfig = {
 <span id='zrender-graphic-shape-Polyline-property-type'>  /**
 </span>   * @property {String} type
    */
@@ -37,19 +55,41 @@ var _default = Path.extend({
   style: {
     stroke: &#39;#000&#39;,
     fill: null
-  },
+  }
+};
 
+var Polyline =
+/*#__PURE__*/
+function (_Path) {
+  _inherits(Polyline, _Path);
+
+<span id='zrender-graphic-shape-Polyline-method-constructor'>  /**
+</span>   * @method constructor Polyline
+   * @param {Object} opts 
+   */
+  function Polyline(opts) {
+    _classCallCheck(this, Polyline);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Polyline).call(this, opts, defaultConfig));
+  }
 <span id='zrender-graphic-shape-Polyline-method-buildPath'>  /**
 </span>   * @method buildPath
    * 绘制图元路径
    * @param {Object} ctx 
    * @param {String} shape 
    */
-  buildPath: function buildPath(ctx, shape) {
-    polyHelper.buildPath(ctx, shape, false);
-  }
-});
 
-module.exports = _default;</pre>
+
+  _createClass(Polyline, [{
+    key: &quot;buildPath&quot;,
+    value: function buildPath(ctx, shape) {
+      polyHelper.buildPath(ctx, shape, false);
+    }
+  }]);
+
+  return Polyline;
+}(Path);
+
+module.exports = Polyline;</pre>
 </body>
 </html>

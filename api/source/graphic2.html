@@ -27,7 +27,7 @@ var colorTool = require(&quot;../core/utils/colorUtil&quot;);
 
 var textContain = require(&quot;../core/contain/text&quot;);
 
-var textHelper = require(&quot;../graphic/utils/text&quot;);
+var textUtil = require(&quot;../graphic/utils/textUtil&quot;);
 
 var RectText = require(&quot;../graphic/RectText&quot;);
 
@@ -41,7 +41,7 @@ var Path = require(&quot;../graphic/Path&quot;);
 
 var PathProxy = require(&quot;../core/PathProxy&quot;);
 
-var Gradient = require(&quot;../graphic/Gradient&quot;);
+var Gradient = require(&quot;../graphic/gradient/Gradient&quot;);
 
 var vmlCore = require(&quot;./core&quot;);
 
@@ -96,7 +96,7 @@ if (!env.canvasSupported) {
     return (parseFloat(zlevel) || 0) * ZLEVEL_BASE + (parseFloat(z) || 0) * Z_BASE + z2;
   };
 
-  var parsePercent = textHelper.parsePercent; //--------------PATH----------------------
+  var parsePercent = textUtil.parsePercent; //--------------PATH----------------------
 
   var setColorAndOpacity = function setColorAndOpacity(el, color, opacity) {
     var colorArr = colorTool.parse(color);
@@ -820,7 +820,7 @@ if (!env.canvasSupported) {
   var drawRectText = function drawRectText(vmlRoot, rect, textRect, fromTextEl) {
     var style = this.style; // Optimize, avoid normalize every time.
 
-    this.__dirty &amp;&amp; textHelper.normalizeTextStyle(style, true);
+    this.__dirty &amp;&amp; textUtil.normalizeTextStyle(style, true);
     var text = style.text; // Convert to string
 
     text != null &amp;&amp; (text += &#39;&#39;);

@@ -17,6 +17,8 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
 
+var classUtil = require(&quot;../core/utils/classUtil&quot;);
+
 var _eventUtil = require(&quot;../core/utils/eventUtil&quot;);
 
 var Dispatcher = _eventUtil.Dispatcher;
@@ -195,7 +197,7 @@ GlobalAnimationMgr.prototype = {
     return finished;
   }
 };
-dataUtil.mixin(GlobalAnimationMgr, Dispatcher);
+classUtil.mixin(GlobalAnimationMgr, Dispatcher);
 var _default = GlobalAnimationMgr;
 module.exports = _default;</pre>
 </body>

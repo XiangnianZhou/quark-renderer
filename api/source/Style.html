@@ -28,10 +28,6 @@ var ContextCachedBy = _constants.ContextCachedBy;
  */
 var STYLE_COMMON_PROPS = [[&#39;shadowBlur&#39;, 0], [&#39;shadowOffsetX&#39;, 0], [&#39;shadowOffsetY&#39;, 0], [&#39;shadowColor&#39;, &#39;#000&#39;], [&#39;lineCap&#39;, &#39;butt&#39;], [&#39;lineJoin&#39;, &#39;miter&#39;], [&#39;miterLimit&#39;, 10]];
 
-var Style = function Style(opts) {
-  this.extendFrom(opts, false);
-};
-
 function createLinearGradient(ctx, obj, rect) {
   var x = obj.x == null ? 0 : obj.x;
   var x2 = obj.x2 == null ? 1 : obj.x2;
@@ -71,6 +67,10 @@ function createRadialGradient(ctx, obj, rect) {
   var canvasGradient = ctx.createRadialGradient(x, y, 0, x, y, r);
   return canvasGradient;
 }
+
+var Style = function Style(opts) {
+  this.extendStyle(opts, false);
+};
 
 Style.prototype = {
   constructor: Style,
@@ -443,15 +443,15 @@ Style.prototype = {
     return stroke != null &amp;&amp; stroke !== &#39;none&#39; &amp;&amp; this.lineWidth &gt; 0;
   },
 
-<span id='zrender-graphic-Style-method-extendFrom'>  /**
-</span>   * @method extendFrom
+<span id='zrender-graphic-Style-method-extendStyle'>  /**
+</span>   * @method extendStyle
    * Extend from other style
    * @param {Style} otherStyle
    * @param {Boolean} overwrite true: overwrirte any way.
    *                            false: overwrite only when !target.hasOwnProperty
    *                            others: overwrite when property is not null/undefined.
    */
-  extendFrom: function extendFrom(otherStyle, overwrite) {
+  extendStyle: function extendStyle(otherStyle, overwrite) {
     if (otherStyle) {
       for (var name in otherStyle) {
         if (otherStyle.hasOwnProperty(name) &amp;&amp; (overwrite === true || (overwrite === false ? !this.hasOwnProperty(name) : otherStyle[name] != null))) {
@@ -471,7 +471,7 @@ Style.prototype = {
     if (typeof obj === &#39;string&#39;) {
       this[obj] = value;
     } else {
-      this.extendFrom(obj, true);
+      this.extendStyle(obj, true);
     }
   },
 
@@ -481,7 +481,7 @@ Style.prototype = {
    */
   clone: function clone() {
     var newStyle = new this.constructor();
-    newStyle.extendFrom(this, true);
+    newStyle.extendStyle(this, true);
     return newStyle;
   },
 

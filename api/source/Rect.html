@@ -23,6 +23,24 @@ var _subPixelOptimize = require(&quot;../utils/subPixelOptimize&quot;);
 
 var subPixelOptimizeRect = _subPixelOptimize.subPixelOptimizeRect;
 
+function _typeof(obj) { if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
+
+function _defineProperties(target, props) { for (var i = 0; i &lt; props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (&quot;value&quot; in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call &amp;&amp; (_typeof(call) === &quot;object&quot; || typeof call === &quot;function&quot;)) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(&quot;this hasn&#39;t been initialised - super() hasn&#39;t been called&quot;); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== &quot;function&quot; &amp;&amp; superClass !== null) { throw new TypeError(&quot;Super expression must either be null or a function&quot;); } subClass.prototype = Object.create(superClass &amp;&amp; superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 <span id='zrender-graphic-shape-Rect'>/**
 </span> * @class zrender.graphic.shape.Rect 
  * 矩形
@@ -30,8 +48,7 @@ var subPixelOptimizeRect = _subPixelOptimize.subPixelOptimizeRect;
  */
 // Avoid create repeatly.
 var subPixelOptimizeOutputShape = {};
-
-var _default = Path.extend({
+var defaultConfig = {
 <span id='zrender-graphic-shape-Rect-property-type'>  /**
 </span>   * @property {String} type
    */
@@ -47,46 +64,68 @@ var _default = Path.extend({
     y: 0,
     width: 0,
     height: 0
-  },
+  }
+};
 
+var Rect =
+/*#__PURE__*/
+function (_Path) {
+  _inherits(Rect, _Path);
+
+<span id='zrender-graphic-shape-Rect-method-constructor'>  /**
+</span>   * @method constructor Rect
+   * @param {Object} opts 
+   */
+  function Rect(opts) {
+    _classCallCheck(this, Rect);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Rect).call(this, opts, defaultConfig));
+  }
 <span id='zrender-graphic-shape-Rect-method-buildPath'>  /**
 </span>   * @method buildPath
    * 绘制图元路径
    * @param {Object} ctx 
    * @param {String} shape 
    */
-  buildPath: function buildPath(ctx, shape) {
-    var x;
-    var y;
-    var width;
-    var height;
 
-    if (this.subPixelOptimize) {
-      subPixelOptimizeRect(subPixelOptimizeOutputShape, shape, this.style);
-      x = subPixelOptimizeOutputShape.x;
-      y = subPixelOptimizeOutputShape.y;
-      width = subPixelOptimizeOutputShape.width;
-      height = subPixelOptimizeOutputShape.height;
-      subPixelOptimizeOutputShape.r = shape.r;
-      shape = subPixelOptimizeOutputShape;
-    } else {
-      x = shape.x;
-      y = shape.y;
-      width = shape.width;
-      height = shape.height;
+
+  _createClass(Rect, [{
+    key: &quot;buildPath&quot;,
+    value: function buildPath(ctx, shape) {
+      var x;
+      var y;
+      var width;
+      var height;
+
+      if (this.subPixelOptimize) {
+        subPixelOptimizeRect(subPixelOptimizeOutputShape, shape, this.style);
+        x = subPixelOptimizeOutputShape.x;
+        y = subPixelOptimizeOutputShape.y;
+        width = subPixelOptimizeOutputShape.width;
+        height = subPixelOptimizeOutputShape.height;
+        subPixelOptimizeOutputShape.r = shape.r;
+        shape = subPixelOptimizeOutputShape;
+      } else {
+        x = shape.x;
+        y = shape.y;
+        width = shape.width;
+        height = shape.height;
+      }
+
+      if (!shape.r) {
+        ctx.rect(x, y, width, height);
+      } else {
+        roundRectHelper.buildPath(ctx, shape);
+      }
+
+      ctx.closePath();
+      return;
     }
+  }]);
 
-    if (!shape.r) {
-      ctx.rect(x, y, width, height);
-    } else {
-      roundRectHelper.buildPath(ctx, shape);
-    }
+  return Rect;
+}(Path);
 
-    ctx.closePath();
-    return;
-  }
-});
-
-module.exports = _default;</pre>
+module.exports = Rect;</pre>
 </body>
 </html>

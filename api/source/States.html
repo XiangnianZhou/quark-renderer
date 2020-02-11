@@ -230,13 +230,13 @@ GraphicStates.prototype = {
           el.style = new Style();
 
           if (initialState) {
-            el.style.extendFrom(initialState.style, false);
+            el.style.extendStyle(initialState.style, false);
           }
 
           if ( // Not initial state
           name !== this._initialState // Not copied from initial state in _extendFromInitial method
           &amp;&amp; initialState.style !== state.style) {
-            el.style.extendFrom(state.style, true);
+            el.style.extendStyle(state.style, true);
           }
         }
 

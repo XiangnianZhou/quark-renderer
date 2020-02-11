@@ -15,7 +15,7 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">var textHelper = require(&quot;./utils/text&quot;);
+  <pre class="prettyprint lang-js">var textUtil = require(&quot;./utils/textUtil&quot;);
 
 var BoundingRect = require(&quot;../core/BoundingRect&quot;);
 
@@ -47,15 +47,15 @@ RectText.prototype = {
     var style = this.style;
     rect = style.textRect || rect; // Optimize, avoid normalize every time.
 
-    this.__dirty &amp;&amp; textHelper.normalizeTextStyle(style, true);
+    this.__dirty &amp;&amp; textUtil.normalizeTextStyle(style, true);
     var text = style.text; // Convert to string
 
     text != null &amp;&amp; (text += &#39;&#39;);
 
-    if (!textHelper.needDrawText(text, style)) {
+    if (!textUtil.needDrawText(text, style)) {
       return;
     } // FIXME
-    // Do not provide prevEl to `textHelper.renderText` for ctx prop cache,
+    // Do not provide prevEl to `textUtil.renderText` for ctx prop cache,
     // but use `ctx.save()` and `ctx.restore()`. Because the cache for rect
     // text propably break the cache for its host elements.
 
@@ -75,7 +75,7 @@ RectText.prototype = {
     } // transformText and textRotation can not be used at the same time.
 
 
-    textHelper.renderText(this, ctx, text, style, rect, WILL_BE_RESTORED);
+    textUtil.renderText(this, ctx, text, style, rect, WILL_BE_RESTORED);
     ctx.restore();
   }
 };

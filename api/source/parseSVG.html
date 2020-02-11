@@ -35,7 +35,7 @@ var Polygon = require(&quot;../graphic/shape/Polygon&quot;);
 
 var Polyline = require(&quot;../graphic/shape/Polyline&quot;);
 
-var LinearGradient = require(&quot;../graphic/LinearGradient&quot;);
+var LinearGradient = require(&quot;../graphic/gradient/LinearGradient&quot;);
 
 var Style = require(&quot;../graphic/Style&quot;);
 
@@ -49,9 +49,12 @@ var _dataStructureUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
 
 var isString = _dataStructureUtil.isString;
 var extend = _dataStructureUtil.extend;
-var defaults = _dataStructureUtil.defaults;
 var trim = _dataStructureUtil.trim;
 var each = _dataStructureUtil.each;
+
+var _classUtil = require(&quot;../core/utils/classUtil&quot;);
+
+var defaults = _classUtil.defaults;
 // Most of the values can be separated by comma and/or white space.
 var DILIMITER_REG = /[\s,]+/;
 <span id='global-method-parseXML'>/**

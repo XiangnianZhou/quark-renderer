@@ -23,7 +23,7 @@ var ZRenderEventHandler = require(&quot;./event/ZRenderEventHandler&quot;);
 
 var Storage = require(&quot;./Storage&quot;);
 
-var Painter = require(&quot;./Painter&quot;);
+var CanvasPainter = require(&quot;./CanvasPainter&quot;);
 
 var GlobalAnimationMgr = require(&quot;./animation/GlobalAnimationMgr&quot;);
 
@@ -46,8 +46,8 @@ if (!env.canvasSupported) {
 }
 
 var useVML = !env.canvasSupported;
-var painterCtors = {
-  canvas: Painter
+var painterMap = {
+  canvas: CanvasPainter
 }; // ZRender实例map索引，浏览器中同一个 window 下的 ZRender 实例都存在这里。
 
 var instances = {};
@@ -109,8 +109,8 @@ function getInstance(id) {
   return instances[id];
 }
 
-function registerPainter(name, Ctor) {
-  painterCtors[name] = Ctor;
+function registerPainter(name, PainterClass) {
+  painterMap[name] = PainterClass;
 }
 <span id='zrender-core-ZRender-method-constructor'>/**
 </span> * @method constructor ZRender
@@ -147,16 +147,16 @@ var ZRender = function ZRender(id, dom, opts) {
   // TODO: remove vml
 
   if (useVML) {
-    if (!painterCtors.vml) {
+    if (!painterMap.vml) {
       throw new Error(&#39;You need to require \&#39;zrender/vml/vml\&#39; to support IE8&#39;);
     }
 
     rendererType = &#39;vml&#39;;
-  } else if (!rendererType || !painterCtors[rendererType]) {
+  } else if (!rendererType || !painterMap[rendererType]) {
     rendererType = &#39;canvas&#39;;
   }
 
-  var painter = new painterCtors[rendererType](dom, storage, opts, id);
+  var painter = new painterMap[rendererType](dom, storage, opts, id);
   this.storage = storage;
   this.painter = painter; //把DOM事件代理出来
 

@@ -27,7 +27,7 @@ var matrix = require(&quot;../core/utils/matrix&quot;);
 
 var textContain = require(&quot;../core/contain/text&quot;);
 
-var textHelper = require(&quot;../graphic/utils/text&quot;);
+var textUtil = require(&quot;../graphic/utils/textUtil&quot;);
 
 var Text = require(&quot;../graphic/Text&quot;);
 
@@ -354,12 +354,12 @@ var svgTextDrawRectText = function svgTextDrawRectText(el, hostRect) {
   var style = el.style;
   var elTransform = el.transform;
   var needTransformTextByHostEl = el instanceof Text || style.transformText;
-  el.__dirty &amp;&amp; textHelper.normalizeTextStyle(style, true);
+  el.__dirty &amp;&amp; textUtil.normalizeTextStyle(style, true);
   var text = style.text; // Convert to string
 
   text != null &amp;&amp; (text += &#39;&#39;);
 
-  if (!textHelper.needDrawText(text, style)) {
+  if (!textUtil.needDrawText(text, style)) {
     return;
   } // render empty text for svg if no text but need draw text.
 
@@ -403,7 +403,7 @@ var svgTextDrawRectText = function svgTextDrawRectText(el, hostRect) {
 
   var outerHeight = contentBlock.outerHeight;
   var lineHeight = contentBlock.lineHeight;
-  textHelper.getBoxPosition(_tmpTextBoxPos, el, style, hostRect);
+  textUtil.getBoxPosition(_tmpTextBoxPos, el, style, hostRect);
   var baseX = _tmpTextBoxPos.baseX;
   var baseY = _tmpTextBoxPos.baseY;
   var textAlign = _tmpTextBoxPos.textAlign || &#39;left&#39;;

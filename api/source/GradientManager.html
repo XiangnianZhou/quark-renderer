@@ -19,6 +19,8 @@
 
 var dataUtil = require(&quot;../../core/utils/dataStructureUtil&quot;);
 
+var classUtil = require(&quot;../../core/utils/classUtil&quot;);
+
 var colorTool = require(&quot;../../core/utils/colorUtil&quot;);
 
 <span id='zrender-svg-helper-GradientManager'>/**
@@ -227,7 +229,7 @@ GradientManager.prototype = {
     }
   }
 };
-dataUtil.inherits(GradientManager, Definable);
+classUtil.inherits(GradientManager, Definable);
 var _default = GradientManager;
 module.exports = _default;</pre>
 </body>

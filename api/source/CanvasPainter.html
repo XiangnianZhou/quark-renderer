@@ -33,17 +33,17 @@ var Image = require(&quot;./graphic/Image&quot;);
 
 var env = require(&quot;./core/env&quot;);
 
-<span id='zrender-canvas-Painter'>/**
-</span> * @class zrender.canvas.Painter
- * 这是基于 canvas 接口的 Painter 类
- * @see 基于 SVG 接口的 Painter 类在 svg 目录下
- * @see 基于 VML 接口的 Painter 类在 vml 目录下
+<span id='zrender-canvas-CanvasPainter'>/**
+</span> * @class zrender.canvas.CanvasPainter
+ * 这是基于 canvas 接口的 CanvasPainter 类
+ * @see 基于 SVG 接口的 CanvasPainter 类在 svg 目录下
+ * @see 基于 VML 接口的 CanvasPainter 类在 vml 目录下
  */
 var HOVER_LAYER_ZLEVEL = 1e5;
 var CANVAS_ZLEVEL = 314159;
 var EL_AFTER_INCREMENTAL_INC = 0.01;
 var INCREMENTAL_INC = 0.001;
-<span id='zrender-canvas-Painter-method-isLayerValid'>/**
+<span id='zrender-canvas-CanvasPainter-method-isLayerValid'>/**
 </span> * @private
  * @method isLayerValid
  * @param {*} layer 
@@ -67,7 +67,7 @@ function isLayerValid(layer) {
 
 var tmpRect = new BoundingRect(0, 0, 0, 0);
 var viewRect = new BoundingRect(0, 0, 0, 0);
-<span id='zrender-canvas-Painter-method-isDisplayableCulled'>/**
+<span id='zrender-canvas-CanvasPainter-method-isDisplayableCulled'>/**
 </span> * @private
  * @method isDisplayableCulled
  * @param {*} el 
@@ -86,7 +86,7 @@ function isDisplayableCulled(el, width, height) {
   viewRect.height = height;
   return !tmpRect.intersect(viewRect);
 }
-<span id='zrender-canvas-Painter-method-isClipPathChanged'>/**
+<span id='zrender-canvas-CanvasPainter-method-isClipPathChanged'>/**
 </span> * @private
  * @method isClipPathChanged
  * @param {*} clipPaths 
@@ -112,7 +112,7 @@ function isClipPathChanged(clipPaths, prevClipPaths) {
 
   return false;
 }
-<span id='zrender-canvas-Painter-method-doClip'>/**
+<span id='zrender-canvas-CanvasPainter-method-doClip'>/**
 </span> * @private
  * @method doClip
  * @param {*} clipPaths 
@@ -131,7 +131,7 @@ function doClip(clipPaths, ctx) {
     clipPath.restoreTransform(ctx);
   }
 }
-<span id='zrender-canvas-Painter-method-createRoot'>/**
+<span id='zrender-canvas-CanvasPainter-method-createRoot'>/**
 </span> * @private
  * @method createRoot
  * 不会直接在传入的 dom 节点内部创建 canvas 标签，而是再套一层div
@@ -156,7 +156,7 @@ function createRoot(width, height) {
 
   return domRoot;
 }
-<span id='zrender-canvas-Painter-method-constructor'>/**
+<span id='zrender-canvas-CanvasPainter-method-constructor'>/**
 </span> * @method constructor
  * @param {HTMLElement} root 绘图容器
  * @param {Storage} storage
@@ -164,24 +164,24 @@ function createRoot(width, height) {
  */
 
 
-var Painter = function Painter(root, storage, opts) {
+var CanvasPainter = function CanvasPainter(root, storage, opts) {
   this.type = &#39;canvas&#39;; // In node environment using node-canvas
 
   var singleCanvas = !root.nodeName // In node ?
   || root.nodeName.toUpperCase() === &#39;CANVAS&#39;;
   this._opts = opts = dataUtil.extend({}, opts || {});
-<span id='zrender-canvas-Painter-property-dpr'>  /**
+<span id='zrender-canvas-CanvasPainter-property-dpr'>  /**
 </span>   * @property {Number} dpr
    */
 
   this.dpr = opts.devicePixelRatio || devicePixelRatio;
-<span id='zrender-canvas-Painter-property-_singleCanvas'>  /**
+<span id='zrender-canvas-CanvasPainter-property-_singleCanvas'>  /**
 </span>   * @property {Boolean} _singleCanvas
    * @private
    */
 
   this._singleCanvas = singleCanvas;
-<span id='zrender-canvas-Painter-property-root'>  /**
+<span id='zrender-canvas-CanvasPainter-property-root'>  /**
 </span>   * @property {HTMLElement} root 绘图容器
    */
 
@@ -193,31 +193,31 @@ var Painter = function Painter(root, storage, opts) {
     rootStyle[&#39;-webkit-user-select&#39;] = rootStyle[&#39;user-select&#39;] = rootStyle[&#39;-webkit-touch-callout&#39;] = &#39;none&#39;;
     root.innerHTML = &#39;&#39;;
   }
-<span id='zrender-canvas-Painter-property-storage'>  /**
+<span id='zrender-canvas-CanvasPainter-property-storage'>  /**
 </span>   * @property {Storage} storage
    */
 
 
   this.storage = storage;
-<span id='zrender-canvas-Painter-property-zlevelList'>  /**
+<span id='zrender-canvas-CanvasPainter-property-zlevelList'>  /**
 </span>   * @property {Array&lt;Number&gt;}
    * @private
    */
 
   var zlevelList = this._zlevelList = [];
-<span id='zrender-canvas-Painter-property-layers'>  /**
+<span id='zrender-canvas-CanvasPainter-property-layers'>  /**
 </span>   * @private
    * @property {Object&lt;String, Layer&gt;} layers
    */
 
   var layers = this._layers = {};
-<span id='zrender-canvas-Painter-property-_layerConfig'>  /**
+<span id='zrender-canvas-CanvasPainter-property-_layerConfig'>  /**
 </span>   * @private
    * @property {Object&lt;String, Object&gt;} _layerConfig
    */
 
   this._layerConfig = {};
-<span id='zrender-canvas-Painter-property-_needsManuallyCompositing'>  /**
+<span id='zrender-canvas-CanvasPainter-property-_needsManuallyCompositing'>  /**
 </span>   * @private
    * @property _needsManuallyCompositing
    * zrender will do compositing when root is a canvas and have multiple zlevels.
@@ -261,14 +261,14 @@ var Painter = function Painter(root, storage, opts) {
     zlevelList.push(CANVAS_ZLEVEL);
     this._domRoot = root;
   }
-<span id='zrender-canvas-Painter-property-_hoverlayer'>  /**
+<span id='zrender-canvas-CanvasPainter-property-_hoverlayer'>  /**
 </span>   * @private
    * @property {Layer} _hoverlayer
    */
 
 
   this._hoverlayer = null;
-<span id='zrender-canvas-Painter-property-_hoverElements'>  /**
+<span id='zrender-canvas-CanvasPainter-property-_hoverElements'>  /**
 </span>   * @private
    * @property {Array} _hoverElements
    */
@@ -276,10 +276,10 @@ var Painter = function Painter(root, storage, opts) {
   this._hoverElements = [];
 };
 
-Painter.prototype = {
-  constructor: Painter,
+CanvasPainter.prototype = {
+  constructor: CanvasPainter,
 
-<span id='zrender-canvas-Painter-method-getType'>  /**
+<span id='zrender-canvas-CanvasPainter-method-getType'>  /**
 </span>   * @method getType
    * @return {String}
    */
@@ -287,7 +287,7 @@ Painter.prototype = {
     return &#39;canvas&#39;;
   },
 
-<span id='zrender-canvas-Painter-method-isSingleCanvas'>  /**
+<span id='zrender-canvas-CanvasPainter-method-isSingleCanvas'>  /**
 </span>   * @method isSingleCanvas
    * If painter use a single canvas
    * @return {Boolean}
@@ -296,7 +296,7 @@ Painter.prototype = {
     return this._singleCanvas;
   },
 
-<span id='zrender-canvas-Painter-method-getViewportRoot'>  /**
+<span id='zrender-canvas-CanvasPainter-method-getViewportRoot'>  /**
 </span>   * @method getViewportRoot
    * @return {HTMLDivElement}
    */
@@ -304,7 +304,7 @@ Painter.prototype = {
     return this._domRoot;
   },
 
-<span id='zrender-canvas-Painter-method-getViewportRootOffset'>  /**
+<span id='zrender-canvas-CanvasPainter-method-getViewportRootOffset'>  /**
 </span>   * @method getViewportRootOffset
    * @return {Object}
    */
@@ -319,7 +319,7 @@ Painter.prototype = {
     }
   },
 
-<span id='zrender-canvas-Painter-method-refresh'>  /**
+<span id='zrender-canvas-CanvasPainter-method-refresh'>  /**
 </span>   * @method
    * 刷新
    * @param {Boolean} [paintAll=false] 是否强制绘制所有displayable
@@ -346,7 +346,7 @@ Painter.prototype = {
     return this;
   },
 
-<span id='zrender-canvas-Painter-method-addHover'>  /**
+<span id='zrender-canvas-CanvasPainter-method-addHover'>  /**
 </span>   * @method addHover
    * 
    * @param {*} el 
@@ -373,7 +373,7 @@ Painter.prototype = {
     return elMirror;
   },
 
-<span id='zrender-canvas-Painter-method-removeHover'>  /**
+<span id='zrender-canvas-CanvasPainter-method-removeHover'>  /**
 </span>   * @method removeHover
    * @param {*} el 
    */
@@ -389,7 +389,7 @@ Painter.prototype = {
     el.__hoverMir = null;
   },
 
-<span id='zrender-canvas-Painter-method-clearHover'>  /**
+<span id='zrender-canvas-CanvasPainter-method-clearHover'>  /**
 </span>   * @method clearHover
    * @param {*} el 
    */
@@ -407,7 +407,7 @@ Painter.prototype = {
     hoverElements.length = 0;
   },
 
-<span id='zrender-canvas-Painter-method-refreshHover'>  /**
+<span id='zrender-canvas-CanvasPainter-method-refreshHover'>  /**
 </span>   * @method refreshHover
    */
   refreshHover: function refreshHover() {
@@ -457,14 +457,14 @@ Painter.prototype = {
     hoverLayer.ctx.restore();
   },
 
-<span id='zrender-canvas-Painter-method-getHoverLayer'>  /**
+<span id='zrender-canvas-CanvasPainter-method-getHoverLayer'>  /**
 </span>   * @method getHoverLayer
    */
   getHoverLayer: function getHoverLayer() {
     return this.getLayer(HOVER_LAYER_ZLEVEL);
   },
 
-<span id='zrender-canvas-Painter-method-_paintList'>  /**
+<span id='zrender-canvas-CanvasPainter-method-_paintList'>  /**
 </span>   * @method _paintList
    * @param {*} list 
    * @param {*} paintAll 
@@ -496,7 +496,7 @@ Painter.prototype = {
     }
   },
 
-<span id='zrender-canvas-Painter-method-_compositeManually'>  /**
+<span id='zrender-canvas-CanvasPainter-method-_compositeManually'>  /**
 </span>   * @method _compositeManually
    */
   _compositeManually: function _compositeManually() {
@@ -512,7 +512,7 @@ Painter.prototype = {
     });
   },
 
-<span id='zrender-canvas-Painter-method-_doPaintList'>  /**
+<span id='zrender-canvas-CanvasPainter-method-_doPaintList'>  /**
 </span>   * @method _doPaintList
    */
   _doPaintList: function _doPaintList(list, paintAll) {
@@ -603,7 +603,7 @@ Painter.prototype = {
     return finished;
   },
 
-<span id='zrender-canvas-Painter-method-_doPaintEl'>  /**
+<span id='zrender-canvas-CanvasPainter-method-_doPaintEl'>  /**
 </span>   * @method _doPaintEl
    * 绘制一个图元
    * @param {*} el 
@@ -651,7 +651,7 @@ Painter.prototype = {
     }
   },
 
-<span id='zrender-canvas-Painter-method-getLayer'>  /**
+<span id='zrender-canvas-CanvasPainter-method-getLayer'>  /**
 </span>   * @method getLayer
    * 获取 zlevel 所在层，如果不存在则会创建一个新的层
    * @param {Number} zlevel
@@ -688,7 +688,7 @@ Painter.prototype = {
     return layer;
   },
 
-<span id='zrender-canvas-Painter-method-insertLayer'>  /**
+<span id='zrender-canvas-CanvasPainter-method-insertLayer'>  /**
 </span>   * @method insertLayer
    * @param {*} zlevel 
    * @param {*} layer 
@@ -746,7 +746,7 @@ Painter.prototype = {
     }
   },
 
-<span id='zrender-canvas-Painter-method-eachLayer'>  /**
+<span id='zrender-canvas-CanvasPainter-method-eachLayer'>  /**
 </span>   * @private
    * @method eachLayer
    * Iterate each layer
@@ -764,7 +764,7 @@ Painter.prototype = {
     }
   },
 
-<span id='zrender-canvas-Painter-method-eachBuiltinLayer'>  /**
+<span id='zrender-canvas-CanvasPainter-method-eachBuiltinLayer'>  /**
 </span>   * @private
    * @method eachBuiltinLayer
    * Iterate each buildin layer
@@ -787,7 +787,7 @@ Painter.prototype = {
     }
   },
 
-<span id='zrender-canvas-Painter-method-eachOtherLayer'>  /**
+<span id='zrender-canvas-CanvasPainter-method-eachOtherLayer'>  /**
 </span>   * @private
    * @method eachOtherLayer
    * Iterate each other layer except buildin layer
@@ -810,7 +810,7 @@ Painter.prototype = {
     }
   },
 
-<span id='zrender-canvas-Painter-method-getLayers'>  /**
+<span id='zrender-canvas-CanvasPainter-method-getLayers'>  /**
 </span>   * @method getLayers
    * 获取所有已创建的层
    * @param {Array&lt;Layer&gt;} [prevLayer]
@@ -819,7 +819,7 @@ Painter.prototype = {
     return this._layers;
   },
 
-<span id='zrender-canvas-Painter-method-_updateLayerStatus'>  /**
+<span id='zrender-canvas-CanvasPainter-method-_updateLayerStatus'>  /**
 </span>   * @private
    * @method _updateLayerStatus
    * @param {*} list 
@@ -917,7 +917,7 @@ Painter.prototype = {
     });
   },
 
-<span id='zrender-canvas-Painter-method-clear'>  /**
+<span id='zrender-canvas-CanvasPainter-method-clear'>  /**
 </span>   * @method clear
    * 清除hover层外所有内容
    */
@@ -926,7 +926,7 @@ Painter.prototype = {
     return this;
   },
 
-<span id='zrender-canvas-Painter-method-_clearLayer'>  /**
+<span id='zrender-canvas-CanvasPainter-method-_clearLayer'>  /**
 </span>   * @private
    * @method _clearLayer
    */
@@ -934,14 +934,14 @@ Painter.prototype = {
     layer.clear();
   },
 
-<span id='zrender-canvas-Painter-method-setBackgroundColor'>  /**
+<span id='zrender-canvas-CanvasPainter-method-setBackgroundColor'>  /**
 </span>   * @method setBackgroundColor
    */
   setBackgroundColor: function setBackgroundColor(backgroundColor) {
     this._backgroundColor = backgroundColor;
   },
 
-<span id='zrender-canvas-Painter-method-configLayer'>  /**
+<span id='zrender-canvas-CanvasPainter-method-configLayer'>  /**
 </span>   * @method configLayer
    * 修改指定zlevel的绘制参数
    *
@@ -972,7 +972,7 @@ Painter.prototype = {
     }
   },
 
-<span id='zrender-canvas-Painter-method-delLayer'>  /**
+<span id='zrender-canvas-CanvasPainter-method-delLayer'>  /**
 </span>   * @method delLayer
    * 删除指定层
    * @param {Number} zlevel 层所在的zlevel
@@ -991,7 +991,7 @@ Painter.prototype = {
     zlevelList.splice(dataUtil.indexOf(zlevelList, zlevel), 1);
   },
 
-<span id='zrender-canvas-Painter-method-resize'>  /**
+<span id='zrender-canvas-CanvasPainter-method-resize'>  /**
 </span>   * @method resize
    * 区域大小变化后重绘
    * @param {Number} width
@@ -1042,7 +1042,7 @@ Painter.prototype = {
     return this;
   },
 
-<span id='zrender-canvas-Painter-method-clearLayer'>  /**
+<span id='zrender-canvas-CanvasPainter-method-clearLayer'>  /**
 </span>   * @method clearLayer
    * 清除单独的一个层
    * @param {Number} zlevel
@@ -1055,7 +1055,7 @@ Painter.prototype = {
     }
   },
 
-<span id='zrender-canvas-Painter-method-dispose'>  /**
+<span id='zrender-canvas-CanvasPainter-method-dispose'>  /**
 </span>   * @method dispose
    * 释放
    */
@@ -1064,7 +1064,7 @@ Painter.prototype = {
     this.root = this.storage = this._domRoot = this._layers = null;
   },
 
-<span id='zrender-canvas-Painter-method-getRenderedCanvas'>  /**
+<span id='zrender-canvas-CanvasPainter-method-getRenderedCanvas'>  /**
 </span>   * @method getRenderedCanvas
    * Get canvas which has all thing rendered
    * @param {Object} [opts]
@@ -1111,7 +1111,7 @@ Painter.prototype = {
     return imageLayer.dom;
   },
 
-<span id='zrender-canvas-Painter-method-getWidth'>  /**
+<span id='zrender-canvas-CanvasPainter-method-getWidth'>  /**
 </span>   * @method getWidth
    * 获取绘图区域宽度
    * @return {Number}
@@ -1120,7 +1120,7 @@ Painter.prototype = {
     return this._width;
   },
 
-<span id='zrender-canvas-Painter-method-getHeight'>  /**
+<span id='zrender-canvas-CanvasPainter-method-getHeight'>  /**
 </span>   * @method getHeight
    * 获取绘图区域高度
    * @return {Number}
@@ -1129,7 +1129,7 @@ Painter.prototype = {
     return this._height;
   },
 
-<span id='zrender-canvas-Painter-method-_getSize'>  /**
+<span id='zrender-canvas-CanvasPainter-method-_getSize'>  /**
 </span>   * @method _getSize
    * @param {*} whIdx 
    */
@@ -1150,7 +1150,7 @@ Painter.prototype = {
     return (root[cwh] || dataUtil.parseInt10(stl[wh]) || dataUtil.parseInt10(root.style[wh])) - (dataUtil.parseInt10(stl[plt]) || 0) - (dataUtil.parseInt10(stl[prb]) || 0) | 0;
   },
 
-<span id='zrender-canvas-Painter-method-pathToImage'>  /**
+<span id='zrender-canvas-CanvasPainter-method-pathToImage'>  /**
 </span>   * @method pathToImage
    * @param {*} path 
    * @param {*} dpr 
@@ -1214,7 +1214,7 @@ Painter.prototype = {
     return imgShape;
   }
 };
-var _default = Painter;
+var _default = CanvasPainter;
 module.exports = _default;</pre>
 </body>
 </html>

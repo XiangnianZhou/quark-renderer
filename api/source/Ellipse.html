@@ -17,12 +17,30 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">var Path = require(&quot;../Path&quot;);
 
+function _typeof(obj) { if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
+
+function _defineProperties(target, props) { for (var i = 0; i &lt; props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (&quot;value&quot; in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call &amp;&amp; (_typeof(call) === &quot;object&quot; || typeof call === &quot;function&quot;)) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(&quot;this hasn&#39;t been initialised - super() hasn&#39;t been called&quot;); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== &quot;function&quot; &amp;&amp; superClass !== null) { throw new TypeError(&quot;Super expression must either be null or a function&quot;); } subClass.prototype = Object.create(superClass &amp;&amp; superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 <span id='zrender-graphic-shape-Ellipse'>/**
 </span> * @class zrender.graphic.shape.Ellipse 
  * 椭圆形状
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
-var _default = Path.extend({
+var defaultConfig = {
 <span id='zrender-graphic-shape-Ellipse-property-type'>  /**
 </span>   * @property {String} type
    */
@@ -32,34 +50,56 @@ var _default = Path.extend({
     cy: 0,
     rx: 0,
     ry: 0
-  },
+  }
+};
 
+var Droplet =
+/*#__PURE__*/
+function (_Path) {
+  _inherits(Droplet, _Path);
+
+<span id='zrender-graphic-shape-Ellipse-method-constructor'>  /**
+</span>   * @method constructor Droplet
+   * @param {Object} opts 
+   */
+  function Droplet(opts) {
+    _classCallCheck(this, Droplet);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Droplet).call(this, opts, defaultConfig));
+  }
 <span id='zrender-graphic-shape-Ellipse-method-buildPath'>  /**
 </span>   * @method buildPath
    * 绘制图元路径
    * @param {Object} ctx 
    * @param {String} shape 
    */
-  buildPath: function buildPath(ctx, shape) {
-    var k = 0.5522848;
-    var x = shape.cx;
-    var y = shape.cy;
-    var a = shape.rx;
-    var b = shape.ry;
-    var ox = a * k; // 水平控制点偏移量
 
-    var oy = b * k; // 垂直控制点偏移量
-    // 从椭圆的左端点开始顺时针绘制四条三次贝塞尔曲线
 
-    ctx.moveTo(x - a, y);
-    ctx.bezierCurveTo(x - a, y - oy, x - ox, y - b, x, y - b);
-    ctx.bezierCurveTo(x + ox, y - b, x + a, y - oy, x + a, y);
-    ctx.bezierCurveTo(x + a, y + oy, x + ox, y + b, x, y + b);
-    ctx.bezierCurveTo(x - ox, y + b, x - a, y + oy, x - a, y);
-    ctx.closePath();
-  }
-});
+  _createClass(Droplet, [{
+    key: &quot;buildPath&quot;,
+    value: function buildPath(ctx, shape) {
+      var k = 0.5522848;
+      var x = shape.cx;
+      var y = shape.cy;
+      var a = shape.rx;
+      var b = shape.ry;
+      var ox = a * k; // 水平控制点偏移量
 
-module.exports = _default;</pre>
+      var oy = b * k; // 垂直控制点偏移量
+      // 从椭圆的左端点开始顺时针绘制四条三次贝塞尔曲线
+
+      ctx.moveTo(x - a, y);
+      ctx.bezierCurveTo(x - a, y - oy, x - ox, y - b, x, y - b);
+      ctx.bezierCurveTo(x + ox, y - b, x + a, y - oy, x + a, y);
+      ctx.bezierCurveTo(x + a, y + oy, x + ox, y + b, x, y + b);
+      ctx.bezierCurveTo(x - ox, y + b, x - a, y + oy, x - a, y);
+      ctx.closePath();
+    }
+  }]);
+
+  return Droplet;
+}(Path);
+
+module.exports = Droplet;</pre>
 </body>
 </html>

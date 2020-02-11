@@ -17,7 +17,7 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">var Definable = require(&quot;./Definable&quot;);
 
-var dataUtil = require(&quot;../../core/utils/dataStructureUtil&quot;);
+var classUtil = require(&quot;../../core/utils/classUtil&quot;);
 
 <span id='zrender-svg-helper-ShadowManager'>/**
 </span> * @class zrender.svg.helper.ShadowManager
@@ -200,7 +200,7 @@ ShadowManager.prototype = {
     }
   }
 };
-dataUtil.inherits(ShadowManager, Definable);
+classUtil.inherits(ShadowManager, Definable);
 var _default = ShadowManager;
 module.exports = _default;</pre>
 </body>

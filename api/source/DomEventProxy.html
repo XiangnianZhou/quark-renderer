@@ -21,6 +21,8 @@ var eventUtil = require(&quot;../core/utils/eventUtil&quot;);
 
 var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
 
+var classUtil = require(&quot;../core/utils/classUtil&quot;);
+
 var env = require(&quot;../core/env&quot;);
 
 <span id='zrender-event-DomEventProxy'>/**
@@ -515,7 +517,7 @@ DomEventProxy.prototype.togglePageEvent = function (enableOrDisable) {
 }; //注意，DomEventProxy 也混入了 Eventful 里面提供的事件处理工具。
 
 
-dataUtil.mixin(DomEventProxy, Eventful);
+classUtil.mixin(DomEventProxy, Eventful);
 var _default = DomEventProxy;
 module.exports = _default;</pre>
 </body>

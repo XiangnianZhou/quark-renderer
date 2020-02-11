@@ -15,9 +15,7 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">var _dataStructureUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
-
-var inherits = _dataStructureUtil.inherits;
+  <pre class="prettyprint lang-js">var classUtil = require(&quot;../core/utils/classUtil&quot;);
 
 var Displayble = require(&quot;./Displayable&quot;);
 
@@ -39,7 +37,7 @@ var BoundingRect = require(&quot;../core/BoundingRect&quot;);
  */
 // TODO Style override ?
 function IncrementalDisplayble(opts) {
-  Displayble.call(this, opts);
+  classUtil.copyProperties(this, Displayble, opts);
   this._displayables = [];
   this._temporaryDisplayables = [];
   this._cursor = 0;
@@ -165,7 +163,7 @@ IncrementalDisplayble.prototype = {
     return false;
   }
 };
-inherits(IncrementalDisplayble, Displayble);
+classUtil.inherits(IncrementalDisplayble, Displayble);
 var _default = IncrementalDisplayble;
 module.exports = _default;</pre>
 </body>

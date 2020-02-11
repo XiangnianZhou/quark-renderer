@@ -17,6 +17,24 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">var Path = require(&quot;../Path&quot;);
 
+function _typeof(obj) { if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
+
+function _defineProperties(target, props) { for (var i = 0; i &lt; props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (&quot;value&quot; in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call &amp;&amp; (_typeof(call) === &quot;object&quot; || typeof call === &quot;function&quot;)) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(&quot;this hasn&#39;t been initialised - super() hasn&#39;t been called&quot;); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== &quot;function&quot; &amp;&amp; superClass !== null) { throw new TypeError(&quot;Super expression must either be null or a function&quot;); } subClass.prototype = Object.create(superClass &amp;&amp; superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 <span id='zrender-graphic-shape-Star'>/**
 </span> * @class zrender.graphic.shape.Star 
  * n角星（n&gt;3）
@@ -25,8 +43,7 @@
 var PI = Math.PI;
 var cos = Math.cos;
 var sin = Math.sin;
-
-var _default = Path.extend({
+var defaultConfig = {
 <span id='zrender-graphic-shape-Star-property-type'>  /**
 </span>   * @property {String} type
    */
@@ -37,51 +54,73 @@ var _default = Path.extend({
     n: 3,
     r0: null,
     r: 0
-  },
+  }
+};
 
+var Star =
+/*#__PURE__*/
+function (_Path) {
+  _inherits(Star, _Path);
+
+<span id='zrender-graphic-shape-Star-method-constructor'>  /**
+</span>   * @method constructor Star
+   * @param {Object} opts 
+   */
+  function Star(opts) {
+    _classCallCheck(this, Star);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Star).call(this, opts, defaultConfig));
+  }
 <span id='zrender-graphic-shape-Star-method-buildPath'>  /**
 </span>   * @method buildPath
    * 绘制图元路径
    * @param {Object} ctx 
    * @param {String} shape 
    */
-  buildPath: function buildPath(ctx, shape) {
-    var n = shape.n;
 
-    if (!n || n &lt; 2) {
-      return;
+
+  _createClass(Star, [{
+    key: &quot;buildPath&quot;,
+    value: function buildPath(ctx, shape) {
+      var n = shape.n;
+
+      if (!n || n &lt; 2) {
+        return;
+      }
+
+      var x = shape.cx;
+      var y = shape.cy;
+      var r = shape.r;
+      var r0 = shape.r0; // 如果未指定内部顶点外接圆半径，则自动计算
+
+      if (r0 == null) {
+        r0 = n &gt; 4 // 相隔的外部顶点的连线的交点，
+        // 被取为内部交点，以此计算r0
+        ? r * cos(2 * PI / n) / cos(PI / n) // 二三四角星的特殊处理
+        : r / 3;
+      }
+
+      var dStep = PI / n;
+      var deg = -PI / 2;
+      var xStart = x + r * cos(deg);
+      var yStart = y + r * sin(deg);
+      deg += dStep; // 记录边界点，用于判断inside
+
+      ctx.moveTo(xStart, yStart);
+
+      for (var i = 0, end = n * 2 - 1, ri; i &lt; end; i++) {
+        ri = i % 2 === 0 ? r0 : r;
+        ctx.lineTo(x + ri * cos(deg), y + ri * sin(deg));
+        deg += dStep;
+      }
+
+      ctx.closePath();
     }
+  }]);
 
-    var x = shape.cx;
-    var y = shape.cy;
-    var r = shape.r;
-    var r0 = shape.r0; // 如果未指定内部顶点外接圆半径，则自动计算
+  return Star;
+}(Path);
 
-    if (r0 == null) {
-      r0 = n &gt; 4 // 相隔的外部顶点的连线的交点，
-      // 被取为内部交点，以此计算r0
-      ? r * cos(2 * PI / n) / cos(PI / n) // 二三四角星的特殊处理
-      : r / 3;
-    }
-
-    var dStep = PI / n;
-    var deg = -PI / 2;
-    var xStart = x + r * cos(deg);
-    var yStart = y + r * sin(deg);
-    deg += dStep; // 记录边界点，用于判断inside
-
-    ctx.moveTo(xStart, yStart);
-
-    for (var i = 0, end = n * 2 - 1, ri; i &lt; end; i++) {
-      ri = i % 2 === 0 ? r0 : r;
-      ctx.lineTo(x + ri * cos(deg), y + ri * sin(deg));
-      deg += dStep;
-    }
-
-    ctx.closePath();
-  }
-});
-
-module.exports = _default;</pre>
+module.exports = Star;</pre>
 </body>
 </html>

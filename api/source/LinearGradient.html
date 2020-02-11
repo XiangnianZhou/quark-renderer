@@ -15,16 +15,16 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
+  <pre class="prettyprint lang-js">var classUtil = require(&quot;../../core/utils/classUtil&quot;);
 
 var Gradient = require(&quot;./Gradient&quot;);
 
-<span id='zrender-graphic-LinearGradient'>/**
-</span> * @class zrender.graphic.LinearGradient 
+<span id='zrender-graphic-gradient-LinearGradient'>/**
+</span> * @class zrender.graphic.gradient.LinearGradient 
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 
-<span id='zrender-graphic-LinearGradient-method-constructor'>/**
+<span id='zrender-graphic-gradient-LinearGradient-method-constructor'>/**
 </span> * @method constructor LinearGradient
  * @param {Number} [x=0]
  * @param {Number} [y=0]
@@ -51,7 +51,7 @@ var LinearGradient = function LinearGradient(x, y, x2, y2, colorStops, globalCoo
 LinearGradient.prototype = {
   constructor: LinearGradient
 };
-dataUtil.inherits(LinearGradient, Gradient);
+classUtil.inherits(LinearGradient, Gradient);
 var _default = LinearGradient;
 module.exports = _default;</pre>
 </body>
