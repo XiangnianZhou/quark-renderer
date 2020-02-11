@@ -13,8 +13,9 @@ class Path extends Displayable{
     /**
      * @method constructor Path
      * @param {Object} opts
+     * @param {Object} defaultConfig
      */
-    constructor(opts){
+    constructor(opts,defaultConfig){
         super(opts);
         /**
          * @property {PathProxy}
@@ -47,6 +48,39 @@ class Path extends Displayable{
          * See `module:zrender/src/graphic/helper/subPixelOptimize`.
          */
         this.subPixelOptimize=false;
+
+        //Path 特有的配置项
+        if(defaultConfig){
+            this.init(defaultConfig);
+        }
+    }
+
+    init(defaultConfig){
+        if (defaultConfig.style) {
+            // Extend default style
+            this.style.extendStyle(defaultConfig.style, false);
+        }
+
+        // Extend default shape
+        let defaultShape = defaultConfig.shape;
+        if (defaultShape) {
+            this.shape = this.shape || {};
+            for (let name in defaultShape) {
+                if (!this.shape.hasOwnProperty(name)&&defaultShape.hasOwnProperty(name)){
+                    this.shape[name] = defaultShape[name];
+                }
+            }
+        }
+        defaultConfig.init && defaultConfig.init.call(this, opts);
+
+        // FIXME 不能 extend position, rotation 等引用对象
+        // TODO:What's going on here?
+        for (let name in defaultConfig) {
+            // Extending prototype values and methods
+            if (name !== 'style' && name !== 'shape') {
+                Path.prototype[name] = defaultConfig[name];
+            }
+        }
     }
 
     /**

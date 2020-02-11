@@ -5,16 +5,12 @@ import {subPixelOptimizeLine} from '../utils/subPixelOptimize';
  * 直线
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-// Avoid create repeatly.
-let subPixelOptimizeOutputShape = {};
-
-export default Path.extend({
-
+//TODO:Avoid create repeatly.
+let defaultConfig={
     /**
      * @property {String} type
      */
     type: 'line',
-
     shape: {
         // Start point
         x1: 0,
@@ -25,11 +21,20 @@ export default Path.extend({
 
         percent: 1
     },
-
     style: {
         stroke: '#000',
         fill: null
-    },
+    }
+}
+
+export default class Line extends Path{
+    /**
+     * @method constructor Line
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @method buildPath
@@ -37,20 +42,20 @@ export default Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let x1;
         let y1;
         let x2;
         let y2;
 
         if (this.subPixelOptimize) {
+            let subPixelOptimizeOutputShape={};
             subPixelOptimizeLine(subPixelOptimizeOutputShape, shape, this.style);
             x1 = subPixelOptimizeOutputShape.x1;
             y1 = subPixelOptimizeOutputShape.y1;
             x2 = subPixelOptimizeOutputShape.x2;
             y2 = subPixelOptimizeOutputShape.y2;
-        }
-        else {
+        }else {
             x1 = shape.x1;
             y1 = shape.y1;
             x2 = shape.x2;
@@ -70,18 +75,18 @@ export default Path.extend({
             y2 = y1 * (1 - percent) + y2 * percent;
         }
         ctx.lineTo(x2, y2);
-    },
+    }
 
     /**
      * Get point at percent
      * @param  {Number} percent
      * @return {Array<Number>}
      */
-    pointAt: function (p) {
+    pointAt(p) {
         let shape = this.shape;
         return [
             shape.x1 * (1 - p) + shape.x2 * p,
             shape.y1 * (1 - p) + shape.y2 * p
         ];
     }
-});
+}

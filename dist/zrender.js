@@ -14471,8 +14471,9 @@ class Path extends Displayable{
     /**
      * @method constructor Path
      * @param {Object} opts
+     * @param {Object} defaultConfig
      */
-    constructor(opts){
+    constructor(opts,defaultConfig){
         super(opts);
         /**
          * @property {PathProxy}
@@ -14505,6 +14506,39 @@ class Path extends Displayable{
          * See `module:zrender/src/graphic/helper/subPixelOptimize`.
          */
         this.subPixelOptimize=false;
+
+        //Path 特有的配置项
+        if(defaultConfig){
+            this.init(defaultConfig);
+        }
+    }
+
+    init(defaultConfig){
+        if (defaultConfig.style) {
+            // Extend default style
+            this.style.extendStyle(defaultConfig.style, false);
+        }
+
+        // Extend default shape
+        let defaultShape = defaultConfig.shape;
+        if (defaultShape) {
+            this.shape = this.shape || {};
+            for (let name in defaultShape) {
+                if (!this.shape.hasOwnProperty(name)&&defaultShape.hasOwnProperty(name)){
+                    this.shape[name] = defaultShape[name];
+                }
+            }
+        }
+        defaultConfig.init && defaultConfig.init.call(this, opts);
+
+        // FIXME 不能 extend position, rotation 等引用对象
+        // TODO:What's going on here?
+        for (let name in defaultConfig) {
+            // Extending prototype values and methods
+            if (name !== 'style' && name !== 'shape') {
+                Path.prototype[name] = defaultConfig[name];
+            }
+        }
     }
 
     /**
@@ -15745,16 +15779,12 @@ var Ellipse = Path.extend({
  * 直线
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-// Avoid create repeatly.
-let subPixelOptimizeOutputShape$1 = {};
-
-var Line = Path.extend({
-
+//TODO:Avoid create repeatly.
+let defaultConfig={
     /**
      * @property {String} type
      */
     type: 'line',
-
     shape: {
         // Start point
         x1: 0,
@@ -15765,11 +15795,16 @@ var Line = Path.extend({
 
         percent: 1
     },
-
     style: {
         stroke: '#000',
         fill: null
-    },
+    }
+};
+
+class Line extends Path{
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @method buildPath
@@ -15777,20 +15812,20 @@ var Line = Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let x1;
         let y1;
         let x2;
         let y2;
 
         if (this.subPixelOptimize) {
-            subPixelOptimizeLine(subPixelOptimizeOutputShape$1, shape, this.style);
-            x1 = subPixelOptimizeOutputShape$1.x1;
-            y1 = subPixelOptimizeOutputShape$1.y1;
-            x2 = subPixelOptimizeOutputShape$1.x2;
-            y2 = subPixelOptimizeOutputShape$1.y2;
-        }
-        else {
+            let subPixelOptimizeOutputShape={};
+            subPixelOptimizeLine(subPixelOptimizeOutputShape, shape, this.style);
+            x1 = subPixelOptimizeOutputShape.x1;
+            y1 = subPixelOptimizeOutputShape.y1;
+            x2 = subPixelOptimizeOutputShape.x2;
+            y2 = subPixelOptimizeOutputShape.y2;
+        }else {
             x1 = shape.x1;
             y1 = shape.y1;
             x2 = shape.x2;
@@ -15810,21 +15845,21 @@ var Line = Path.extend({
             y2 = y1 * (1 - percent) + y2 * percent;
         }
         ctx.lineTo(x2, y2);
-    },
+    }
 
     /**
      * Get point at percent
      * @param  {Number} percent
      * @return {Array<Number>}
      */
-    pointAt: function (p) {
+    pointAt(p) {
         let shape = this.shape;
         return [
             shape.x1 * (1 - p) + shape.x2 * p,
             shape.y1 * (1 - p) + shape.y2 * p
         ];
     }
-});
+}
 
 /**
  * Catmull-Rom spline 插值折线
