@@ -1151,6 +1151,24 @@ function defaults(target, source, overlay) {
     return target;
 }
 
+/**
+ * @method copyOwnProperties
+ * 
+ * Copy own properties from source object to target object, exclude inherited ones.
+ * 
+ * 从目标对象上拷贝属性，拷贝过程中排除那些通过继承而来的属性。
+ * 
+ * @param {Object} target 
+ * @param {Object} source 
+ */
+function copyOwnProperties(target,source){
+    for (let key in source) {
+        if (source.hasOwnProperty(key)) {
+            target[key] = source[key];
+        }
+    }
+}
+
 /* global Float32Array */
 
 var ArrayCtor = typeof Float32Array === 'undefined'
@@ -5982,8 +6000,13 @@ BoundingRect.create = function (rect) {
 /**
  * @class zrender.graphic.Group
  * 
- * Group是一个容器，可以插入子节点，Group的变换也会被应用到子节点上。
- * Group 可以嵌套子节点，其它类型不能。
+ * - Group is a container, it's not visible.
+ * - Group can have child nodes, not the other Element types.
+ * - The transformations applied to Group will apply to its children too.
+ * 
+ * - Group 是一个容器，本身不可见。
+ * - Group 可以插入子节点，其它类型不能。
+ * - Group 上的变换也会被应用到子节点上。
  * 
  *      @example small frame
  *      let Group = require('zrender/Group');
@@ -5999,21 +6022,14 @@ BoundingRect.create = function (rect) {
  *          }
  *      }));
  *      zr.add(g);
- * 
  */
 
 /**
  * @method constructor Group
  */
-let Group = function (opts) {
-    opts = opts || {};
-    Element.call(this, opts);
-
-    for (let key in opts) {
-        if (opts.hasOwnProperty(key)) {
-            this[key] = opts[key];
-        }
-    }
+let Group = function (opts={}) {
+    Group.superClass.call(this, opts);
+    copyOwnProperties(this,opts);
 
     /**
      * @private
@@ -9822,7 +9838,7 @@ Displayable.prototype = {
      *             textVerticalAlign: String. optional. use style.textVerticalAlign by default.
      *         }
      */
-    calculateTextPosition: function(){}
+    calculateTextPosition: null
 };
 
 inherits(Displayable, Element);
@@ -14466,9 +14482,6 @@ function containStroke(pathData, lineWidth, x, y) {
  * @class zrender.graphic.Path 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-let getCanvasPattern = Pattern.prototype.getCanvasPattern;
-
 class Path extends Displayable{
     /**
      * @method constructor Path
@@ -14541,17 +14554,19 @@ class Path extends Displayable{
                 this._strokeGradient = style.getGradient(ctx, stroke, rect);
             }
         }
+
         // Use the gradient or pattern
         if (hasFillGradient) {
             // PENDING If may have affect the state
             ctx.fillStyle = this._fillGradient;
         }else if (hasFillPattern) {
-            ctx.fillStyle = getCanvasPattern.call(fill, ctx);
+            ctx.fillStyle = Pattern.prototype.getCanvasPattern.call(fill, ctx);
         }
+
         if (hasStrokeGradient) {
             ctx.strokeStyle = this._strokeGradient;
         }else if (hasStrokePattern) {
-            ctx.strokeStyle = getCanvasPattern.call(stroke, ctx);
+            ctx.strokeStyle = Pattern.prototype.getCanvasPattern.call(stroke, ctx);
         }
 
         let lineDash = style.lineDash;
@@ -14792,20 +14807,16 @@ class Path extends Displayable{
      * @param {Object} value
      */
     setShape(key, value) {
-        let shape = this.shape;
         // Path from string may not have shape
-        if (shape) {
-            if (isObject(key)) {
-                for (let name in key) {
-                    if (key.hasOwnProperty(name)) {
-                        shape[name] = key[name];
-                    }
-                }
-            }else {
-                shape[key] = value;
-            }
-            this.dirty(true);
+        if(!this.shape){
+            return this;
         }
+        if (isObject(key)) {
+            copyOwnProperties(this.shape,key);
+        }else {
+            this.shape[key] = value;
+        }
+        this.dirty(true);
         return this;
     }
 

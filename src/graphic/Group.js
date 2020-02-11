@@ -5,8 +5,13 @@ import BoundingRect from '../core/BoundingRect';
 /**
  * @class zrender.graphic.Group
  * 
- * Group是一个容器，可以插入子节点，Group的变换也会被应用到子节点上。
- * Group 可以嵌套子节点，其它类型不能。
+ * - Group is a container, it's not visible.
+ * - Group can have child nodes, not the other Element types.
+ * - The transformations applied to Group will apply to its children too.
+ * 
+ * - Group 是一个容器，本身不可见。
+ * - Group 可以插入子节点，其它类型不能。
+ * - Group 上的变换也会被应用到子节点上。
  * 
  *      @example small frame
  *      let Group = require('zrender/Group');
@@ -22,21 +27,14 @@ import BoundingRect from '../core/BoundingRect';
  *          }
  *      }));
  *      zr.add(g);
- * 
  */
 
 /**
  * @method constructor Group
  */
-let Group = function (opts) {
-    opts = opts || {};
-    Element.call(this, opts);
-
-    for (let key in opts) {
-        if (opts.hasOwnProperty(key)) {
-            this[key] = opts[key];
-        }
-    }
+let Group = function (opts={}) {
+    Group.superClass.call(this, opts);
+    classUtil.copyOwnProperties(this,opts);
 
     /**
      * @private

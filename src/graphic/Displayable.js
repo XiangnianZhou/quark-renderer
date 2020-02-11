@@ -251,7 +251,7 @@ Displayable.prototype = {
      *             textVerticalAlign: String. optional. use style.textVerticalAlign by default.
      *         }
      */
-    calculateTextPosition: function(){}
+    calculateTextPosition: null
 };
 
 classUtil.inherits(Displayable, Element);

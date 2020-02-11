@@ -65,3 +65,21 @@ export function defaults(target, source, overlay) {
     }
     return target;
 }
+
+/**
+ * @method copyOwnProperties
+ * 
+ * Copy own properties from source object to target object, exclude inherited ones.
+ * 
+ * 从目标对象上拷贝属性，拷贝过程中排除那些通过继承而来的属性。
+ * 
+ * @param {Object} target 
+ * @param {Object} source 
+ */
+export function copyOwnProperties(target,source){
+    for (let key in source) {
+        if (source.hasOwnProperty(key)) {
+            target[key] = source[key];
+        }
+    }
+}

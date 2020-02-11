@@ -9,9 +9,6 @@ import Pattern from './Pattern';
  * @class zrender.graphic.Path 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-let getCanvasPattern = Pattern.prototype.getCanvasPattern;
-
 class Path extends Displayable{
     /**
      * @method constructor Path
@@ -84,17 +81,19 @@ class Path extends Displayable{
                 this._strokeGradient = style.getGradient(ctx, stroke, rect);
             }
         }
+
         // Use the gradient or pattern
         if (hasFillGradient) {
             // PENDING If may have affect the state
             ctx.fillStyle = this._fillGradient;
         }else if (hasFillPattern) {
-            ctx.fillStyle = getCanvasPattern.call(fill, ctx);
+            ctx.fillStyle = Pattern.prototype.getCanvasPattern.call(fill, ctx);
         }
+
         if (hasStrokeGradient) {
             ctx.strokeStyle = this._strokeGradient;
         }else if (hasStrokePattern) {
-            ctx.strokeStyle = getCanvasPattern.call(stroke, ctx);
+            ctx.strokeStyle = Pattern.prototype.getCanvasPattern.call(stroke, ctx);
         }
 
         let lineDash = style.lineDash;
@@ -335,20 +334,16 @@ class Path extends Displayable{
      * @param {Object} value
      */
     setShape(key, value) {
-        let shape = this.shape;
         // Path from string may not have shape
-        if (shape) {
-            if (dataUtil.isObject(key)) {
-                for (let name in key) {
-                    if (key.hasOwnProperty(name)) {
-                        shape[name] = key[name];
-                    }
-                }
-            }else {
-                shape[key] = value;
-            }
-            this.dirty(true);
+        if(!this.shape){
+            return this;
         }
+        if (dataUtil.isObject(key)) {
+            classUtil.copyOwnProperties(this.shape,key);
+        }else {
+            this.shape[key] = value;
+        }
+        this.dirty(true);
         return this;
     }
 
