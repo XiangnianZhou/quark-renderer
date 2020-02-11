@@ -75,10 +75,16 @@ export function defaults(target, source, overlay) {
  * 
  * @param {Object} target 
  * @param {Object} source 
+ * @param {Array} excludes 
  */
-export function copyOwnProperties(target,source){
+export function copyOwnProperties(target,source,excludes=[]){
     for (let key in source) {
         if (source.hasOwnProperty(key)) {
+            if(excludes&&excludes.length){
+                if(excludes.indexOf(key)!=-1){
+                    continue;
+                }
+            }
             target[key] = source[key];
         }
     }

@@ -17,18 +17,10 @@ import RectText from './RectText';
  * @method constructor
  * @param {*} opts 
  */
-function Displayable(opts) {
-    opts = opts || {};
-    Element.call(this, opts);
-
-    // Extend properties
-    for (let name in opts) {
-        if (opts.hasOwnProperty(name)
-                && name !== 'style') {
-            this[name] = opts[name];
-        }
-    }
-
+function Displayable(opts={}) {
+    Displayable.superClass.call(this, opts);
+    classUtil.copyOwnProperties(this,opts,['style']);
+    
     /**
      * @property {Style} style
      */

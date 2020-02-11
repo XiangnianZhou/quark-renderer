@@ -1160,10 +1160,16 @@ function defaults(target, source, overlay) {
  * 
  * @param {Object} target 
  * @param {Object} source 
+ * @param {Array} excludes 
  */
-function copyOwnProperties(target,source){
+function copyOwnProperties(target,source,excludes=[]){
     for (let key in source) {
         if (source.hasOwnProperty(key)) {
+            if(excludes&&excludes.length){
+                if(excludes.indexOf(key)!=-1){
+                    continue;
+                }
+            }
             target[key] = source[key];
         }
     }
@@ -9604,17 +9610,16 @@ RectText.prototype = {
  * @method constructor
  * @param {*} opts 
  */
-function Displayable(opts) {
-    opts = opts || {};
-    Element.call(this, opts);
-
+function Displayable(opts={}) {
+    Displayable.superClass.call(this, opts);
+    copyOwnProperties(this,opts,['style']);
     // Extend properties
-    for (let name in opts) {
-        if (opts.hasOwnProperty(name)
-                && name !== 'style') {
-            this[name] = opts[name];
-        }
-    }
+    // for (let name in opts) {
+    //     if (opts.hasOwnProperty(name)
+    //             && name !== 'style') {
+    //         this[name] = opts[name];
+    //     }
+    // }
 
     /**
      * @property {Style} style
