@@ -7838,26 +7838,33 @@ for (let i = 0; i < STYLE_COMMON_PROPS.length; i++) {
 Style.getGradient = styleProto.getGradient;
 
 /**
- * @class zrender.graphic.Pattern 
+ * @class zrender.graphic.Pattern
+ * 
+ * Pattern
+ * 
+ * 图案
+ * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-/**
- * @method  constructor Pattern
- * @param {*} image 
- * @param {*} repeat 
- */
-let Pattern = function (image, repeat) {
-    // Should do nothing more in this constructor. Because gradient can be
-    // declard by `color: {image: ...}`, where this constructor will not be called.
-    this.image = image;
-    this.repeat = repeat;
-    // Can be cloned
-    this.type = 'pattern';
-};
+class Pattern{
+    /**
+     * @method  constructor Pattern
+     * @param {*} image 
+     * @param {*} repeat 
+     */
+    constructor(image, repeat){
+        // Should do nothing more in this constructor. Because gradient can be
+        // declard by `color: {image: ...}`, where this constructor will not be called.
+        this.image = image;
+        this.repeat = repeat;
+        // Can be cloned
+        this.type = 'pattern';
+    }
 
-Pattern.prototype.getCanvasPattern = function (ctx) {
-    return ctx.createPattern(this.image, this.repeat || 'repeat');
-};
+    getCanvasPattern(ctx) {
+        return ctx.createPattern(this.image, this.repeat || 'repeat');
+    }
+}
 
 /**
  * @class zrender.canvas.Layer
@@ -9833,8 +9840,6 @@ mixin(Displayable, RectText);
  * @class zrender.graphic.ZImage 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-
 class ZImage extends Displayable{
     /**
      * @method constructor ZImage
@@ -14664,8 +14669,13 @@ class Path extends Displayable{
 
     /**
      * @method buildPath
-     * When bundling path, some shape may decide if use moveTo to begin a new subpath or closePath
-     * Like in circle
+     * 
+     * Each subclass should provide its own implement for this method.
+     * When build path, some shape may decide if use moveTo to begin a new subpath or closePath, like in circle.
+     * 
+     * 每个子类都需要为此方法提供自己的实现。
+     * 在构建路径时，某些形状需要根据情况决定使用 moveTo 来开始一段子路径，或者直接用 closePath 来封闭路径，比如圆形。
+     * 
      * @param {*} ctx 
      * @param {*} shapeCfg 
      * @param {*} inBundle 

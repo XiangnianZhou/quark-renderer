@@ -7,8 +7,6 @@ import * as imageHelper from './utils/image';
  * @class zrender.graphic.ZImage 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-
 export default class ZImage extends Displayable{
     /**
      * @method constructor ZImage
