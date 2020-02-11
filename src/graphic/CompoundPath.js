@@ -8,23 +8,30 @@ import Path from './Path';
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default Path.extend({
-
+let defaultConfig={
     /**
      * @property {String} type
      */
     type: 'compound',
-
     shape: {
-
         paths: null
-    },
+    }
+};
+
+export default class CompoundPath extends Path{
+    /**
+     * @method constructor CompoundPath
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @private
      * @method _updatePathDirty
      */
-    _updatePathDirty: function () {
+    _updatePathDirty() {
         let dirtyPath = this.__dirtyPath;
         let paths = this.shape.paths;
         for (let i = 0; i < paths.length; i++) {
@@ -33,13 +40,13 @@ export default Path.extend({
         }
         this.__dirtyPath = dirtyPath;
         this.__dirty = this.__dirty || dirtyPath;
-    },
+    }
 
     /**
      * @private
      * @method beforeBrush
      */
-    beforeBrush: function () {
+    beforeBrush() {
         this._updatePathDirty();
         let paths = this.shape.paths || [];
         let scale = this.getGlobalScale();
@@ -50,7 +57,7 @@ export default Path.extend({
             }
             paths[i].path.setScale(scale[0], scale[1], paths[i].segmentIgnoreThreshold);
         }
-    },
+    }
 
     /**
      * @method buildPath
@@ -58,30 +65,30 @@ export default Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let paths = shape.paths || [];
         for (let i = 0; i < paths.length; i++) {
             paths[i].buildPath(ctx, paths[i].shape, true);
         }
-    },
+    }
 
     /**
      * @private
      * @method afterBrush
      */
-    afterBrush: function () {
+    afterBrush() {
         let paths = this.shape.paths || [];
         for (let i = 0; i < paths.length; i++) {
             paths[i].__dirtyPath = false;
         }
-    },
+    }
 
     /**
      * @private
      * @method getBoundingRect
      */
-    getBoundingRect: function () {
+    getBoundingRect() {
         this._updatePathDirty();
         return Path.prototype.getBoundingRect.call(this);
     }
-});
+}

@@ -5,26 +5,30 @@ import * as polyHelper from '../utils/poly';
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default Path.extend({
-
+let defaultConfig={
     /**
      * @property {String} type
      */
     type: 'polyline',
-
     shape: {
         points: null,
-
         smooth: false,
-
         smoothConstraint: null
     },
-
     style: {
         stroke: '#000',
-
         fill: null
-    },
+    }
+};
+
+export default class Polyline extends Path{
+    /**
+     * @method constructor Polyline
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @method buildPath
@@ -32,7 +36,7 @@ export default Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         polyHelper.buildPath(ctx, shape, false);
     }
-});
+}

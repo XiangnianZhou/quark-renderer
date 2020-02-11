@@ -4,19 +4,27 @@ import Path from '../Path';
  * 圆环
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default Path.extend({
-
+let defaultConfig={
     /**
      * @property {String} type
      */
     type: 'ring',
-
     shape: {
         cx: 0,
         cy: 0,
         r: 0,
         r0: 0
-    },
+    }
+};
+
+export default class Ring extends Path{
+    /**
+     * @method constructor Ring
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @method buildPath
@@ -24,7 +32,7 @@ export default Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let x = shape.cx;
         let y = shape.cy;
         let PI2 = Math.PI * 2;
@@ -33,4 +41,4 @@ export default Path.extend({
         ctx.moveTo(x + shape.r0, y);
         ctx.arc(x, y, shape.r0, 0, PI2, true);
     }
-});
+}

@@ -5,20 +5,26 @@ import * as polyHelper from '../utils/poly';
  * 多边形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default Path.extend({
-
+let defaultConfig={
     /**
      * @property {String} type
      */
     type: 'polygon',
-
     shape: {
         points: null,
-
         smooth: false,
-
         smoothConstraint: null
-    },
+    }
+};
+
+export default class Polygon extends Path{
+    /**
+     * @method constructor Polygon
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @method buildPath
@@ -26,7 +32,7 @@ export default Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         polyHelper.buildPath(ctx, shape, true);
     }
-});
+}

@@ -6,14 +6,11 @@ import Path from '../Path';
  */
 let cos = Math.cos;
 let sin = Math.sin;
-
-export default Path.extend({
-
+let defaultConfig={
     /**
      * @property {String} type
      */
     type: 'trochoid',
-
     shape: {
         cx: 0,
         cy: 0,
@@ -22,12 +19,20 @@ export default Path.extend({
         d: 0,
         location: 'out'
     },
-
     style: {
         stroke: '#000',
-
         fill: null
-    },
+    }
+};
+
+export default class Trochold extends Path{
+    /**
+     * @method constructor Trochold
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @method buildPath
@@ -35,7 +40,7 @@ export default Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let x1;
         let y1;
         let x2;
@@ -82,4 +87,4 @@ export default Path.extend({
         while (i <= (r * num) / (R + delta * r) * 360);
 
     }
-});
+}

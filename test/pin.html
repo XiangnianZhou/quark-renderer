@@ -9,7 +9,8 @@
     <div id="main" style="width:1000px;height:500px;"></div>
     <script type="text/javascript">
         var zr = zrender.init(document.getElementById('main'));
-        var Pin = zrender.Path.extend({
+        
+        let defaultConfig={
             type: 'pin',
             shape: {
                 // x, y on the cusp
@@ -17,8 +18,14 @@
                 y: 0,
                 width: 0,
                 height: 0
-            },
-            buildPath: function (path, shape) {
+            }
+        };
+        class Pin extends zrender.Path{
+            constructor(opts){
+                super(opts,defaultConfig);
+            }
+
+            buildPath(path, shape) {
                 var x = shape.x;
                 var y = shape.y;
                 var w = shape.width / 5 * 3;
@@ -56,8 +63,7 @@
                 );
                 path.closePath();
             }
-        });
-
+        }
         var pin = new Pin({
             shape: {
                 x: 100,

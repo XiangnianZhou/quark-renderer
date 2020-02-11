@@ -7,21 +7,28 @@ import Path from '../Path';
 let PI = Math.PI;
 let cos = Math.cos;
 let sin = Math.sin;
-
-export default Path.extend({
-
+let defaultConfig={
     /**
      * @property {String} type
      */
     type: 'star',
-
     shape: {
         cx: 0,
         cy: 0,
         n: 3,
         r0: null,
         r: 0
-    },
+    }
+};
+
+export default class Star extends Path{
+    /**
+     * @method constructor Star
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @method buildPath
@@ -29,8 +36,7 @@ export default Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
-
+    buildPath(ctx, shape) {
         let n = shape.n;
         if (!n || n < 2) {
             return;
@@ -67,4 +73,4 @@ export default Path.extend({
 
         ctx.closePath();
     }
-});
+}

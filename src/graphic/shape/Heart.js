@@ -4,19 +4,26 @@ import Path from '../Path';
  * 心形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default Path.extend({
-
+let defaultConfig={
     /**
      * @property {String} type
      */
     type: 'heart',
-
     shape: {
         cx: 0,
         cy: 0,
         width: 0,
         height: 0
-    },
+    }
+};
+export default class Heart extends Path{
+    /**
+     * @method constructor Heart
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @method buildPath
@@ -24,7 +31,7 @@ export default Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let x = shape.cx;
         let y = shape.cy;
         let a = shape.width;
@@ -41,4 +48,4 @@ export default Path.extend({
             x, y
         );
     }
-});
+}

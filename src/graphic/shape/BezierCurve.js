@@ -19,10 +19,6 @@ let defaultConfig={
         y2: 0,
         cpx1: 0,
         cpy1: 0,
-        // cpx2: 0,
-        // cpy2: 0
-
-        // Curve show percent, for animating
         percent: 1
     },
     style: {
@@ -41,8 +37,7 @@ function someVectorAt(shape, t, isTangent) {
             (isTangent ? curveUtil.cubicDerivativeAt : curveUtil.cubicAt)(shape.x1, shape.cpx1, shape.cpx2, shape.x2, t),
             (isTangent ? curveUtil.cubicDerivativeAt : curveUtil.cubicAt)(shape.y1, shape.cpy1, shape.cpy2, shape.y2, t)
         ];
-    }
-    else {
+    }else {
         return [
             (isTangent ? curveUtil.quadraticDerivativeAt : curveUtil.quadraticAt)(shape.x1, shape.cpx1, shape.x2, t),
             (isTangent ? curveUtil.quadraticDerivativeAt : curveUtil.quadraticAt)(shape.y1, shape.cpy1, shape.y2, t)

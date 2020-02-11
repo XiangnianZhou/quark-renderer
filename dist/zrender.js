@@ -14854,55 +14854,6 @@ class Path extends Displayable{
     }
 }
 
-/**
- * @protected
- * @method extend
- * 
- * Extending tool function for Path class.
- * 
- * Path 类专用的继承工具函数。
- * 
- * @param {Object} props
- * @param {String} props.type Path type
- * @param {Function} props.init Initialize
- * @param {Function} props.buildPath Overwrite buildPath method
- * @param {Object} [props.style] Extended default style config
- * @param {Object} [props.shape] Extended default shape config
- */
-Path.extend = function (defaults$$1) {
-    let Sub = function (opts) {
-        copyProperties(this,Path,opts);
-
-        if (defaults$$1.style) {
-            // Extend default style
-            this.style.extendStyle(defaults$$1.style, false);
-        }
-
-        // Extend default shape
-        let defaultShape = defaults$$1.shape;
-        if (defaultShape) {
-            this.shape = this.shape || {};
-            for (let name in defaultShape) {
-                if (!this.shape.hasOwnProperty(name)&&defaultShape.hasOwnProperty(name)){
-                    this.shape[name] = defaultShape[name];
-                }
-            }
-        }
-        defaults$$1.init && defaults$$1.init.call(this, opts);
-    };
-
-    inherits(Sub, Path);
-
-    // FIXME 不能 extend position, rotation 等引用对象
-    for (let name in defaults$$1) {
-        // Extending prototype values and methods
-        if (name !== 'style' && name !== 'shape') {
-            Sub.prototype[name] = defaults$$1[name];
-        }
-    }
-    return Sub;
-};
-
 var CMD$2 = PathProxy.CMD;
 
 var points = [[], [], []];
@@ -15386,15 +15337,6 @@ function createFromString(str, opts) {
 }
 
 /**
- * Create a Path class from path string data
- * @param  {String} str
- * @param  {Object} opts Other options
- */
-function extendFromString(str, opts) {
-    return Path.extend(createPathOptions(str, opts));
-}
-
-/**
  * Merge multiple paths
  */
 // TODO Apply transform
@@ -15431,7 +15373,6 @@ function mergePath(pathEls, opts) {
 
 var pathUtil = (Object.freeze || Object)({
 	createFromString: createFromString,
-	extendFromString: extendFromString,
 	mergePath: mergePath
 });
 
@@ -16089,20 +16030,26 @@ function buildPath$1(ctx, shape, closePath) {
  * 多边形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-var Polygon = Path.extend({
-
+let defaultConfig$4={
     /**
      * @property {String} type
      */
     type: 'polygon',
-
     shape: {
         points: null,
-
         smooth: false,
-
         smoothConstraint: null
-    },
+    }
+};
+
+class Polygon extends Path{
+    /**
+     * @method constructor Polygon
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig$4);
+    }
 
     /**
      * @method buildPath
@@ -16110,36 +16057,40 @@ var Polygon = Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         buildPath$1(ctx, shape, true);
     }
-});
+}
 
 /**
  * @class zrender.graphic.shape.Polyline 
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-var Polyline = Path.extend({
-
+let defaultConfig$5={
     /**
      * @property {String} type
      */
     type: 'polyline',
-
     shape: {
         points: null,
-
         smooth: false,
-
         smoothConstraint: null
     },
-
     style: {
         stroke: '#000',
-
         fill: null
-    },
+    }
+};
+
+class Polyline extends Path{
+    /**
+     * @method constructor Polyline
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig$5);
+    }
 
     /**
      * @method buildPath
@@ -16147,10 +16098,10 @@ var Polyline = Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         buildPath$1(ctx, shape, false);
     }
-});
+}
 
 /**
  * @class zrender.graphic.Gradient 
@@ -16885,23 +16836,30 @@ function parseSVG(xml, opt) {
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-var CompoundPath = Path.extend({
-
+let defaultConfig$6={
     /**
      * @property {String} type
      */
     type: 'compound',
-
     shape: {
-
         paths: null
-    },
+    }
+};
+
+class CompoundPath extends Path{
+    /**
+     * @method constructor CompoundPath
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig$6);
+    }
 
     /**
      * @private
      * @method _updatePathDirty
      */
-    _updatePathDirty: function () {
+    _updatePathDirty() {
         let dirtyPath = this.__dirtyPath;
         let paths = this.shape.paths;
         for (let i = 0; i < paths.length; i++) {
@@ -16910,13 +16868,13 @@ var CompoundPath = Path.extend({
         }
         this.__dirtyPath = dirtyPath;
         this.__dirty = this.__dirty || dirtyPath;
-    },
+    }
 
     /**
      * @private
      * @method beforeBrush
      */
-    beforeBrush: function () {
+    beforeBrush() {
         this._updatePathDirty();
         let paths = this.shape.paths || [];
         let scale = this.getGlobalScale();
@@ -16927,7 +16885,7 @@ var CompoundPath = Path.extend({
             }
             paths[i].path.setScale(scale[0], scale[1], paths[i].segmentIgnoreThreshold);
         }
-    },
+    }
 
     /**
      * @method buildPath
@@ -16935,33 +16893,33 @@ var CompoundPath = Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let paths = shape.paths || [];
         for (let i = 0; i < paths.length; i++) {
             paths[i].buildPath(ctx, paths[i].shape, true);
         }
-    },
+    }
 
     /**
      * @private
      * @method afterBrush
      */
-    afterBrush: function () {
+    afterBrush() {
         let paths = this.shape.paths || [];
         for (let i = 0; i < paths.length; i++) {
             paths[i].__dirtyPath = false;
         }
-    },
+    }
 
     /**
      * @private
      * @method getBoundingRect
      */
-    getBoundingRect: function () {
+    getBoundingRect() {
         this._updatePathDirty();
         return Path.prototype.getBoundingRect.call(this);
     }
-});
+}
 
 /**
  * @class zrender.graphic.IncrementalDisplayble 
@@ -17094,7 +17052,7 @@ inherits(IncrementalDisplayble, Displayable);
  * 圆弧
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig$4={
+let defaultConfig$7={
     /**
      * @property {String} type
      */
@@ -17119,7 +17077,7 @@ class Arc extends Path{
      * @param {Object} opts 
      */
     constructor(opts){
-        super(opts,defaultConfig$4);
+        super(opts,defaultConfig$7);
     }
 
     /**
@@ -17149,7 +17107,7 @@ class Arc extends Path{
  * 贝塞尔曲线
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig$5={
+let defaultConfig$8={
     /**
      * @property {String} type
      */
@@ -17161,10 +17119,6 @@ let defaultConfig$5={
         y2: 0,
         cpx1: 0,
         cpy1: 0,
-        // cpx2: 0,
-        // cpy2: 0
-
-        // Curve show percent, for animating
         percent: 1
     },
     style: {
@@ -17183,8 +17137,7 @@ function someVectorAt(shape, t, isTangent) {
             (isTangent ? cubicDerivativeAt : cubicAt)(shape.x1, shape.cpx1, shape.cpx2, shape.x2, t),
             (isTangent ? cubicDerivativeAt : cubicAt)(shape.y1, shape.cpy1, shape.cpy2, shape.y2, t)
         ];
-    }
-    else {
+    }else {
         return [
             (isTangent ? quadraticDerivativeAt : quadraticAt)(shape.x1, shape.cpx1, shape.x2, t),
             (isTangent ? quadraticDerivativeAt : quadraticAt)(shape.y1, shape.cpy1, shape.y2, t)
@@ -17198,7 +17151,7 @@ class BezierCurve extends Path{
      * @param {Object} opts 
      */
     constructor(opts){
-        super(opts,defaultConfig$5);
+        super(opts,defaultConfig$8);
     }
 
     /**
@@ -17289,7 +17242,7 @@ class BezierCurve extends Path{
  * 水滴形状
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig$6={
+let defaultConfig$9={
     /**
      * @property {String} type
      */
@@ -17307,7 +17260,7 @@ class Droplet$1 extends Path{
      * @param {Object} opts 
      */
     constructor(opts){
-        super(opts,defaultConfig$6);
+        super(opts,defaultConfig$9);
     }
 
     /**
@@ -17348,19 +17301,26 @@ class Droplet$1 extends Path{
  * 心形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-var Heart = Path.extend({
-
+let defaultConfig$10={
     /**
      * @property {String} type
      */
     type: 'heart',
-
     shape: {
         cx: 0,
         cy: 0,
         width: 0,
         height: 0
-    },
+    }
+};
+class Heart extends Path{
+    /**
+     * @method constructor Heart
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig$10);
+    }
 
     /**
      * @method buildPath
@@ -17368,7 +17328,7 @@ var Heart = Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let x = shape.cx;
         let y = shape.cy;
         let a = shape.width;
@@ -17385,7 +17345,7 @@ var Heart = Path.extend({
             x, y
         );
     }
-});
+}
 
 /**
  * @class zrender.graphic.shape.Isogon 
@@ -17396,17 +17356,25 @@ let PI$1 = Math.PI;
 let sin = Math.sin;
 let cos = Math.cos;
 
-var Isogon = Path.extend({
-
+let defaultConfig$11={
     /**
      * @property {String} type
      */
     type: 'isogon',
-
     shape: {
         x: 0, y: 0,
         r: 0, n: 0
-    },
+    }
+};
+
+class Isogon extends Path{
+    /**
+     * @method constructor Isogon
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig$11);
+    }
 
     /**
      * @method buildPath
@@ -17414,7 +17382,7 @@ var Isogon = Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let n = shape.n;
         if (!n || n < 2) {
             return;
@@ -17437,26 +17405,34 @@ var Isogon = Path.extend({
 
         return;
     }
-});
+}
 
 /**
  * @class zrender.graphic.shape.Ring 
  * 圆环
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-var Ring = Path.extend({
-
+let defaultConfig$12={
     /**
      * @property {String} type
      */
     type: 'ring',
-
     shape: {
         cx: 0,
         cy: 0,
         r: 0,
         r0: 0
-    },
+    }
+};
+
+class Ring extends Path{
+    /**
+     * @method constructor Ring
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig$12);
+    }
 
     /**
      * @method buildPath
@@ -17464,7 +17440,7 @@ var Ring = Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let x = shape.cx;
         let y = shape.cy;
         let PI2 = Math.PI * 2;
@@ -17473,7 +17449,7 @@ var Ring = Path.extend({
         ctx.moveTo(x + shape.r0, y);
         ctx.arc(x, y, shape.r0, 0, PI2, true);
     }
-});
+}
 
 /**
  * @class zrender.graphic.shape.Rose 
@@ -17484,13 +17460,11 @@ let sin$1 = Math.sin;
 let cos$1 = Math.cos;
 let radian = Math.PI / 180;
 
-var Rose = Path.extend({
-
+let defaultConfig$13={
     /**
      * @property {String} type
      */
     type: 'rose',
-
     shape: {
         cx: 0,
         cy: 0,
@@ -17498,11 +17472,20 @@ var Rose = Path.extend({
         k: 0,
         n: 1
     },
-
     style: {
         stroke: '#000',
         fill: null
-    },
+    }
+};
+
+class Rose extends Path{
+    /**
+     * @method constructor Rose
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig$13);
+    }
 
     /**
      * @method buildPath
@@ -17510,7 +17493,7 @@ var Rose = Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let x;
         let y;
         let R = shape.r;
@@ -17539,7 +17522,7 @@ var Rose = Path.extend({
             }
         }
     }
-});
+}
 
 // Fix weird bug in some version of IE11 (like 11.0.9600.178**),
 // where exception "unexpected call to method or property access"
@@ -17612,31 +17595,31 @@ var fixClipWithShadow = function (orignalBrush) {
  * 扇形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-var Sector = Path.extend({
-
+let defaultConfig$14={
     /**
      * @property {String} type
      */
     type: 'sector',
-
     shape: {
-
         cx: 0,
-
         cy: 0,
-
         r0: 0,
-
         r: 0,
-
         startAngle: 0,
-
         endAngle: Math.PI * 2,
-
         clockwise: true
-    },
+    }
+};
 
-    brush: fixClipWithShadow(Path.prototype.brush),
+class Sector extends Path{
+    /**
+     * @method constructor Sector
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig$14);
+        this.brush=fixClipWithShadow(Path.prototype.brush);
+    }
 
     /**
      * @method buildPath
@@ -17644,8 +17627,7 @@ var Sector = Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
-
+    buildPath(ctx, shape) {
         let x = shape.cx;
         let y = shape.cy;
         let r0 = Math.max(shape.r0 || 0, 0);
@@ -17658,11 +17640,8 @@ var Sector = Path.extend({
         let unitY = Math.sin(startAngle);
 
         ctx.moveTo(unitX * r0 + x, unitY * r0 + y);
-
         ctx.lineTo(unitX * r + x, unitY * r + y);
-
         ctx.arc(x, y, r, startAngle, endAngle, !clockwise);
-
         ctx.lineTo(
             Math.cos(endAngle) * r0 + x,
             Math.sin(endAngle) * r0 + y
@@ -17674,7 +17653,7 @@ var Sector = Path.extend({
 
         ctx.closePath();
     }
-});
+}
 
 /**
  * @class zrender.graphic.shape.Star 
@@ -17684,21 +17663,28 @@ var Sector = Path.extend({
 let PI$2 = Math.PI;
 let cos$2 = Math.cos;
 let sin$2 = Math.sin;
-
-var Star = Path.extend({
-
+let defaultConfig$15={
     /**
      * @property {String} type
      */
     type: 'star',
-
     shape: {
         cx: 0,
         cy: 0,
         n: 3,
         r0: null,
         r: 0
-    },
+    }
+};
+
+class Star extends Path{
+    /**
+     * @method constructor Star
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig$15);
+    }
 
     /**
      * @method buildPath
@@ -17706,8 +17692,7 @@ var Star = Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
-
+    buildPath(ctx, shape) {
         let n = shape.n;
         if (!n || n < 2) {
             return;
@@ -17744,7 +17729,7 @@ var Star = Path.extend({
 
         ctx.closePath();
     }
-});
+}
 
 /**
  * @class zrender.graphic.shape.Trochold 
@@ -17753,14 +17738,11 @@ var Star = Path.extend({
  */
 let cos$3 = Math.cos;
 let sin$3 = Math.sin;
-
-var Trochoid = Path.extend({
-
+let defaultConfig$16={
     /**
      * @property {String} type
      */
     type: 'trochoid',
-
     shape: {
         cx: 0,
         cy: 0,
@@ -17769,12 +17751,20 @@ var Trochoid = Path.extend({
         d: 0,
         location: 'out'
     },
-
     style: {
         stroke: '#000',
-
         fill: null
-    },
+    }
+};
+
+class Trochold extends Path{
+    /**
+     * @method constructor Trochold
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig$16);
+    }
 
     /**
      * @method buildPath
@@ -17782,7 +17772,7 @@ var Trochoid = Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let x1;
         let y1;
         let x2;
@@ -17829,7 +17819,7 @@ var Trochoid = Path.extend({
         while (i <= (r * num) / (R + delta * r) * 360);
 
     }
-});
+}
 
 /**
  * @class zrender.graphic.RadialGradient 
@@ -21213,7 +21203,7 @@ exports.Ring = Ring;
 exports.Rose = Rose;
 exports.Sector = Sector;
 exports.Star = Star;
-exports.Trochoid = Trochoid;
+exports.Trochoid = Trochold;
 exports.LinearGradient = LinearGradient;
 exports.RadialGradient = RadialGradient;
 exports.Pattern = Pattern;

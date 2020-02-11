@@ -5,31 +5,31 @@ import fixClipWithShadow from '../utils/fixClipWithShadow';
  * 扇形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default Path.extend({
-
+let defaultConfig={
     /**
      * @property {String} type
      */
     type: 'sector',
-
     shape: {
-
         cx: 0,
-
         cy: 0,
-
         r0: 0,
-
         r: 0,
-
         startAngle: 0,
-
         endAngle: Math.PI * 2,
-
         clockwise: true
-    },
+    }
+};
 
-    brush: fixClipWithShadow(Path.prototype.brush),
+export default class Sector extends Path{
+    /**
+     * @method constructor Sector
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+        this.brush=fixClipWithShadow(Path.prototype.brush);
+    }
 
     /**
      * @method buildPath
@@ -37,8 +37,7 @@ export default Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
-
+    buildPath(ctx, shape) {
         let x = shape.cx;
         let y = shape.cy;
         let r0 = Math.max(shape.r0 || 0, 0);
@@ -51,11 +50,8 @@ export default Path.extend({
         let unitY = Math.sin(startAngle);
 
         ctx.moveTo(unitX * r0 + x, unitY * r0 + y);
-
         ctx.lineTo(unitX * r + x, unitY * r + y);
-
         ctx.arc(x, y, r, startAngle, endAngle, !clockwise);
-
         ctx.lineTo(
             Math.cos(endAngle) * r0 + x,
             Math.sin(endAngle) * r0 + y
@@ -67,4 +63,4 @@ export default Path.extend({
 
         ctx.closePath();
     }
-});
+}

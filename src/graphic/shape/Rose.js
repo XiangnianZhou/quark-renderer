@@ -8,13 +8,11 @@ let sin = Math.sin;
 let cos = Math.cos;
 let radian = Math.PI / 180;
 
-export default Path.extend({
-
+let defaultConfig={
     /**
      * @property {String} type
      */
     type: 'rose',
-
     shape: {
         cx: 0,
         cy: 0,
@@ -22,11 +20,20 @@ export default Path.extend({
         k: 0,
         n: 1
     },
-
     style: {
         stroke: '#000',
         fill: null
-    },
+    }
+};
+
+export default class Rose extends Path{
+    /**
+     * @method constructor Rose
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @method buildPath
@@ -34,7 +41,7 @@ export default Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let x;
         let y;
         let R = shape.r;
@@ -63,4 +70,4 @@ export default Path.extend({
             }
         }
     }
-});
+}

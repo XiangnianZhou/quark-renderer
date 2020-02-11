@@ -8,17 +8,25 @@ let PI = Math.PI;
 let sin = Math.sin;
 let cos = Math.cos;
 
-export default Path.extend({
-
+let defaultConfig={
     /**
      * @property {String} type
      */
     type: 'isogon',
-
     shape: {
         x: 0, y: 0,
         r: 0, n: 0
-    },
+    }
+};
+
+export default class Isogon extends Path{
+    /**
+     * @method constructor Isogon
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @method buildPath
@@ -26,7 +34,7 @@ export default Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let n = shape.n;
         if (!n || n < 2) {
             return;
@@ -49,4 +57,4 @@ export default Path.extend({
 
         return;
     }
-});
+}
