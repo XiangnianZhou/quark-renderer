@@ -1,13 +1,10 @@
-/**
- * 水滴形状
- * @module zrender/graphic/shape/Droplet
- */
-
 import Path from '../Path';
-
-
-export default Path.extend({
-
+/**
+ * @class zrender.graphic.shape.Droplet 
+ * 水滴形状
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
+let defaultConfig={
     /**
      * @property {String} type
      */
@@ -16,7 +13,17 @@ export default Path.extend({
     shape: {
         cx: 0, cy: 0,
         width: 0, height: 0
-    },
+    }
+};
+
+export default class Droplet extends Path{
+    /**
+     * @method constructor Droplet
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @method buildPath
@@ -24,7 +31,7 @@ export default Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let x = shape.cx;
         let y = shape.cy;
         let a = shape.width;
@@ -49,4 +56,4 @@ export default Path.extend({
         );
         ctx.closePath();
     }
-});
+}

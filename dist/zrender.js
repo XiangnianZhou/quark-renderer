@@ -17276,12 +17276,11 @@ class BezierCurve extends Path{
 }
 
 /**
+ * @class zrender.graphic.shape.Droplet 
  * 水滴形状
- * @module zrender/graphic/shape/Droplet
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-var Droplet = Path.extend({
-
+let defaultConfig$5={
     /**
      * @property {String} type
      */
@@ -17290,7 +17289,17 @@ var Droplet = Path.extend({
     shape: {
         cx: 0, cy: 0,
         width: 0, height: 0
-    },
+    }
+};
+
+class Droplet extends Path{
+    /**
+     * @method constructor Droplet
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig$5);
+    }
 
     /**
      * @method buildPath
@@ -17298,7 +17307,7 @@ var Droplet = Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let x = shape.cx;
         let y = shape.cy;
         let a = shape.width;
@@ -17323,7 +17332,7 @@ var Droplet = Path.extend({
         );
         ctx.closePath();
     }
-});
+}
 
 /**
  * @class zrender.graphic.shape.Heart 
