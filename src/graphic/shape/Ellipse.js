@@ -4,8 +4,7 @@ import Path from '../Path';
  * 椭圆形状
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default Path.extend({
-
+let defaultConfig={
     /**
      * @property {String} type
      */
@@ -14,7 +13,17 @@ export default Path.extend({
     shape: {
         cx: 0, cy: 0,
         rx: 0, ry: 0
-    },
+    }
+};
+
+export default class Droplet extends Path{
+    /**
+     * @method constructor Droplet
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig);
+    }
 
     /**
      * @method buildPath
@@ -22,7 +31,7 @@ export default Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let k = 0.5522848;
         let x = shape.cx;
         let y = shape.cy;
@@ -38,4 +47,4 @@ export default Path.extend({
         ctx.bezierCurveTo(x - ox, y + b, x - a, y + oy, x - a, y);
         ctx.closePath();
     }
-});
+}

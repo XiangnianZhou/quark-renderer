@@ -15751,8 +15751,7 @@ class Rect extends Path{
  * 椭圆形状
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-var Ellipse = Path.extend({
-
+let defaultConfig$2={
     /**
      * @property {String} type
      */
@@ -15761,7 +15760,17 @@ var Ellipse = Path.extend({
     shape: {
         cx: 0, cy: 0,
         rx: 0, ry: 0
-    },
+    }
+};
+
+class Droplet extends Path{
+    /**
+     * @method constructor Droplet
+     * @param {Object} opts 
+     */
+    constructor(opts){
+        super(opts,defaultConfig$2);
+    }
 
     /**
      * @method buildPath
@@ -15769,7 +15778,7 @@ var Ellipse = Path.extend({
      * @param {Object} ctx 
      * @param {String} shape 
      */
-    buildPath: function (ctx, shape) {
+    buildPath(ctx, shape) {
         let k = 0.5522848;
         let x = shape.cx;
         let y = shape.cy;
@@ -15785,7 +15794,7 @@ var Ellipse = Path.extend({
         ctx.bezierCurveTo(x - ox, y + b, x - a, y + oy, x - a, y);
         ctx.closePath();
     }
-});
+}
 
 /**
  * @class zrender.graphic.shape.Line 
@@ -15793,7 +15802,7 @@ var Ellipse = Path.extend({
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 //TODO:Avoid create repeatly.
-let defaultConfig$2={
+let defaultConfig$3={
     /**
      * @property {String} type
      */
@@ -15820,7 +15829,7 @@ class Line extends Path{
      * @param {Object} opts 
      */
     constructor(opts){
-        super(opts,defaultConfig$2);
+        super(opts,defaultConfig$3);
     }
 
     /**
@@ -16462,7 +16471,7 @@ let nodeParsers = {
         return line;
     },
     'ellipse': function (xmlNode, parentGroup) {
-        let ellipse = new Ellipse();
+        let ellipse = new Droplet();
         inheritStyle(parentGroup, ellipse);
         parseAttributes(xmlNode, ellipse, this._defs);
 
@@ -17085,7 +17094,7 @@ inherits(IncrementalDisplayble, Displayable);
  * 圆弧
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig$3={
+let defaultConfig$4={
     /**
      * @property {String} type
      */
@@ -17110,7 +17119,7 @@ class Arc extends Path{
      * @param {Object} opts 
      */
     constructor(opts){
-        super(opts,defaultConfig$3);
+        super(opts,defaultConfig$4);
     }
 
     /**
@@ -17140,7 +17149,7 @@ class Arc extends Path{
  * 贝塞尔曲线
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig$4={
+let defaultConfig$5={
     /**
      * @property {String} type
      */
@@ -17189,7 +17198,7 @@ class BezierCurve extends Path{
      * @param {Object} opts 
      */
     constructor(opts){
-        super(opts,defaultConfig$4);
+        super(opts,defaultConfig$5);
     }
 
     /**
@@ -17280,7 +17289,7 @@ class BezierCurve extends Path{
  * 水滴形状
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig$5={
+let defaultConfig$6={
     /**
      * @property {String} type
      */
@@ -17292,13 +17301,13 @@ let defaultConfig$5={
     }
 };
 
-class Droplet extends Path{
+class Droplet$1 extends Path{
     /**
      * @method constructor Droplet
      * @param {Object} opts 
      */
     constructor(opts){
-        super(opts,defaultConfig$5);
+        super(opts,defaultConfig$6);
     }
 
     /**
@@ -21192,8 +21201,8 @@ exports.IncrementalDisplayable = IncrementalDisplayble;
 exports.Arc = Arc;
 exports.BezierCurve = BezierCurve;
 exports.Circle = Circle;
-exports.Droplet = Droplet;
-exports.Ellipse = Ellipse;
+exports.Droplet = Droplet$1;
+exports.Ellipse = Droplet;
 exports.Heart = Heart;
 exports.Isogon = Isogon;
 exports.Line = Line;
