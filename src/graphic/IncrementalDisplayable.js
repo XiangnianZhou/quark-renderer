@@ -1,4 +1,4 @@
-import { inherits } from '../core/utils/classUtil';
+import * as classUtil from '../core/utils/classUtil';
 import Displayble from './Displayable';
 import BoundingRect from '../core/BoundingRect';
 
@@ -18,7 +18,7 @@ import BoundingRect from '../core/BoundingRect';
  */
 // TODO Style override ?
 function IncrementalDisplayble(opts) {
-    Displayble.call(this, opts);
+    classUtil.copyProperties(this,Displayble,opts);
     this._displayables = [];
     this._temporaryDisplayables = [];
     this._cursor = 0;
@@ -126,6 +126,6 @@ IncrementalDisplayble.prototype={
     }
 }
 
-inherits(IncrementalDisplayble, Displayble);
+classUtil.inherits(IncrementalDisplayble, Displayble);
 
 export default IncrementalDisplayble;
