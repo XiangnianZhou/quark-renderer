@@ -3,7 +3,7 @@ const {resolve} = require('path');
 
 // Based on echarts/
 function getPath(relativePath) {
-    return resolve(__dirname, '../', relativePath);
+    return resolve(__dirname, '../..', relativePath);
 }
 
 /**

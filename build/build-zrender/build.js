@@ -1,14 +1,36 @@
 #!/usr/bin/env node
-
 const fsExtra = require('fs-extra');
 const {resolve} = require('path');
-const config = require('./config.js');
 const commander = require('commander');
-const {build, watch} = require('./build-utils');
-const prePublish = require('./pre-publish');
+const path = require('path');
+const {build, watch,color, travelSrcDir, bundleForNode} = require('./build-utils');
+const ecDir = path.resolve(__dirname, '../..');
+const srcDir = path.resolve(__dirname, '../../src');
+const libDir = path.resolve(__dirname, '../../lib');
+const config = require('./config.js');
+
+/**
+ * Compatible with prevoius folder structure: `zrender/lib` exists in `node_modules`
+ */
+function publishForNodeJS() {
+    fsExtra.removeSync(libDir);
+    fsExtra.ensureDirSync(libDir);
+    travelSrcDir(srcDir, ({fileName, relativePath, absolutePath}) => {
+        bundleForNode({
+            inputPath: absolutePath,
+            outputPath: path.resolve(libDir, relativePath, fileName)
+        });
+    });
+
+    bundleForNode({
+        inputPath: path.resolve(ecDir, 'zrender.all.js'),
+        outputPath: path.resolve(ecDir, 'index.js')
+    });
+
+    console.log(color('fgGreen', 'bright')(`All done, ${new Date().toLocaleString()}.`));
+};
 
 function run() {
-
     /**
      * Tips for `commander`:
      * (1) If arg xxx not specified, `commander.xxx` is undefined.
@@ -48,14 +70,14 @@ function run() {
     if (isWatch) {
         watch(config.create());
     }else if (isPrePublish) {
-        prePublish();
+        publishForNodeJS();
     }else if (isRelease) {
         fsExtra.removeSync(getPath('./dist'));
         build([
-            config.create(false),
-            config.create(true)
+            config.create(false), // generate zrender.js
+            config.create(true)   // generate zrender.min.js
         ]).then(function () {
-            prePublish();
+            publishForNodeJS();
         }).catch(handleBuildError);
     }else {
         build([config.create(min)]).catch(handleBuildError);
