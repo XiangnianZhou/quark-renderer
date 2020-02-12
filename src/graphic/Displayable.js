@@ -141,7 +141,7 @@ class Displayable extends Element{
          */
         this.globalScaleRatio=1;
 
-        classUtil.copyOwnProperties(this,options,['style']);
+        classUtil.copyOwnProperties(this,this.options,['style']);
     }
 
     beforeBrush(ctx) {}
