@@ -2,7 +2,6 @@ import * as dataUtil from '../core/utils/dataStructureUtil';
 import * as classUtil from '../core/utils/classUtil';
 import {Dispatcher} from '../core/utils/eventUtil';
 import requestAnimationFrame from './utils/requestAnimationFrame';
-import AnimationProcess from './AnimationProcess';
 /**
  * @singleton
  * @class zrender.animation.GlobalAnimationMgr

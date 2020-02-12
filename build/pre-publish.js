@@ -28,5 +28,5 @@ module.exports = function () {
         outputPath: path.resolve(ecDir, 'index.js')
     });
 
-    console.log(color('fgGreen', 'bright')('All done.'));
+    console.log(color('fgGreen', 'bright')(`All done, ${new Date().toLocaleString()}.`));
 };
