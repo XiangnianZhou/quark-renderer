@@ -18,7 +18,7 @@ import BoundingRect from '../core/BoundingRect';
  */
 // TODO Style override ?
 function IncrementalDisplayble(opts) {
-    classUtil.copyProperties(this,Displayble,opts);
+    classUtil.inheritProperties(this,Displayble,opts);
     this._displayables = [];
     this._temporaryDisplayables = [];
     this._cursor = 0;

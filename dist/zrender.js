@@ -1120,12 +1120,17 @@ function mixin(target, source, overlay) {
 }
 
 /**
- * 拷贝父类上的属性
+ * @method inheritProperties
+ * 
+ * Copy properties from super class, this method is designed for the classes which were not written in ES6 syntax.
+ * 
+ * 拷贝父类上的属性，此方法用来支持那么没有按照 ES6 语法编写的类。
+ * 
  * @param {*} subInstance 子类的实例
  * @param {*} SuperClass 父类的类型
  * @param {*} opts 构造参数
  */
-function copyProperties(subInstance,SuperClass,opts){
+function inheritProperties(subInstance,SuperClass,opts){
     let sp=new SuperClass(opts);
     for(let name in sp){
         if(sp.hasOwnProperty(name)){
@@ -5523,14 +5528,14 @@ class Element{
     constructor(options){
         this.options=options;
 
-        copyProperties(this,Transformable,options);
-        copyProperties(this,Eventful,options);
-        copyProperties(this,Animatable,options);
+        inheritProperties(this,Transformable,this.options);
+        inheritProperties(this,Eventful,this.options);
+        inheritProperties(this,Animatable,this.options);
     
         /**
          * @property {String}
          */
-        this.id = options.id || guid();
+        this.id = this.options.id || guid();
 
         /**
          * @property {String} type 元素类型
@@ -16944,7 +16949,7 @@ class CompoundPath extends Path{
  */
 // TODO Style override ?
 function IncrementalDisplayble(opts) {
-    copyProperties(this,Displayable,opts);
+    inheritProperties(this,Displayable,opts);
     this._displayables = [];
     this._temporaryDisplayables = [];
     this._cursor = 0;

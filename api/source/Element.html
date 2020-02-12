@@ -53,9 +53,9 @@ function () {
   function Element(opts) {
     _classCallCheck(this, Element);
 
-    classUtil.copyProperties(this, Transformable, opts);
-    classUtil.copyProperties(this, Eventful, opts);
-    classUtil.copyProperties(this, Animatable, opts);
+    classUtil.inheritProperties(this, Transformable, opts);
+    classUtil.inheritProperties(this, Eventful, opts);
+    classUtil.inheritProperties(this, Animatable, opts);
 <span id='zrender-graphic-Element-property-id'>    /**
 </span>     * @property {String}
      */

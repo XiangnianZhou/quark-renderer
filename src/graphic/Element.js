@@ -22,14 +22,14 @@ class Element{
     constructor(options){
         this.options=options;
 
-        classUtil.copyProperties(this,Transformable,options);
-        classUtil.copyProperties(this,Eventful,options);
-        classUtil.copyProperties(this,Animatable,options);
+        classUtil.inheritProperties(this,Transformable,this.options);
+        classUtil.inheritProperties(this,Eventful,this.options);
+        classUtil.inheritProperties(this,Animatable,this.options);
     
         /**
          * @property {String}
          */
-        this.id = options.id || guid();
+        this.id = this.options.id || guid();
 
         /**
          * @property {String} type 元素类型
