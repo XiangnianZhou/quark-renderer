@@ -1,5 +1,7 @@
 import Path from '../Path';
 import * as polyHelper from '../utils/poly';
+import * as dataUtil from '../../core/utils/dataStructureUtil';
+
 /**
  * @class zrender.graphic.shape.Polyline 
  * 
@@ -24,10 +26,10 @@ let defaultConfig={
 export default class Polyline extends Path{
     /**
      * @method constructor Polyline
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(dataUtil.merge(defaultConfig,options,true));
     }
 
     /**

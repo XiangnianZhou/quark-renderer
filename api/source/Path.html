@@ -37,9 +37,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call &amp;&amp; (_typeof(call) === &quot;object&quot; || typeof call === &quot;function&quot;)) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(&quot;this hasn&#39;t been initialised - super() hasn&#39;t been called&quot;); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(&quot;this hasn&#39;t been initialised - super() hasn&#39;t been called&quot;); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== &quot;function&quot; &amp;&amp; superClass !== null) { throw new TypeError(&quot;Super expression must either be null or a function&quot;); } subClass.prototype = Object.create(superClass &amp;&amp; superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -56,15 +56,14 @@ function (_Displayable) {
 
 <span id='zrender-graphic-Path-method-constructor'>  /**
 </span>   * @method constructor Path
-   * @param {Object} opts
-   * @param {Object} defaultConfig
+   * @param {Object} options
    */
-  function Path(opts, defaultConfig) {
+  function Path(options) {
     var _this;
 
     _classCallCheck(this, Path);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Path).call(this, opts));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Path).call(this, options));
 <span id='zrender-graphic-Path-property-path'>    /**
 </span>     * @property {PathProxy}
      * @readOnly
@@ -100,53 +99,43 @@ function (_Displayable) {
      * See `module:zrender/src/graphic/helper/subPixelOptimize`.
      */
 
-    _this.subPixelOptimize = false; //Path 特有的配置项
+    _this.subPixelOptimize = false;
+<span id='zrender-graphic-Path-property-shape'>    /**
+</span>     * @property {Object} shape 形状
+     */
 
-    if (defaultConfig) {
-      _this.init(defaultConfig);
+    _this.shape = {}; // Extend default shape
+
+    var defaultShape = _this.options.shape;
+
+    if (defaultShape) {
+      for (var name in defaultShape) {
+        if (!_this.shape.hasOwnProperty(name) &amp;&amp; defaultShape.hasOwnProperty(name)) {
+          _this.shape[name] = defaultShape[name];
+        }
+      }
+    }
+
+    _this.options.init &amp;&amp; _this.options.init.call(_assertThisInitialized(_this), options); // FIXME 不能 extend position, rotation 等引用对象
+    // TODO:What&#39;s going on here?
+
+    for (var _name in _this.options) {
+      // Extending prototype values and methods
+      if (_name !== &#39;style&#39; &amp;&amp; _name !== &#39;shape&#39;) {
+        Path.prototype[_name] = _this.options[_name];
+      }
     }
 
     return _this;
   }
+<span id='zrender-graphic-Path-method-brush'>  /**
+</span>   * @method brush
+   * @param {Object} ctx 
+   * @param {Element} prevEl 
+   */
+
 
   _createClass(Path, [{
-    key: &quot;init&quot;,
-    value: function init(defaultConfig) {
-      if (defaultConfig.style) {
-        // Extend default style
-        this.style.extendStyle(defaultConfig.style, false);
-      } // Extend default shape
-
-
-      var defaultShape = defaultConfig.shape;
-
-      if (defaultShape) {
-        this.shape = this.shape || {};
-
-        for (var name in defaultShape) {
-          if (!this.shape.hasOwnProperty(name) &amp;&amp; defaultShape.hasOwnProperty(name)) {
-            this.shape[name] = defaultShape[name];
-          }
-        }
-      }
-
-      defaultConfig.init &amp;&amp; defaultConfig.init.call(this, opts); // FIXME 不能 extend position, rotation 等引用对象
-      // TODO:What&#39;s going on here?
-
-      for (var _name in defaultConfig) {
-        // Extending prototype values and methods
-        if (_name !== &#39;style&#39; &amp;&amp; _name !== &#39;shape&#39;) {
-          Path.prototype[_name] = defaultConfig[_name];
-        }
-      }
-    }
-<span id='zrender-graphic-Path-method-brush'>    /**
-</span>     * @method brush
-     * @param {Object} ctx 
-     * @param {Element} prevEl 
-     */
-
-  }, {
     key: &quot;brush&quot;,
     value: function brush(ctx, prevEl) {
       var style = this.style;

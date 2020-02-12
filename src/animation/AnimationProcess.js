@@ -16,25 +16,29 @@ import Track from './Track';
  * @param {Function} getter
  * @param {Function} setter
  */
-let AnimationProcess = function (target, loop, getter, setter) {
-    this._trackCacheMap = new Map();
-    this._target = target;
-    this._loop = loop || false;
-    this._getter = getter || function(target, key) {
-        return target[key];
-    };
-    this._setter = setter || function(target, key, value) {
-        target[key] = value;
-    };
+// let AnimationProcess = function (target, loop, getter, setter) {
+    
+// };
 
-    this._delay = 0;
-    this._paused = false;
-    this._doneList = [];    //callback list when the entire animation process is finished
-    this._onframeList = []; //callback list for each frame
-};
+// AnimationProcess.prototype = {};
 
-AnimationProcess.prototype = {
-    constructor: AnimationProcess,
+class AnimationProcess{
+    constructor(target, loop, getter, setter){
+        this._trackCacheMap = new Map();
+        this._target = target;
+        this._loop = loop || false;
+        this._getter = getter || function(target, key) {
+            return target[key];
+        };
+        this._setter = setter || function(target, key, value) {
+            target[key] = value;
+        };
+    
+        this._delay = 0;
+        this._paused = false;
+        this._doneList = [];    //callback list when the entire animation process is finished
+        this._onframeList = []; //callback list for each frame
+    }
 
     /**
      * @method when
@@ -43,7 +47,7 @@ AnimationProcess.prototype = {
      * @param  {Object} props 关键帧的属性值，key-value表示
      * @return {zrender.animation.AnimationProcess}
      */
-    when: function (time, props) {
+    when(time, props) {
         for (let propName in props) {
             if (!props.hasOwnProperty(propName)) {
                 continue;
@@ -82,7 +86,7 @@ AnimationProcess.prototype = {
             this._trackCacheMap.set(propName,track);
         }
         return this;
-    },
+    }
 
     /**
      * @method during
@@ -90,28 +94,28 @@ AnimationProcess.prototype = {
      * @param  {Function} callback
      * @return {zrender.animation.AnimationProcess}
      */
-    during: function (callback) {
+    during(callback) {
         this._onframeList.push(callback);
         return this;
-    },
+    }
 
     /**
      * @private
      * @method _doneCallback
      * 动画过程整体结束的时候回调此函数
      */
-    _doneCallback: function () {
+    _doneCallback() {
         this._doneList.forEach((fn,index)=>{
             fn.call(this);
         });
         this._trackCacheMap = new Map();
-    },
+    }
 
     /**
      * @method isFinished
      * 判断整个动画过程是否已经完成，所有 Track 上的动画都完成则整个动画过程完成
      */
-    isFinished: function () {
+    isFinished() {
         let isFinished=true;
         [...this._trackCacheMap.values()].forEach((track,index)=>{
             if(!track.isFinished){
@@ -119,7 +123,7 @@ AnimationProcess.prototype = {
             }
         });
         return isFinished;
-    },
+    }
 
     /**
      * @method start
@@ -128,7 +132,7 @@ AnimationProcess.prototype = {
      * @param  {Boolean} forceAnimate
      * @return {zrender.animation.AnimationProcess}
      */
-    start: function (easing, forceAnimate) {
+    start(easing, forceAnimate) {
         let self = this;
         let keys=[...this._trackCacheMap.keys()];
         keys.forEach((propName,index)=>{
@@ -146,19 +150,19 @@ AnimationProcess.prototype = {
             this._doneCallback();
         }
         return this;
-    },
+    }
 
     /**
      * @method stop
      * 停止动画
      * @param {Boolean} forwardToLast If move to last frame before stop
      */
-    stop: function (forwardToLast) {
+    stop(forwardToLast) {
         [...this._trackCacheMap.values()].forEach((track,index)=>{
             track.stop(this._target, 1);
         });
         this._trackCacheMap=new Map();
-    },
+    }
 
     /**
      * @method nextFrame
@@ -166,7 +170,7 @@ AnimationProcess.prototype = {
      * @param {Number} time  当前时间
      * @param {Number} delta 时间偏移量
      */
-    nextFrame:function(time,delta){
+    nextFrame(time,delta){
         let deferredEvents = [];
         let deferredTracks = [];
         let percent="";
@@ -195,37 +199,37 @@ AnimationProcess.prototype = {
         if(this.isFinished()){
             this._doneCallback();
         }
-    },
+    }
 
     /**
      * @method pause
      * 暂停动画
      */
-    pause: function () {
+    pause() {
         [...this._trackCacheMap.values()].forEach((track,index)=>{
             track.pause();
         });
         this._paused = true;
-    },
+    }
 
     /**
      * @method resume
      * 恢复动画
      */
-    resume: function () {
+    resume() {
         [...this._trackCacheMap.values()].forEach((track,index)=>{
             track.resume();
         });
         this._paused = false;
-    },
+    }
 
     /**
      * @method isPaused
      * 是否暂停
      */
-    isPaused: function () {
+    isPaused() {
         return !!this._paused;
-    },
+    }
 
     /**
      * @method delay
@@ -233,10 +237,10 @@ AnimationProcess.prototype = {
      * @param  {Number} time 单位ms
      * @return {zrender.animation.AnimationProcess}
      */
-    delay: function (time) {
+    delay(time) {
         this._delay = time;
         return this;
-    },
+    }
     
     /**
      * @method done
@@ -244,12 +248,12 @@ AnimationProcess.prototype = {
      * @param  {Function} cb
      * @return {zrender.animation.AnimationProcess}
      */
-    done: function (cb) {
+    done(cb) {
         if (cb) {
             this._doneList.push(cb);
         }
         return this;
     }
-};
+}
 
 export default AnimationProcess;

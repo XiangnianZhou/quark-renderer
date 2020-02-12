@@ -91,7 +91,7 @@ exports.watch = function (singleConfig) {
         //   FATAL        — encountered an unrecoverable error
         if (event.code !== 'START' && event.code !== 'END') {
             console.log(
-                color('fgBlue')('[' + getTimeString() + ']'),
+                color('fgBlue')(`[${new Date().toLocaleString()}]`),
                 color('dim')('build'),
                 event.code.replace(/_/g, ' ').toLowerCase()
             );
@@ -131,8 +131,7 @@ exports.travelSrcDir = function (srcDir, cb) {
                 if (regDir.test(fileName)) {
                     doTravelSrcDir(path.join(relativePath, fileName));
                 }
-            }
-            else if (stat.isFile()) {
+            }else if (stat.isFile()) {
                 if (regSrc.test(fileName)) {
                     cb({fileName, relativePath, absolutePath: childAbsolutePath});
                 }
@@ -150,7 +149,7 @@ exports.travelSrcDir = function (srcDir, cb) {
  * @param {Function} [opt.transform]
  * @param {Function} [opt.reserveDEV]
  */
-exports.prePulishSrc = function ({inputPath, outputPath, preamble, transform, reserveDEV}) {
+exports.bundleForNode = function ({inputPath, outputPath, preamble, transform, reserveDEV}) {
     assert(inputPath && outputPath);
 
     console.log(
@@ -211,10 +210,6 @@ function printCodeError(error) {
         console.log('\n' + color('fgRed')(error.frame));
     }
     console.log(color('dim')('\n' + error.stack));
-}
-
-function getTimeString() {
-    return (new Date()).toLocaleString();
 }
 
 const COLOR_RESET = '\x1b[0m';

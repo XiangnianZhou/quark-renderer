@@ -35,12 +35,17 @@ export function mixin(target, source, overlay) {
 }
 
 /**
- * 拷贝父类上的属性
+ * @method inheritProperties
+ * 
+ * Copy properties from super class, this method is designed for the classes which were not written in ES6 syntax.
+ * 
+ * 拷贝父类上的属性，此方法用来支持那么没有按照 ES6 语法编写的类。
+ * 
  * @param {*} subInstance 子类的实例
  * @param {*} SuperClass 父类的类型
  * @param {*} opts 构造参数
  */
-export function copyProperties(subInstance,SuperClass,opts){
+export function inheritProperties(subInstance,SuperClass,opts){
     let sp=new SuperClass(opts);
     for(let name in sp){
         if(sp.hasOwnProperty(name)){

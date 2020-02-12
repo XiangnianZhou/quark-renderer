@@ -19,6 +19,8 @@
 
 var polyHelper = require(&quot;../utils/poly&quot;);
 
+var dataUtil = require(&quot;../../core/utils/dataStructureUtil&quot;);
+
 function _typeof(obj) { if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
@@ -61,12 +63,12 @@ function (_Path) {
 
 <span id='zrender-graphic-shape-Polygon-method-constructor'>  /**
 </span>   * @method constructor Polygon
-   * @param {Object} opts 
+   * @param {Object} options 
    */
-  function Polygon(opts) {
+  function Polygon(options) {
     _classCallCheck(this, Polygon);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Polygon).call(this, opts, defaultConfig));
+    return _possibleConstructorReturn(this, _getPrototypeOf(Polygon).call(this, dataUtil.merge(defaultConfig, options, true)));
   }
 <span id='zrender-graphic-shape-Polygon-method-buildPath'>  /**
 </span>   * @method buildPath

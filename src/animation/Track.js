@@ -121,6 +121,7 @@ export default class Track{
      * @param {String} easing 缓动函数名称
      * @param {String} propName 属性名称
      * @param {Boolean} forceAnimate 是否强制开启动画 
+     * //TODO:try move this into webworker
      */
     _parseKeyFrames(easing,propName,forceAnimate) {
         let loop=this._loop;

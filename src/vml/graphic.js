@@ -453,6 +453,11 @@ if (!env.canvasSupported) {
     /**
      * @class zrender.vml.Path
      * 
+     * Append brushVML method to standard shape classes inside graphic package, VMLPainter will
+     * use this method instead of standard brush() method.
+     * 
+     * 在标准的 shape 类上扩展一个 brushVML 方法，在 VMLPainter 中会调用此方法，而不是标准的 brush 方法。
+     * 
      * @docauthor 大漠穷秋 damoqiongqiu@126.com
      */
 

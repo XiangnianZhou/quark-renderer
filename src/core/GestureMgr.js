@@ -1,71 +1,15 @@
-/**
- * Only implements needed gestures for mobile.
- */
-
 import * as eventUtil from './utils/eventUtil';
 
-var GestureMgr = function () {
-
-    /**
-     * @private
-     * @property {Array<Object>}
-     */
-    this._track = [];
-};
-
-GestureMgr.prototype = {
-
-    constructor: GestureMgr,
-
-    recognize: function (event, target, root) {
-        this._doTrack(event, target, root);
-        return this._recognize(event);
-    },
-
-    clear: function () {
-        this._track.length = 0;
-        return this;
-    },
-
-    _doTrack: function (event, target, root) {
-        var touches = event.touches;
-
-        if (!touches) {
-            return;
-        }
-
-        var trackItem = {
-            points: [],
-            touches: [],
-            target: target,
-            event: event
-        };
-
-        for (var i = 0, len = touches.length; i < len; i++) {
-            var touch = touches[i];
-            var pos = eventUtil.clientToLocal(root, touch, {});
-            trackItem.points.push([pos.zrX, pos.zrY]);
-            trackItem.touches.push(touch);
-        }
-
-        this._track.push(trackItem);
-    },
-
-    _recognize: function (event) {
-        for (var eventName in recognizers) {
-            if (recognizers.hasOwnProperty(eventName)) {
-                var gestureInfo = recognizers[eventName](this._track, event);
-                if (gestureInfo) {
-                    return gestureInfo;
-                }
-            }
-        }
-    }
-};
-
+/**
+ * @class zrender.core.GestureMgr
+ * 
+ * Implement necessary gestures for mobile platform.
+ * 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 function dist(pointPair) {
-    var dx = pointPair[1][0] - pointPair[0][0];
-    var dy = pointPair[1][1] - pointPair[0][1];
+    let dx = pointPair[1][0] - pointPair[0][0];
+    let dy = pointPair[1][1] - pointPair[0][1];
 
     return Math.sqrt(dx * dx + dy * dy);
 }
@@ -77,29 +21,27 @@ function center(pointPair) {
     ];
 }
 
-var recognizers = {
-
-    pinch: function (track, event) {
-        var trackLen = track.length;
-
+let recognizers = {
+    pinch(track, event) {
+        let trackLen = track.length;
         if (!trackLen) {
             return;
         }
 
-        var pinchEnd = (track[trackLen - 1] || {}).points;
-        var pinchPre = (track[trackLen - 2] || {}).points || pinchEnd;
+        let pinchEnd = (track[trackLen - 1] || {}).points;
+        let pinchPre = (track[trackLen - 2] || {}).points || pinchEnd;
 
         if (pinchPre
             && pinchPre.length > 1
             && pinchEnd
             && pinchEnd.length > 1
         ) {
-            var pinchScale = dist(pinchEnd) / dist(pinchPre);
+            let pinchScale = dist(pinchEnd) / dist(pinchPre);
             !isFinite(pinchScale) && (pinchScale = 1);
 
             event.pinchScale = pinchScale;
 
-            var pinchCenter = center(pinchEnd);
+            let pinchCenter = center(pinchEnd);
             event.pinchX = pinchCenter[0];
             event.pinchY = pinchCenter[1];
 
@@ -113,5 +55,60 @@ var recognizers = {
 
     // Only pinch currently.
 };
+
+class GestureMgr{
+    constructor(){
+        /**
+         * @private
+         * @property {Array<Object>}
+         */
+        this._track = [];
+    }
+
+    recognize(event, target, root) {
+        this._doTrack(event, target, root);
+        return this._recognize(event);
+    }
+
+    clear() {
+        this._track.length = 0;
+        return this;
+    }
+
+    _doTrack(event, target, root) {
+        let touches = event.touches;
+
+        if (!touches) {
+            return;
+        }
+
+        let trackItem = {
+            points: [],
+            touches: [],
+            target: target,
+            event: event
+        };
+
+        for (let i = 0, len = touches.length; i < len; i++) {
+            let touch = touches[i];
+            let pos = eventUtil.clientToLocal(root, touch, {});
+            trackItem.points.push([pos.zrX, pos.zrY]);
+            trackItem.touches.push(touch);
+        }
+
+        this._track.push(trackItem);
+    }
+
+    _recognize(event) {
+        for (let eventName in recognizers) {
+            if (recognizers.hasOwnProperty(eventName)) {
+                let gestureInfo = recognizers[eventName](this._track, event);
+                if (gestureInfo) {
+                    return gestureInfo;
+                }
+            }
+        }
+    }
+}
 
 export default GestureMgr;

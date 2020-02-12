@@ -20,7 +20,7 @@ let DILIMITER_REG = /[\s,]+/;
 
 /**
  * For big svg string, this method might be time consuming.
- *
+ * //TODO:try to move this into webworker.
  * @param {String} svg xml string
  * @return {Object} xml root.
  */
@@ -44,6 +44,10 @@ export function parseXML(svg) {
 
 /**
  * @class zrender.svg.SVGParser
+ * 
+ * This is a tool class for parsing SVG xml string to standard shape classes.
+ * 
+ * 这是一个工具类，用来把 SVG 格式的 xml 解析成 graphic 包中定义的标准类。
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
@@ -548,7 +552,6 @@ function parseAttributes(xmlNode, el, defs, onlyInlineStyle) {
 
     el.__inheritedStyle = zrStyle;
 }
-
 
 let urlRegex = /url\(\s*#(.*?)\)/;
 function getPaint(str, defs) {

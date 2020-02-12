@@ -1,4 +1,6 @@
 import Path from '../Path';
+import * as dataUtil from '../../core/utils/dataStructureUtil';
+
 /**
  * @class zrender.graphic.shape.Rose 
  * 玫瑰线
@@ -29,10 +31,10 @@ let defaultConfig={
 export default class Rose extends Path{
     /**
      * @method constructor Rose
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(dataUtil.merge(defaultConfig,options,true));
     }
 
     /**

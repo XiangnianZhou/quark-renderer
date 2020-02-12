@@ -24,16 +24,12 @@ import {
 function getSvgProxy(el) {
     if (el instanceof Path) {
         return svgPath;
-    }
-    else if (el instanceof ZImage) {
+    }else if (el instanceof ZImage) {
         return svgImage;
-    }
-    else if (el instanceof ZText) {
+    }else if (el instanceof ZText) {
         return svgText;
     }
-    else {
-        return svgPath;
-    }
+    return svgPath;
 }
 
 function checkParentAvailable(parent, child) {
@@ -77,12 +73,11 @@ function getSvgElement(displayable) {
  * @param {Object} opts
  */
 let SVGPainter = function (root, storage, opts, zrId) {
-
     this.root = root;
     this.storage = storage;
     this._opts = opts = dataUtil.extend({}, opts || {});
-
     let svgRoot = createElement('svg');
+    
     svgRoot.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
     svgRoot.setAttribute('version', '1.1');
     svgRoot.setAttribute('baseProfile', 'full');

@@ -16,15 +16,15 @@ import RectText from './RectText';
 class Displayable extends Element{
     /**
      * @method constructor
-     * @param {*} opts 
+     * @param {*} options 
      */
-    constructor(opts={}){
-        super(opts);
+    constructor(options={}){
+        super(options);
         
         /**
          * @property {Style} style
          */
-        this.style = new Style(opts.style, this);
+        this.style = new Style(options.style, this);
         
         /**
          * @private
@@ -36,7 +36,7 @@ class Displayable extends Element{
         this.__clipPaths = null;
 
         // FIXME Stateful must be mixined after style is setted
-        // Stateful.call(this, opts);
+        // Stateful.call(this, options);
 
         /**
          * The String value of `textPosition` needs to be calculated to a real postion.
@@ -141,7 +141,7 @@ class Displayable extends Element{
          */
         this.globalScaleRatio=1;
 
-        classUtil.copyOwnProperties(this,opts,['style']);
+        classUtil.copyOwnProperties(this,this.options,['style']);
     }
 
     beforeBrush(ctx) {}

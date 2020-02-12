@@ -11,10 +11,10 @@
     "url": "https://github.com/ecomfe/zrender.git"
   },
   "scripts": {
-    "prepublish": "node build/build.js --prepublish",
-    "build": "node build/build.js --release",
-    "dev": "node build/build.js --watch",
-    "test": "node build/build.js",
+    "prepublish": "node build/build-zrender/build.js --prepublish",
+    "build": "node build/build-zrender/build.js --release",
+    "dev": "node build/build-zrender/build.js --watch",
+    "test": "node build/build-zrender/build.js",
     "lint": "./node_modules/.bin/eslint src"
   },
   "license": "BSD-3-Clause",

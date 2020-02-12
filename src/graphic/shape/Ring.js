@@ -1,4 +1,6 @@
 import Path from '../Path';
+import * as dataUtil from '../../core/utils/dataStructureUtil';
+
 /**
  * @class zrender.graphic.shape.Ring 
  * 圆环
@@ -20,10 +22,10 @@ let defaultConfig={
 export default class Ring extends Path{
     /**
      * @method constructor Ring
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(dataUtil.merge(defaultConfig,options,true));
     }
 
     /**

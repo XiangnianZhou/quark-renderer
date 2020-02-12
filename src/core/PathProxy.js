@@ -1,21 +1,22 @@
-/**
- * Path 代理，可以在`buildPath`中用于替代`ctx`, 会保存每个path操作的命令到pathCommands属性中
- * 可以用于 isInsidePath 判断以及获取boundingRect
- *
- * @module zrender/core/PathProxy
- * @author Yi Shen (http://www.github.com/pissang)
- */
-
-// TODO getTotalLength, getPointAtLength
-
-/* global Float32Array */
-
 import * as curve from './utils/curveUtil';
 import * as vec2 from './utils/vector';
 import * as bbox from './utils/bboxUtil';
 import BoundingRect from './BoundingRect';
 import {devicePixelRatio as dpr} from '../config';
 
+// TODO: getTotalLength, getPointAtLength
+
+/* global Float32Array */
+
+/**
+ * @class zrender.core.PathProxy
+ * 
+ * Path 代理，可以在`buildPath`中用于替代`ctx`, 会保存每个path操作的命令到pathCommands属性中
+ * 可以用于 isInsidePath 判断以及获取boundingRect
+ * 
+ * @author Yi Shen (http://www.github.com/pissang)
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 var CMD = {
     M: 1,
     L: 2,

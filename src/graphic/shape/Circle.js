@@ -1,4 +1,5 @@
 import Path from '../Path';
+import * as dataUtil from '../../core/utils/dataStructureUtil';
 
 /**
  * @class zrender.graphic.shape.Circle 
@@ -20,10 +21,10 @@ let defaultConfig={
 export default class Circle extends Path{
     /**
      * @method constructor Rect
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(dataUtil.merge(defaultConfig,options,true));
     }
 
     /**

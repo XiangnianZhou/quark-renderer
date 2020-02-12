@@ -1,4 +1,6 @@
 import Path from '../Path';
+import * as dataUtil from '../../core/utils/dataStructureUtil';
+
 /**
  * @class zrender.graphic.shape.Arc 
  * 圆弧
@@ -26,10 +28,10 @@ let defaultConfig={
 export default class Arc extends Path{
     /**
      * @method constructor Line
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(dataUtil.merge(defaultConfig,options,true));
     }
 
     /**

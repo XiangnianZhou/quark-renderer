@@ -1120,12 +1120,17 @@ function mixin(target, source, overlay) {
 }
 
 /**
- * 拷贝父类上的属性
+ * @method inheritProperties
+ * 
+ * Copy properties from super class, this method is designed for the classes which were not written in ES6 syntax.
+ * 
+ * 拷贝父类上的属性，此方法用来支持那么没有按照 ES6 语法编写的类。
+ * 
  * @param {*} subInstance 子类的实例
  * @param {*} SuperClass 父类的类型
  * @param {*} opts 构造参数
  */
-function copyProperties(subInstance,SuperClass,opts){
+function inheritProperties(subInstance,SuperClass,opts){
     let sp=new SuperClass(opts);
     for(let name in sp){
         if(sp.hasOwnProperty(name)){
@@ -2355,71 +2360,15 @@ class MultiDragDrop{
 }
 
 /**
- * Only implements needed gestures for mobile.
+ * @class zrender.core.GestureMgr
+ * 
+ * Implement necessary gestures for mobile platform.
+ * 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-var GestureMgr = function () {
-
-    /**
-     * @private
-     * @property {Array<Object>}
-     */
-    this._track = [];
-};
-
-GestureMgr.prototype = {
-
-    constructor: GestureMgr,
-
-    recognize: function (event, target, root) {
-        this._doTrack(event, target, root);
-        return this._recognize(event);
-    },
-
-    clear: function () {
-        this._track.length = 0;
-        return this;
-    },
-
-    _doTrack: function (event, target, root) {
-        var touches = event.touches;
-
-        if (!touches) {
-            return;
-        }
-
-        var trackItem = {
-            points: [],
-            touches: [],
-            target: target,
-            event: event
-        };
-
-        for (var i = 0, len = touches.length; i < len; i++) {
-            var touch = touches[i];
-            var pos = clientToLocal(root, touch, {});
-            trackItem.points.push([pos.zrX, pos.zrY]);
-            trackItem.touches.push(touch);
-        }
-
-        this._track.push(trackItem);
-    },
-
-    _recognize: function (event) {
-        for (var eventName in recognizers) {
-            if (recognizers.hasOwnProperty(eventName)) {
-                var gestureInfo = recognizers[eventName](this._track, event);
-                if (gestureInfo) {
-                    return gestureInfo;
-                }
-            }
-        }
-    }
-};
-
 function dist$1(pointPair) {
-    var dx = pointPair[1][0] - pointPair[0][0];
-    var dy = pointPair[1][1] - pointPair[0][1];
+    let dx = pointPair[1][0] - pointPair[0][0];
+    let dy = pointPair[1][1] - pointPair[0][1];
 
     return Math.sqrt(dx * dx + dy * dy);
 }
@@ -2431,29 +2380,27 @@ function center(pointPair) {
     ];
 }
 
-var recognizers = {
-
-    pinch: function (track, event) {
-        var trackLen = track.length;
-
+let recognizers = {
+    pinch(track, event) {
+        let trackLen = track.length;
         if (!trackLen) {
             return;
         }
 
-        var pinchEnd = (track[trackLen - 1] || {}).points;
-        var pinchPre = (track[trackLen - 2] || {}).points || pinchEnd;
+        let pinchEnd = (track[trackLen - 1] || {}).points;
+        let pinchPre = (track[trackLen - 2] || {}).points || pinchEnd;
 
         if (pinchPre
             && pinchPre.length > 1
             && pinchEnd
             && pinchEnd.length > 1
         ) {
-            var pinchScale = dist$1(pinchEnd) / dist$1(pinchPre);
+            let pinchScale = dist$1(pinchEnd) / dist$1(pinchPre);
             !isFinite(pinchScale) && (pinchScale = 1);
 
             event.pinchScale = pinchScale;
 
-            var pinchCenter = center(pinchEnd);
+            let pinchCenter = center(pinchEnd);
             event.pinchX = pinchCenter[0];
             event.pinchY = pinchCenter[1];
 
@@ -2467,6 +2414,61 @@ var recognizers = {
 
     // Only pinch currently.
 };
+
+class GestureMgr{
+    constructor(){
+        /**
+         * @private
+         * @property {Array<Object>}
+         */
+        this._track = [];
+    }
+
+    recognize(event, target, root) {
+        this._doTrack(event, target, root);
+        return this._recognize(event);
+    }
+
+    clear() {
+        this._track.length = 0;
+        return this;
+    }
+
+    _doTrack(event, target, root) {
+        let touches = event.touches;
+
+        if (!touches) {
+            return;
+        }
+
+        let trackItem = {
+            points: [],
+            touches: [],
+            target: target,
+            event: event
+        };
+
+        for (let i = 0, len = touches.length; i < len; i++) {
+            let touch = touches[i];
+            let pos = clientToLocal(root, touch, {});
+            trackItem.points.push([pos.zrX, pos.zrY]);
+            trackItem.touches.push(touch);
+        }
+
+        this._track.push(trackItem);
+    }
+
+    _recognize(event) {
+        for (let eventName in recognizers) {
+            if (recognizers.hasOwnProperty(eventName)) {
+                let gestureInfo = recognizers[eventName](this._track, event);
+                if (gestureInfo) {
+                    return gestureInfo;
+                }
+            }
+        }
+    }
+}
 
 /**
  * @class zrender.event.ZRenderEventHandler
@@ -3801,6 +3803,7 @@ class Timeline{
      * 进入下一帧
      * @param {Number} globalTime 当前时间
      * @param {Number} deltaTime  时间偏移量
+     * //TODO:try move this into webworker
      */
     nextFrame(globalTime, deltaTime) {
         // Set startTime on first frame, or _startTime may has milleseconds different between clips
@@ -4751,6 +4754,7 @@ class Track{
      * @param {String} easing 缓动函数名称
      * @param {String} propName 属性名称
      * @param {Boolean} forceAnimate 是否强制开启动画 
+     * //TODO:try move this into webworker
      */
     _parseKeyFrames(easing,propName,forceAnimate) {
         let loop=this._loop;
@@ -4966,25 +4970,29 @@ class Track{
  * @param {Function} getter
  * @param {Function} setter
  */
-let AnimationProcess = function (target, loop, getter, setter) {
-    this._trackCacheMap = new Map();
-    this._target = target;
-    this._loop = loop || false;
-    this._getter = getter || function(target, key) {
-        return target[key];
-    };
-    this._setter = setter || function(target, key, value) {
-        target[key] = value;
-    };
+// let AnimationProcess = function (target, loop, getter, setter) {
+    
+// };
 
-    this._delay = 0;
-    this._paused = false;
-    this._doneList = [];    //callback list when the entire animation process is finished
-    this._onframeList = []; //callback list for each frame
-};
+// AnimationProcess.prototype = {};
 
-AnimationProcess.prototype = {
-    constructor: AnimationProcess,
+class AnimationProcess{
+    constructor(target, loop, getter, setter){
+        this._trackCacheMap = new Map();
+        this._target = target;
+        this._loop = loop || false;
+        this._getter = getter || function(target, key) {
+            return target[key];
+        };
+        this._setter = setter || function(target, key, value) {
+            target[key] = value;
+        };
+    
+        this._delay = 0;
+        this._paused = false;
+        this._doneList = [];    //callback list when the entire animation process is finished
+        this._onframeList = []; //callback list for each frame
+    }
 
     /**
      * @method when
@@ -4993,7 +5001,7 @@ AnimationProcess.prototype = {
      * @param  {Object} props 关键帧的属性值，key-value表示
      * @return {zrender.animation.AnimationProcess}
      */
-    when: function (time, props) {
+    when(time, props) {
         for (let propName in props) {
             if (!props.hasOwnProperty(propName)) {
                 continue;
@@ -5032,7 +5040,7 @@ AnimationProcess.prototype = {
             this._trackCacheMap.set(propName,track);
         }
         return this;
-    },
+    }
 
     /**
      * @method during
@@ -5040,28 +5048,28 @@ AnimationProcess.prototype = {
      * @param  {Function} callback
      * @return {zrender.animation.AnimationProcess}
      */
-    during: function (callback) {
+    during(callback) {
         this._onframeList.push(callback);
         return this;
-    },
+    }
 
     /**
      * @private
      * @method _doneCallback
      * 动画过程整体结束的时候回调此函数
      */
-    _doneCallback: function () {
+    _doneCallback() {
         this._doneList.forEach((fn,index)=>{
             fn.call(this);
         });
         this._trackCacheMap = new Map();
-    },
+    }
 
     /**
      * @method isFinished
      * 判断整个动画过程是否已经完成，所有 Track 上的动画都完成则整个动画过程完成
      */
-    isFinished: function () {
+    isFinished() {
         let isFinished=true;
         [...this._trackCacheMap.values()].forEach((track,index)=>{
             if(!track.isFinished){
@@ -5069,7 +5077,7 @@ AnimationProcess.prototype = {
             }
         });
         return isFinished;
-    },
+    }
 
     /**
      * @method start
@@ -5078,7 +5086,7 @@ AnimationProcess.prototype = {
      * @param  {Boolean} forceAnimate
      * @return {zrender.animation.AnimationProcess}
      */
-    start: function (easing, forceAnimate) {
+    start(easing, forceAnimate) {
         let keys=[...this._trackCacheMap.keys()];
         keys.forEach((propName,index)=>{
             if (!this._trackCacheMap.get(propName)) {
@@ -5095,19 +5103,19 @@ AnimationProcess.prototype = {
             this._doneCallback();
         }
         return this;
-    },
+    }
 
     /**
      * @method stop
      * 停止动画
      * @param {Boolean} forwardToLast If move to last frame before stop
      */
-    stop: function (forwardToLast) {
+    stop(forwardToLast) {
         [...this._trackCacheMap.values()].forEach((track,index)=>{
             track.stop(this._target, 1);
         });
         this._trackCacheMap=new Map();
-    },
+    }
 
     /**
      * @method nextFrame
@@ -5115,7 +5123,7 @@ AnimationProcess.prototype = {
      * @param {Number} time  当前时间
      * @param {Number} delta 时间偏移量
      */
-    nextFrame:function(time,delta){
+    nextFrame(time,delta){
         let deferredEvents = [];
         let deferredTracks = [];
         let percent="";
@@ -5144,37 +5152,37 @@ AnimationProcess.prototype = {
         if(this.isFinished()){
             this._doneCallback();
         }
-    },
+    }
 
     /**
      * @method pause
      * 暂停动画
      */
-    pause: function () {
+    pause() {
         [...this._trackCacheMap.values()].forEach((track,index)=>{
             track.pause();
         });
         this._paused = true;
-    },
+    }
 
     /**
      * @method resume
      * 恢复动画
      */
-    resume: function () {
+    resume() {
         [...this._trackCacheMap.values()].forEach((track,index)=>{
             track.resume();
         });
         this._paused = false;
-    },
+    }
 
     /**
      * @method isPaused
      * 是否暂停
      */
-    isPaused: function () {
+    isPaused() {
         return !!this._paused;
-    },
+    }
 
     /**
      * @method delay
@@ -5182,10 +5190,10 @@ AnimationProcess.prototype = {
      * @param  {Number} time 单位ms
      * @return {zrender.animation.AnimationProcess}
      */
-    delay: function (time) {
+    delay(time) {
         this._delay = time;
         return this;
-    },
+    }
     
     /**
      * @method done
@@ -5193,13 +5201,13 @@ AnimationProcess.prototype = {
      * @param  {Function} cb
      * @return {zrender.animation.AnimationProcess}
      */
-    done: function (cb) {
+    done(cb) {
         if (cb) {
             this._doneList.push(cb);
         }
         return this;
     }
-};
+}
 
 /**
  * @class zrender.animation.Animatable
@@ -5517,15 +5525,21 @@ class Element{
     /**
      * @method constructor Element
      */
-    constructor(opts){
-        copyProperties(this,Transformable,opts);
-        copyProperties(this,Eventful,opts);
-        copyProperties(this,Animatable,opts);
+    constructor(options){
+        /**
+         * @protected
+         * @property options 配置项
+         */
+        this.options=options;
+
+        inheritProperties(this,Transformable,this.options);
+        inheritProperties(this,Eventful,this.options);
+        inheritProperties(this,Animatable,this.options);
     
         /**
          * @property {String}
          */
-        this.id = opts.id || guid();
+        this.id = this.options.id || guid();
 
         /**
          * @property {String} type 元素类型
@@ -5540,14 +5554,19 @@ class Element{
         /**
          * @private
          * @property {ZRender} __zr
+         * 
          * ZRender instance will be assigned when element is associated with zrender
+         * 
          * ZRender 实例对象，会在 element 添加到 zrender 实例中后自动赋值
          */
         this.__zr=null;
     
         /**
+         * @private
          * @property {Boolean} __dirty
+         * 
          * Dirty flag. From which painter will determine if this displayable object needs to be repainted.
+         * 
          * 这是一个非常重要的标志位，在绘制大量对象的时候，把 __dirty 标记为 false 可以节省大量操作。
          */
         this.__dirty=true;
@@ -5579,6 +5598,8 @@ class Element{
          * 是否是 Group
          */
         this.isGroup=false;
+
+        copyOwnProperties(this,this.options);
     }
 
     /**
@@ -5804,51 +5825,65 @@ mixin(Element, Eventful);
 
 /**
  * @class zrender.core.BoundingRect
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 let v2ApplyTransform = applyTransform;
 let mathMin = Math.min;
 let mathMax = Math.max;
+let lt = [];
+let rb = [];
+let lb = [];
+let rt = [];
 
-/**
- * @method constructor BoundingRect
- */
-function BoundingRect(x, y, width, height) {
-    if (width < 0) {
-        x = x + width;
-        width = -width;
+class BoundingRect{
+    /**
+     * @method constructor BoundingRect
+     */
+    constructor(x, y, width, height){
+        if (width < 0) {
+            x = x + width;
+            width = -width;
+        }
+        if (height < 0) {
+            y = y + height;
+            height = -height;
+        }
+    
+        /**
+         * @property {Number}
+         */
+        this.x = x;
+        /**
+         * @property {Number}
+         */
+        this.y = y;
+        /**
+         * @property {Number}
+         */
+        this.width = width;
+        /**
+         * @property {Number}
+         */
+        this.height = height;
     }
-    if (height < 0) {
-        y = y + height;
-        height = -height;
+
+    /**
+     * @param {Object|BoundingRect} rect
+     * @param {Number} rect.x
+     * @param {Number} rect.y
+     * @param {Number} rect.width
+     * @param {Number} rect.height
+     * @return {BoundingRect}
+     */
+    static create(rect) {
+        return new BoundingRect(rect.x, rect.y, rect.width, rect.height);
     }
-
-    /**
-     * @property {Number}
-     */
-    this.x = x;
-    /**
-     * @property {Number}
-     */
-    this.y = y;
-    /**
-     * @property {Number}
-     */
-    this.width = width;
-    /**
-     * @property {Number}
-     */
-    this.height = height;
-}
-
-BoundingRect.prototype = {
-
-    constructor: BoundingRect,
 
     /**
      * @method union
      * @param {BoundingRect} other
      */
-    union: function (other) {
+    union(other) {
         let x = mathMin(other.x, this.x);
         let y = mathMin(other.y, this.y);
 
@@ -5862,42 +5897,36 @@ BoundingRect.prototype = {
             ) - y;
         this.x = x;
         this.y = y;
-    },
+    }
 
     /**
      * @method applyTransform
      * @param {Array<Number>}
      */
-    applyTransform: (function () {
-        let lt = [];
-        let rb = [];
-        let lb = [];
-        let rt = [];
-        return function (m) {
-            // In case usage like this
-            // el.getBoundingRect().applyTransform(el.transform)
-            // And element has no transform
-            if (!m) {
-                return;
-            }
-            lt[0] = lb[0] = this.x;
-            lt[1] = rt[1] = this.y;
-            rb[0] = rt[0] = this.x + this.width;
-            rb[1] = lb[1] = this.y + this.height;
+    applyTransform(m) {
+        // In case usage like this
+        // el.getBoundingRect().applyTransform(el.transform)
+        // And element has no transform
+        if (!m) {
+            return;
+        }
+        lt[0] = lb[0] = this.x;
+        lt[1] = rt[1] = this.y;
+        rb[0] = rt[0] = this.x + this.width;
+        rb[1] = lb[1] = this.y + this.height;
 
-            v2ApplyTransform(lt, lt, m);
-            v2ApplyTransform(rb, rb, m);
-            v2ApplyTransform(lb, lb, m);
-            v2ApplyTransform(rt, rt, m);
+        v2ApplyTransform(lt, lt, m);
+        v2ApplyTransform(rb, rb, m);
+        v2ApplyTransform(lb, lb, m);
+        v2ApplyTransform(rt, rt, m);
 
-            this.x = mathMin(lt[0], rb[0], lb[0], rt[0]);
-            this.y = mathMin(lt[1], rb[1], lb[1], rt[1]);
-            let maxX = mathMax(lt[0], rb[0], lb[0], rt[0]);
-            let maxY = mathMax(lt[1], rb[1], lb[1], rt[1]);
-            this.width = maxX - this.x;
-            this.height = maxY - this.y;
-        };
-    })(),
+        this.x = mathMin(lt[0], rb[0], lb[0], rt[0]);
+        this.y = mathMin(lt[1], rb[1], lb[1], rt[1]);
+        let maxX = mathMax(lt[0], rb[0], lb[0], rt[0]);
+        let maxY = mathMax(lt[1], rb[1], lb[1], rt[1]);
+        this.width = maxX - this.x;
+        this.height = maxY - this.y;
+    }
 
     /**
      * @method calculateTransform
@@ -5905,7 +5934,7 @@ BoundingRect.prototype = {
      * @param  {BoundingRect} b
      * @return {Array<Number>}
      */
-    calculateTransform: function (b) {
+    calculateTransform(b) {
         let a = this;
         let sx = b.width / a.width;
         let sy = b.height / a.height;
@@ -5918,14 +5947,14 @@ BoundingRect.prototype = {
         translate(m, m, [b.x, b.y]);
 
         return m;
-    },
+    }
 
     /**
      * @method intersect
      * @param {(BoundingRect|Object)} b
      * @return {boolean}
      */
-    intersect: function (b) {
+    intersect(b) {
         if (!b) {
             return false;
         }
@@ -5947,45 +5976,45 @@ BoundingRect.prototype = {
         let by1 = b.y + b.height;
 
         return !(ax1 < bx0 || bx1 < ax0 || ay1 < by0 || by1 < ay0);
-    },
+    }
 
     /**
      * @method contain
      * @param {*} x 
      * @param {*} y 
      */
-    contain: function (x, y) {
+    contain(x, y) {
         let rect = this;
         return x >= rect.x
             && x <= (rect.x + rect.width)
             && y >= rect.y
             && y <= (rect.y + rect.height);
-    },
+    }
 
     /**
      * @method clone
      * @return {BoundingRect}
      */
-    clone: function () {
+    clone() {
         return new BoundingRect(this.x, this.y, this.width, this.height);
-    },
+    }
 
     /**
      * @method copy
      * Copy from another rect
      * @param other
      */
-    copy: function (other) {
+    copy(other) {
         this.x = other.x;
         this.y = other.y;
         this.width = other.width;
         this.height = other.height;
-    },
+    }
 
     /**
      * @method plain
      */
-    plain: function () {
+    plain() {
         return {
             x: this.x,
             y: this.y,
@@ -5993,19 +6022,7 @@ BoundingRect.prototype = {
             height: this.height
         };
     }
-};
-
-/**
- * @param {Object|BoundingRect} rect
- * @param {Number} rect.x
- * @param {Number} rect.y
- * @param {Number} rect.width
- * @param {Number} rect.height
- * @return {BoundingRect}
- */
-BoundingRect.create = function (rect) {
-    return new BoundingRect(rect.x, rect.y, rect.width, rect.height);
-};
+}
 
 /**
  * @class zrender.graphic.Group
@@ -9609,15 +9626,15 @@ RectText.prototype = {
 class Displayable extends Element{
     /**
      * @method constructor
-     * @param {*} opts 
+     * @param {*} options 
      */
-    constructor(opts={}){
-        super(opts);
+    constructor(options={}){
+        super(options);
         
         /**
          * @property {Style} style
          */
-        this.style = new Style(opts.style, this);
+        this.style = new Style(options.style, this);
         
         /**
          * @private
@@ -9629,7 +9646,7 @@ class Displayable extends Element{
         this.__clipPaths = null;
 
         // FIXME Stateful must be mixined after style is setted
-        // Stateful.call(this, opts);
+        // Stateful.call(this, options);
 
         /**
          * The String value of `textPosition` needs to be calculated to a real postion.
@@ -9734,7 +9751,7 @@ class Displayable extends Element{
          */
         this.globalScaleRatio=1;
 
-        copyOwnProperties(this,opts,['style']);
+        copyOwnProperties(this,this.options,['style']);
     }
 
     beforeBrush(ctx) {}
@@ -11153,53 +11170,50 @@ CanvasPainter.prototype = {
 // http://iosoteric.com/additive-animations-animatewithduration-in-ios-8/
 // https://developer.apple.com/videos/wwdc2014/#236
 
-/**
- * @method constructor GlobalAnimationMgr
- * @param {Object} [options]
- */
-function GlobalAnimationMgr(options) {
-    options = options || {};
-    this._animationProcessList=[];
-    this._running = false;
-    this._timestamp;
-    this._pausedTime;//ms
-    this._pauseStart;
-    this._paused = false;
-    Eventful.call(this);
-}
-
-GlobalAnimationMgr.prototype = {
-
-    constructor: GlobalAnimationMgr,
+class GlobalAnimationMgr{
+    /**
+     * @method constructor GlobalAnimationMgr
+     * @param {Object} [options]
+     */
+    constructor(options){
+        options = options || {};
+        this._animationProcessList=[];
+        this._running = false;
+        this._timestamp;
+        this._pausedTime;//ms
+        this._pauseStart;
+        this._paused = false;
+        Eventful.call(this);
+    }
 
     /**
      * @method addAnimationProcess
      * 添加 animationProcess
      * @param {zrender.animation.GlobalAnimationMgr} animationProcess
      */
-    addAnimationProcess: function (animationProcess) {
+    addAnimationProcess(animationProcess) {
         this._animationProcessList.push(animationProcess);
-    },
+    }
 
     /**
      * @method removeAnimationProcess
      * 删除动画片段
      * @param {zrender.animation.GlobalAnimationMgr} animationProcess
      */
-    removeAnimationProcess: function (animationProcess) {
+    removeAnimationProcess(animationProcess) {
         let index=this._animationProcessList.findIndex(animationProcess);
         if(index>=0){
             this._animationProcessList.splice(index,1);
         }
-    },
+    }
 
     /**
      * @private
      * @method _update
      */
-    _update: function () {
-        var time = new Date().getTime() - this._pausedTime;
-        var delta = time - this._timestamp;
+    _update() {
+        let time = new Date().getTime() - this._pausedTime;
+        let delta = time - this._timestamp;
 
         this._animationProcessList.forEach((ap,index)=>{
             ap.nextFrame(time,delta);
@@ -11212,7 +11226,7 @@ GlobalAnimationMgr.prototype = {
         // depends on the sequence (e.g., echarts-stream and finish
         // event judge)
         this.trigger('frame', delta);
-    },
+    }
 
     /**
      * @private
@@ -11223,8 +11237,8 @@ GlobalAnimationMgr.prototype = {
      * 按照 W3C 的推荐标准 60fps，这里的 step 函数大约每隔 16ms 被调用一次
      * @see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
      */
-    _startLoop: function () {
-        var self = this;
+    _startLoop() {
+        let self = this;
         this._running = true;
         function nextFrame() {
             if (self._running) {
@@ -11233,61 +11247,61 @@ GlobalAnimationMgr.prototype = {
             }
         }
         requestAnimationFrame(nextFrame);
-    },
+    }
 
     /**
      * @method start
      * Start all the animations.
      */
-    start: function () {
+    start() {
         this._timestamp = new Date().getTime();
         this._pausedTime = 0;
         this._startLoop();
-    },
+    }
 
     /**
      * @method stop
      * Stop all the animations.
      */
-    stop: function () {
+    stop() {
         this._running = false;
-    },
+    }
 
     /**
      * @method pause
      * Pause all the animations.
      */
-    pause: function () {
+    pause() {
         if (!this._paused) {
             this._pauseStart = new Date().getTime();
             this._paused = true;
         }
-    },
+    }
 
     /**
      * @method resume
      * Resume all the animations.
      */
-    resume: function () {
+    resume() {
         if (this._paused) {
             this._pausedTime += (new Date().getTime()) - this._pauseStart;
             this._paused = false;
         }
-    },
+    }
 
     /**
      * @method clear
      * Clear all the animations.
      */
-    clear: function () {
+    clear() {
         this._animationProcessList.length=0;
-    },
+    }
 
     /**
      * @method isFinished
      * Whether all the animations have finished.
      */
-    isFinished:function(){
+    isFinished(){
         let finished=true;
         this._animationProcessList.forEach((animationProcess,index)=>{
             if(!animationProcess.isFinished()){
@@ -11296,7 +11310,7 @@ GlobalAnimationMgr.prototype = {
         });
         return finished;
     }
-};
+}
 
 mixin(GlobalAnimationMgr, Eventful);
 
@@ -13099,18 +13113,19 @@ function fromArc(
     }
 }
 
-/**
- * Path 代理，可以在`buildPath`中用于替代`ctx`, 会保存每个path操作的命令到pathCommands属性中
- * 可以用于 isInsidePath 判断以及获取boundingRect
- *
- * @module zrender/core/PathProxy
- * @author Yi Shen (http://www.github.com/pissang)
- */
-
-// TODO getTotalLength, getPointAtLength
+// TODO: getTotalLength, getPointAtLength
 
 /* global Float32Array */
 
+/**
+ * @class zrender.core.PathProxy
+ * 
+ * Path 代理，可以在`buildPath`中用于替代`ctx`, 会保存每个path操作的命令到pathCommands属性中
+ * 可以用于 isInsidePath 判断以及获取boundingRect
+ * 
+ * @author Yi Shen (http://www.github.com/pissang)
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 var CMD = {
     M: 1,
     L: 2,
@@ -14478,11 +14493,10 @@ function containStroke(pathData, lineWidth, x, y) {
 class Path extends Displayable{
     /**
      * @method constructor Path
-     * @param {Object} opts
-     * @param {Object} defaultConfig
+     * @param {Object} options
      */
-    constructor(opts,defaultConfig){
-        super(opts);
+    constructor(options){
+        super(options);
         /**
          * @property {PathProxy}
          * @readOnly
@@ -14515,36 +14529,28 @@ class Path extends Displayable{
          */
         this.subPixelOptimize=false;
 
-        //Path 特有的配置项
-        if(defaultConfig){
-            this.init(defaultConfig);
-        }
-    }
-
-    init(defaultConfig){
-        if (defaultConfig.style) {
-            // Extend default style
-            this.style.extendStyle(defaultConfig.style, false);
-        }
-
+        /**
+         * @property {Object} shape 形状
+         */
+        this.shape={};
+    
         // Extend default shape
-        let defaultShape = defaultConfig.shape;
+        let defaultShape = this.options.shape;
         if (defaultShape) {
-            this.shape = this.shape || {};
             for (let name in defaultShape) {
                 if (!this.shape.hasOwnProperty(name)&&defaultShape.hasOwnProperty(name)){
                     this.shape[name] = defaultShape[name];
                 }
             }
         }
-        defaultConfig.init && defaultConfig.init.call(this, opts);
+        this.options.init && this.options.init.call(this, options);
 
         // FIXME 不能 extend position, rotation 等引用对象
         // TODO:What's going on here?
-        for (let name in defaultConfig) {
+        for (let name in this.options) {
             // Extending prototype values and methods
             if (name !== 'style' && name !== 'shape') {
-                Path.prototype[name] = defaultConfig[name];
+                Path.prototype[name] = this.options[name];
             }
         }
     }
@@ -15491,10 +15497,10 @@ let defaultConfig={
 class Circle extends Path{
     /**
      * @method constructor Rect
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(merge(defaultConfig,options,true));
     }
 
     /**
@@ -15656,10 +15662,10 @@ let defaultConfig$1={
 class Rect extends Path{
     /**
      * @method constructor Rect
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$1);
+    constructor(options){
+        super(merge(defaultConfig$1,options,true));
     }
 
     /**
@@ -15720,10 +15726,10 @@ let defaultConfig$2={
 class Droplet extends Path{
     /**
      * @method constructor Droplet
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$2);
+    constructor(options){
+        super(merge(defaultConfig$2,options,true));
     }
 
     /**
@@ -15780,10 +15786,10 @@ let defaultConfig$3={
 class Line extends Path{
     /**
      * @method constructor Line
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$3);
+    constructor(options){
+        super(merge(defaultConfig$3,options,true));
     }
 
     /**
@@ -16058,10 +16064,10 @@ let defaultConfig$4={
 class Polygon extends Path{
     /**
      * @method constructor Polygon
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$4);
+    constructor(options){
+        super(merge(defaultConfig$4,options,true));
     }
 
     /**
@@ -16099,10 +16105,10 @@ let defaultConfig$5={
 class Polyline extends Path{
     /**
      * @method constructor Polyline
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$5);
+    constructor(options){
+        super(merge(defaultConfig$5,options,true));
     }
 
     /**
@@ -16179,7 +16185,7 @@ let DILIMITER_REG = /[\s,]+/;
 
 /**
  * For big svg string, this method might be time consuming.
- *
+ * //TODO:try to move this into webworker.
  * @param {String} svg xml string
  * @return {Object} xml root.
  */
@@ -16708,7 +16714,6 @@ function parseAttributes(xmlNode, el, defs, onlyInlineStyle) {
     el.__inheritedStyle = zrStyle;
 }
 
-
 let urlRegex = /url\(\s*#(.*?)\)/;
 function getPaint(str, defs) {
     // if (str === 'none') {
@@ -16950,7 +16955,7 @@ class CompoundPath extends Path{
  */
 // TODO Style override ?
 function IncrementalDisplayble(opts) {
-    copyProperties(this,Displayable,opts);
+    inheritProperties(this,Displayable,opts);
     this._displayables = [];
     this._temporaryDisplayables = [];
     this._cursor = 0;
@@ -17087,10 +17092,10 @@ let defaultConfig$7={
 class Arc extends Path{
     /**
      * @method constructor Line
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$7);
+    constructor(options){
+        super(merge(defaultConfig$7,options,true));
     }
 
     /**
@@ -17161,10 +17166,10 @@ function someVectorAt(shape, t, isTangent) {
 class BezierCurve extends Path{
     /**
      * @method constructor BezierCurve
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$8);
+    constructor(options){
+        super(merge(defaultConfig$8,options,true));
     }
 
     /**
@@ -17270,10 +17275,10 @@ let defaultConfig$9={
 class Droplet$1 extends Path{
     /**
      * @method constructor Droplet
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$9);
+    constructor(options){
+        super(merge(defaultConfig$9,options,true));
     }
 
     /**
@@ -17329,10 +17334,10 @@ let defaultConfig$10={
 class Heart extends Path{
     /**
      * @method constructor Heart
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$10);
+    constructor(options){
+        super(merge(defaultConfig$10,options,true));
     }
 
     /**
@@ -17383,10 +17388,10 @@ let defaultConfig$11={
 class Isogon extends Path{
     /**
      * @method constructor Isogon
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$11);
+    constructor(options){
+        super(merge(defaultConfig$11,options,true));
     }
 
     /**
@@ -17441,10 +17446,10 @@ let defaultConfig$12={
 class Ring extends Path{
     /**
      * @method constructor Ring
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$12);
+    constructor(options){
+        super(merge(defaultConfig$12,options,true));
     }
 
     /**
@@ -17494,10 +17499,10 @@ let defaultConfig$13={
 class Rose extends Path{
     /**
      * @method constructor Rose
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$13);
+    constructor(options){
+        super(merge(defaultConfig$13,options,true));
     }
 
     /**
@@ -17627,10 +17632,10 @@ let defaultConfig$14={
 class Sector extends Path{
     /**
      * @method constructor Sector
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$14);
+    constructor(options){
+        super(merge(defaultConfig$14,options,true));
         this.brush=fixClipWithShadow(Path.prototype.brush);
     }
 
@@ -17693,10 +17698,10 @@ let defaultConfig$15={
 class Star extends Path{
     /**
      * @method constructor Star
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$15);
+    constructor(options){
+        super(merge(defaultConfig$15,options,true));
     }
 
     /**
@@ -17773,10 +17778,10 @@ let defaultConfig$16={
 class Trochold extends Path{
     /**
      * @method constructor Trochold
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$16);
+    constructor(options){
+        super(merge(defaultConfig$16,options,true));
     }
 
     /**
@@ -17880,22 +17885,15 @@ function createElement(name) {
 // TODO
 // 1. shadow
 // 2. Image: sx, sy, sw, sh
-
 let CMD$3 = PathProxy.CMD;
-let arrayJoin = Array.prototype.join;
-
 let NONE = 'none';
-let mathRound = Math.round;
-let mathSin$3 = Math.sin;
-let mathCos$3 = Math.cos;
 let PI$3 = Math.PI;
 let PI2$4 = Math.PI * 2;
 let degree = 180 / PI$3;
-
 let EPSILON$3 = 1e-4;
 
 function round4(val) {
-    return mathRound(val * 1e4) / 1e4;
+    return Math.round(val * 1e4) / 1e4;
 }
 
 function isAroundZero$1(val) {
@@ -17914,7 +17912,7 @@ function pathHasStroke(style, isText) {
 
 function setTransform(svgEl, m) {
     if (m) {
-        attr(svgEl, 'transform', 'matrix(' + arrayJoin.call(m, ',') + ')');
+        attr(svgEl, 'transform', 'matrix(' + Array.prototype.join.call(m, ',') + ')');
     }
 }
 
@@ -17956,7 +17954,7 @@ function bindStyle(svgEl, style, isText, el) {
         let lineDash = style.lineDash;
         if (lineDash) {
             attr(svgEl, 'stroke-dasharray', style.lineDash.join(','));
-            attr(svgEl, 'stroke-dashoffset', mathRound(style.lineDashOffset || 0));
+            attr(svgEl, 'stroke-dashoffset', Math.round(style.lineDashOffset || 0));
         }else {
             attr(svgEl, 'stroke-dasharray', '');
         }
@@ -18030,8 +18028,8 @@ function pathDataToString(path) {
                     large = (unifiedTheta >= PI$3) === !!clockwise;
                 }
 
-                let x0 = round4(cx + rx * mathCos$3(theta));
-                let y0 = round4(cy + ry * mathSin$3(theta));
+                let x0 = round4(cx + rx * Math.cos(theta));
+                let y0 = round4(cy + ry * Math.sin(theta));
 
                 // It will not draw if start point and end point are exactly the same
                 // We need to shift the end point with a small value
@@ -18056,12 +18054,12 @@ function pathDataToString(path) {
                     }
                 }
 
-                x = round4(cx + rx * mathCos$3(theta + dTheta));
-                y = round4(cy + ry * mathSin$3(theta + dTheta));
+                x = round4(cx + rx * Math.cos(theta + dTheta));
+                y = round4(cy + ry * Math.sin(theta + dTheta));
 
                 // FIXME Ellipse
                 str.push('A', round4(rx), round4(ry),
-                    mathRound(psi * degree), +large, +clockwise, x, y);
+                    Math.round(psi * degree), +large, +clockwise, x, y);
                 break;
             case CMD$3.Z:
                 cmdStr = 'Z';

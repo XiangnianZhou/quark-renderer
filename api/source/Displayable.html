@@ -58,21 +58,21 @@ function (_Element) {
 
 <span id='zrender-graphic-Displayable-method-constructor'>  /**
 </span>   * @method constructor
-   * @param {*} opts 
+   * @param {*} options 
    */
   function Displayable() {
     var _this;
 
-    var opts = arguments.length &gt; 0 &amp;&amp; arguments[0] !== undefined ? arguments[0] : {};
+    var options = arguments.length &gt; 0 &amp;&amp; arguments[0] !== undefined ? arguments[0] : {};
 
     _classCallCheck(this, Displayable);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Displayable).call(this, opts));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Displayable).call(this, options));
 <span id='zrender-graphic-Displayable-property-style'>    /**
 </span>     * @property {Style} style
      */
 
-    _this.style = new Style(opts.style, _assertThisInitialized(_this));
+    _this.style = new Style(options.style, _assertThisInitialized(_this));
 <span id='zrender-graphic-Displayable-property-__clipPaths'>    /**
 </span>     * @private
      * @property  __clipPaths
@@ -82,7 +82,7 @@ function (_Element) {
      */
 
     _this.__clipPaths = null; // FIXME Stateful must be mixined after style is setted
-    // Stateful.call(this, opts);
+    // Stateful.call(this, options);
 
 <span id='zrender-graphic-Displayable-method-calculateTextPosition'>    /**
 </span>     * The String value of `textPosition` needs to be calculated to a real postion.
@@ -187,7 +187,7 @@ function (_Element) {
      */
 
     _this.globalScaleRatio = 1;
-    classUtil.copyOwnProperties(_assertThisInitialized(_this), opts, [&#39;style&#39;]);
+    classUtil.copyOwnProperties(_assertThisInitialized(_this), _this.options, [&#39;style&#39;]);
     return _this;
   }
 

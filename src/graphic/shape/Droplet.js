@@ -1,4 +1,6 @@
 import Path from '../Path';
+import * as dataUtil from '../../core/utils/dataStructureUtil';
+
 /**
  * @class zrender.graphic.shape.Droplet 
  * 水滴形状
@@ -19,10 +21,10 @@ let defaultConfig={
 export default class Droplet extends Path{
     /**
      * @method constructor Droplet
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(dataUtil.merge(defaultConfig,options,true));
     }
 
     /**

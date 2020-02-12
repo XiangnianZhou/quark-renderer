@@ -211,8 +211,10 @@ function createMethodNotSupport(method) {
 
 // Unsupported methods
 [
-    'getLayer', 'insertLayer', 'eachLayer', 'eachBuiltinLayer', 'eachOtherLayer', 'getLayers',
-    'modLayer', 'delLayer', 'clearLayer', 'toDataURL', 'pathToImage'
+    'getLayer', 'insertLayer', 'eachLayer', 
+    'eachBuiltinLayer', 'eachOtherLayer', 'getLayers',
+    'modLayer', 'delLayer', 'clearLayer', 
+    'toDataURL', 'pathToImage'
 ].forEach((name,index)=>{
     VMLPainter.prototype[name] = createMethodNotSupport(name);
 });

@@ -1,5 +1,7 @@
 import Path from '../Path';
 import fixClipWithShadow from '../utils/fixClipWithShadow';
+import * as dataUtil from '../../core/utils/dataStructureUtil';
+
 /**
  * @class zrender.graphic.shape.Sector 
  * 扇形
@@ -24,10 +26,10 @@ let defaultConfig={
 export default class Sector extends Path{
     /**
      * @method constructor Sector
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(dataUtil.merge(defaultConfig,options,true));
         this.brush=fixClipWithShadow(Path.prototype.brush);
     }
 

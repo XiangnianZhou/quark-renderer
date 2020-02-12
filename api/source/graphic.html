@@ -35,18 +35,14 @@ var Text = require(&quot;../graphic/Text&quot;);
 // 1. shadow
 // 2. Image: sx, sy, sw, sh
 var CMD = PathProxy.CMD;
-var arrayJoin = Array.prototype.join;
 var NONE = &#39;none&#39;;
-var mathRound = Math.round;
-var mathSin = Math.sin;
-var mathCos = Math.cos;
 var PI = Math.PI;
 var PI2 = Math.PI * 2;
 var degree = 180 / PI;
 var EPSILON = 1e-4;
 
 function round4(val) {
-  return mathRound(val * 1e4) / 1e4;
+  return Math.round(val * 1e4) / 1e4;
 }
 
 function isAroundZero(val) {
@@ -65,7 +61,7 @@ function pathHasStroke(style, isText) {
 
 function setTransform(svgEl, m) {
   if (m) {
-    attr(svgEl, &#39;transform&#39;, &#39;matrix(&#39; + arrayJoin.call(m, &#39;,&#39;) + &#39;)&#39;);
+    attr(svgEl, &#39;transform&#39;, &#39;matrix(&#39; + Array.prototype.join.call(m, &#39;,&#39;) + &#39;)&#39;);
   }
 }
 
@@ -104,7 +100,7 @@ function bindStyle(svgEl, style, isText, el) {
 
     if (lineDash) {
       attr(svgEl, &#39;stroke-dasharray&#39;, style.lineDash.join(&#39;,&#39;));
-      attr(svgEl, &#39;stroke-dashoffset&#39;, mathRound(style.lineDashOffset || 0));
+      attr(svgEl, &#39;stroke-dashoffset&#39;, Math.round(style.lineDashOffset || 0));
     } else {
       attr(svgEl, &#39;stroke-dasharray&#39;, &#39;&#39;);
     } // PENDING
@@ -180,8 +176,8 @@ function pathDataToString(path) {
           large = unifiedTheta &gt;= PI === !!clockwise;
         }
 
-        var x0 = round4(cx + rx * mathCos(theta));
-        var y0 = round4(cy + ry * mathSin(theta)); // It will not draw if start point and end point are exactly the same
+        var x0 = round4(cx + rx * Math.cos(theta));
+        var y0 = round4(cy + ry * Math.sin(theta)); // It will not draw if start point and end point are exactly the same
         // We need to shift the end point with a small value
         // FIXME A better way to draw circle ?
 
@@ -204,10 +200,10 @@ function pathDataToString(path) {
           }
         }
 
-        x = round4(cx + rx * mathCos(theta + dTheta));
-        y = round4(cy + ry * mathSin(theta + dTheta)); // FIXME Ellipse
+        x = round4(cx + rx * Math.cos(theta + dTheta));
+        y = round4(cy + ry * Math.sin(theta + dTheta)); // FIXME Ellipse
 
-        str.push(&#39;A&#39;, round4(rx), round4(ry), mathRound(psi * degree), +large, +clockwise, x, y);
+        str.push(&#39;A&#39;, round4(rx), round4(ry), Math.round(psi * degree), +large, +clockwise, x, y);
         break;
 
       case CMD.Z:

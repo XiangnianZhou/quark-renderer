@@ -1,6 +1,7 @@
 import Path from '../Path';
 import * as vec2 from '../../core/utils/vector';
 import * as curveUtil from '../../core/utils/curveUtil';
+import * as dataUtil from '../../core/utils/dataStructureUtil';
 
 /**
  * @class zrender.graphic.shape.BezierCurve 
@@ -48,10 +49,10 @@ function someVectorAt(shape, t, isTangent) {
 export default class BezierCurve extends Path{
     /**
      * @method constructor BezierCurve
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(dataUtil.merge(defaultConfig,options,true));
     }
 
     /**

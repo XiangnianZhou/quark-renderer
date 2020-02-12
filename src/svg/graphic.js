@@ -9,22 +9,15 @@ import Text from '../graphic/Text';
 // TODO
 // 1. shadow
 // 2. Image: sx, sy, sw, sh
-
 let CMD = PathProxy.CMD;
-let arrayJoin = Array.prototype.join;
-
 let NONE = 'none';
-let mathRound = Math.round;
-let mathSin = Math.sin;
-let mathCos = Math.cos;
 let PI = Math.PI;
 let PI2 = Math.PI * 2;
 let degree = 180 / PI;
-
 let EPSILON = 1e-4;
 
 function round4(val) {
-    return mathRound(val * 1e4) / 1e4;
+    return Math.round(val * 1e4) / 1e4;
 }
 
 function isAroundZero(val) {
@@ -43,7 +36,7 @@ function pathHasStroke(style, isText) {
 
 function setTransform(svgEl, m) {
     if (m) {
-        attr(svgEl, 'transform', 'matrix(' + arrayJoin.call(m, ',') + ')');
+        attr(svgEl, 'transform', 'matrix(' + Array.prototype.join.call(m, ',') + ')');
     }
 }
 
@@ -85,7 +78,7 @@ function bindStyle(svgEl, style, isText, el) {
         let lineDash = style.lineDash;
         if (lineDash) {
             attr(svgEl, 'stroke-dasharray', style.lineDash.join(','));
-            attr(svgEl, 'stroke-dashoffset', mathRound(style.lineDashOffset || 0));
+            attr(svgEl, 'stroke-dashoffset', Math.round(style.lineDashOffset || 0));
         }else {
             attr(svgEl, 'stroke-dasharray', '');
         }
@@ -159,8 +152,8 @@ function pathDataToString(path) {
                     large = (unifiedTheta >= PI) === !!clockwise;
                 }
 
-                let x0 = round4(cx + rx * mathCos(theta));
-                let y0 = round4(cy + ry * mathSin(theta));
+                let x0 = round4(cx + rx * Math.cos(theta));
+                let y0 = round4(cy + ry * Math.sin(theta));
 
                 // It will not draw if start point and end point are exactly the same
                 // We need to shift the end point with a small value
@@ -185,12 +178,12 @@ function pathDataToString(path) {
                     }
                 }
 
-                x = round4(cx + rx * mathCos(theta + dTheta));
-                y = round4(cy + ry * mathSin(theta + dTheta));
+                x = round4(cx + rx * Math.cos(theta + dTheta));
+                y = round4(cy + ry * Math.sin(theta + dTheta));
 
                 // FIXME Ellipse
                 str.push('A', round4(rx), round4(ry),
-                    mathRound(psi * degree), +large, +clockwise, x, y);
+                    Math.round(psi * degree), +large, +clockwise, x, y);
                 break;
             case CMD.Z:
                 cmdStr = 'Z';
@@ -218,6 +211,11 @@ function pathDataToString(path) {
     return str.join(' ');
 }
 
+/**
+ * @class zrender.svg.SVGPath
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ */
 let svgPath = {};
 export {svgPath as path};
 

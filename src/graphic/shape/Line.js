@@ -1,5 +1,7 @@
 import Path from '../Path';
 import {subPixelOptimizeLine} from '../utils/subPixelOptimize';
+import * as dataUtil from '../../core/utils/dataStructureUtil';
+
 /**
  * @class zrender.graphic.shape.Line 
  * 直线
@@ -30,10 +32,10 @@ let defaultConfig={
 export default class Line extends Path{
     /**
      * @method constructor Line
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(dataUtil.merge(defaultConfig,options,true));
     }
 
     /**

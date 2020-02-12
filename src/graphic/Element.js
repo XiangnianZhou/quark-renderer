@@ -19,15 +19,21 @@ class Element{
     /**
      * @method constructor Element
      */
-    constructor(opts){
-        classUtil.copyProperties(this,Transformable,opts);
-        classUtil.copyProperties(this,Eventful,opts);
-        classUtil.copyProperties(this,Animatable,opts);
+    constructor(options){
+        /**
+         * @protected
+         * @property options 配置项
+         */
+        this.options=options;
+
+        classUtil.inheritProperties(this,Transformable,this.options);
+        classUtil.inheritProperties(this,Eventful,this.options);
+        classUtil.inheritProperties(this,Animatable,this.options);
     
         /**
          * @property {String}
          */
-        this.id = opts.id || guid();
+        this.id = this.options.id || guid();
 
         /**
          * @property {String} type 元素类型
@@ -42,14 +48,19 @@ class Element{
         /**
          * @private
          * @property {ZRender} __zr
+         * 
          * ZRender instance will be assigned when element is associated with zrender
+         * 
          * ZRender 实例对象，会在 element 添加到 zrender 实例中后自动赋值
          */
         this.__zr=null;
     
         /**
+         * @private
          * @property {Boolean} __dirty
+         * 
          * Dirty flag. From which painter will determine if this displayable object needs to be repainted.
+         * 
          * 这是一个非常重要的标志位，在绘制大量对象的时候，把 __dirty 标记为 false 可以节省大量操作。
          */
         this.__dirty=true;
@@ -81,6 +92,8 @@ class Element{
          * 是否是 Group
          */
         this.isGroup=false;
+
+        classUtil.copyOwnProperties(this,this.options);
     }
 
     /**
