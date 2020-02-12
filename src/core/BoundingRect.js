@@ -1,9 +1,10 @@
-/**
- * @class zrender.core.BoundingRect
- */
 import * as vec2 from './utils/vector';
 import * as matrix from './utils/matrix';
 
+/**
+ * @class zrender.core.BoundingRect
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 let v2ApplyTransform = vec2.applyTransform;
 let mathMin = Math.min;
 let mathMax = Math.max;

@@ -2355,9 +2355,12 @@ class MultiDragDrop{
 }
 
 /**
- * Only implements needed gestures for mobile.
+ * @class zrender.core.GestureMgr
+ * 
+ * Implement necessary gestures for mobile platform.
+ * 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
 function dist$1(pointPair) {
     let dx = pointPair[1][0] - pointPair[0][0];
     let dy = pointPair[1][1] - pointPair[0][1];
@@ -2406,13 +2409,6 @@ let recognizers = {
 
     // Only pinch currently.
 };
-
-// let GestureMgr = function () {
-
-    
-// };
-
-// GestureMgr.prototype = {};
 
 class GestureMgr{
     constructor(){
@@ -5809,6 +5805,7 @@ mixin(Element, Eventful);
 
 /**
  * @class zrender.core.BoundingRect
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 let v2ApplyTransform = applyTransform;
 let mathMin = Math.min;
@@ -13096,18 +13093,19 @@ function fromArc(
     }
 }
 
-/**
- * Path 代理，可以在`buildPath`中用于替代`ctx`, 会保存每个path操作的命令到pathCommands属性中
- * 可以用于 isInsidePath 判断以及获取boundingRect
- *
- * @module zrender/core/PathProxy
- * @author Yi Shen (http://www.github.com/pissang)
- */
-
-// TODO getTotalLength, getPointAtLength
+// TODO: getTotalLength, getPointAtLength
 
 /* global Float32Array */
 
+/**
+ * @class zrender.core.PathProxy
+ * 
+ * Path 代理，可以在`buildPath`中用于替代`ctx`, 会保存每个path操作的命令到pathCommands属性中
+ * 可以用于 isInsidePath 判断以及获取boundingRect
+ * 
+ * @author Yi Shen (http://www.github.com/pissang)
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 var CMD = {
     M: 1,
     L: 2,

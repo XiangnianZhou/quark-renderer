@@ -1,9 +1,12 @@
 import * as eventUtil from './utils/eventUtil';
 
 /**
- * Only implements needed gestures for mobile.
+ * @class zrender.core.GestureMgr
+ * 
+ * Implement necessary gestures for mobile platform.
+ * 
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
 function dist(pointPair) {
     let dx = pointPair[1][0] - pointPair[0][0];
     let dy = pointPair[1][1] - pointPair[0][1];
