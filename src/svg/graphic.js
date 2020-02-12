@@ -211,6 +211,11 @@ function pathDataToString(path) {
     return str.join(' ');
 }
 
+/**
+ * @class zrender.svg.SVGPath
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ */
 let svgPath = {};
 export {svgPath as path};
 
