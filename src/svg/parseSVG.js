@@ -45,6 +45,10 @@ export function parseXML(svg) {
 /**
  * @class zrender.svg.SVGParser
  * 
+ * This is a tool class for parsing SVG xml string to standard shape classes.
+ * 
+ * 这是一个工具类，用来把 SVG 格式的 xml 解析成 graphic 包中定义的标准类。
+ * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
