@@ -5520,15 +5520,17 @@ class Element{
     /**
      * @method constructor Element
      */
-    constructor(opts){
-        copyProperties(this,Transformable,opts);
-        copyProperties(this,Eventful,opts);
-        copyProperties(this,Animatable,opts);
+    constructor(options){
+        this.options=options;
+
+        copyProperties(this,Transformable,options);
+        copyProperties(this,Eventful,options);
+        copyProperties(this,Animatable,options);
     
         /**
          * @property {String}
          */
-        this.id = opts.id || guid();
+        this.id = options.id || guid();
 
         /**
          * @property {String} type 元素类型
@@ -9608,15 +9610,15 @@ RectText.prototype = {
 class Displayable extends Element{
     /**
      * @method constructor
-     * @param {*} opts 
+     * @param {*} options 
      */
-    constructor(opts={}){
-        super(opts);
+    constructor(options={}){
+        super(options);
         
         /**
          * @property {Style} style
          */
-        this.style = new Style(opts.style, this);
+        this.style = new Style(options.style, this);
         
         /**
          * @private
@@ -9628,7 +9630,7 @@ class Displayable extends Element{
         this.__clipPaths = null;
 
         // FIXME Stateful must be mixined after style is setted
-        // Stateful.call(this, opts);
+        // Stateful.call(this, options);
 
         /**
          * The String value of `textPosition` needs to be calculated to a real postion.
@@ -9733,7 +9735,7 @@ class Displayable extends Element{
          */
         this.globalScaleRatio=1;
 
-        copyOwnProperties(this,opts,['style']);
+        copyOwnProperties(this,options,['style']);
     }
 
     beforeBrush(ctx) {}
@@ -14475,11 +14477,11 @@ function containStroke(pathData, lineWidth, x, y) {
 class Path extends Displayable{
     /**
      * @method constructor Path
-     * @param {Object} opts
+     * @param {Object} options
      * @param {Object} defaultConfig
      */
-    constructor(opts,defaultConfig){
-        super(opts);
+    constructor(options,defaultConfig){
+        super(options);
         /**
          * @property {PathProxy}
          * @readOnly
@@ -14529,7 +14531,7 @@ class Path extends Displayable{
                     }
                 }
             }
-            defaultConfig.init && defaultConfig.init.call(this, opts);
+            defaultConfig.init && defaultConfig.init.call(this, options);
     
             // FIXME 不能 extend position, rotation 等引用对象
             // TODO:What's going on here?
@@ -15484,10 +15486,10 @@ let defaultConfig={
 class Circle extends Path{
     /**
      * @method constructor Rect
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(options,defaultConfig);
     }
 
     /**
@@ -15649,10 +15651,10 @@ let defaultConfig$1={
 class Rect extends Path{
     /**
      * @method constructor Rect
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$1);
+    constructor(options){
+        super(options,defaultConfig$1);
     }
 
     /**
@@ -15713,10 +15715,10 @@ let defaultConfig$2={
 class Droplet extends Path{
     /**
      * @method constructor Droplet
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$2);
+    constructor(options){
+        super(options,defaultConfig$2);
     }
 
     /**
@@ -15773,10 +15775,10 @@ let defaultConfig$3={
 class Line extends Path{
     /**
      * @method constructor Line
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$3);
+    constructor(options){
+        super(options,defaultConfig$3);
     }
 
     /**
@@ -16051,10 +16053,10 @@ let defaultConfig$4={
 class Polygon extends Path{
     /**
      * @method constructor Polygon
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$4);
+    constructor(options){
+        super(options,defaultConfig$4);
     }
 
     /**
@@ -16092,10 +16094,10 @@ let defaultConfig$5={
 class Polyline extends Path{
     /**
      * @method constructor Polyline
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$5);
+    constructor(options){
+        super(options,defaultConfig$5);
     }
 
     /**
@@ -17079,10 +17081,10 @@ let defaultConfig$7={
 class Arc extends Path{
     /**
      * @method constructor Line
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$7);
+    constructor(options){
+        super(options,defaultConfig$7);
     }
 
     /**
@@ -17153,10 +17155,10 @@ function someVectorAt(shape, t, isTangent) {
 class BezierCurve extends Path{
     /**
      * @method constructor BezierCurve
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$8);
+    constructor(options){
+        super(options,defaultConfig$8);
     }
 
     /**
@@ -17262,10 +17264,10 @@ let defaultConfig$9={
 class Droplet$1 extends Path{
     /**
      * @method constructor Droplet
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$9);
+    constructor(options){
+        super(options,defaultConfig$9);
     }
 
     /**
@@ -17321,10 +17323,10 @@ let defaultConfig$10={
 class Heart extends Path{
     /**
      * @method constructor Heart
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$10);
+    constructor(options){
+        super(options,defaultConfig$10);
     }
 
     /**
@@ -17375,10 +17377,10 @@ let defaultConfig$11={
 class Isogon extends Path{
     /**
      * @method constructor Isogon
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$11);
+    constructor(options){
+        super(options,defaultConfig$11);
     }
 
     /**
@@ -17433,10 +17435,10 @@ let defaultConfig$12={
 class Ring extends Path{
     /**
      * @method constructor Ring
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$12);
+    constructor(options){
+        super(options,defaultConfig$12);
     }
 
     /**
@@ -17486,10 +17488,10 @@ let defaultConfig$13={
 class Rose extends Path{
     /**
      * @method constructor Rose
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$13);
+    constructor(options){
+        super(options,defaultConfig$13);
     }
 
     /**
@@ -17619,10 +17621,10 @@ let defaultConfig$14={
 class Sector extends Path{
     /**
      * @method constructor Sector
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$14);
+    constructor(options){
+        super(options,defaultConfig$14);
         this.brush=fixClipWithShadow(Path.prototype.brush);
     }
 
@@ -17685,10 +17687,10 @@ let defaultConfig$15={
 class Star extends Path{
     /**
      * @method constructor Star
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$15);
+    constructor(options){
+        super(options,defaultConfig$15);
     }
 
     /**
@@ -17765,10 +17767,10 @@ let defaultConfig$16={
 class Trochold extends Path{
     /**
      * @method constructor Trochold
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig$16);
+    constructor(options){
+        super(options,defaultConfig$16);
     }
 
     /**

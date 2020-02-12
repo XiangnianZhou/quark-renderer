@@ -48,10 +48,10 @@ function someVectorAt(shape, t, isTangent) {
 export default class BezierCurve extends Path{
     /**
      * @method constructor BezierCurve
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(options,defaultConfig);
     }
 
     /**

@@ -24,10 +24,10 @@ let defaultConfig={
 export default class Star extends Path{
     /**
      * @method constructor Star
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(options,defaultConfig);
     }
 
     /**

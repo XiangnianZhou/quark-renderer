@@ -24,10 +24,10 @@ let defaultConfig={
 export default class Polyline extends Path{
     /**
      * @method constructor Polyline
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(options,defaultConfig);
     }
 
     /**

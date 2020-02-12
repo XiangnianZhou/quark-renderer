@@ -26,10 +26,10 @@ let defaultConfig={
 export default class Arc extends Path{
     /**
      * @method constructor Line
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(options,defaultConfig);
     }
 
     /**

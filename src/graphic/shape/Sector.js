@@ -24,10 +24,10 @@ let defaultConfig={
 export default class Sector extends Path{
     /**
      * @method constructor Sector
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(options,defaultConfig);
         this.brush=fixClipWithShadow(Path.prototype.brush);
     }
 

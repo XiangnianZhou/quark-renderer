@@ -12,11 +12,11 @@ import Pattern from './Pattern';
 class Path extends Displayable{
     /**
      * @method constructor Path
-     * @param {Object} opts
+     * @param {Object} options
      * @param {Object} defaultConfig
      */
-    constructor(opts,defaultConfig){
-        super(opts);
+    constructor(options,defaultConfig){
+        super(options);
         /**
          * @property {PathProxy}
          * @readOnly
@@ -66,7 +66,7 @@ class Path extends Displayable{
                     }
                 }
             }
-            defaultConfig.init && defaultConfig.init.call(this, opts);
+            defaultConfig.init && defaultConfig.init.call(this, options);
     
             // FIXME 不能 extend position, rotation 等引用对象
             // TODO:What's going on here?

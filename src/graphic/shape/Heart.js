@@ -19,10 +19,10 @@ let defaultConfig={
 export default class Heart extends Path{
     /**
      * @method constructor Heart
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(options,defaultConfig);
     }
 
     /**

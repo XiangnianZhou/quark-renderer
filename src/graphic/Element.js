@@ -19,15 +19,17 @@ class Element{
     /**
      * @method constructor Element
      */
-    constructor(opts){
-        classUtil.copyProperties(this,Transformable,opts);
-        classUtil.copyProperties(this,Eventful,opts);
-        classUtil.copyProperties(this,Animatable,opts);
+    constructor(options){
+        this.options=options;
+
+        classUtil.copyProperties(this,Transformable,options);
+        classUtil.copyProperties(this,Eventful,options);
+        classUtil.copyProperties(this,Animatable,options);
     
         /**
          * @property {String}
          */
-        this.id = opts.id || guid();
+        this.id = options.id || guid();
 
         /**
          * @property {String} type 元素类型

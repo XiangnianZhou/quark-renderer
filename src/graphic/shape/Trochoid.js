@@ -28,10 +28,10 @@ let defaultConfig={
 export default class Trochold extends Path{
     /**
      * @method constructor Trochold
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(options,defaultConfig);
     }
 
     /**

@@ -22,10 +22,10 @@ let defaultConfig={
 export default class Isogon extends Path{
     /**
      * @method constructor Isogon
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(options,defaultConfig);
     }
 
     /**

@@ -20,10 +20,10 @@ let defaultConfig={
 export default class Ring extends Path{
     /**
      * @method constructor Ring
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(options,defaultConfig);
     }
 
     /**

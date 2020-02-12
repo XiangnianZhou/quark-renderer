@@ -19,10 +19,10 @@ let defaultConfig={
 export default class Droplet extends Path{
     /**
      * @method constructor Droplet
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(options,defaultConfig);
     }
 
     /**

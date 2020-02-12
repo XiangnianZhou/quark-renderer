@@ -20,10 +20,10 @@ let defaultConfig={
 export default class Polygon extends Path{
     /**
      * @method constructor Polygon
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(options,defaultConfig);
     }
 
     /**

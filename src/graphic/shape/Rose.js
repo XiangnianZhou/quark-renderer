@@ -29,10 +29,10 @@ let defaultConfig={
 export default class Rose extends Path{
     /**
      * @method constructor Rose
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(options,defaultConfig);
     }
 
     /**

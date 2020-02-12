@@ -20,10 +20,10 @@ let defaultConfig={
 export default class Circle extends Path{
     /**
      * @method constructor Rect
-     * @param {Object} opts 
+     * @param {Object} options 
      */
-    constructor(opts){
-        super(opts,defaultConfig);
+    constructor(options){
+        super(options,defaultConfig);
     }
 
     /**
