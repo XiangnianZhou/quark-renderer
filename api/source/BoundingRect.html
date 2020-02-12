@@ -19,75 +19,97 @@
 
 var matrix = require(&quot;./utils/matrix&quot;);
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
+
+function _defineProperties(target, props) { for (var i = 0; i &lt; props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (&quot;value&quot; in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 <span id='zrender-core-BoundingRect'>/**
 </span> * @class zrender.core.BoundingRect
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 var v2ApplyTransform = vec2.applyTransform;
 var mathMin = Math.min;
 var mathMax = Math.max;
-<span id='zrender-core-BoundingRect-method-constructor'>/**
-</span> * @method constructor BoundingRect
- */
+var lt = [];
+var rb = [];
+var lb = [];
+var rt = [];
 
-function BoundingRect(x, y, width, height) {
-  if (width &lt; 0) {
-    x = x + width;
-    width = -width;
-  }
-
-  if (height &lt; 0) {
-    y = y + height;
-    height = -height;
-  }
-<span id='zrender-core-BoundingRect-property-x'>  /**
-</span>   * @property {Number}
+var BoundingRect =
+/*#__PURE__*/
+function () {
+<span id='zrender-core-BoundingRect-method-constructor'>  /**
+</span>   * @method constructor BoundingRect
    */
+  function BoundingRect(x, y, width, height) {
+    _classCallCheck(this, BoundingRect);
+
+    if (width &lt; 0) {
+      x = x + width;
+      width = -width;
+    }
+
+    if (height &lt; 0) {
+      y = y + height;
+      height = -height;
+    }
+<span id='zrender-core-BoundingRect-property-x'>    /**
+</span>     * @property {Number}
+     */
 
 
-  this.x = x;
-<span id='zrender-core-BoundingRect-property-y'>  /**
-</span>   * @property {Number}
-   */
-
-  this.y = y;
-<span id='zrender-core-BoundingRect-property-width'>  /**
-</span>   * @property {Number}
-   */
-
-  this.width = width;
-<span id='zrender-core-BoundingRect-property-height'>  /**
-</span>   * @property {Number}
-   */
-
-  this.height = height;
-}
-
-BoundingRect.prototype = {
-  constructor: BoundingRect,
-
-<span id='zrender-core-BoundingRect-method-union'>  /**
-</span>   * @method union
-   * @param {BoundingRect} other
-   */
-  union: function union(other) {
-    var x = mathMin(other.x, this.x);
-    var y = mathMin(other.y, this.y);
-    this.width = mathMax(other.x + other.width, this.x + this.width) - x;
-    this.height = mathMax(other.y + other.height, this.y + this.height) - y;
     this.x = x;
-    this.y = y;
-  },
+<span id='zrender-core-BoundingRect-property-y'>    /**
+</span>     * @property {Number}
+     */
 
-<span id='zrender-core-BoundingRect-method-applyTransform'>  /**
-</span>   * @method applyTransform
-   * @param {Array&lt;Number&gt;}
+    this.y = y;
+<span id='zrender-core-BoundingRect-property-width'>    /**
+</span>     * @property {Number}
+     */
+
+    this.width = width;
+<span id='zrender-core-BoundingRect-property-height'>    /**
+</span>     * @property {Number}
+     */
+
+    this.height = height;
+  }
+<span id='zrender-core-BoundingRect-method-'>  /**
+</span>   * @param {Object|BoundingRect} rect
+   * @param {Number} rect.x
+   * @param {Number} rect.y
+   * @param {Number} rect.width
+   * @param {Number} rect.height
+   * @return {BoundingRect}
    */
-  applyTransform: function () {
-    var lt = [];
-    var rb = [];
-    var lb = [];
-    var rt = [];
-    return function (m) {
+
+
+  _createClass(BoundingRect, [{
+    key: &quot;union&quot;,
+
+<span id='zrender-core-BoundingRect-method-union'>    /**
+</span>     * @method union
+     * @param {BoundingRect} other
+     */
+    value: function union(other) {
+      var x = mathMin(other.x, this.x);
+      var y = mathMin(other.y, this.y);
+      this.width = mathMax(other.x + other.width, this.x + this.width) - x;
+      this.height = mathMax(other.y + other.height, this.y + this.height) - y;
+      this.x = x;
+      this.y = y;
+    }
+<span id='zrender-core-BoundingRect-method-applyTransform'>    /**
+</span>     * @method applyTransform
+     * @param {Array&lt;Number&gt;}
+     */
+
+  }, {
+    key: &quot;applyTransform&quot;,
+    value: function applyTransform(m) {
       // In case usage like this
       // el.getBoundingRect().applyTransform(el.transform)
       // And element has no transform
@@ -109,108 +131,115 @@ BoundingRect.prototype = {
       var maxY = mathMax(lt[1], rb[1], lb[1], rt[1]);
       this.width = maxX - this.x;
       this.height = maxY - this.y;
-    };
-  }(),
-
-<span id='zrender-core-BoundingRect-method-calculateTransform'>  /**
-</span>   * @method calculateTransform
-   * Calculate matrix of transforming from self to target rect
-   * @param  {BoundingRect} b
-   * @return {Array&lt;Number&gt;}
-   */
-  calculateTransform: function calculateTransform(b) {
-    var a = this;
-    var sx = b.width / a.width;
-    var sy = b.height / a.height;
-    var m = matrix.create(); // 矩阵右乘
-
-    matrix.translate(m, m, [-a.x, -a.y]);
-    matrix.scale(m, m, [sx, sy]);
-    matrix.translate(m, m, [b.x, b.y]);
-    return m;
-  },
-
-<span id='zrender-core-BoundingRect-method-intersect'>  /**
-</span>   * @method intersect
-   * @param {(BoundingRect|Object)} b
-   * @return {boolean}
-   */
-  intersect: function intersect(b) {
-    if (!b) {
-      return false;
     }
+<span id='zrender-core-BoundingRect-method-calculateTransform'>    /**
+</span>     * @method calculateTransform
+     * Calculate matrix of transforming from self to target rect
+     * @param  {BoundingRect} b
+     * @return {Array&lt;Number&gt;}
+     */
 
-    if (!(b instanceof BoundingRect)) {
-      // Normalize negative width/height.
-      b = BoundingRect.create(b);
+  }, {
+    key: &quot;calculateTransform&quot;,
+    value: function calculateTransform(b) {
+      var a = this;
+      var sx = b.width / a.width;
+      var sy = b.height / a.height;
+      var m = matrix.create(); // 矩阵右乘
+
+      matrix.translate(m, m, [-a.x, -a.y]);
+      matrix.scale(m, m, [sx, sy]);
+      matrix.translate(m, m, [b.x, b.y]);
+      return m;
     }
+<span id='zrender-core-BoundingRect-method-intersect'>    /**
+</span>     * @method intersect
+     * @param {(BoundingRect|Object)} b
+     * @return {boolean}
+     */
 
-    var a = this;
-    var ax0 = a.x;
-    var ax1 = a.x + a.width;
-    var ay0 = a.y;
-    var ay1 = a.y + a.height;
-    var bx0 = b.x;
-    var bx1 = b.x + b.width;
-    var by0 = b.y;
-    var by1 = b.y + b.height;
-    return !(ax1 &lt; bx0 || bx1 &lt; ax0 || ay1 &lt; by0 || by1 &lt; ay0);
-  },
+  }, {
+    key: &quot;intersect&quot;,
+    value: function intersect(b) {
+      if (!b) {
+        return false;
+      }
 
-<span id='zrender-core-BoundingRect-method-contain'>  /**
-</span>   * @method contain
-   * @param {*} x 
-   * @param {*} y 
-   */
-  contain: function contain(x, y) {
-    var rect = this;
-    return x &gt;= rect.x &amp;&amp; x &lt;= rect.x + rect.width &amp;&amp; y &gt;= rect.y &amp;&amp; y &lt;= rect.y + rect.height;
-  },
+      if (!(b instanceof BoundingRect)) {
+        // Normalize negative width/height.
+        b = BoundingRect.create(b);
+      }
 
-<span id='zrender-core-BoundingRect-method-clone'>  /**
-</span>   * @method clone
-   * @return {BoundingRect}
-   */
-  clone: function clone() {
-    return new BoundingRect(this.x, this.y, this.width, this.height);
-  },
+      var a = this;
+      var ax0 = a.x;
+      var ax1 = a.x + a.width;
+      var ay0 = a.y;
+      var ay1 = a.y + a.height;
+      var bx0 = b.x;
+      var bx1 = b.x + b.width;
+      var by0 = b.y;
+      var by1 = b.y + b.height;
+      return !(ax1 &lt; bx0 || bx1 &lt; ax0 || ay1 &lt; by0 || by1 &lt; ay0);
+    }
+<span id='zrender-core-BoundingRect-method-contain'>    /**
+</span>     * @method contain
+     * @param {*} x 
+     * @param {*} y 
+     */
 
-<span id='zrender-core-BoundingRect-method-copy'>  /**
-</span>   * @method copy
-   * Copy from another rect
-   * @param other
-   */
-  copy: function copy(other) {
-    this.x = other.x;
-    this.y = other.y;
-    this.width = other.width;
-    this.height = other.height;
-  },
+  }, {
+    key: &quot;contain&quot;,
+    value: function contain(x, y) {
+      var rect = this;
+      return x &gt;= rect.x &amp;&amp; x &lt;= rect.x + rect.width &amp;&amp; y &gt;= rect.y &amp;&amp; y &lt;= rect.y + rect.height;
+    }
+<span id='zrender-core-BoundingRect-method-clone'>    /**
+</span>     * @method clone
+     * @return {BoundingRect}
+     */
 
-<span id='zrender-core-BoundingRect-method-plain'>  /**
-</span>   * @method plain
-   */
-  plain: function plain() {
-    return {
-      x: this.x,
-      y: this.y,
-      width: this.width,
-      height: this.height
-    };
-  }
-};
-<span id='zrender-core-BoundingRect-method-create'>/**
-</span> * @param {Object|BoundingRect} rect
- * @param {Number} rect.x
- * @param {Number} rect.y
- * @param {Number} rect.width
- * @param {Number} rect.height
- * @return {BoundingRect}
- */
+  }, {
+    key: &quot;clone&quot;,
+    value: function clone() {
+      return new BoundingRect(this.x, this.y, this.width, this.height);
+    }
+<span id='zrender-core-BoundingRect-method-copy'>    /**
+</span>     * @method copy
+     * Copy from another rect
+     * @param other
+     */
 
-BoundingRect.create = function (rect) {
-  return new BoundingRect(rect.x, rect.y, rect.width, rect.height);
-};
+  }, {
+    key: &quot;copy&quot;,
+    value: function copy(other) {
+      this.x = other.x;
+      this.y = other.y;
+      this.width = other.width;
+      this.height = other.height;
+    }
+<span id='zrender-core-BoundingRect-method-plain'>    /**
+</span>     * @method plain
+     */
+
+  }, {
+    key: &quot;plain&quot;,
+    value: function plain() {
+      return {
+        x: this.x,
+        y: this.y,
+        width: this.width,
+        height: this.height
+      };
+    }
+  }], [{
+    key: &quot;create&quot;,
+    value: function create(rect) {
+      return new BoundingRect(rect.x, rect.y, rect.width, rect.height);
+    }
+  }]);
+
+  return BoundingRect;
+}();
 
 var _default = BoundingRect;
 module.exports = _default;</pre>
