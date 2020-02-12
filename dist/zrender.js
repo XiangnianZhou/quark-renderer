@@ -11157,51 +11157,48 @@ CanvasPainter.prototype = {
 // http://iosoteric.com/additive-animations-animatewithduration-in-ios-8/
 // https://developer.apple.com/videos/wwdc2014/#236
 
-/**
- * @method constructor GlobalAnimationMgr
- * @param {Object} [options]
- */
-function GlobalAnimationMgr(options) {
-    options = options || {};
-    this._animationProcessList=[];
-    this._running = false;
-    this._timestamp;
-    this._pausedTime;//ms
-    this._pauseStart;
-    this._paused = false;
-    Eventful.call(this);
-}
-
-GlobalAnimationMgr.prototype = {
-
-    constructor: GlobalAnimationMgr,
+class GlobalAnimationMgr{
+    /**
+     * @method constructor GlobalAnimationMgr
+     * @param {Object} [options]
+     */
+    constructor(options){
+        options = options || {};
+        this._animationProcessList=[];
+        this._running = false;
+        this._timestamp;
+        this._pausedTime;//ms
+        this._pauseStart;
+        this._paused = false;
+        Eventful.call(this);
+    }
 
     /**
      * @method addAnimationProcess
      * 添加 animationProcess
      * @param {zrender.animation.GlobalAnimationMgr} animationProcess
      */
-    addAnimationProcess: function (animationProcess) {
+    addAnimationProcess(animationProcess) {
         this._animationProcessList.push(animationProcess);
-    },
+    }
 
     /**
      * @method removeAnimationProcess
      * 删除动画片段
      * @param {zrender.animation.GlobalAnimationMgr} animationProcess
      */
-    removeAnimationProcess: function (animationProcess) {
+    removeAnimationProcess(animationProcess) {
         let index=this._animationProcessList.findIndex(animationProcess);
         if(index>=0){
             this._animationProcessList.splice(index,1);
         }
-    },
+    }
 
     /**
      * @private
      * @method _update
      */
-    _update: function () {
+    _update() {
         var time = new Date().getTime() - this._pausedTime;
         var delta = time - this._timestamp;
 
@@ -11216,7 +11213,7 @@ GlobalAnimationMgr.prototype = {
         // depends on the sequence (e.g., echarts-stream and finish
         // event judge)
         this.trigger('frame', delta);
-    },
+    }
 
     /**
      * @private
@@ -11227,7 +11224,7 @@ GlobalAnimationMgr.prototype = {
      * 按照 W3C 的推荐标准 60fps，这里的 step 函数大约每隔 16ms 被调用一次
      * @see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
      */
-    _startLoop: function () {
+    _startLoop() {
         var self = this;
         this._running = true;
         function nextFrame() {
@@ -11237,61 +11234,61 @@ GlobalAnimationMgr.prototype = {
             }
         }
         requestAnimationFrame(nextFrame);
-    },
+    }
 
     /**
      * @method start
      * Start all the animations.
      */
-    start: function () {
+    start() {
         this._timestamp = new Date().getTime();
         this._pausedTime = 0;
         this._startLoop();
-    },
+    }
 
     /**
      * @method stop
      * Stop all the animations.
      */
-    stop: function () {
+    stop() {
         this._running = false;
-    },
+    }
 
     /**
      * @method pause
      * Pause all the animations.
      */
-    pause: function () {
+    pause() {
         if (!this._paused) {
             this._pauseStart = new Date().getTime();
             this._paused = true;
         }
-    },
+    }
 
     /**
      * @method resume
      * Resume all the animations.
      */
-    resume: function () {
+    resume() {
         if (this._paused) {
             this._pausedTime += (new Date().getTime()) - this._pauseStart;
             this._paused = false;
         }
-    },
+    }
 
     /**
      * @method clear
      * Clear all the animations.
      */
-    clear: function () {
+    clear() {
         this._animationProcessList.length=0;
-    },
+    }
 
     /**
      * @method isFinished
      * Whether all the animations have finished.
      */
-    isFinished:function(){
+    isFinished(){
         let finished=true;
         this._animationProcessList.forEach((animationProcess,index)=>{
             if(!animationProcess.isFinished()){
@@ -11300,7 +11297,7 @@ GlobalAnimationMgr.prototype = {
         });
         return finished;
     }
-};
+}
 
 mixin(GlobalAnimationMgr, Eventful);
 
