@@ -63,8 +63,8 @@ class GlobalAnimationMgr{
      * @method _update
      */
     _update() {
-        var time = new Date().getTime() - this._pausedTime;
-        var delta = time - this._timestamp;
+        let time = new Date().getTime() - this._pausedTime;
+        let delta = time - this._timestamp;
 
         this._animationProcessList.forEach((ap,index)=>{
             ap.nextFrame(time,delta);
@@ -89,7 +89,7 @@ class GlobalAnimationMgr{
      * @see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
      */
     _startLoop() {
-        var self = this;
+        let self = this;
         this._running = true;
         function nextFrame() {
             if (self._running) {
