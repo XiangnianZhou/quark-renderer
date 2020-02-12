@@ -1,5 +1,7 @@
 import Path from '../Path';
 import * as polyHelper from '../utils/poly';
+import * as dataUtil from '../../core/utils/dataStructureUtil';
+
 /**
  * @class zrender.graphic.shape.Polygon 
  * 多边形
@@ -23,7 +25,7 @@ export default class Polygon extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig);
+        super(dataUtil.merge(defaultConfig,options,true));
     }
 
     /**

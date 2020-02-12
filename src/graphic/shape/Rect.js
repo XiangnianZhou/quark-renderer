@@ -1,6 +1,8 @@
 import Path from '../Path';
 import * as roundRectHelper from '../utils/roundRect';
 import {subPixelOptimizeRect} from '../utils/subPixelOptimize';
+import * as dataUtil from '../../core/utils/dataStructureUtil';
+
 /**
  * @class zrender.graphic.shape.Rect 
  * 矩形
@@ -34,7 +36,7 @@ export default class Rect extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig);
+        super(dataUtil.merge(defaultConfig,options,true));
     }
 
     /**

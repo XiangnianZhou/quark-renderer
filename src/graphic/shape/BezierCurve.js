@@ -1,6 +1,7 @@
 import Path from '../Path';
 import * as vec2 from '../../core/utils/vector';
 import * as curveUtil from '../../core/utils/curveUtil';
+import * as dataUtil from '../../core/utils/dataStructureUtil';
 
 /**
  * @class zrender.graphic.shape.BezierCurve 
@@ -51,7 +52,7 @@ export default class BezierCurve extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig);
+        super(dataUtil.merge(defaultConfig,options,true));
     }
 
     /**

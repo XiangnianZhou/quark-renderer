@@ -1,4 +1,6 @@
 import Path from '../Path';
+import * as dataUtil from '../../core/utils/dataStructureUtil';
+
 /**
  * @class zrender.graphic.shape.Heart 
  * 心形
@@ -22,7 +24,7 @@ export default class Heart extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig);
+        super(dataUtil.merge(defaultConfig,options,true));
     }
 
     /**

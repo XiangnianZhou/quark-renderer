@@ -14494,9 +14494,8 @@ class Path extends Displayable{
     /**
      * @method constructor Path
      * @param {Object} options
-     * @param {Object} defaultConfig
      */
-    constructor(options,defaultConfig){
+    constructor(options){
         super(options);
         /**
          * @property {PathProxy}
@@ -14530,32 +14529,28 @@ class Path extends Displayable{
          */
         this.subPixelOptimize=false;
 
-        //Path 特有的配置项
-        if(defaultConfig){
-            if (defaultConfig.style) {
-                // Extend default style
-                this.style.extendStyle(defaultConfig.style, false);
-            }
+        /**
+         * @property {Object} shape 形状
+         */
+        this.shape={};
     
-            // Extend default shape
-            let defaultShape = defaultConfig.shape;
-            if (defaultShape) {
-                this.shape = this.shape || {};
-                for (let name in defaultShape) {
-                    if (!this.shape.hasOwnProperty(name)&&defaultShape.hasOwnProperty(name)){
-                        this.shape[name] = defaultShape[name];
-                    }
+        // Extend default shape
+        let defaultShape = this.options.shape;
+        if (defaultShape) {
+            for (let name in defaultShape) {
+                if (!this.shape.hasOwnProperty(name)&&defaultShape.hasOwnProperty(name)){
+                    this.shape[name] = defaultShape[name];
                 }
             }
-            defaultConfig.init && defaultConfig.init.call(this, options);
-    
-            // FIXME 不能 extend position, rotation 等引用对象
-            // TODO:What's going on here?
-            for (let name in defaultConfig) {
-                // Extending prototype values and methods
-                if (name !== 'style' && name !== 'shape') {
-                    Path.prototype[name] = defaultConfig[name];
-                }
+        }
+        this.options.init && this.options.init.call(this, options);
+
+        // FIXME 不能 extend position, rotation 等引用对象
+        // TODO:What's going on here?
+        for (let name in this.options) {
+            // Extending prototype values and methods
+            if (name !== 'style' && name !== 'shape') {
+                Path.prototype[name] = this.options[name];
             }
         }
     }
@@ -15505,7 +15500,7 @@ class Circle extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig);
+        super(merge(defaultConfig,options,true));
     }
 
     /**
@@ -15670,7 +15665,7 @@ class Rect extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig$1);
+        super(merge(defaultConfig$1,options,true));
     }
 
     /**
@@ -15734,7 +15729,7 @@ class Droplet extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig$2);
+        super(merge(defaultConfig$2,options,true));
     }
 
     /**
@@ -15794,7 +15789,7 @@ class Line extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig$3);
+        super(merge(defaultConfig$3,options,true));
     }
 
     /**
@@ -16072,7 +16067,7 @@ class Polygon extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig$4);
+        super(merge(defaultConfig$4,options,true));
     }
 
     /**
@@ -16113,7 +16108,7 @@ class Polyline extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig$5);
+        super(merge(defaultConfig$5,options,true));
     }
 
     /**
@@ -17100,7 +17095,7 @@ class Arc extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig$7);
+        super(merge(defaultConfig$7,options,true));
     }
 
     /**
@@ -17174,7 +17169,7 @@ class BezierCurve extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig$8);
+        super(merge(defaultConfig$8,options,true));
     }
 
     /**
@@ -17283,7 +17278,7 @@ class Droplet$1 extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig$9);
+        super(merge(defaultConfig$9,options,true));
     }
 
     /**
@@ -17342,7 +17337,7 @@ class Heart extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig$10);
+        super(merge(defaultConfig$10,options,true));
     }
 
     /**
@@ -17396,7 +17391,7 @@ class Isogon extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig$11);
+        super(merge(defaultConfig$11,options,true));
     }
 
     /**
@@ -17454,7 +17449,7 @@ class Ring extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig$12);
+        super(merge(defaultConfig$12,options,true));
     }
 
     /**
@@ -17507,7 +17502,7 @@ class Rose extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig$13);
+        super(merge(defaultConfig$13,options,true));
     }
 
     /**
@@ -17640,7 +17635,7 @@ class Sector extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig$14);
+        super(merge(defaultConfig$14,options,true));
         this.brush=fixClipWithShadow(Path.prototype.brush);
     }
 
@@ -17706,7 +17701,7 @@ class Star extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig$15);
+        super(merge(defaultConfig$15,options,true));
     }
 
     /**
@@ -17786,7 +17781,7 @@ class Trochold extends Path{
      * @param {Object} options 
      */
     constructor(options){
-        super(options,defaultConfig$16);
+        super(merge(defaultConfig$16,options,true));
     }
 
     /**
