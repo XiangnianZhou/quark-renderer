@@ -40,6 +40,7 @@ export default class Timeline{
      * 进入下一帧
      * @param {Number} globalTime 当前时间
      * @param {Number} deltaTime  时间偏移量
+     * //TODO:try move this into webworker
      */
     nextFrame(globalTime, deltaTime) {
         // Set startTime on first frame, or _startTime may has milleseconds different between clips
