@@ -16176,7 +16176,7 @@ let DILIMITER_REG = /[\s,]+/;
 
 /**
  * For big svg string, this method might be time consuming.
- *
+ * //TODO:try to move this into webworker.
  * @param {String} svg xml string
  * @return {Object} xml root.
  */
@@ -16704,7 +16704,6 @@ function parseAttributes(xmlNode, el, defs, onlyInlineStyle) {
 
     el.__inheritedStyle = zrStyle;
 }
-
 
 let urlRegex = /url\(\s*#(.*?)\)/;
 function getPaint(str, defs) {
@@ -17877,22 +17876,15 @@ function createElement(name) {
 // TODO
 // 1. shadow
 // 2. Image: sx, sy, sw, sh
-
 let CMD$3 = PathProxy.CMD;
-let arrayJoin = Array.prototype.join;
-
 let NONE = 'none';
-let mathRound = Math.round;
-let mathSin$3 = Math.sin;
-let mathCos$3 = Math.cos;
 let PI$3 = Math.PI;
 let PI2$4 = Math.PI * 2;
 let degree = 180 / PI$3;
-
 let EPSILON$3 = 1e-4;
 
 function round4(val) {
-    return mathRound(val * 1e4) / 1e4;
+    return Math.round(val * 1e4) / 1e4;
 }
 
 function isAroundZero$1(val) {
@@ -17911,7 +17903,7 @@ function pathHasStroke(style, isText) {
 
 function setTransform(svgEl, m) {
     if (m) {
-        attr(svgEl, 'transform', 'matrix(' + arrayJoin.call(m, ',') + ')');
+        attr(svgEl, 'transform', 'matrix(' + Array.prototype.join.call(m, ',') + ')');
     }
 }
 
@@ -17953,7 +17945,7 @@ function bindStyle(svgEl, style, isText, el) {
         let lineDash = style.lineDash;
         if (lineDash) {
             attr(svgEl, 'stroke-dasharray', style.lineDash.join(','));
-            attr(svgEl, 'stroke-dashoffset', mathRound(style.lineDashOffset || 0));
+            attr(svgEl, 'stroke-dashoffset', Math.round(style.lineDashOffset || 0));
         }else {
             attr(svgEl, 'stroke-dasharray', '');
         }
@@ -18027,8 +18019,8 @@ function pathDataToString(path) {
                     large = (unifiedTheta >= PI$3) === !!clockwise;
                 }
 
-                let x0 = round4(cx + rx * mathCos$3(theta));
-                let y0 = round4(cy + ry * mathSin$3(theta));
+                let x0 = round4(cx + rx * Math.cos(theta));
+                let y0 = round4(cy + ry * Math.sin(theta));
 
                 // It will not draw if start point and end point are exactly the same
                 // We need to shift the end point with a small value
@@ -18053,12 +18045,12 @@ function pathDataToString(path) {
                     }
                 }
 
-                x = round4(cx + rx * mathCos$3(theta + dTheta));
-                y = round4(cy + ry * mathSin$3(theta + dTheta));
+                x = round4(cx + rx * Math.cos(theta + dTheta));
+                y = round4(cy + ry * Math.sin(theta + dTheta));
 
                 // FIXME Ellipse
                 str.push('A', round4(rx), round4(ry),
-                    mathRound(psi * degree), +large, +clockwise, x, y);
+                    Math.round(psi * degree), +large, +clockwise, x, y);
                 break;
             case CMD$3.Z:
                 cmdStr = 'Z';

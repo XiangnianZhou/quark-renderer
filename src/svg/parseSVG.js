@@ -20,7 +20,7 @@ let DILIMITER_REG = /[\s,]+/;
 
 /**
  * For big svg string, this method might be time consuming.
- *
+ * //TODO:try to move this into webworker.
  * @param {String} svg xml string
  * @return {Object} xml root.
  */
@@ -548,7 +548,6 @@ function parseAttributes(xmlNode, el, defs, onlyInlineStyle) {
 
     el.__inheritedStyle = zrStyle;
 }
-
 
 let urlRegex = /url\(\s*#(.*?)\)/;
 function getPaint(str, defs) {
