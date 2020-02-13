@@ -25,8 +25,8 @@
             let r = (Math.random() * 100);
             for (let i = 0; i <= len; i++) {
                 let phi = i / len * Math.PI * 2;
-                let x = Math.cos(phi) * r + 500;
-                let y = Math.sin(phi) * r + 300;
+                let x = Math.cos(phi) * r + 100;
+                let y = Math.sin(phi) * r + 100;
                 points.push([x, y]);
             }
             polygon.animateTo({
