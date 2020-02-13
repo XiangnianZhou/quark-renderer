@@ -1,5 +1,4 @@
-
-var PI2 = Math.PI * 2;
+import {PI2} from '../../graphic/constants';
 
 export function normalizeRadian(angle) {
     angle %= PI2;

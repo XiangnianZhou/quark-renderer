@@ -14010,12 +14010,10 @@ function containStroke$3(x0, y0, x1, y1, x2, y2, lineWidth, x, y) {
     return d <= _l / 2;
 }
 
-var PI2$3 = Math.PI * 2;
-
 function normalizeRadian(angle) {
-    angle %= PI2$3;
+    angle %= PI2;
     if (angle < 0) {
-        angle += PI2$3;
+        angle += PI2;
     }
     return angle;
 }
@@ -17895,7 +17893,7 @@ function createElement(name) {
 let CMD$3 = PathProxy.CMD;
 let NONE = 'none';
 let PI$3 = Math.PI;
-let PI2$4 = Math.PI * 2;
+let PI2$3 = Math.PI * 2;
 let degree = 180 / PI$3;
 let EPSILON$3 = 1e-4;
 
@@ -18018,11 +18016,11 @@ function pathDataToString(path) {
                 let clockwise = data[i++];
 
                 let dThetaPositive = Math.abs(dTheta);
-                let isCircle = isAroundZero$1(dThetaPositive - PI2$4)
-                    || (clockwise ? dTheta >= PI2$4 : -dTheta >= PI2$4);
+                let isCircle = isAroundZero$1(dThetaPositive - PI2$3)
+                    || (clockwise ? dTheta >= PI2$3 : -dTheta >= PI2$3);
 
                 // Mapping to 0~2PI
-                let unifiedTheta = dTheta > 0 ? dTheta % PI2$4 : (dTheta % PI2$4 + PI2$4);
+                let unifiedTheta = dTheta > 0 ? dTheta % PI2$3 : (dTheta % PI2$3 + PI2$3);
 
                 let large = false;
                 if (isCircle) {
@@ -18043,10 +18041,10 @@ function pathDataToString(path) {
                 // FIXME A better way to draw circle ?
                 if (isCircle) {
                     if (clockwise) {
-                        dTheta = PI2$4 - 1e-4;
+                        dTheta = PI2$3 - 1e-4;
                     }
                     else {
-                        dTheta = -PI2$4 + 1e-4;
+                        dTheta = -PI2$3 + 1e-4;
                     }
 
                     large = true;
