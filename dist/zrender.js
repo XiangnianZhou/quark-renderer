@@ -14555,7 +14555,7 @@ class Path extends Displayable{
          */
         this.subPixelOptimize=false;
 
-        copyOwnProperties(this,this.options,['style','shape','type']);
+        copyOwnProperties(this,this.options,['style','shape']);
     }
 
     /**
@@ -17981,15 +17981,13 @@ function bindStyle(svgEl, style, isText, el) {
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 function pathDataToString(path) {
-    let str = [];
-    let data = path.data;
-    let dataLength = path.len();
-    let cmdStr = '';
-    let nData = 0;
-    let x=0;
-    let y=0;
-    for (let i = 0; i < dataLength;) {
-        let cmd = data[i++];
+    var str = [];
+    var data = path.data;
+    var dataLength = path.len();
+    for (var i = 0; i < dataLength;) {
+        var cmd = data[i++];
+        var cmdStr = '';
+        var nData = 0;
         switch (cmd) {
             case CMD$3.M:
                 cmdStr = 'M';
@@ -18008,23 +18006,23 @@ function pathDataToString(path) {
                 nData = 6;
                 break;
             case CMD$3.A:
-                let cx = data[i++];
-                let cy = data[i++];
-                let rx = data[i++];
-                let ry = data[i++];
-                let theta = data[i++];
-                let dTheta = data[i++];
-                let psi = data[i++];
-                let clockwise = data[i++];
+                var cx = data[i++];
+                var cy = data[i++];
+                var rx = data[i++];
+                var ry = data[i++];
+                var theta = data[i++];
+                var dTheta = data[i++];
+                var psi = data[i++];
+                var clockwise = data[i++];
 
-                let dThetaPositive = Math.abs(dTheta);
-                let isCircle = isAroundZero$1(dThetaPositive - PI2$3)
+                var dThetaPositive = Math.abs(dTheta);
+                var isCircle = isAroundZero$1(dThetaPositive - PI2$3)
                     || (clockwise ? dTheta >= PI2$3 : -dTheta >= PI2$3);
 
                 // Mapping to 0~2PI
-                let unifiedTheta = dTheta > 0 ? dTheta % PI2$3 : (dTheta % PI2$3 + PI2$3);
+                var unifiedTheta = dTheta > 0 ? dTheta % PI2$3 : (dTheta % PI2$3 + PI2$3);
 
-                let large = false;
+                var large = false;
                 if (isCircle) {
                     large = true;
                 }
@@ -18035,8 +18033,8 @@ function pathDataToString(path) {
                     large = (unifiedTheta >= PI$3) === !!clockwise;
                 }
 
-                let x0 = round4(cx + rx * Math.cos(theta));
-                let y0 = round4(cy + ry * Math.sin(theta));
+                var x0 = round4(cx + rx * Math.cos(theta));
+                var y0 = round4(cy + ry * Math.sin(theta));
 
                 // It will not draw if start point and end point are exactly the same
                 // We need to shift the end point with a small value
@@ -18061,8 +18059,8 @@ function pathDataToString(path) {
                     }
                 }
 
-                x = round4(cx + rx * Math.cos(theta + dTheta));
-                y = round4(cy + ry * Math.sin(theta + dTheta));
+                var x = round4(cx + rx * Math.cos(theta + dTheta));
+                var y = round4(cy + ry * Math.sin(theta + dTheta));
 
                 // FIXME Ellipse
                 str.push('A', round4(rx), round4(ry),
@@ -18072,10 +18070,10 @@ function pathDataToString(path) {
                 cmdStr = 'Z';
                 break;
             case CMD$3.R:
-                x = round4(data[i++]);
-                y = round4(data[i++]);
-                let w = round4(data[i++]);
-                let h = round4(data[i++]);
+                var x = round4(data[i++]);
+                var y = round4(data[i++]);
+                var w = round4(data[i++]);
+                var h = round4(data[i++]);
                 str.push(
                     'M', x, y,
                     'L', x + w, y,
@@ -18086,7 +18084,7 @@ function pathDataToString(path) {
                 break;
         }
         cmdStr && str.push(cmdStr);
-        for (let j = 0; j < nData; j++) {
+        for (var j = 0; j < nData; j++) {
             // PENDING With scale
             str.push(round4(data[i++]));
         }
@@ -18928,11 +18926,9 @@ GradientManager.prototype={
         var dom;
         if (gradient.type === 'linear') {
             dom = this.createElement('linearGradient');
-        }
-        else if (gradient.type === 'radial') {
+        }else if (gradient.type === 'radial') {
             dom = this.createElement('radialGradient');
-        }
-        else {
+        }else {
             console.log('Illegal gradient type.');
             return null;
         }
@@ -18943,12 +18939,9 @@ GradientManager.prototype={
         // id should remain the same, and other attributes should be
         // updated.
         gradient.id = gradient.id || this.nextId++;
-        dom.setAttribute('id', 'zr' + this._zrId
-            + '-gradient-' + gradient.id);
-
+        dom.setAttribute('id', `zr${this._zrId}-gradient-${gradient.id}`);
         this.updateDom(gradient, dom);
         this.addDom(dom);
-
         return dom;
     },
 
@@ -18969,8 +18962,7 @@ GradientManager.prototype={
             ) {
                 // Gradient type is not changed, update gradient
                 that.updateDom(gradient, gradient._dom);
-            }
-            else {
+            }else {
                 // Remove and re-create if type is changed
                 that.removeDom(gradient);
                 that.add(gradient);
@@ -19602,13 +19594,9 @@ SVGPainter.prototype = {
 
                     // Update gradient and shadow
                     if (displayable.style) {
-                        this.gradientManager
-                            .update(displayable.style.fill);
-                        this.gradientManager
-                            .update(displayable.style.stroke);
-
-                        this.shadowManager
-                            .update(svgElement, displayable);
+                        this.gradientManager.update(displayable.style.fill);
+                        this.gradientManager.update(displayable.style.stroke);
+                        this.shadowManager.update(svgElement, displayable);
                     }
 
                     displayable.__dirty = false;
@@ -19646,13 +19634,9 @@ SVGPainter.prototype = {
                         : prepend(svgRoot, svgElement);
                     if (svgElement) {
                         insertAfter(svgRoot, textSvgElement, svgElement);
-                    }
-                    else if (prevSvgElement) {
-                        insertAfter(
-                            svgRoot, textSvgElement, prevSvgElement
-                        );
-                    }
-                    else {
+                    }else if (prevSvgElement) {
+                        insertAfter(svgRoot, textSvgElement, prevSvgElement);
+                    }else {
                         prepend(svgRoot, textSvgElement);
                     }
                     // Insert text
@@ -19661,14 +19645,11 @@ SVGPainter.prototype = {
                         || prevSvgElement;
 
                     // zrender.Text only create textSvgElement.
-                    this.gradientManager
-                        .addWithoutUpdate(svgElement || textSvgElement, displayable);
-                    this.shadowManager
-                        .addWithoutUpdate(svgElement || textSvgElement, displayable);
+                    this.gradientManager.addWithoutUpdate(svgElement || textSvgElement, displayable);
+                    this.shadowManager.addWithoutUpdate(svgElement || textSvgElement, displayable);
                     this.clipPathManager.markUsed(displayable);
                 }
-            }
-            else if (!item.removed) {
+            }else if (!item.removed) {
                 for (let k = 0; k < item.count; k++) {
                     let displayable = newVisibleList[item.indices[k]];
                     svgElement = getSvgElement(displayable);
@@ -19678,20 +19659,17 @@ SVGPainter.prototype = {
                     textSvgElement = getTextSvgElement(displayable);
 
                     this.gradientManager.markUsed(displayable);
-                    this.gradientManager
-                        .addWithoutUpdate(svgElement || textSvgElement, displayable);
+                    this.gradientManager.addWithoutUpdate(svgElement || textSvgElement, displayable);
 
                     this.shadowManager.markUsed(displayable);
-                    this.shadowManager
-                        .addWithoutUpdate(svgElement || textSvgElement, displayable);
+                    this.shadowManager.addWithoutUpdate(svgElement || textSvgElement, displayable);
 
                     this.clipPathManager.markUsed(displayable);
 
                     if (textSvgElement) { // Insert text.
                         insertAfter(svgRoot, textSvgElement, svgElement);
                     }
-                    prevSvgElement = svgElement
-                        || textSvgElement || prevSvgElement;
+                    prevSvgElement = svgElement || textSvgElement || prevSvgElement;
                 }
             }
         }
@@ -19710,37 +19688,34 @@ SVGPainter.prototype = {
     _getDefs: function (isForceCreating) {
         let svgRoot = this._svgRoot;
         let defs = this._svgRoot.getElementsByTagName('defs');
-        if (defs.length === 0) {
-            // Not exist
-            if (isForceCreating) {
-                let defs = svgRoot.insertBefore(
-                    createElement('defs'), // Create new tag
-                    svgRoot.firstChild // Insert in the front of svg
-                );
-                if (!defs.contains) {
-                    // IE doesn't support contains method
-                    defs.contains = function (el) {
-                        let children = defs.children;
-                        if (!children) {
-                            return false;
-                        }
-                        for (let i = children.length - 1; i >= 0; --i) {
-                            if (children[i] === el) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    };
-                }
-                return defs;
-            }
-            else {
-                return null;
-            }
-        }
-        else {
+        if(defs.length!==0){
             return defs[0];
         }
+        
+        // Not exist
+        if(!isForceCreating){
+            return null;
+        }
+        defs = svgRoot.insertBefore(
+            createElement('defs'), // Create new tag
+            svgRoot.firstChild // Insert in the front of svg
+        );
+        if (!defs.contains) {
+            // IE doesn't support contains method
+            defs.contains = function (el) {
+                let children = defs.children;
+                if (!children) {
+                    return false;
+                }
+                for (let i = children.length - 1; i >= 0; --i) {
+                    if (children[i] === el) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+        }
+        return defs;
     },
 
     /**

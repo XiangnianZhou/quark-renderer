@@ -87,11 +87,9 @@ GradientManager.prototype={
         var dom;
         if (gradient.type === 'linear') {
             dom = this.createElement('linearGradient');
-        }
-        else if (gradient.type === 'radial') {
+        }else if (gradient.type === 'radial') {
             dom = this.createElement('radialGradient');
-        }
-        else {
+        }else {
             console.log('Illegal gradient type.');
             return null;
         }
@@ -102,12 +100,9 @@ GradientManager.prototype={
         // id should remain the same, and other attributes should be
         // updated.
         gradient.id = gradient.id || this.nextId++;
-        dom.setAttribute('id', 'zr' + this._zrId
-            + '-gradient-' + gradient.id);
-
+        dom.setAttribute('id', `zr${this._zrId}-gradient-${gradient.id}`);
         this.updateDom(gradient, dom);
         this.addDom(dom);
-
         return dom;
     },
 
@@ -128,8 +123,7 @@ GradientManager.prototype={
             ) {
                 // Gradient type is not changed, update gradient
                 that.updateDom(gradient, gradient._dom);
-            }
-            else {
+            }else {
                 // Remove and re-create if type is changed
                 that.removeDom(gradient);
                 that.add(gradient);

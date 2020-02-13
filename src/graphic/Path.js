@@ -48,7 +48,7 @@ class Path extends Displayable{
          */
         this.subPixelOptimize=false;
 
-        classUtil.copyOwnProperties(this,this.options,['style','shape','type']);
+        classUtil.copyOwnProperties(this,this.options,['style','shape']);
     }
 
     /**

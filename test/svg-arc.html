@@ -11,13 +11,9 @@
     <div id="main" style="width:1000px;height:900px;"></div>
 
     <script type="text/javascript">
-
-        // let zr = zrender.init(document.getElementById('main'), {
-        //     renderer: window.__ZRENDER__DEFAULT__RENDERER__ || 'svg'
-        // });
-
-        //TODO: SVGPainter not work for Arc, fix this.
-        let zr = zrender.init(document.getElementById('main'));
+        let zr = zrender.init(document.getElementById('main'), {
+            renderer: 'svg'
+        });
 
         for (let i = 0; i < 16; ++i) {
             let s = 0 + Math.PI / 4 * i;
