@@ -7336,14 +7336,15 @@ var fixShadow = function (ctx, propName, value) {
     return value;
 };
 
-var ContextCachedBy = {
+let ContextCachedBy = {
     NONE: 0,
     STYLE_BIND: 1,
     PLAIN_TEXT: 2
 };
-
 // Avoid confused with 0/false.
-var WILL_BE_RESTORED = 9;
+let WILL_BE_RESTORED = 9;
+let PI2 = Math.PI * 2;
+let EPSILON$1 = 1e-4;
 
 /**
  * @class zrender.graphic.Style
@@ -12414,7 +12415,7 @@ ZRender.prototype = {
 var mathPow = Math.pow;
 var mathSqrt$2 = Math.sqrt;
 
-var EPSILON$1 = 1e-8;
+var EPSILON$2 = 1e-8;
 var EPSILON_NUMERIC = 1e-4;
 
 var THREE_SQRT = mathSqrt$2(3);
@@ -12426,10 +12427,10 @@ var _v1 = create();
 var _v2 = create();
 
 function isAroundZero(val) {
-    return val > -EPSILON$1 && val < EPSILON$1;
+    return val > -EPSILON$2 && val < EPSILON$2;
 }
 function isNotAroundZero$1(val) {
-    return val > EPSILON$1 || val < -EPSILON$1;
+    return val > EPSILON$2 || val < -EPSILON$2;
 }
 /**
  * 计算三次贝塞尔值
@@ -12921,7 +12922,7 @@ var mathMin$2 = Math.min;
 var mathMax$2 = Math.max;
 var mathSin$2 = Math.sin;
 var mathCos$2 = Math.cos;
-var PI2 = Math.PI * 2;
+var PI2$1 = Math.PI * 2;
 
 var start = create();
 var end = create();
@@ -13060,7 +13061,7 @@ function fromArc(
     var diff = Math.abs(startAngle - endAngle);
 
 
-    if (diff % PI2 < 1e-4 && diff > 1e-4) {
+    if (diff % PI2$1 < 1e-4 && diff > 1e-4) {
         // Is a circle
         min$$1[0] = x - rx;
         min$$1[1] = y - ry;
@@ -13079,20 +13080,20 @@ function fromArc(
     vec2Max(max$$1, start, end);
 
     // Thresh to [0, Math.PI * 2]
-    startAngle = startAngle % (PI2);
+    startAngle = startAngle % (PI2$1);
     if (startAngle < 0) {
-        startAngle = startAngle + PI2;
+        startAngle = startAngle + PI2$1;
     }
-    endAngle = endAngle % (PI2);
+    endAngle = endAngle % (PI2$1);
     if (endAngle < 0) {
-        endAngle = endAngle + PI2;
+        endAngle = endAngle + PI2$1;
     }
 
     if (startAngle > endAngle && !anticlockwise) {
-        endAngle += PI2;
+        endAngle += PI2$1;
     }
     else if (startAngle < endAngle && anticlockwise) {
-        startAngle += PI2;
+        startAngle += PI2$1;
     }
     if (anticlockwise) {
         var tmp = endAngle;
@@ -14099,21 +14100,18 @@ function windingLine(x0, y0, x1, y1, x, y) {
     return x_ === x ? Infinity : x_ > x ? dir : 0;
 }
 
-var CMD$1 = PathProxy.CMD;
-var PI2$1 = Math.PI * 2;
-
-var EPSILON$2 = 1e-4;
+let CMD$1 = PathProxy.CMD;
 
 function isAroundEqual(a, b) {
-    return Math.abs(a - b) < EPSILON$2;
+    return Math.abs(a - b) < EPSILON$1;
 }
 
 // 临时数组
-var roots = [-1, -1, -1];
-var extrema = [-1, -1];
+let roots = [-1, -1, -1];
+let extrema = [-1, -1];
 
 function swapExtrema() {
-    var tmp = extrema[0];
+    let tmp = extrema[0];
     extrema[0] = extrema[1];
     extrema[1] = tmp;
 }
@@ -14126,22 +14124,22 @@ function windingCubic(x0, y0, x1, y1, x2, y2, x3, y3, x, y) {
     ) {
         return 0;
     }
-    var nRoots = cubicRootAt(y0, y1, y2, y3, y, roots);
+    let nRoots = cubicRootAt(y0, y1, y2, y3, y, roots);
     if (nRoots === 0) {
         return 0;
     }
     else {
-        var w = 0;
-        var nExtrema = -1;
-        var y0_;
-        var y1_;
-        for (var i = 0; i < nRoots; i++) {
-            var t = roots[i];
+        let w = 0;
+        let nExtrema = -1;
+        let y0_;
+        let y1_;
+        for (let i = 0; i < nRoots; i++) {
+            let t = roots[i];
 
             // Avoid winding error when intersection point is the connect point of two line of polygon
-            var unit = (t === 0 || t === 1) ? 0.5 : 1;
+            let unit = (t === 0 || t === 1) ? 0.5 : 1;
 
-            var x_ = cubicAt(x0, x1, x2, x3, t);
+            let x_ = cubicAt(x0, x1, x2, x3, t);
             if (x_ < x) { // Quick reject
                 continue;
             }
@@ -14189,20 +14187,20 @@ function windingQuadratic(x0, y0, x1, y1, x2, y2, x, y) {
     ) {
         return 0;
     }
-    var nRoots = quadraticRootAt(y0, y1, y2, y, roots);
+    let nRoots = quadraticRootAt(y0, y1, y2, y, roots);
     if (nRoots === 0) {
         return 0;
     }
     else {
-        var t = quadraticExtremum(y0, y1, y2);
+        let t = quadraticExtremum(y0, y1, y2);
         if (t >= 0 && t <= 1) {
-            var w = 0;
-            var y_ = quadraticAt(y0, y1, y2, t);
-            for (var i = 0; i < nRoots; i++) {
+            let w = 0;
+            let y_ = quadraticAt(y0, y1, y2, t);
+            for (let i = 0; i < nRoots; i++) {
                 // Remove one endpoint.
-                var unit = (roots[i] === 0 || roots[i] === 1) ? 0.5 : 1;
+                let unit = (roots[i] === 0 || roots[i] === 1) ? 0.5 : 1;
 
-                var x_ = quadraticAt(x0, x1, x2, roots[i]);
+                let x_ = quadraticAt(x0, x1, x2, roots[i]);
                 if (x_ < x) {   // Quick reject
                     continue;
                 }
@@ -14217,9 +14215,9 @@ function windingQuadratic(x0, y0, x1, y1, x2, y2, x, y) {
         }
         else {
             // Remove one endpoint.
-            var unit = (roots[0] === 0 || roots[0] === 1) ? 0.5 : 1;
+            let unit = (roots[0] === 0 || roots[0] === 1) ? 0.5 : 1;
 
-            var x_ = quadraticAt(x0, x1, x2, roots[0]);
+            let x_ = quadraticAt(x0, x1, x2, roots[0]);
             if (x_ < x) {   // Quick reject
                 return 0;
             }
@@ -14237,19 +14235,19 @@ function windingArc(
     if (y > r || y < -r) {
         return 0;
     }
-    var tmp = Math.sqrt(r * r - y * y);
+    let tmp = Math.sqrt(r * r - y * y);
     roots[0] = -tmp;
     roots[1] = tmp;
 
-    var diff = Math.abs(startAngle - endAngle);
+    let diff = Math.abs(startAngle - endAngle);
     if (diff < 1e-4) {
         return 0;
     }
-    if (diff % PI2$1 < 1e-4) {
+    if (diff % PI2 < 1e-4) {
         // Is a circle
         startAngle = 0;
-        endAngle = PI2$1;
-        var dir = anticlockwise ? 1 : -1;
+        endAngle = PI2;
+        let dir = anticlockwise ? 1 : -1;
         if (x >= roots[0] + cx && x <= roots[1] + cx) {
             return dir;
         }
@@ -14259,7 +14257,7 @@ function windingArc(
     }
 
     if (anticlockwise) {
-        var tmp = startAngle;
+        let tmp = startAngle;
         startAngle = normalizeRadian(endAngle);
         endAngle = normalizeRadian(tmp);
     }
@@ -14268,21 +14266,21 @@ function windingArc(
         endAngle = normalizeRadian(endAngle);
     }
     if (startAngle > endAngle) {
-        endAngle += PI2$1;
+        endAngle += PI2;
     }
 
-    var w = 0;
-    for (var i = 0; i < 2; i++) {
-        var x_ = roots[i];
+    let w = 0;
+    for (let i = 0; i < 2; i++) {
+        let x_ = roots[i];
         if (x_ + cx > x) {
-            var angle = Math.atan2(y, x_);
-            var dir = anticlockwise ? 1 : -1;
+            let angle = Math.atan2(y, x_);
+            let dir = anticlockwise ? 1 : -1;
             if (angle < 0) {
-                angle = PI2$1 + angle;
+                angle = PI2 + angle;
             }
             if (
                 (angle >= startAngle && angle <= endAngle)
-                || (angle + PI2$1 >= startAngle && angle + PI2$1 <= endAngle)
+                || (angle + PI2 >= startAngle && angle + PI2 <= endAngle)
             ) {
                 if (angle > Math.PI / 2 && angle < Math.PI * 1.5) {
                     dir = -dir;
@@ -14295,14 +14293,14 @@ function windingArc(
 }
 
 function containPath(data, lineWidth, isStroke, x, y) {
-    var w = 0;
-    var xi = 0;
-    var yi = 0;
-    var x0 = 0;
-    var y0 = 0;
+    let w = 0;
+    let xi = 0;
+    let yi = 0;
+    let x0 = 0;
+    let y0 = 0;
 
-    for (var i = 0; i < data.length;) {
-        var cmd = data[i++];
+    for (let i = 0; i < data.length;) {
+        let cmd = data[i++];
         // Begin a new subpath
         if (cmd === CMD$1.M && i > 1) {
             // Close previous subpath
@@ -14326,6 +14324,11 @@ function containPath(data, lineWidth, isStroke, x, y) {
             x0 = xi;
             y0 = yi;
         }
+
+        let x1;
+        let y1;
+        let width;
+        let height;
 
         switch (cmd) {
             case CMD$1.M:
@@ -14389,17 +14392,17 @@ function containPath(data, lineWidth, isStroke, x, y) {
                 break;
             case CMD$1.A:
                 // TODO Arc 判断的开销比较大
-                var cx = data[i++];
-                var cy = data[i++];
-                var rx = data[i++];
-                var ry = data[i++];
-                var theta = data[i++];
-                var dTheta = data[i++];
+                let cx = data[i++];
+                let cy = data[i++];
+                let rx = data[i++];
+                let ry = data[i++];
+                let theta = data[i++];
+                let dTheta = data[i++];
                 // TODO Arc 旋转
                 i += 1;
-                var anticlockwise = 1 - data[i++];
-                var x1 = Math.cos(theta) * rx + cx;
-                var y1 = Math.sin(theta) * ry + cy;
+                let anticlockwise = 1 - data[i++];
+                x1 = Math.cos(theta) * rx + cx;
+                y1 = Math.sin(theta) * ry + cy;
                 // 不是直接使用 arc 命令
                 if (i > 1) {
                     w += windingLine(xi, yi, x1, y1, x, y);
@@ -14410,7 +14413,7 @@ function containPath(data, lineWidth, isStroke, x, y) {
                     y0 = y1;
                 }
                 // zr 使用scale来模拟椭圆, 这里也对x做一定的缩放
-                var _x = (x - cx) * ry / rx + cx;
+                let _x = (x - cx) * ry / rx + cx;
                 if (isStroke) {
                     if (containStroke$4(
                         cx, cy, ry, theta, theta + dTheta, anticlockwise,
@@ -14431,10 +14434,10 @@ function containPath(data, lineWidth, isStroke, x, y) {
             case CMD$1.R:
                 x0 = xi = data[i++];
                 y0 = yi = data[i++];
-                var width = data[i++];
-                var height = data[i++];
-                var x1 = x0 + width;
-                var y1 = y0 + height;
+                width = data[i++];
+                height = data[i++];
+                x1 = x0 + width;
+                y1 = y0 + height;
                 if (isStroke) {
                     if (containStroke$1(x0, y0, x1, y0, lineWidth, x, y)
                         || containStroke$1(x1, y0, x1, y1, lineWidth, x, y)
