@@ -7346,6 +7346,10 @@ let ContextCachedBy = {
 // Avoid confused with 0/false.
 let WILL_BE_RESTORED = 9;
 let PI2 = Math.PI * 2;
+let mathSin=Math.sin;
+let mathCos=Math.cos;
+
+let mathMax$1=Math.max;
 
 /**
  * @class zrender.graphic.Style
@@ -9752,8 +9756,6 @@ class Displayable extends Element{
          */
         this.globalScaleRatio=1;
 
-        copyOwnProperties(this,this.options,['style']);
-
         /**
          * @property {Object} shape 形状
          */
@@ -9768,16 +9770,11 @@ class Displayable extends Element{
                 }
             }
         }
+        
+        // FIXME 不能 extend position, rotation 等引用对象 TODO:why?
+        copyOwnProperties(this,this.options,['style','shape']);
+        
         this.options.init && this.options.init.call(this, options);
-
-        // FIXME 不能 extend position, rotation 等引用对象
-        // TODO:What's going on here?
-        for (let name in this.options) {
-            // Extending prototype values and methods
-            if (name !== 'style' && name !== 'shape') {
-                Displayable.prototype[name] = this.options[name];
-            }
-        }
     }
 
     beforeBrush(ctx) {}
@@ -12943,10 +12940,10 @@ function quadraticProjectPoint(
  * @author Yi Shen(https://github.com/pissang)
  */
 
-var mathMin$2 = Math.min;
-var mathMax$2 = Math.max;
-var mathSin$2 = Math.sin;
-var mathCos$2 = Math.cos;
+var mathMin$3 = Math.min;
+var mathMax$3 = Math.max;
+var mathSin$3 = Math.sin;
+var mathCos$3 = Math.cos;
 var PI2$1 = Math.PI * 2;
 
 var start = create();
@@ -12972,10 +12969,10 @@ var extremity = create();
  * @param {Array<Number>} max
  */
 function fromLine(x0, y0, x1, y1, min$$1, max$$1) {
-    min$$1[0] = mathMin$2(x0, x1);
-    min$$1[1] = mathMin$2(y0, y1);
-    max$$1[0] = mathMax$2(x0, x1);
-    max$$1[1] = mathMax$2(y0, y1);
+    min$$1[0] = mathMin$3(x0, x1);
+    min$$1[1] = mathMin$3(y0, y1);
+    max$$1[0] = mathMax$3(x0, x1);
+    max$$1[1] = mathMax$3(y0, y1);
 }
 
 var xDim = [];
@@ -13008,25 +13005,25 @@ function fromCubic(
 
     for (i = 0; i < n; i++) {
         var x = cubicAt$$1(x0, x1, x2, x3, xDim[i]);
-        min$$1[0] = mathMin$2(x, min$$1[0]);
-        max$$1[0] = mathMax$2(x, max$$1[0]);
+        min$$1[0] = mathMin$3(x, min$$1[0]);
+        max$$1[0] = mathMax$3(x, max$$1[0]);
     }
     n = cubicExtrema$$1(y0, y1, y2, y3, yDim);
     for (i = 0; i < n; i++) {
         var y = cubicAt$$1(y0, y1, y2, y3, yDim[i]);
-        min$$1[1] = mathMin$2(y, min$$1[1]);
-        max$$1[1] = mathMax$2(y, max$$1[1]);
+        min$$1[1] = mathMin$3(y, min$$1[1]);
+        max$$1[1] = mathMax$3(y, max$$1[1]);
     }
 
-    min$$1[0] = mathMin$2(x0, min$$1[0]);
-    max$$1[0] = mathMax$2(x0, max$$1[0]);
-    min$$1[0] = mathMin$2(x3, min$$1[0]);
-    max$$1[0] = mathMax$2(x3, max$$1[0]);
+    min$$1[0] = mathMin$3(x0, min$$1[0]);
+    max$$1[0] = mathMax$3(x0, max$$1[0]);
+    min$$1[0] = mathMin$3(x3, min$$1[0]);
+    max$$1[0] = mathMax$3(x3, max$$1[0]);
 
-    min$$1[1] = mathMin$2(y0, min$$1[1]);
-    max$$1[1] = mathMax$2(y0, max$$1[1]);
-    min$$1[1] = mathMin$2(y3, min$$1[1]);
-    max$$1[1] = mathMax$2(y3, max$$1[1]);
+    min$$1[1] = mathMin$3(y0, min$$1[1]);
+    max$$1[1] = mathMax$3(y0, max$$1[1]);
+    min$$1[1] = mathMin$3(y3, min$$1[1]);
+    max$$1[1] = mathMax$3(y3, max$$1[1]);
 }
 
 /**
@@ -13046,21 +13043,21 @@ function fromQuadratic(x0, y0, x1, y1, x2, y2, min$$1, max$$1) {
     var quadraticAt$$1 = quadraticAt;
     // Find extremities, where derivative in x dim or y dim is zero
     var tx =
-        mathMax$2(
-            mathMin$2(quadraticExtremum$$1(x0, x1, x2), 1), 0
+        mathMax$3(
+            mathMin$3(quadraticExtremum$$1(x0, x1, x2), 1), 0
         );
     var ty =
-        mathMax$2(
-            mathMin$2(quadraticExtremum$$1(y0, y1, y2), 1), 0
+        mathMax$3(
+            mathMin$3(quadraticExtremum$$1(y0, y1, y2), 1), 0
         );
 
     var x = quadraticAt$$1(x0, x1, x2, tx);
     var y = quadraticAt$$1(y0, y1, y2, ty);
 
-    min$$1[0] = mathMin$2(x0, x2, x);
-    min$$1[1] = mathMin$2(y0, y2, y);
-    max$$1[0] = mathMax$2(x0, x2, x);
-    max$$1[1] = mathMax$2(y0, y2, y);
+    min$$1[0] = mathMin$3(x0, x2, x);
+    min$$1[1] = mathMin$3(y0, y2, y);
+    max$$1[0] = mathMax$3(x0, x2, x);
+    max$$1[1] = mathMax$3(y0, y2, y);
 }
 
 /**
@@ -13095,11 +13092,11 @@ function fromArc(
         return;
     }
 
-    start[0] = mathCos$2(startAngle) * rx + x;
-    start[1] = mathSin$2(startAngle) * ry + y;
+    start[0] = mathCos$3(startAngle) * rx + x;
+    start[1] = mathSin$3(startAngle) * ry + y;
 
-    end[0] = mathCos$2(endAngle) * rx + x;
-    end[1] = mathSin$2(endAngle) * ry + y;
+    end[0] = mathCos$3(endAngle) * rx + x;
+    end[1] = mathSin$3(endAngle) * ry + y;
 
     vec2Min(min$$1, start, end);
     vec2Max(max$$1, start, end);
@@ -13130,8 +13127,8 @@ function fromArc(
     // var step = (anticlockwise ? -Math.PI : Math.PI) / 2;
     for (var angle = 0; angle < endAngle; angle += Math.PI / 2) {
         if (angle > startAngle) {
-            extremity[0] = mathCos$2(angle) * rx + x;
-            extremity[1] = mathSin$2(angle) * ry + y;
+            extremity[0] = mathCos$3(angle) * rx + x;
+            extremity[1] = mathSin$3(angle) * ry + y;
 
             vec2Min(min$$1, extremity, min$$1);
             vec2Max(max$$1, extremity, max$$1);
@@ -13177,10 +13174,10 @@ var min$1 = [];
 var max$1 = [];
 var min2 = [];
 var max2 = [];
-var mathMin$1 = Math.min;
-var mathMax$1 = Math.max;
-var mathCos$1 = Math.cos;
-var mathSin$1 = Math.sin;
+var mathMin$2 = Math.min;
+var mathMax$2 = Math.max;
+var mathCos$2 = Math.cos;
+var mathSin$2 = Math.sin;
 var mathSqrt$1 = Math.sqrt;
 var mathAbs = Math.abs;
 
@@ -13372,8 +13369,8 @@ PathProxy.prototype = {
         );
         this._ctx && this._ctx.arc(cx, cy, r, startAngle, endAngle, anticlockwise);
 
-        this._xi = mathCos$1(endAngle) * r + cx;
-        this._yi = mathSin$1(endAngle) * r + cy;
+        this._xi = mathCos$2(endAngle) * r + cx;
+        this._yi = mathSin$2(endAngle) * r + cy;
         return this;
     },
 
@@ -13595,8 +13592,8 @@ PathProxy.prototype = {
                 continue;
             }
             ctx[idx % 2 ? 'moveTo' : 'lineTo'](
-                dx >= 0 ? mathMin$1(x, x1) : mathMax$1(x, x1),
-                dy >= 0 ? mathMin$1(y, y1) : mathMax$1(y, y1)
+                dx >= 0 ? mathMin$2(x, x1) : mathMax$2(x, x1),
+                dy >= 0 ? mathMin$2(y, y1) : mathMax$2(y, y1)
             );
         }
         // Offset for next lineTo
@@ -13775,8 +13772,8 @@ PathProxy.prototype = {
                     if (i === 1) {
                         // 直接使用 arc 命令
                         // 第一个命令起点还未定义
-                        x0 = mathCos$1(startAngle) * rx + cx;
-                        y0 = mathSin$1(startAngle) * ry + cy;
+                        x0 = mathCos$2(startAngle) * rx + cx;
+                        y0 = mathSin$2(startAngle) * ry + cy;
                     }
 
                     fromArc(
@@ -13784,8 +13781,8 @@ PathProxy.prototype = {
                         anticlockwise, min2, max2
                     );
 
-                    xi = mathCos$1(endAngle) * rx + cx;
-                    yi = mathSin$1(endAngle) * ry + cy;
+                    xi = mathCos$2(endAngle) * rx + cx;
+                    yi = mathSin$2(endAngle) * ry + cy;
                     break;
                 case CMD.R:
                     x0 = xi = data[i++];
@@ -13904,11 +13901,11 @@ PathProxy.prototype = {
                     if (i === 1) {
                         // 直接使用 arc 命令
                         // 第一个命令起点还未定义
-                        x0 = mathCos$1(theta) * rx + cx;
-                        y0 = mathSin$1(theta) * ry + cy;
+                        x0 = mathCos$2(theta) * rx + cx;
+                        y0 = mathSin$2(theta) * ry + cy;
                     }
-                    xi = mathCos$1(endAngle) * rx + cx;
-                    yi = mathSin$1(endAngle) * ry + cy;
+                    xi = mathCos$2(endAngle) * rx + cx;
+                    yi = mathSin$2(endAngle) * ry + cy;
                     break;
                 case CMD.R:
                     x0 = xi = d[i];
@@ -14555,6 +14552,8 @@ class Path extends Displayable{
          * See `module:zrender/src/graphic/helper/subPixelOptimize`.
          */
         this.subPixelOptimize=false;
+
+        copyOwnProperties(this,this.options,['style','shape','type']);
     }
 
     /**
@@ -14975,8 +14974,8 @@ var transformPath = function (path, m) {
 // ];
 
 var mathSqrt = Math.sqrt;
-var mathSin = Math.sin;
-var mathCos = Math.cos;
+var mathSin$1 = Math.sin;
+var mathCos$1 = Math.cos;
 var PI = Math.PI;
 
 var vMag = function (v) {
@@ -14992,10 +14991,10 @@ var vAngle = function (u, v) {
 
 function processArc(x1, y1, x2, y2, fa, fs, rx, ry, psiDeg, cmd, path) {
     var psi = psiDeg * (PI / 180.0);
-    var xp = mathCos(psi) * (x1 - x2) / 2.0
-                + mathSin(psi) * (y1 - y2) / 2.0;
-    var yp = -1 * mathSin(psi) * (x1 - x2) / 2.0
-                + mathCos(psi) * (y1 - y2) / 2.0;
+    var xp = mathCos$1(psi) * (x1 - x2) / 2.0
+                + mathSin$1(psi) * (y1 - y2) / 2.0;
+    var yp = -1 * mathSin$1(psi) * (x1 - x2) / 2.0
+                + mathCos$1(psi) * (y1 - y2) / 2.0;
 
     var lambda = (xp * xp) / (rx * rx) + (yp * yp) / (ry * ry);
 
@@ -15015,11 +15014,11 @@ function processArc(x1, y1, x2, y2, fa, fs, rx, ry, psiDeg, cmd, path) {
     var cyp = f * -ry * xp / rx;
 
     var cx = (x1 + x2) / 2.0
-                + mathCos(psi) * cxp
-                - mathSin(psi) * cyp;
+                + mathCos$1(psi) * cxp
+                - mathSin$1(psi) * cyp;
     var cy = (y1 + y2) / 2.0
-            + mathSin(psi) * cxp
-            + mathCos(psi) * cyp;
+            + mathSin$1(psi) * cxp
+            + mathCos$1(psi) * cyp;
 
     var theta = vAngle([ 1, 0 ], [ (xp - cxp) / rx, (yp - cyp) / ry ]);
     var u = [ (xp - cxp) / rx, (yp - cyp) / ry ];
@@ -17086,7 +17085,7 @@ let defaultConfig$7={
         cy: 0,
         r: 0,
         startAngle: 0,
-        endAngle: Math.PI * 2,
+        endAngle: PI2,
         clockwise: true
     },
     style: {
@@ -17113,13 +17112,13 @@ class Arc extends Path{
     buildPath(ctx, shape) {
         let x = shape.cx;
         let y = shape.cy;
-        let r = Math.max(shape.r, 0);
+        let r = mathMax$1(shape.r, 0);
         let startAngle = shape.startAngle;
         let endAngle = shape.endAngle;
         let clockwise = shape.clockwise;
 
-        let unitX = Math.cos(startAngle);
-        let unitY = Math.sin(startAngle);
+        let unitX = mathCos(startAngle);
+        let unitY = mathSin(startAngle);
 
         ctx.moveTo(unitX * r + x, unitY * r + y);
         ctx.arc(x, y, r, startAngle, endAngle, !clockwise);
@@ -19917,7 +19916,7 @@ let sqrt = Math.sqrt;
 let abs = Math.abs;
 let cos$4 = Math.cos;
 let sin$4 = Math.sin;
-let mathMax$3 = Math.max;
+let mathMax$4 = Math.max;
 
 if (!env$1.canvasSupported) {
 
@@ -20041,7 +20040,7 @@ if (!env$1.canvasSupported) {
 
                     width /= scale$$1[0] * Z;
                     height /= scale$$1[1] * Z;
-                    let dimension = mathMax$3(width, height);
+                    let dimension = mathMax$4(width, height);
                     shift = 2 * 0 / dimension;
                     expansion = 2 * fill.r / dimension - shift;
                 }
@@ -20530,8 +20529,8 @@ if (!env$1.canvasSupported) {
             applyTransform(p2, p2, m);
             applyTransform(p3, p3, m);
 
-            let maxX = mathMax$3(p0[0], p1[0], p2[0], p3[0]);
-            let maxY = mathMax$3(p0[1], p1[1], p2[1], p3[1]);
+            let maxX = mathMax$4(p0[0], p1[0], p2[0], p3[0]);
+            let maxY = mathMax$4(p0[1], p1[1], p2[1], p3[1]);
 
             let transformFilter = [];
             transformFilter.push('M11=', m[0] / scaleX, comma,

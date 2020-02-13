@@ -47,6 +47,8 @@ class Path extends Displayable{
          * See `module:zrender/src/graphic/helper/subPixelOptimize`.
          */
         this.subPixelOptimize=false;
+
+        classUtil.copyOwnProperties(this,this.options,['style','shape','type']);
     }
 
     /**

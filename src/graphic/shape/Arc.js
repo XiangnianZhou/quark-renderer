@@ -1,5 +1,6 @@
 import Path from '../Path';
 import * as dataUtil from '../../core/utils/dataStructureUtil';
+import {PI2,mathSin,mathCos,mathMin,mathMax} from '../../graphic/constants';
 
 /**
  * @class zrender.graphic.shape.Arc 
@@ -16,7 +17,7 @@ let defaultConfig={
         cy: 0,
         r: 0,
         startAngle: 0,
-        endAngle: Math.PI * 2,
+        endAngle: PI2,
         clockwise: true
     },
     style: {
@@ -43,13 +44,13 @@ export default class Arc extends Path{
     buildPath(ctx, shape) {
         let x = shape.cx;
         let y = shape.cy;
-        let r = Math.max(shape.r, 0);
+        let r = mathMax(shape.r, 0);
         let startAngle = shape.startAngle;
         let endAngle = shape.endAngle;
         let clockwise = shape.clockwise;
 
-        let unitX = Math.cos(startAngle);
-        let unitY = Math.sin(startAngle);
+        let unitX = mathCos(startAngle);
+        let unitY = mathSin(startAngle);
 
         ctx.moveTo(unitX * r + x, unitY * r + y);
         ctx.arc(x, y, r, startAngle, endAngle, !clockwise);
