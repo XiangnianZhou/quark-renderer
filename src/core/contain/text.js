@@ -8,16 +8,15 @@ import {
     trim
 } from '../utils/dataStructureUtil';
 
-var textWidthCache = {};
-var textWidthCacheCounter = 0;
+let textWidthCache = {};
+let textWidthCacheCounter = 0;
+let TEXT_CACHE_MAX = 5000;
+let STYLE_REG = /\{([a-zA-Z0-9_]+)\|([^}]*)\}/g;
 
-var TEXT_CACHE_MAX = 5000;
-var STYLE_REG = /\{([a-zA-Z0-9_]+)\|([^}]*)\}/g;
-
-export var DEFAULT_FONT = '12px sans-serif';
+export let DEFAULT_FONT = '12px sans-serif';
 
 // Avoid assign to an exported variable, for transforming to cjs.
-var methods = {};
+let methods = {};
 
 export function $override(name, fn) {
     methods[name] = fn;
@@ -31,15 +30,15 @@ export function $override(name, fn) {
  */
 export function getWidth(text, font) {
     font = font || DEFAULT_FONT;
-    var key = text + ':' + font;
+    let key = text + ':' + font;
     if (textWidthCache[key]) {
         return textWidthCache[key];
     }
 
-    var textLines = (text + '').split('\n');
-    var width = 0;
+    let textLines = (text + '').split('\n');
+    let width = 0;
 
-    for (var i = 0, l = textLines.length; i < l; i++) {
+    for (let i = 0, l = textLines.length; i < l; i++) {
         // textContain.measureText may be overrided in SVG or VML
         width = Math.max(measureText(textLines[i], font).width, width);
     }
@@ -72,24 +71,24 @@ export function getBoundingRect(text, font, textAlign, textVerticalAlign, textPa
 }
 
 function getPlainTextRect(text, font, textAlign, textVerticalAlign, textPadding, textLineHeight, truncate) {
-    var contentBlock = parsePlainText(text, font, textPadding, textLineHeight, truncate);
-    var outerWidth = getWidth(text, font);
+    let contentBlock = parsePlainText(text, font, textPadding, textLineHeight, truncate);
+    let outerWidth = getWidth(text, font);
     if (textPadding) {
         outerWidth += textPadding[1] + textPadding[3];
     }
-    var outerHeight = contentBlock.outerHeight;
+    let outerHeight = contentBlock.outerHeight;
 
-    var x = adjustTextX(0, outerWidth, textAlign);
-    var y = adjustTextY(0, outerHeight, textVerticalAlign);
+    let x = adjustTextX(0, outerWidth, textAlign);
+    let y = adjustTextY(0, outerHeight, textVerticalAlign);
 
-    var rect = new BoundingRect(x, y, outerWidth, outerHeight);
+    let rect = new BoundingRect(x, y, outerWidth, outerHeight);
     rect.lineHeight = contentBlock.lineHeight;
 
     return rect;
 }
 
 function getRichTextRect(text, font, textAlign, textVerticalAlign, textPadding, textLineHeight, rich, truncate) {
-    var contentBlock = parseRichText(text, {
+    let contentBlock = parseRichText(text, {
         rich: rich,
         truncate: truncate,
         font: font,
@@ -97,11 +96,11 @@ function getRichTextRect(text, font, textAlign, textVerticalAlign, textPadding, 
         textPadding: textPadding,
         textLineHeight: textLineHeight
     });
-    var outerWidth = contentBlock.outerWidth;
-    var outerHeight = contentBlock.outerHeight;
+    let outerWidth = contentBlock.outerWidth;
+    let outerHeight = contentBlock.outerHeight;
 
-    var x = adjustTextX(0, outerWidth, textAlign);
-    var y = adjustTextY(0, outerHeight, textVerticalAlign);
+    let x = adjustTextX(0, outerWidth, textAlign);
+    let y = adjustTextY(0, outerHeight, textVerticalAlign);
 
     return new BoundingRect(x, y, outerWidth, outerHeight);
 }
@@ -150,19 +149,19 @@ export function adjustTextY(y, height, textVerticalAlign) {
  * @return {Object} The input `out`. Set: {x, y, textAlign, textVerticalAlign}
  */
 export function calculateTextPosition(out, style, rect) {
-    var textPosition = style.textPosition;
-    var distance = style.textDistance;
+    let textPosition = style.textPosition;
+    let distance = style.textDistance;
 
-    var x = rect.x;
-    var y = rect.y;
+    let x = rect.x;
+    let y = rect.y;
     distance = distance || 0;
 
-    var height = rect.height;
-    var width = rect.width;
-    var halfHeight = height / 2;
+    let height = rect.height;
+    let width = rect.width;
+    let halfHeight = height / 2;
 
-    var textAlign = 'left';
-    var textVerticalAlign = 'top';
+    let textAlign = 'left';
+    let textVerticalAlign = 'top';
 
     switch (textPosition) {
         case 'left':
@@ -256,7 +255,7 @@ export function calculateTextPosition(out, style, rect) {
  * @return {Object} {x, y, textAlign, textVerticalAlign}
  */
 export function adjustTextPositionOnRect(textPosition, rect, distance) {
-    var dummyStyle = {textPosition: textPosition, textDistance: distance};
+    let dummyStyle = {textPosition: textPosition, textDistance: distance};
     return calculateTextPosition({}, dummyStyle, rect);
 }
 
@@ -281,12 +280,12 @@ export function truncateText(text, containerWidth, font, ellipsis, options) {
         return '';
     }
 
-    var textLines = (text + '').split('\n');
+    let textLines = (text + '').split('\n');
     options = prepareTruncateOptions(containerWidth, font, ellipsis, options);
 
     // FIXME
     // It is not appropriate that every line has '...' when truncate multiple lines.
-    for (var i = 0, len = textLines.length; i < len; i++) {
+    for (let i = 0, len = textLines.length; i < len; i++) {
         textLines[i] = truncateSingleLine(textLines[i], options);
     }
 
@@ -297,25 +296,25 @@ function prepareTruncateOptions(containerWidth, font, ellipsis, options) {
     options = extend({}, options);
 
     options.font = font;
-    var ellipsis = retrieve2(ellipsis, '...');
+    ellipsis = retrieve2(ellipsis, '...');
     options.maxIterations = retrieve2(options.maxIterations, 2);
-    var minChar = options.minChar = retrieve2(options.minChar, 0);
+    let minChar = options.minChar = retrieve2(options.minChar, 0);
     // FIXME
     // Other languages?
     options.cnCharWidth = getWidth('国', font);
     // FIXME
     // Consider proportional font?
-    var ascCharWidth = options.ascCharWidth = getWidth('a', font);
+    let ascCharWidth = options.ascCharWidth = getWidth('a', font);
     options.placeholder = retrieve2(options.placeholder, '');
 
     // Example 1: minChar: 3, text: 'asdfzxcv', truncate result: 'asdf', but not: 'a...'.
     // Example 2: minChar: 3, text: '维度', truncate result: '维', but not: '...'.
-    var contentWidth = containerWidth = Math.max(0, containerWidth - 1); // Reserve some gap.
-    for (var i = 0; i < minChar && contentWidth >= ascCharWidth; i++) {
+    let contentWidth = containerWidth = Math.max(0, containerWidth - 1); // Reserve some gap.
+    for (let i = 0; i < minChar && contentWidth >= ascCharWidth; i++) {
         contentWidth -= ascCharWidth;
     }
 
-    var ellipsisWidth = getWidth(ellipsis, font);
+    let ellipsisWidth = getWidth(ellipsis, font);
     if (ellipsisWidth > contentWidth) {
         ellipsis = '';
         ellipsisWidth = 0;
@@ -332,27 +331,27 @@ function prepareTruncateOptions(containerWidth, font, ellipsis, options) {
 }
 
 function truncateSingleLine(textLine, options) {
-    var containerWidth = options.containerWidth;
-    var font = options.font;
-    var contentWidth = options.contentWidth;
+    let containerWidth = options.containerWidth;
+    let font = options.font;
+    let contentWidth = options.contentWidth;
 
     if (!containerWidth) {
         return '';
     }
 
-    var lineWidth = getWidth(textLine, font);
+    let lineWidth = getWidth(textLine, font);
 
     if (lineWidth <= containerWidth) {
         return textLine;
     }
 
-    for (var j = 0; ; j++) {
+    for (let j = 0; ; j++) {
         if (lineWidth <= contentWidth || j >= options.maxIterations) {
             textLine += options.ellipsis;
             break;
         }
 
-        var subLength = j === 0
+        let subLength = j === 0
             ? estimateLength(textLine, contentWidth, options.ascCharWidth, options.cnCharWidth)
             : lineWidth > 0
             ? Math.floor(textLine.length * contentWidth / lineWidth)
@@ -370,10 +369,10 @@ function truncateSingleLine(textLine, options) {
 }
 
 function estimateLength(text, contentWidth, ascCharWidth, cnCharWidth) {
-    var width = 0;
-    var i = 0;
-    for (var len = text.length; i < len && width < contentWidth; i++) {
-        var charCode = text.charCodeAt(i);
+    let width = 0;
+    let i = 0;
+    for (let len = text.length; i < len && width < contentWidth; i++) {
+        let charCode = text.charCodeAt(i);
         width += (0 <= charCode && charCode <= 127) ? ascCharWidth : cnCharWidth;
     }
     return i;
@@ -401,7 +400,7 @@ export function measureText(text, font) {
 
 // Avoid assign to an exported variable, for transforming to cjs.
 methods.measureText = function (text, font) {
-    var ctx = getContext();
+    let ctx = getContext();
     ctx.font = font || DEFAULT_FONT;
     return ctx.measureText(text);
 };
@@ -420,11 +419,11 @@ methods.measureText = function (text, font) {
 export function parsePlainText(text, font, padding, textLineHeight, truncate) {
     text != null && (text += '');
 
-    var lineHeight = retrieve2(textLineHeight, getLineHeight(font));
-    var lines = text ? text.split('\n') : [];
-    var height = lines.length * lineHeight;
-    var outerHeight = height;
-    var canCacheByTextString = true;
+    let lineHeight = retrieve2(textLineHeight, getLineHeight(font));
+    let lines = text ? text.split('\n') : [];
+    let height = lines.length * lineHeight;
+    let outerHeight = height;
+    let canCacheByTextString = true;
 
     if (padding) {
         outerHeight += padding[0] + padding[2];
@@ -432,14 +431,14 @@ export function parsePlainText(text, font, padding, textLineHeight, truncate) {
 
     if (text && truncate) {
         canCacheByTextString = false;
-        var truncOuterHeight = truncate.outerHeight;
-        var truncOuterWidth = truncate.outerWidth;
+        let truncOuterHeight = truncate.outerHeight;
+        let truncOuterWidth = truncate.outerWidth;
         if (truncOuterHeight != null && outerHeight > truncOuterHeight) {
             text = '';
             lines = [];
         }
         else if (truncOuterWidth != null) {
-            var options = prepareTruncateOptions(
+            let options = prepareTruncateOptions(
                 truncOuterWidth - (padding ? padding[1] + padding[3] : 0),
                 font,
                 truncate.ellipsis,
@@ -448,7 +447,7 @@ export function parsePlainText(text, font, padding, textLineHeight, truncate) {
 
             // FIXME
             // It is not appropriate that every line has '...' when truncate multiple lines.
-            for (var i = 0, len = lines.length; i < len; i++) {
+            for (let i = 0, len = lines.length; i < len; i++) {
                 lines[i] = truncateSingleLine(lines[i], options);
             }
         }
@@ -494,17 +493,17 @@ export function parsePlainText(text, font, padding, textLineHeight, truncate) {
  * If styleName is undefined, it is plain text.
  */
 export function parseRichText(text, style) {
-    var contentBlock = {lines: [], width: 0, height: 0};
+    let contentBlock = {lines: [], width: 0, height: 0};
 
     text != null && (text += '');
     if (!text) {
         return contentBlock;
     }
 
-    var lastIndex = STYLE_REG.lastIndex = 0;
-    var result;
+    let lastIndex = STYLE_REG.lastIndex = 0;
+    let result;
     while ((result = STYLE_REG.exec(text)) != null) {
-        var matchedIndex = result.index;
+        let matchedIndex = result.index;
         if (matchedIndex > lastIndex) {
             pushTokens(contentBlock, text.substring(lastIndex, matchedIndex));
         }
@@ -516,39 +515,39 @@ export function parseRichText(text, style) {
         pushTokens(contentBlock, text.substring(lastIndex, text.length));
     }
 
-    var lines = contentBlock.lines;
-    var contentHeight = 0;
-    var contentWidth = 0;
+    let lines = contentBlock.lines;
+    let contentHeight = 0;
+    let contentWidth = 0;
     // For `textWidth: 100%`
-    var pendingList = [];
+    let pendingList = [];
 
-    var stlPadding = style.textPadding;
+    let stlPadding = style.textPadding;
 
-    var truncate = style.truncate;
-    var truncateWidth = truncate && truncate.outerWidth;
-    var truncateHeight = truncate && truncate.outerHeight;
+    let truncate = style.truncate;
+    let truncateWidth = truncate && truncate.outerWidth;
+    let truncateHeight = truncate && truncate.outerHeight;
     if (stlPadding) {
         truncateWidth != null && (truncateWidth -= stlPadding[1] + stlPadding[3]);
         truncateHeight != null && (truncateHeight -= stlPadding[0] + stlPadding[2]);
     }
 
     // Calculate layout info of tokens.
-    for (var i = 0; i < lines.length; i++) {
-        var line = lines[i];
-        var lineHeight = 0;
-        var lineWidth = 0;
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+        let lineHeight = 0;
+        let lineWidth = 0;
 
-        for (var j = 0; j < line.tokens.length; j++) {
-            var token = line.tokens[j];
-            var tokenStyle = token.styleName && style.rich[token.styleName] || {};
+        for (let j = 0; j < line.tokens.length; j++) {
+            let token = line.tokens[j];
+            let tokenStyle = token.styleName && style.rich[token.styleName] || {};
             // textPadding should not inherit from style.
-            var textPadding = token.textPadding = tokenStyle.textPadding;
+            let textPadding = token.textPadding = tokenStyle.textPadding;
 
             // textFont has been asigned to font by `normalizeStyle`.
-            var font = token.font = tokenStyle.font || style.font;
+            let font = token.font = tokenStyle.font || style.font;
 
             // textHeight can be used when textVerticalAlign is specified in token.
-            var tokenHeight = token.textHeight = retrieve2(
+            let tokenHeight = token.textHeight = retrieve2(
                 // textHeight should not be inherited, consider it can be specified
                 // as box height of the block.
                 tokenStyle.textHeight, getLineHeight(font)
@@ -567,8 +566,8 @@ export function parseRichText(text, style) {
             }
 
             token.textWidth = getWidth(token.text, font);
-            var tokenWidth = tokenStyle.textWidth;
-            var tokenWidthNotSpecified = tokenWidth == null || tokenWidth === 'auto';
+            let tokenWidth = tokenStyle.textWidth;
+            let tokenWidthNotSpecified = tokenWidth == null || tokenWidth === 'auto';
 
             // Percent width, can be `100%`, can be used in drawing separate
             // line when box width is needed to be auto.
@@ -585,8 +584,8 @@ export function parseRichText(text, style) {
 
                     // FIXME: If image is not loaded and textWidth is not specified, calling
                     // `getBoundingRect()` will not get correct result.
-                    var textBackgroundColor = tokenStyle.textBackgroundColor;
-                    var bgImg = textBackgroundColor && textBackgroundColor.image;
+                    let textBackgroundColor = tokenStyle.textBackgroundColor;
+                    let bgImg = textBackgroundColor && textBackgroundColor.image;
 
                     // Use cases:
                     // (1) If image is not loaded, it will be loaded at render phase and call
@@ -606,10 +605,10 @@ export function parseRichText(text, style) {
                     }
                 }
 
-                var paddingW = textPadding ? textPadding[1] + textPadding[3] : 0;
+                let paddingW = textPadding ? textPadding[1] + textPadding[3] : 0;
                 tokenWidth += paddingW;
 
-                var remianTruncWidth = truncateWidth != null ? truncateWidth - lineWidth : null;
+                let remianTruncWidth = truncateWidth != null ? truncateWidth - lineWidth : null;
 
                 if (remianTruncWidth != null && remianTruncWidth < tokenWidth) {
                     if (!tokenWidthNotSpecified || remianTruncWidth < paddingW) {
@@ -645,9 +644,9 @@ export function parseRichText(text, style) {
         contentBlock.outerHeight += stlPadding[0] + stlPadding[2];
     }
 
-    for (var i = 0; i < pendingList.length; i++) {
-        var token = pendingList[i];
-        var percentWidth = token.percentWidth;
+    for (let i = 0; i < pendingList.length; i++) {
+        let token = pendingList[i];
+        let percentWidth = token.percentWidth;
         // Should not base on outerWidth, because token can not be placed out of padding.
         token.width = parseInt(percentWidth, 10) / 100 * contentWidth;
     }
@@ -656,13 +655,13 @@ export function parseRichText(text, style) {
 }
 
 function pushTokens(block, str, styleName) {
-    var isEmptyStr = str === '';
-    var strs = str.split('\n');
-    var lines = block.lines;
+    let isEmptyStr = str === '';
+    let strs = str.split('\n');
+    let lines = block.lines;
 
-    for (var i = 0; i < strs.length; i++) {
-        var text = strs[i];
-        var token = {
+    for (let i = 0; i < strs.length; i++) {
+        let text = strs[i];
+        let token = {
             styleName: styleName,
             text: text,
             isLineHolder: !text && !isEmptyStr
@@ -670,7 +669,7 @@ function pushTokens(block, str, styleName) {
 
         // The first token should be appended to the last line.
         if (!i) {
-            var tokens = (lines[lines.length - 1] || (lines[0] = {tokens: []})).tokens;
+            let tokens = (lines[lines.length - 1] || (lines[0] = {tokens: []})).tokens;
 
             // Consider cases:
             // (1) ''.split('\n') => ['', '\n', ''], the '' at the first item
@@ -679,7 +678,7 @@ function pushTokens(block, str, styleName) {
             // (3) A redundant '' will affect textAlign in line.
             // (4) tokens with the same tplName should not be merged, because
             // they should be displayed in different box (with border and padding).
-            var tokensLen = tokens.length;
+            let tokensLen = tokens.length;
             (tokensLen === 1 && tokens[0].isLineHolder)
                 ? (tokens[0] = token)
                 // Consider text is '', only insert when it is the "lineHolder" or
@@ -697,7 +696,7 @@ function pushTokens(block, str, styleName) {
 export function makeFont(style) {
     // FIXME in node-canvas fontWeight is before fontStyle
     // Use `fontSize` `fontFamily` to check whether font properties are defined.
-    var font = (style.fontSize || style.fontFamily) && [
+    let font = (style.fontSize || style.fontFamily) && [
         style.fontStyle,
         style.fontWeight,
         (style.fontSize || 12) + 'px',
