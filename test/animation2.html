@@ -15,11 +15,10 @@
             'zrender/src/graphic/shape/Polygon'
         ],
         function(zrender, PolygonShape){
-
             // 初始化zrender
-            var zr = zrender.init(document.getElementById('main'));
+            let zr = zrender.init(document.getElementById('main'));
 
-            var polygon = new PolygonShape({
+            let polygon = new PolygonShape({
                 position: [100, 100],
                 scale: [1, 1],
                 style: {
@@ -28,13 +27,13 @@
             });
 
             setInterval(function () {
-                var len = Math.round(Math.random() * 100);
-                var points = [];
-                var r = (Math.random() * 100);
-                for (var i = 0; i <= len; i++) {
-                    var phi = i / len * Math.PI * 2;
-                    var x = Math.cos(phi) * r + 300;
-                    var y = Math.sin(phi) * r + 200;
+                let len = Math.round(Math.random() * 100);
+                let points = [];
+                let r = (Math.random() * 100);
+                for (let i = 0; i <= len; i++) {
+                    let phi = i / len * Math.PI * 2;
+                    let x = Math.cos(phi) * r + 300;
+                    let y = Math.sin(phi) * r + 200;
                     points.push([x, y]);
                 }
                 polygon.animateTo({

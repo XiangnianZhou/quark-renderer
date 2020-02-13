@@ -16190,6 +16190,9 @@ let DILIMITER_REG = /[\s,]+/;
  * @return {Object} xml root.
  */
 function parseXML(svg) {
+    if(!svg){
+        return;
+    }
     if (isString(svg)) {
         let parser = new DOMParser();
         svg = parser.parseFromString(svg, 'text/xml');
