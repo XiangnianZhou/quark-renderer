@@ -30,6 +30,7 @@
     "../../lib/graphic/Image.js",
     "../../lib/graphic/IncrementalDisplayable.js",
     "../../lib/graphic/Path.js",
+    "../../lib/graphic/PathProxy.js",
     "../../lib/graphic/Pattern.js",
     "../../lib/graphic/RectText.js",
     "../../lib/graphic/Stateful.js",

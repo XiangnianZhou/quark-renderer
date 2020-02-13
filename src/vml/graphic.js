@@ -9,7 +9,7 @@ import Displayable from '../graphic/Displayable';
 import ZImage from '../graphic/Image';
 import Text from '../graphic/Text';
 import Path from '../graphic/Path';
-import PathProxy from '../core/PathProxy';
+import PathProxy from '../graphic/PathProxy';
 import Gradient from '../graphic/gradient/Gradient';
 import * as vmlCore from './core';
 

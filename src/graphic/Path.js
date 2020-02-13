@@ -1,7 +1,7 @@
 import Displayable from './Displayable';
 import * as dataUtil from '../core/utils/dataStructureUtil';
 import * as classUtil from '../core/utils/classUtil';
-import PathProxy from '../core/PathProxy';
+import PathProxy from './PathProxy';
 import * as pathContain from '../core/contain/path';
 import Pattern from './Pattern';
 

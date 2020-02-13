@@ -1,5 +1,5 @@
 import {createElement} from './core';
-import PathProxy from '../core/PathProxy';
+import PathProxy from '../graphic/PathProxy';
 import BoundingRect from '../core/BoundingRect';
 import * as matrix from '../core/utils/matrix';
 import * as textContain from '../core/contain/text';

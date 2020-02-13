@@ -1,5 +1,5 @@
 import Path from '../../graphic/Path';
-import PathProxy from '../PathProxy';
+import PathProxy from '../../graphic/PathProxy';
 import transformPath from './transformPath';
 
 // command chars

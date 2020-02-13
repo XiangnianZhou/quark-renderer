@@ -13138,8 +13138,6 @@ function fromArc(
 
 // TODO: getTotalLength, getPointAtLength
 
-/* global Float32Array */
-
 /**
  * @class zrender.core.PathProxy
  * 
@@ -13156,19 +13154,8 @@ var CMD = {
     Q: 4,
     A: 5,
     Z: 6,
-    // Rect
     R: 7
 };
-
-// var CMD_MEM_SIZE = {
-//     M: 3,
-//     L: 3,
-//     C: 7,
-//     Q: 5,
-//     A: 9,
-//     R: 5,
-//     Z: 1
-// };
 
 var min$1 = [];
 var max$1 = [];
@@ -13184,8 +13171,7 @@ var mathAbs = Math.abs;
 var hasTypedArray = typeof Float32Array !== 'undefined';
 
 /**
- * @alias module:zrender/core/PathProxy
- * @constructor
+ * @method constructor PathProxy
  */
 var PathProxy = function (notSaveData) {
 
@@ -13244,8 +13230,9 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method beginPath
      * @param  {CanvasRenderingContext2D} ctx
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     beginPath: function (ctx) {
 
@@ -13270,9 +13257,10 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method moveTo
      * @param  {Number} x
      * @param  {Number} y
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     moveTo: function (x, y) {
         this.addData(CMD.M, x, y);
@@ -13292,9 +13280,10 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method lineTo
      * @param  {Number} x
      * @param  {Number} y
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     lineTo: function (x, y) {
         var exceedUnit = mathAbs(x - this._xi) > this._ux
@@ -13317,13 +13306,14 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method bezierCurveTo
      * @param  {Number} x1
      * @param  {Number} y1
      * @param  {Number} x2
      * @param  {Number} y2
      * @param  {Number} x3
      * @param  {Number} y3
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     bezierCurveTo: function (x1, y1, x2, y2, x3, y3) {
         this.addData(CMD.C, x1, y1, x2, y2, x3, y3);
@@ -13337,11 +13327,12 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method quadraticCurveTo
      * @param  {Number} x1
      * @param  {Number} y1
      * @param  {Number} x2
      * @param  {Number} y2
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     quadraticCurveTo: function (x1, y1, x2, y2) {
         this.addData(CMD.Q, x1, y1, x2, y2);
@@ -13355,13 +13346,14 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method arc
      * @param  {Number} cx
      * @param  {Number} cy
      * @param  {Number} r
      * @param  {Number} startAngle
      * @param  {Number} endAngle
      * @param  {boolean} anticlockwise
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     arc: function (cx, cy, r, startAngle, endAngle, anticlockwise) {
         this.addData(
@@ -13390,7 +13382,8 @@ PathProxy.prototype = {
     },
 
     /**
-     * @return {module:zrender/core/PathProxy}
+     * @method closePath
+     * @return {PathProxy}
      */
     closePath: function () {
         this.addData(CMD.Z);
@@ -13409,10 +13402,11 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method fill
      * Context 从外部传入，因为有可能是 rebuildPath 完之后再 fill。
      * stroke 同样
      * @param {CanvasRenderingContext2D} ctx
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     fill: function (ctx) {
         ctx && ctx.fill();
@@ -13420,8 +13414,9 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method stroke
      * @param {CanvasRenderingContext2D} ctx
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     stroke: function (ctx) {
         ctx && ctx.stroke();
@@ -13429,9 +13424,10 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method setLineDash
      * 必须在其它绘制命令前调用
      * Must be invoked before all other path drawing methods
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     setLineDash: function (lineDash) {
         if (lineDash instanceof Array) {
@@ -13449,9 +13445,10 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method setLineDashOffset
      * 必须在其它绘制命令前调用
      * Must be invoked before all other path drawing methods
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     setLineDashOffset: function (offset) {
         this._dashOffset = offset;
@@ -13459,7 +13456,7 @@ PathProxy.prototype = {
     },
 
     /**
-     *
+     * @method len
      * @return {boolean}
      */
     len: function () {
@@ -13467,6 +13464,7 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method setData
      * 直接设置 Path 数据
      */
     setData: function (data) {
@@ -13485,8 +13483,9 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method appendPath
      * 添加子路径
-     * @param {module:zrender/core/PathProxy|Array.<module:zrender/core/PathProxy>} path
+     * @param {PathProxy|Array.<PathProxy>} path
      */
     appendPath: function (path) {
         if (!(path instanceof Array)) {
@@ -13511,6 +13510,7 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method addData
      * 填充 Path 数据。
      * 尽量复用而不申明新的数组。大部分图形重绘的指令数据长度都是不变的。
      */
@@ -13696,7 +13696,8 @@ PathProxy.prototype = {
     },
 
     /**
-     * @return {module:zrender/core/BoundingRect}
+     * @method getBoundingRect
+     * @return {BoundingRect}
      */
     getBoundingRect: function () {
         min$1[0] = min$1[1] = min2[0] = min2[1] = Number.MAX_VALUE;
@@ -13814,6 +13815,7 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method rebuildPath
      * Rebuild path from current data
      * Rebuild path will not consider javascript implemented line dash.
      * @param {CanvasRenderingContext2D} ctx

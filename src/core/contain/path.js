@@ -1,4 +1,4 @@
-import PathProxy from '../PathProxy';
+import PathProxy from '../../graphic/PathProxy';
 import * as line from './line';
 import * as cubic from './cubic';
 import * as quadratic from './quadratic';
