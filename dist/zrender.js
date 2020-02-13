@@ -14082,15 +14082,15 @@ function windingLine(x0, y0, x1, y1, x, y) {
     if (y1 === y0) {
         return 0;
     }
-    var dir = y1 < y0 ? 1 : -1;
-    var t = (y - y0) / (y1 - y0);
+    let dir = y1 < y0 ? 1 : -1;
+    let t = (y - y0) / (y1 - y0);
 
     // Avoid winding error when intersection point is the connect point of two line of polygon
     if (t === 1 || t === 0) {
         dir = y1 < y0 ? 0.5 : -0.5;
     }
 
-    var x_ = t * (x1 - x0) + x0;
+    let x_ = t * (x1 - x0) + x0;
 
     // If (x, y) on the line, considered as "contain".
     return x_ === x ? Infinity : x_ > x ? dir : 0;
