@@ -3423,7 +3423,7 @@ Transformable.getLocalTransform = function (target, m) {
  * @see http://sole.github.io/tween.js/examples/03_graphs.html
  * @exports zrender/animation/easing
  */
-var easing = {
+let easing = {
     /**
     * @param {Number} k
     * @return {Number}
@@ -3622,9 +3622,9 @@ var easing = {
     * @return {Number}
     */
     elasticIn: function (k) {
-        var s;
-        var a = 0.1;
-        var p = 0.4;
+        let s;
+        let a = 0.1;
+        let p = 0.4;
         if (k === 0) {
             return 0;
         }
@@ -3646,9 +3646,9 @@ var easing = {
     * @return {Number}
     */
     elasticOut: function (k) {
-        var s;
-        var a = 0.1;
-        var p = 0.4;
+        let s;
+        let a = 0.1;
+        let p = 0.4;
         if (k === 0) {
             return 0;
         }
@@ -3670,9 +3670,9 @@ var easing = {
     * @return {Number}
     */
     elasticInOut: function (k) {
-        var s;
-        var a = 0.1;
-        var p = 0.4;
+        let s;
+        let a = 0.1;
+        let p = 0.4;
         if (k === 0) {
             return 0;
         }
@@ -3701,7 +3701,7 @@ var easing = {
     * @return {Number}
     */
     backIn: function (k) {
-        var s = 1.70158;
+        let s = 1.70158;
         return k * k * ((s + 1) * k - s);
     },
     /**
@@ -3709,7 +3709,7 @@ var easing = {
     * @return {Number}
     */
     backOut: function (k) {
-        var s = 1.70158;
+        let s = 1.70158;
         return --k * k * ((s + 1) * k + s) + 1;
     },
     /**
@@ -3717,7 +3717,7 @@ var easing = {
     * @return {Number}
     */
     backInOut: function (k) {
-        var s = 1.70158 * 1.525;
+        let s = 1.70158 * 1.525;
         if ((k *= 2) < 1) {
             return 0.5 * (k * k * ((s + 1) * k - s));
         }
@@ -16190,9 +16190,6 @@ let DILIMITER_REG = /[\s,]+/;
  * @return {Object} xml root.
  */
 function parseXML(svg) {
-    if(!svg){
-        return;
-    }
     if (isString(svg)) {
         let parser = new DOMParser();
         svg = parser.parseFromString(svg, 'text/xml');
