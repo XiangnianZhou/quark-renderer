@@ -6,4 +6,3 @@ export let ContextCachedBy = {
 // Avoid confused with 0/false.
 export let WILL_BE_RESTORED = 9;
 export let PI2 = Math.PI * 2;
-export let EPSILON = 1e-4;

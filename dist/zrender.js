@@ -7344,7 +7344,6 @@ let ContextCachedBy = {
 // Avoid confused with 0/false.
 let WILL_BE_RESTORED = 9;
 let PI2 = Math.PI * 2;
-let EPSILON$1 = 1e-4;
 
 /**
  * @class zrender.graphic.Style
@@ -12415,7 +12414,7 @@ ZRender.prototype = {
 var mathPow = Math.pow;
 var mathSqrt$2 = Math.sqrt;
 
-var EPSILON$2 = 1e-8;
+var EPSILON$1 = 1e-8;
 var EPSILON_NUMERIC = 1e-4;
 
 var THREE_SQRT = mathSqrt$2(3);
@@ -12427,10 +12426,10 @@ var _v1 = create();
 var _v2 = create();
 
 function isAroundZero(val) {
-    return val > -EPSILON$2 && val < EPSILON$2;
+    return val > -EPSILON$1 && val < EPSILON$1;
 }
 function isNotAroundZero$1(val) {
-    return val > EPSILON$2 || val < -EPSILON$2;
+    return val > EPSILON$1 || val < -EPSILON$1;
 }
 /**
  * 计算三次贝塞尔值
@@ -14101,9 +14100,10 @@ function windingLine(x0, y0, x1, y1, x, y) {
 }
 
 let CMD$1 = PathProxy.CMD;
+let EPSILON$2 = 1e-4;
 
 function isAroundEqual(a, b) {
-    return Math.abs(a - b) < EPSILON$1;
+    return Math.abs(a - b) < EPSILON$2;
 }
 
 // 临时数组

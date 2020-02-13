@@ -6,9 +6,10 @@ import * as arc from './arc';
 import {normalizeRadian} from './radianUtil';
 import * as curve from '../utils/curveUtil';
 import windingLine from './windingLine';
-import {EPSILON,PI2} from '../../graphic/constants';
+import {PI2} from '../../graphic/constants';
 
 let CMD = PathProxy.CMD;
+let EPSILON = 1e-4;
 
 function isAroundEqual(a, b) {
     return Math.abs(a - b) < EPSILON;
