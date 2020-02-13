@@ -21,31 +21,28 @@ import {
 let MARK_UNUSED = '0';
 let MARK_USED = '1';
 
-/**
- * @method constructor Definable
- * 
- * Manages elements that can be defined in <defs> in SVG,
- * e.g., gradients, clip path, etc.
- *
- * @param {Number}          zrId      zrender instance id
- * @param {SVGElement}      svgRoot   root of SVG document
- * @param {String|String[]} tagNames  possible tag names
- * @param {String}          markLabel label name to make if the element
- *                                    is used
- */
-function Definable(zrId,svgRoot,tagNames,markLabel,domName) {
-    this._zrId = zrId;
-    this._svgRoot = svgRoot;
-    this._tagNames = typeof tagNames === 'string' ? [tagNames] : tagNames;
-    this._markLabel = markLabel;
-    this._domName = domName || '_dom';
-    this.nextId = 0;
-}
-
-Definable.prototype={
-    constructor:Definable,
-    
-    createElement:createElement,
+class Definable{
+    /**
+     * @method constructor Definable
+     * 
+     * Manages elements that can be defined in <defs> in SVG,
+     * e.g., gradients, clip path, etc.
+     *
+     * @param {Number}          zrId      zrender instance id
+     * @param {SVGElement}      svgRoot   root of SVG document
+     * @param {String|String[]} tagNames  possible tag names
+     * @param {String}          markLabel label name to make if the element
+     *                                    is used
+     */
+    constructor(zrId,svgRoot,tagNames,markLabel,domName) {
+        this._zrId = zrId;
+        this._svgRoot = svgRoot;
+        this._tagNames = typeof tagNames === 'string' ? [tagNames] : tagNames;
+        this._markLabel = markLabel;
+        this._domName = domName || '_dom';
+        this.nextId = 0;
+        this.createElement=createElement;
+    }
 
     /**
      * @method getDefs
@@ -55,7 +52,7 @@ Definable.prototype={
      * @param {Boolean} isForceCreating if need to create when not exists
      * @return {SVGDefsElement} SVG <defs> element, null if it doesn't exist and isForceCreating is false
      */
-    getDefs:function (isForceCreating) {
+    getDefs(isForceCreating) {
         let svgRoot = this._svgRoot;
         let defs = this._svgRoot.getElementsByTagName('defs');
         if (defs.length === 0) {
@@ -89,7 +86,7 @@ Definable.prototype={
         else {
             return defs[0];
         }
-    },
+    }
 
     /**
      * @method update
@@ -100,7 +97,7 @@ Definable.prototype={
      *                                it may be '#ccc' or {type: 'linear', ...}
      * @param {Function|undefined} onUpdate update callback
      */
-    update:function (element, onUpdate) {
+    update(element, onUpdate) {
         if (!element) {
             return;
         }
@@ -119,7 +116,7 @@ Definable.prototype={
                 element[this._domName] = dom;
             }
         }
-    },
+    }
 
     /**
      * @method addDom
@@ -128,10 +125,10 @@ Definable.prototype={
      *
      * @param {SVGElement} dom DOM to be added to <defs>
      */
-    addDom:function (dom) {
+    addDom(dom) {
         let defs = this.getDefs(true);
         defs.appendChild(dom);
-    },
+    }
 
     /**
      * @method removeDom
@@ -140,13 +137,13 @@ Definable.prototype={
      *
      * @param {SVGElement} element element to remove dom
      */
-    removeDom:function (element) {
+    removeDom(element) {
         let defs = this.getDefs(false);
         if (defs && element[this._domName]) {
             defs.removeChild(element[this._domName]);
             element[this._domName] = null;
         }
-    },
+    }
 
     /**
      * @method getDoms
@@ -155,7 +152,7 @@ Definable.prototype={
      *
      * @return {HTMLDomElement} doms of this defineable elements in <defs>
      */
-    getDoms:function () {
+    getDoms() {
         let defs = this.getDefs(false);
         if (!defs) {
             // No dom when defs is not defined
@@ -172,7 +169,7 @@ Definable.prototype={
         });
     
         return doms;
-    },
+    }
 
     /**
      * @method markAllUnused
@@ -180,13 +177,13 @@ Definable.prototype={
      * Mark DOMs to be unused before painting, and clear unused ones at the end
      * of the painting.
      */
-    markAllUnused:function () {
+    markAllUnused() {
         let doms = this.getDoms();
         let that = this;
         dataUtil.each(doms, function (dom) {
             dom[that._markLabel] = MARK_UNUSED;
         });
-    },
+    }
 
     /**
      * @method markUsed
@@ -195,18 +192,18 @@ Definable.prototype={
      *
      * @param {SVGElement} dom DOM to mark
      */
-    markUsed:function (dom) {
+    markUsed(dom) {
         if (dom) {
             dom[this._markLabel] = MARK_USED;
         }
-    },
+    }
 
     /**
      * @method removeUnused
      * 
      * Remove unused DOMs defined in <defs>
      */
-    removeUnused:function () {
+    removeUnused() {
         let defs = this.getDefs(false);
         if (!defs) {
             // Nothing to remove
@@ -221,7 +218,7 @@ Definable.prototype={
                 defs.removeChild(dom);
             }
         });
-    },
+    }
 
     /**
      * @method getSvgProxy
@@ -231,7 +228,7 @@ Definable.prototype={
      * @param {Displayable} displayable displayable element
      * @return {Path|Image|Text} svg proxy of given element
      */
-    getSvgProxy:function (displayable) {
+    getSvgProxy(displayable) {
         if (displayable instanceof Path) {
             return svgPath;
         }
@@ -244,7 +241,7 @@ Definable.prototype={
         else {
             return svgPath;
         }
-    },
+    }
 
     /**
      * @method getTextSvgElement
@@ -254,9 +251,9 @@ Definable.prototype={
      * @param {Displayable} displayable displayable element
      * @return {SVGElement} SVG element of text
      */
-    getTextSvgElement:function (displayable) {
+    getTextSvgElement(displayable) {
         return displayable.__textSvgEl;
-    },
+    }
 
     /**
      * @method getSvgElement
@@ -266,9 +263,8 @@ Definable.prototype={
      * @param {Displayable} displayable displayable element
      * @return {SVGElement} SVG element
      */
-    getSvgElement:function (displayable) {
+    getSvgElement(displayable) {
         return displayable.__svgEl;
     }
 }
-
 export default Definable;

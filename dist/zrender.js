@@ -18592,31 +18592,28 @@ var arrayDiff$1 = function (oldArr, newArr, callback) {
 let MARK_UNUSED = '0';
 let MARK_USED = '1';
 
-/**
- * @method constructor Definable
- * 
- * Manages elements that can be defined in <defs> in SVG,
- * e.g., gradients, clip path, etc.
- *
- * @param {Number}          zrId      zrender instance id
- * @param {SVGElement}      svgRoot   root of SVG document
- * @param {String|String[]} tagNames  possible tag names
- * @param {String}          markLabel label name to make if the element
- *                                    is used
- */
-function Definable(zrId,svgRoot,tagNames,markLabel,domName) {
-    this._zrId = zrId;
-    this._svgRoot = svgRoot;
-    this._tagNames = typeof tagNames === 'string' ? [tagNames] : tagNames;
-    this._markLabel = markLabel;
-    this._domName = domName || '_dom';
-    this.nextId = 0;
-}
-
-Definable.prototype={
-    constructor:Definable,
-    
-    createElement:createElement,
+class Definable{
+    /**
+     * @method constructor Definable
+     * 
+     * Manages elements that can be defined in <defs> in SVG,
+     * e.g., gradients, clip path, etc.
+     *
+     * @param {Number}          zrId      zrender instance id
+     * @param {SVGElement}      svgRoot   root of SVG document
+     * @param {String|String[]} tagNames  possible tag names
+     * @param {String}          markLabel label name to make if the element
+     *                                    is used
+     */
+    constructor(zrId,svgRoot,tagNames,markLabel,domName) {
+        this._zrId = zrId;
+        this._svgRoot = svgRoot;
+        this._tagNames = typeof tagNames === 'string' ? [tagNames] : tagNames;
+        this._markLabel = markLabel;
+        this._domName = domName || '_dom';
+        this.nextId = 0;
+        this.createElement=createElement;
+    }
 
     /**
      * @method getDefs
@@ -18626,7 +18623,7 @@ Definable.prototype={
      * @param {Boolean} isForceCreating if need to create when not exists
      * @return {SVGDefsElement} SVG <defs> element, null if it doesn't exist and isForceCreating is false
      */
-    getDefs:function (isForceCreating) {
+    getDefs(isForceCreating) {
         let svgRoot = this._svgRoot;
         let defs = this._svgRoot.getElementsByTagName('defs');
         if (defs.length === 0) {
@@ -18660,7 +18657,7 @@ Definable.prototype={
         else {
             return defs[0];
         }
-    },
+    }
 
     /**
      * @method update
@@ -18671,7 +18668,7 @@ Definable.prototype={
      *                                it may be '#ccc' or {type: 'linear', ...}
      * @param {Function|undefined} onUpdate update callback
      */
-    update:function (element, onUpdate) {
+    update(element, onUpdate) {
         if (!element) {
             return;
         }
@@ -18690,7 +18687,7 @@ Definable.prototype={
                 element[this._domName] = dom;
             }
         }
-    },
+    }
 
     /**
      * @method addDom
@@ -18699,10 +18696,10 @@ Definable.prototype={
      *
      * @param {SVGElement} dom DOM to be added to <defs>
      */
-    addDom:function (dom) {
+    addDom(dom) {
         let defs = this.getDefs(true);
         defs.appendChild(dom);
-    },
+    }
 
     /**
      * @method removeDom
@@ -18711,13 +18708,13 @@ Definable.prototype={
      *
      * @param {SVGElement} element element to remove dom
      */
-    removeDom:function (element) {
+    removeDom(element) {
         let defs = this.getDefs(false);
         if (defs && element[this._domName]) {
             defs.removeChild(element[this._domName]);
             element[this._domName] = null;
         }
-    },
+    }
 
     /**
      * @method getDoms
@@ -18726,7 +18723,7 @@ Definable.prototype={
      *
      * @return {HTMLDomElement} doms of this defineable elements in <defs>
      */
-    getDoms:function () {
+    getDoms() {
         let defs = this.getDefs(false);
         if (!defs) {
             // No dom when defs is not defined
@@ -18743,7 +18740,7 @@ Definable.prototype={
         });
     
         return doms;
-    },
+    }
 
     /**
      * @method markAllUnused
@@ -18751,13 +18748,13 @@ Definable.prototype={
      * Mark DOMs to be unused before painting, and clear unused ones at the end
      * of the painting.
      */
-    markAllUnused:function () {
+    markAllUnused() {
         let doms = this.getDoms();
         let that = this;
         each(doms, function (dom) {
             dom[that._markLabel] = MARK_UNUSED;
         });
-    },
+    }
 
     /**
      * @method markUsed
@@ -18766,18 +18763,18 @@ Definable.prototype={
      *
      * @param {SVGElement} dom DOM to mark
      */
-    markUsed:function (dom) {
+    markUsed(dom) {
         if (dom) {
             dom[this._markLabel] = MARK_USED;
         }
-    },
+    }
 
     /**
      * @method removeUnused
      * 
      * Remove unused DOMs defined in <defs>
      */
-    removeUnused:function () {
+    removeUnused() {
         let defs = this.getDefs(false);
         if (!defs) {
             // Nothing to remove
@@ -18792,7 +18789,7 @@ Definable.prototype={
                 defs.removeChild(dom);
             }
         });
-    },
+    }
 
     /**
      * @method getSvgProxy
@@ -18802,7 +18799,7 @@ Definable.prototype={
      * @param {Displayable} displayable displayable element
      * @return {Path|Image|Text} svg proxy of given element
      */
-    getSvgProxy:function (displayable) {
+    getSvgProxy(displayable) {
         if (displayable instanceof Path) {
             return svgPath;
         }
@@ -18815,7 +18812,7 @@ Definable.prototype={
         else {
             return svgPath;
         }
-    },
+    }
 
     /**
      * @method getTextSvgElement
@@ -18825,9 +18822,9 @@ Definable.prototype={
      * @param {Displayable} displayable displayable element
      * @return {SVGElement} SVG element of text
      */
-    getTextSvgElement:function (displayable) {
+    getTextSvgElement(displayable) {
         return displayable.__textSvgEl;
-    },
+    }
 
     /**
      * @method getSvgElement
@@ -18837,10 +18834,10 @@ Definable.prototype={
      * @param {Displayable} displayable displayable element
      * @return {SVGElement} SVG element
      */
-    getSvgElement:function (displayable) {
+    getSvgElement(displayable) {
         return displayable.__svgEl;
     }
-};
+}
 
 /**
  * @class zrender.svg.helper.GradientManager
@@ -18851,25 +18848,22 @@ Definable.prototype={
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
-/**
- * @method constructor GradientManager
- * Manages SVG gradient elements.
- *
- * @param   {Number}     zrId    zrender instance id
- * @param   {SVGElement} svgRoot root of SVG document
- */
-function GradientManager(zrId, svgRoot) {
-    Definable.call(
-        this,
-        zrId,
-        svgRoot,
-        ['linearGradient', 'radialGradient'],
-        '__gradient_in_use__'
-    );
-}
-
-GradientManager.prototype={
-    constructor:GradientManager,
+class GradientManager extends Definable{
+    /**
+     * @method constructor GradientManager
+     * Manages SVG gradient elements.
+     *
+     * @param   {Number}     zrId    zrender instance id
+     * @param   {SVGElement} svgRoot root of SVG document
+     */
+    constructor(zrId, svgRoot){
+        super(
+            zrId,
+            svgRoot,
+            ['linearGradient', 'radialGradient'],
+            '__gradient_in_use__'
+        );    
+    }
 
     /**
      * @method addWithoutUpdate
@@ -18879,7 +18873,7 @@ GradientManager.prototype={
      * @param {SvgElement}  svgElement   SVG element to paint
      * @param {Displayable} displayable  zrender displayable element
      */
-    addWithoutUpdate:function (svgElement,displayable) {
+    addWithoutUpdate(svgElement,displayable) {
         if (displayable && displayable.style) {
             var that = this;
             each(['fill', 'stroke'], function (fillOrStroke) {
@@ -18912,7 +18906,7 @@ GradientManager.prototype={
                 }
             });
         }
-    },
+    }
 
     /**
      * @method add
@@ -18922,7 +18916,7 @@ GradientManager.prototype={
      * @param   {Gradient} gradient zr gradient instance
      * @return {SVGLinearGradientElement | SVGRadialGradientElement} created DOM
      */
-    add:function (gradient) {
+    add(gradient) {
         var dom;
         if (gradient.type === 'linear') {
             dom = this.createElement('linearGradient');
@@ -18943,7 +18937,7 @@ GradientManager.prototype={
         this.updateDom(gradient, dom);
         this.addDom(dom);
         return dom;
-    },
+    }
 
     /**
      * @method update
@@ -18952,7 +18946,7 @@ GradientManager.prototype={
      *
      * @param {Gradient} gradient zr gradient instance
      */
-    update:function (gradient) {
+    update(gradient) {
         var that = this;
         Definable.prototype.update.call(this, gradient, function () {
             var type = gradient.type;
@@ -18968,7 +18962,7 @@ GradientManager.prototype={
                 that.add(gradient);
             }
         });
-    },
+    }
 
     /**
      * @method updateDom
@@ -18979,7 +18973,7 @@ GradientManager.prototype={
      * @param {SVGLinearGradientElement | SVGRadialGradientElement} dom
      *                            DOM to update
      */
-    updateDom:function (gradient, dom) {
+    updateDom(gradient, dom) {
         if (gradient.type === 'linear') {
             dom.setAttribute('x1', gradient.x);
             dom.setAttribute('y1', gradient.y);
@@ -19038,7 +19032,7 @@ GradientManager.prototype={
         // Store dom element in gradient, to avoid creating multiple
         // dom instances for the same gradient element
         gradient._dom = dom;
-    },
+    }
 
     /**
      * @method markUsed
@@ -19047,7 +19041,7 @@ GradientManager.prototype={
      *
      * @param {Displayable} displayable displayable element
      */
-    markUsed:function (displayable) {
+    markUsed(displayable) {
         if (displayable.style) {
             var gradient = displayable.style.fill;
             if (gradient && gradient._dom) {
@@ -19060,9 +19054,7 @@ GradientManager.prototype={
             }
         }
     }
-};
-
-inherits(GradientManager, Definable);
+}
 
 /**
  * @class zrender.svg.helper.ClippathManager
@@ -19072,18 +19064,15 @@ inherits(GradientManager, Definable);
  * @author Zhang Wenli
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
-
-/**
- * @method constructor ClippathManager
- * @param   {Number}     zrId    zrender instance id
- * @param   {SVGElement} svgRoot root of SVG document
- */
-function ClippathManager(zrId, svgRoot) {
-    Definable.call(this, zrId, svgRoot, 'clipPath', '__clippath_in_use__');
-}
-
-ClippathManager.prototype={
-    constructor:ClippathManager,
+class ClippathManager extends Definable{
+    /**
+     * @method constructor ClippathManager
+     * @param   {Number}     zrId    zrender instance id
+     * @param   {SVGElement} svgRoot root of SVG document
+     */
+    constructor(zrId, svgRoot){
+        super(zrId, svgRoot, 'clipPath', '__clippath_in_use__');
+    }
 
     /**
      * @method update
@@ -19091,7 +19080,7 @@ ClippathManager.prototype={
      *
      * @param {Displayable} displayable displayable element
      */
-    update:function (displayable) {
+    update(displayable) {
         let svgEl = this.getSvgElement(displayable);
         if (svgEl) {
             this.updateDom(svgEl, displayable.__clipPaths, false);
@@ -19105,7 +19094,7 @@ ClippathManager.prototype={
         }
     
         this.markUsed(displayable);
-    },
+    }
 
     /**
      * @method updateDom
@@ -19116,7 +19105,7 @@ ClippathManager.prototype={
      * @param {ClipPath[]}  clipPaths clipPaths of parent element
      * @param {boolean}     isText    if parent element is Text
      */
-    updateDom:function (parentEl,clipPaths,isText) {
+    updateDom(parentEl,clipPaths,isText) {
         if (clipPaths && clipPaths.length > 0) {
             // Has clipPath, create <clipPath> with the first clipPath
             let defs = this.getDefs(true);
@@ -19206,7 +19195,7 @@ ClippathManager.prototype={
                 parentEl.setAttribute('clip-path', 'none');
             }
         }
-    },
+    }
     
     /**
      * @method markUsed
@@ -19215,7 +19204,7 @@ ClippathManager.prototype={
      *
      * @param {Displayable} displayable displayable element
      */
-    markUsed:function (displayable) {
+    markUsed(displayable) {
         let that = this;
         // displayable.__clipPaths can only be `null`/`undefined` or an non-empty array.
         if (displayable.__clipPaths) {
@@ -19229,9 +19218,7 @@ ClippathManager.prototype={
             });
         }
     }
-};
-
-inherits(ClippathManager, Definable);
+}
 
 /**
  * @class zrender.svg.helper.ShadowManager
@@ -19242,25 +19229,6 @@ inherits(ClippathManager, Definable);
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
-/**
- * @method constructor ShadowManager
- * 
- * Manages SVG shadow elements.
- *
- * @param   {Number}     zrId    zrender instance id
- * @param   {SVGElement} svgRoot root of SVG document
- */
-function ShadowManager(zrId, svgRoot) {
-    Definable.call(
-        this,
-        zrId,
-        svgRoot,
-        ['filter'],
-        '__filter_in_use__',
-        '_shadowDom'
-    );
-}
-
 function hasShadow(style) {
     // TODO: textBoxShadowBlur is not supported yet
     return style
@@ -19269,8 +19237,24 @@ function hasShadow(style) {
             || style.textShadowOffsetY);
 }
 
-ShadowManager.prototype={
-    constructor:ShadowManager,
+/**
+ * @method constructor ShadowManager
+ * 
+ * Manages SVG shadow elements.
+ *
+ * @param   {Number}     zrId    zrender instance id
+ * @param   {SVGElement} svgRoot root of SVG document
+ */
+class ShadowManager extends Definable{
+    constructor(zrId, svgRoot){
+        super(
+            zrId,
+            svgRoot,
+            ['filter'],
+            '__filter_in_use__',
+            '_shadowDom'
+        );
+    }
 
     /**
      * Create new shadow DOM for fill or stroke if not exist,
@@ -19279,7 +19263,7 @@ ShadowManager.prototype={
      * @param {SvgElement}  svgElement   SVG element to paint
      * @param {Displayable} displayable  zrender displayable element
      */
-    addWithoutUpdate:function (svgElement,displayable) {
+    addWithoutUpdate(svgElement,displayable) {
         if (displayable && hasShadow(displayable.style)) {
             // Create dom in <defs> if not exists
             let dom;
@@ -19300,7 +19284,7 @@ ShadowManager.prototype={
             let id = dom.getAttribute('id');
             svgElement.style.filter = 'url(#' + id + ')';
         }
-    },
+    }
 
     /**
      * Add a new shadow tag in <defs>
@@ -19308,7 +19292,7 @@ ShadowManager.prototype={
      * @param {Displayable} displayable  zrender displayable element
      * @return {SVGFilterElement} created DOM
      */
-    add:function (displayable) {
+    add(displayable) {
         let dom = this.createElement('filter');
         // Set dom id with shadow id, since each shadow instance
         // will have no more than one dom element.
@@ -19321,14 +19305,14 @@ ShadowManager.prototype={
         this.updateDom(displayable, dom);
         this.addDom(dom);
         return dom;
-    },
+    }
 
     /**
      * Update shadow.
      *
      * @param {Displayable} displayable  zrender displayable element
      */
-    update:function (svgElement, displayable) {
+    update(svgElement, displayable) {
         let style = displayable.style;
         if (hasShadow(style)) {
             let that = this;
@@ -19339,17 +19323,17 @@ ShadowManager.prototype={
             // Remove shadow
             this.remove(svgElement, displayable);
         }
-    },
+    }
 
     /**
      * Remove DOM and clear parent filter
      */
-    remove:function (svgElement, displayable) {
+    remove(svgElement, displayable) {
         if (displayable._shadowDomId != null) {
             this.removeDom(svgElement);
             svgElement.style.filter = '';
         }
-    },
+    }
 
     /**
      * Update shadow dom
@@ -19357,7 +19341,7 @@ ShadowManager.prototype={
      * @param {Displayable} displayable  zrender displayable element
      * @param {SVGFilterElement} dom DOM to update
      */
-    updateDom:function (displayable, dom) {
+    updateDom(displayable, dom) {
         let domChild = dom.getElementsByTagName('feDropShadow');
         if (domChild.length === 0) {
             domChild = this.createElement('feDropShadow');
@@ -19410,21 +19394,19 @@ ShadowManager.prototype={
         // Store dom element in shadow, to avoid creating multiple
         // dom instances for the same shadow element
         displayable._shadowDom = dom;
-    },
+    }
 
     /**
      * Mark a single shadow to be used
      *
      * @param {Displayable} displayable displayable element
      */
-    markUsed:function (displayable) {
+    markUsed(displayable) {
         if (displayable._shadowDom) {
             Definable.prototype.markUsed.call(this, displayable._shadowDom);
         }
     }
-};
-
-inherits(ShadowManager, Definable);
+}
 
 /**
  * @class zrender.svg.SVGPainter
