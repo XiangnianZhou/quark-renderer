@@ -16210,6 +16210,10 @@ function parseXML(svg) {
 /**
  * @class zrender.svg.SVGParser
  * 
+ * This is a tool class for parsing SVG xml string to standard shape classes.
+ * 
+ * 这是一个工具类，用来把 SVG 格式的 xml 解析成 graphic 包中定义的标准类。
+ * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
@@ -18087,6 +18091,11 @@ function pathDataToString(path) {
     return str.join(' ');
 }
 
+/**
+ * @class zrender.svg.SVGPath
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ */
 let svgPath = {};
 svgPath.brush = function (el) {
     let style = el.style;
@@ -19433,16 +19442,12 @@ inherits(ShadowManager, Definable);
 function getSvgProxy(el) {
     if (el instanceof Path) {
         return svgPath;
-    }
-    else if (el instanceof ZImage) {
+    }else if (el instanceof ZImage) {
         return svgImage;
-    }
-    else if (el instanceof Text) {
+    }else if (el instanceof Text) {
         return svgText;
     }
-    else {
-        return svgPath;
-    }
+    return svgPath;
 }
 
 function checkParentAvailable(parent, child) {
@@ -19486,12 +19491,11 @@ function getSvgElement(displayable) {
  * @param {Object} opts
  */
 let SVGPainter = function (root, storage, opts, zrId) {
-
     this.root = root;
     this.storage = storage;
     this._opts = opts = extend({}, opts || {});
-
     let svgRoot = createElement('svg');
+    
     svgRoot.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
     svgRoot.setAttribute('version', '1.1');
     svgRoot.setAttribute('baseProfile', 'full');
@@ -20342,6 +20346,11 @@ if (!env$1.canvasSupported) {
     /**
      * @class zrender.vml.Path
      * 
+     * Append brushVML method to standard shape classes inside graphic package, VMLPainter will
+     * use this method instead of standard brush() method.
+     * 
+     * 在标准的 shape 类上扩展一个 brushVML 方法，在 VMLPainter 中会调用此方法，而不是标准的 brush 方法。
+     * 
      * @docauthor 大漠穷秋 damoqiongqiu@126.com
      */
 
@@ -21174,8 +21183,10 @@ function createMethodNotSupport$1(method) {
 
 // Unsupported methods
 [
-    'getLayer', 'insertLayer', 'eachLayer', 'eachBuiltinLayer', 'eachOtherLayer', 'getLayers',
-    'modLayer', 'delLayer', 'clearLayer', 'toDataURL', 'pathToImage'
+    'getLayer', 'insertLayer', 'eachLayer', 
+    'eachBuiltinLayer', 'eachOtherLayer', 'getLayers',
+    'modLayer', 'delLayer', 'clearLayer', 
+    'toDataURL', 'pathToImage'
 ].forEach((name,index)=>{
     VMLPainter.prototype[name] = createMethodNotSupport$1(name);
 });
