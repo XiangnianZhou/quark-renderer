@@ -14020,7 +14020,7 @@ function normalizeRadian(angle) {
     return angle;
 }
 
-var PI2$2 = Math.PI * 2;
+let PI2$2 = Math.PI * 2;
 
 /**
  * 圆弧描边包含判断
@@ -14043,11 +14043,11 @@ function containStroke$4(
     if (lineWidth === 0) {
         return false;
     }
-    var _l = lineWidth;
+    let _l = lineWidth;
 
     x -= cx;
     y -= cy;
-    var d = Math.sqrt(x * x + y * y);
+    let d = Math.sqrt(x * x + y * y);
 
     if ((d - _l > r) || (d + _l < r)) {
         return false;
@@ -14057,7 +14057,7 @@ function containStroke$4(
         return true;
     }
     if (anticlockwise) {
-        var tmp = startAngle;
+        let tmp = startAngle;
         startAngle = normalizeRadian(endAngle);
         endAngle = normalizeRadian(tmp);
     }
@@ -14069,7 +14069,7 @@ function containStroke$4(
         endAngle += PI2$2;
     }
 
-    var angle = Math.atan2(y, x);
+    let angle = Math.atan2(y, x);
     if (angle < 0) {
         angle += PI2$2;
     }
