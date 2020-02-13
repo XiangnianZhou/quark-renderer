@@ -13959,7 +13959,7 @@ function containStroke$2(x0, y0, x1, y1, x2, y2, x3, y3, lineWidth, x, y) {
     if (lineWidth === 0) {
         return false;
     }
-    var _l = lineWidth;
+    let _l = lineWidth;
     // Quick reject
     if (
         (y > y0 + _l && y > y1 + _l && y > y2 + _l && y > y3 + _l)
@@ -13969,7 +13969,7 @@ function containStroke$2(x0, y0, x1, y1, x2, y2, x3, y3, lineWidth, x, y) {
     ) {
         return false;
     }
-    var d = cubicProjectPoint(
+    let d = cubicProjectPoint(
         x0, y0, x1, y1, x2, y2, x3, y3,
         x, y, null
     );
