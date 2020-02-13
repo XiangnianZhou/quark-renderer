@@ -6056,8 +6056,8 @@ class Group extends Element{
     /**
      * @method constructor Group
      */
-    constructor(opts={}){
-        super(opts);
+    constructor(options={}){
+        super(options);
 
         /**
          * @private
@@ -6092,7 +6092,7 @@ class Group extends Element{
          */
         this.silent=false;
 
-        copyOwnProperties(this,opts);
+        copyOwnProperties(this,options);
     }
 
     /**
@@ -9753,6 +9753,31 @@ class Displayable extends Element{
         this.globalScaleRatio=1;
 
         copyOwnProperties(this,this.options,['style']);
+
+        /**
+         * @property {Object} shape 形状
+         */
+        this.shape={};
+    
+        // Extend default shape
+        let defaultShape = this.options.shape;
+        if (defaultShape) {
+            for (let name in defaultShape) {
+                if (!this.shape.hasOwnProperty(name)&&defaultShape.hasOwnProperty(name)){
+                    this.shape[name] = defaultShape[name];
+                }
+            }
+        }
+        this.options.init && this.options.init.call(this, options);
+
+        // FIXME 不能 extend position, rotation 等引用对象
+        // TODO:What's going on here?
+        for (let name in this.options) {
+            // Extending prototype values and methods
+            if (name !== 'style' && name !== 'shape') {
+                Displayable.prototype[name] = this.options[name];
+            }
+        }
     }
 
     beforeBrush(ctx) {}
@@ -9864,10 +9889,10 @@ mixin(Displayable, RectText);
 class ZImage extends Displayable{
     /**
      * @method constructor ZImage
-     * @param {Object} opts
+     * @param {Object} options
      */
-    constructor(opts){
-        super(opts);
+    constructor(options){
+        super(options);
         /**
          * @property {String}
          */
@@ -14530,31 +14555,6 @@ class Path extends Displayable{
          * See `module:zrender/src/graphic/helper/subPixelOptimize`.
          */
         this.subPixelOptimize=false;
-
-        /**
-         * @property {Object} shape 形状
-         */
-        this.shape={};
-    
-        // Extend default shape
-        let defaultShape = this.options.shape;
-        if (defaultShape) {
-            for (let name in defaultShape) {
-                if (!this.shape.hasOwnProperty(name)&&defaultShape.hasOwnProperty(name)){
-                    this.shape[name] = defaultShape[name];
-                }
-            }
-        }
-        this.options.init && this.options.init.call(this, options);
-
-        // FIXME 不能 extend position, rotation 等引用对象
-        // TODO:What's going on here?
-        for (let name in this.options) {
-            // Extending prototype values and methods
-            if (name !== 'style' && name !== 'shape') {
-                Path.prototype[name] = this.options[name];
-            }
-        }
     }
 
     /**

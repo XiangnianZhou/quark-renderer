@@ -362,8 +362,7 @@
                                 width: Math.round(Math.random() * 10),
                                 height: Math.round(Math.random() * 5),
                                 startAngle : Math.round(Math.random() * 30),
-                                endAngle: Math.round(Math.random() * 180) + 30,
-                                image: img
+                                endAngle: Math.round(Math.random() * 180) + 30
                             },
                             style: {
                                 text: shapeType == 'text' ? str.substr(
@@ -373,7 +372,8 @@
                                 x: Math.round(Math.random() * width),
                                 y: Math.round(Math.random() * height),
                                 // fill: randomColor()
-                                fill: 'rgb(' + Math.round(i / n * 255) + ',0,0)'
+                                fill: 'rgb(' + Math.round(i / n * 255) + ',0,0)',
+                                image: img
                             },
                             silent: true
                         }));

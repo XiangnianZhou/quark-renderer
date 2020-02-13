@@ -10,10 +10,10 @@ import * as imageHelper from './utils/image';
 export default class ZImage extends Displayable{
     /**
      * @method constructor ZImage
-     * @param {Object} opts
+     * @param {Object} options
      */
-    constructor(opts){
-        super(opts);
+    constructor(options){
+        super(options);
         /**
          * @property {String}
          */
