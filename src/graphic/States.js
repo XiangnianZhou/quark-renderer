@@ -1,6 +1,6 @@
-import * as dataUtil from '../core/dataStructureUtil';
+import * as dataUtil from '../core/utils/dataStructureUtil';
 import Style from './Style';
-import {copy as vec2Copy} from '../core/vector';
+import {copy as vec2Copy} from '../core/utils/vector';
 
 /**
  * @class zrender.graphic.GraphicStates
