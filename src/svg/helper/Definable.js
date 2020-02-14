@@ -93,8 +93,7 @@ class Definable{
      * 
      * Update DOM element if necessary.
      *
-     * @param {Object|String} element style element. e.g., for gradient,
-     *                                it may be '#ccc' or {type: 'linear', ...}
+     * @param {Object|String} element style element. e.g., for gradient, it may be '#ccc' or {type: 'linear', ...}
      * @param {Function|undefined} onUpdate update callback
      */
     update(element, onUpdate) {
@@ -108,8 +107,7 @@ class Definable{
             if (typeof onUpdate === 'function') {
                 onUpdate(element);
             }
-        }
-        else {
+        }else {
             // No previous dom, create new
             let dom = this.add(element);
             if (dom) {
