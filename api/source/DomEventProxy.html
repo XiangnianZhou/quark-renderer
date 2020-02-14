@@ -28,7 +28,7 @@ var env = require(&quot;../core/env&quot;);
 <span id='zrender-event-DomEventProxy'>/**
 </span> * @class zrender.event.DomEventProxy
  * DomEventProxy 的主要功能是：把原生的 DOM 事件代理（转发）到 ZRender 实例上，
- * 在 ZRenderEventHandler 类中会把事件进一步分发给 canvas 中绘制的图元。
+ * 在 ZRenderEventHandler 类中会把事件进一步分发给 canvas 中绘制的元素。
  * 需要转发的大部分 DOM 事件挂载在 canvas 的外层容器 div 上面，例如：click, dbclick ；
  * 少部分 DOM 事件挂载在 document 对象上，例如：mousemove, mouseout。因为在实现拖拽和
  * 键盘交互的过程中，鼠标指针可能已经脱离了 canvas 所在的区域。

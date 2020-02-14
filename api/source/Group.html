@@ -80,11 +80,11 @@ function (_Element) {
   function Group() {
     var _this;
 
-    var opts = arguments.length &gt; 0 &amp;&amp; arguments[0] !== undefined ? arguments[0] : {};
+    var options = arguments.length &gt; 0 &amp;&amp; arguments[0] !== undefined ? arguments[0] : {};
 
     _classCallCheck(this, Group);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Group).call(this, opts));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Group).call(this, options));
 <span id='zrender-graphic-Group-property-_children'>    /**
 </span>     * @private
      * @property _children
@@ -118,7 +118,7 @@ function (_Element) {
      */
 
     _this.silent = false;
-    classUtil.copyOwnProperties(_assertThisInitialized(_this), opts);
+    classUtil.copyOwnProperties(_assertThisInitialized(_this), options);
     return _this;
   }
 <span id='zrender-graphic-Group-method-children'>  /**

@@ -68,11 +68,6 @@ function (_Element) {
     _classCallCheck(this, Displayable);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Displayable).call(this, options));
-<span id='zrender-graphic-Displayable-property-style'>    /**
-</span>     * @property {Style} style
-     */
-
-    _this.style = new Style(options.style, _assertThisInitialized(_this));
 <span id='zrender-graphic-Displayable-property-__clipPaths'>    /**
 </span>     * @private
      * @property  __clipPaths
@@ -187,33 +182,68 @@ function (_Element) {
      */
 
     _this.globalScaleRatio = 1;
-    classUtil.copyOwnProperties(_assertThisInitialized(_this), _this.options, [&#39;style&#39;]);
+<span id='zrender-graphic-Displayable-property-style'>    /**
+</span>     * @property {Style} style
+     */
+
+    _this.style = new Style(options.style, _assertThisInitialized(_this));
+<span id='zrender-graphic-Displayable-property-shape'>    /**
+</span>     * @property {Object} shape 形状
+     */
+
+    _this.shape = {}; // Extend default shape
+
+    var defaultShape = _this.options.shape;
+
+    if (defaultShape) {
+      for (var name in defaultShape) {
+        if (!_this.shape.hasOwnProperty(name) &amp;&amp; defaultShape.hasOwnProperty(name)) {
+          _this.shape[name] = defaultShape[name];
+        }
+      }
+    } // FIXME 不能 extend position, rotation 等引用对象 TODO:why?
+
+
+    classUtil.copyOwnProperties(_assertThisInitialized(_this), _this.options, [&#39;style&#39;, &#39;shape&#39;]);
     return _this;
   }
+<span id='zrender-graphic-Displayable-method-beforeBrush'>  /**
+</span>   * @protected
+   * @method beforeBrush
+   */
+
 
   _createClass(Displayable, [{
     key: &quot;beforeBrush&quot;,
     value: function beforeBrush(ctx) {}
-<span id='zrender-graphic-Displayable-property-brush'>    /**
-</span>     * @property {Function} brush
-     * Graphic drawing method.
+<span id='zrender-graphic-Displayable-method-brush'>    /**
+</span>     * @protected
+     * @method brush
+     * Callback during brush.
      */
 
   }, {
     key: &quot;brush&quot;,
     value: function brush(ctx, prevEl) {}
+<span id='zrender-graphic-Displayable-method-afterBrush'>    /**
+</span>     * @protected
+     * @method afterBrush
+     */
+
   }, {
     key: &quot;afterBrush&quot;,
     value: function afterBrush(ctx) {}
-<span id='zrender-graphic-Displayable-property-getBoundingRect'>    /**
-</span>     * @property {Function} getBoundingRect
+<span id='zrender-graphic-Displayable-method-getBoundingRect'>    /**
+</span>     * @protected
+     * @method getBoundingRect
      */
 
   }, {
     key: &quot;getBoundingRect&quot;,
     value: function getBoundingRect() {}
 <span id='zrender-graphic-Displayable-method-contain'>    /**
-</span>     * @method contain
+</span>     * @protected
+     * @method contain
      * 
      * If displayable element contain coord x, y, this is an util function for
      * determine where two elements overlap.
@@ -231,10 +261,13 @@ function (_Element) {
       return this.rectContain(x, y);
     }
 <span id='zrender-graphic-Displayable-method-rectContain'>    /**
-</span>     * @method rectContain
+</span>     * @protected
+     * @method rectContain
+     * 
      * If bounding rect of element contain coord x, y.
      * 
      * 用来判断当前图元的外框矩形是否包含坐标点(x,y)。
+     * 
      * @param  {Number} x
      * @param  {Number} y
      * @return {Boolean}

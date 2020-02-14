@@ -2,7 +2,6 @@ import Definable from './Definable';
 import * as dataUtil from '../../core/utils/dataStructureUtil';
 import * as classUtil from '../../core/utils/classUtil';
 import * as matrix from '../../core/utils/matrix';
-
 /**
  * @class zrender.svg.helper.ClippathManager
  * 
@@ -11,18 +10,15 @@ import * as matrix from '../../core/utils/matrix';
  * @author Zhang Wenli
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
-
-/**
- * @method constructor ClippathManager
- * @param   {Number}     zrId    zrender instance id
- * @param   {SVGElement} svgRoot root of SVG document
- */
-function ClippathManager(zrId, svgRoot) {
-    Definable.call(this, zrId, svgRoot, 'clipPath', '__clippath_in_use__');
-}
-
-ClippathManager.prototype={
-    constructor:ClippathManager,
+class ClippathManager extends Definable{
+    /**
+     * @method constructor ClippathManager
+     * @param   {Number}     zrId    zrender instance id
+     * @param   {SVGElement} svgRoot root of SVG document
+     */
+    constructor(zrId, svgRoot){
+        super(zrId, svgRoot, 'clipPath', '__clippath_in_use__');
+    }
 
     /**
      * @method update
@@ -30,7 +26,7 @@ ClippathManager.prototype={
      *
      * @param {Displayable} displayable displayable element
      */
-    update:function (displayable) {
+    update(displayable) {
         let svgEl = this.getSvgElement(displayable);
         if (svgEl) {
             this.updateDom(svgEl, displayable.__clipPaths, false);
@@ -44,7 +40,7 @@ ClippathManager.prototype={
         }
     
         this.markUsed(displayable);
-    },
+    }
 
     /**
      * @method updateDom
@@ -55,7 +51,7 @@ ClippathManager.prototype={
      * @param {ClipPath[]}  clipPaths clipPaths of parent element
      * @param {boolean}     isText    if parent element is Text
      */
-    updateDom:function (parentEl,clipPaths,isText) {
+    updateDom(parentEl,clipPaths,isText) {
         if (clipPaths && clipPaths.length > 0) {
             // Has clipPath, create <clipPath> with the first clipPath
             let defs = this.getDefs(true);
@@ -145,7 +141,7 @@ ClippathManager.prototype={
                 parentEl.setAttribute('clip-path', 'none');
             }
         }
-    },
+    }
     
     /**
      * @method markUsed
@@ -154,7 +150,7 @@ ClippathManager.prototype={
      *
      * @param {Displayable} displayable displayable element
      */
-    markUsed:function (displayable) {
+    markUsed(displayable) {
         let that = this;
         // displayable.__clipPaths can only be `null`/`undefined` or an non-empty array.
         if (displayable.__clipPaths) {
@@ -169,7 +165,5 @@ ClippathManager.prototype={
         }
     }
 }
-
-classUtil.inherits(ClippathManager, Definable);
 
 export default ClippathManager;

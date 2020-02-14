@@ -1,7 +1,7 @@
 import Displayable from './Displayable';
 import * as dataUtil from '../core/utils/dataStructureUtil';
 import * as classUtil from '../core/utils/classUtil';
-import PathProxy from '../core/PathProxy';
+import PathProxy from './PathProxy';
 import * as pathContain from '../core/contain/path';
 import Pattern from './Pattern';
 
@@ -48,30 +48,7 @@ class Path extends Displayable{
          */
         this.subPixelOptimize=false;
 
-        /**
-         * @property {Object} shape 形状
-         */
-        this.shape={};
-    
-        // Extend default shape
-        let defaultShape = this.options.shape;
-        if (defaultShape) {
-            for (let name in defaultShape) {
-                if (!this.shape.hasOwnProperty(name)&&defaultShape.hasOwnProperty(name)){
-                    this.shape[name] = defaultShape[name];
-                }
-            }
-        }
-        this.options.init && this.options.init.call(this, options);
-
-        // FIXME 不能 extend position, rotation 等引用对象
-        // TODO:What's going on here?
-        for (let name in this.options) {
-            // Extending prototype values and methods
-            if (name !== 'style' && name !== 'shape') {
-                Path.prototype[name] = this.options[name];
-            }
-        }
+        classUtil.copyOwnProperties(this,this.options,['style','shape']);
     }
 
     /**
@@ -218,6 +195,7 @@ class Path extends Displayable{
     }
 
     /**
+     * @protected
      * @method getBoundingRect
      */
     getBoundingRect() {
@@ -309,6 +287,7 @@ class Path extends Displayable{
     }
 
     /**
+     * @protected
      * @method dirty
      * @param  {Boolean} dirtyPath
      */

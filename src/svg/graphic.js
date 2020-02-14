@@ -1,5 +1,5 @@
 import {createElement} from './core';
-import PathProxy from '../core/PathProxy';
+import PathProxy from '../graphic/PathProxy';
 import BoundingRect from '../core/BoundingRect';
 import * as matrix from '../core/utils/matrix';
 import * as textContain from '../core/contain/text';
@@ -98,15 +98,13 @@ function bindStyle(svgEl, style, isText, el) {
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 function pathDataToString(path) {
-    let str = [];
-    let data = path.data;
-    let dataLength = path.len();
-    let cmdStr = '';
-    let nData = 0;
-    let x=0;
-    let y=0;
-    for (let i = 0; i < dataLength;) {
-        let cmd = data[i++];
+    var str = [];
+    var data = path.data;
+    var dataLength = path.len();
+    for (var i = 0; i < dataLength;) {
+        var cmd = data[i++];
+        var cmdStr = '';
+        var nData = 0;
         switch (cmd) {
             case CMD.M:
                 cmdStr = 'M';
@@ -125,23 +123,23 @@ function pathDataToString(path) {
                 nData = 6;
                 break;
             case CMD.A:
-                let cx = data[i++];
-                let cy = data[i++];
-                let rx = data[i++];
-                let ry = data[i++];
-                let theta = data[i++];
-                let dTheta = data[i++];
-                let psi = data[i++];
-                let clockwise = data[i++];
+                var cx = data[i++];
+                var cy = data[i++];
+                var rx = data[i++];
+                var ry = data[i++];
+                var theta = data[i++];
+                var dTheta = data[i++];
+                var psi = data[i++];
+                var clockwise = data[i++];
 
-                let dThetaPositive = Math.abs(dTheta);
-                let isCircle = isAroundZero(dThetaPositive - PI2)
+                var dThetaPositive = Math.abs(dTheta);
+                var isCircle = isAroundZero(dThetaPositive - PI2)
                     || (clockwise ? dTheta >= PI2 : -dTheta >= PI2);
 
                 // Mapping to 0~2PI
-                let unifiedTheta = dTheta > 0 ? dTheta % PI2 : (dTheta % PI2 + PI2);
+                var unifiedTheta = dTheta > 0 ? dTheta % PI2 : (dTheta % PI2 + PI2);
 
-                let large = false;
+                var large = false;
                 if (isCircle) {
                     large = true;
                 }
@@ -152,8 +150,8 @@ function pathDataToString(path) {
                     large = (unifiedTheta >= PI) === !!clockwise;
                 }
 
-                let x0 = round4(cx + rx * Math.cos(theta));
-                let y0 = round4(cy + ry * Math.sin(theta));
+                var x0 = round4(cx + rx * Math.cos(theta));
+                var y0 = round4(cy + ry * Math.sin(theta));
 
                 // It will not draw if start point and end point are exactly the same
                 // We need to shift the end point with a small value
@@ -178,8 +176,8 @@ function pathDataToString(path) {
                     }
                 }
 
-                x = round4(cx + rx * Math.cos(theta + dTheta));
-                y = round4(cy + ry * Math.sin(theta + dTheta));
+                var x = round4(cx + rx * Math.cos(theta + dTheta));
+                var y = round4(cy + ry * Math.sin(theta + dTheta));
 
                 // FIXME Ellipse
                 str.push('A', round4(rx), round4(ry),
@@ -189,10 +187,10 @@ function pathDataToString(path) {
                 cmdStr = 'Z';
                 break;
             case CMD.R:
-                x = round4(data[i++]);
-                y = round4(data[i++]);
-                let w = round4(data[i++]);
-                let h = round4(data[i++]);
+                var x = round4(data[i++]);
+                var y = round4(data[i++]);
+                var w = round4(data[i++]);
+                var h = round4(data[i++]);
                 str.push(
                     'M', x, y,
                     'L', x + w, y,
@@ -203,7 +201,7 @@ function pathDataToString(path) {
                 break;
         }
         cmdStr && str.push(cmdStr);
-        for (let j = 0; j < nData; j++) {
+        for (var j = 0; j < nData; j++) {
             // PENDING With scale
             str.push(round4(data[i++]));
         }

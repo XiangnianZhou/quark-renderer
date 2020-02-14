@@ -20,12 +20,7 @@ class Displayable extends Element{
      */
     constructor(options={}){
         super(options);
-        
-        /**
-         * @property {Style} style
-         */
-        this.style = new Style(options.style, this);
-        
+
         /**
          * @private
          * @property  __clipPaths
@@ -141,25 +136,57 @@ class Displayable extends Element{
          */
         this.globalScaleRatio=1;
 
-        classUtil.copyOwnProperties(this,this.options,['style']);
+        /**
+         * @property {Style} style
+         */
+        this.style = new Style(options.style, this);
+
+        /**
+         * @property {Object} shape 形状
+         */
+        this.shape={};
+    
+        // Extend default shape
+        let defaultShape = this.options.shape;
+        if (defaultShape) {
+            for (let name in defaultShape) {
+                if (!this.shape.hasOwnProperty(name)&&defaultShape.hasOwnProperty(name)){
+                    this.shape[name] = defaultShape[name];
+                }
+            }
+        }
+        
+        // FIXME 不能 extend position, rotation 等引用对象 TODO:why?
+        classUtil.copyOwnProperties(this,this.options,['style','shape']);
     }
 
+    /**
+     * @protected
+     * @method beforeBrush
+     */
     beforeBrush(ctx) {}
 
     /**
-     * @property {Function} brush
-     * Graphic drawing method.
+     * @protected
+     * @method brush
+     * Callback during brush.
      */
     brush(ctx, prevEl) {}
 
+    /**
+     * @protected
+     * @method afterBrush
+     */
     afterBrush(ctx) {}
 
     /**
-     * @property {Function} getBoundingRect
+     * @protected
+     * @method getBoundingRect
      */
     getBoundingRect() {}
 
     /**
+     * @protected
      * @method contain
      * 
      * If displayable element contain coord x, y, this is an util function for
@@ -176,10 +203,13 @@ class Displayable extends Element{
     }
 
     /**
+     * @protected
      * @method rectContain
+     * 
      * If bounding rect of element contain coord x, y.
      * 
      * 用来判断当前图元的外框矩形是否包含坐标点(x,y)。
+     * 
      * @param  {Number} x
      * @param  {Number} y
      * @return {Boolean}

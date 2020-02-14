@@ -29,7 +29,7 @@ export default class Heart extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */

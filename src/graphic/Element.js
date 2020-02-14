@@ -11,7 +11,7 @@ import * as classUtil from '../core/utils/classUtil';
  * This is an abstract class, please don't creat an instance directly.
  * 
  * 根类，ZRender 中所有可见的对象都是 Element 的子类。这是一个抽象类，请不要
- * 直接 new 这个类的示例。
+ * 直接 new 这个类的实例。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
@@ -261,6 +261,7 @@ class Element{
     }
 
     /**
+     * @protected
      * @method dirty
      * Mark displayable element dirty and refresh next frame
      */

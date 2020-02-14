@@ -450,7 +450,7 @@ CanvasPainter.prototype = {
         }
 
         //如果在一帧的时间内没有绘制完，在下一帧继续绘制
-        //TODO:这里需要测试一个极限值出来，在 16ms 的时间里面最多能绘制多少个图元。
+        //TODO:这里需要测试一个极限值出来，在 16ms 的时间里面最多能绘制多少个元素。
         if (!finished) {
             let self = this;
             requestAnimationFrame(function () {
@@ -532,8 +532,8 @@ CanvasPainter.prototype = {
                     let dTime = Date.now() - startTime;
                     // Give 15 millisecond to draw.
                     // The rest elements will be drawn in the next frame.
-                    // 这里的时间计算非常重要，如果 15ms 的时间内没有能绘制完所有图元，则跳出，等待下一帧继续绘制
-                    // 但是 15ms 的时间依然是有限的，如果图元的数量非常巨大，例如有 1000 万个，还是会卡顿。
+                    // 这里的时间计算非常重要，如果 15ms 的时间内没有能绘制完所有元素，则跳出，等待下一帧继续绘制
+                    // 但是 15ms 的时间依然是有限的，如果元素的数量非常巨大，例如有 1000 万个，还是会卡顿。
                     // TODO: 这里需要实际 benchmark 一个数值出来。
                     if (dTime > 15) {
                         break;
@@ -569,7 +569,7 @@ CanvasPainter.prototype = {
 
     /**
      * @method _doPaintEl
-     * 绘制一个图元
+     * 绘制一个元素
      * @param {*} el 
      * @param {*} currentLayer 
      * @param {*} forcePaint 

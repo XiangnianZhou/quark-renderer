@@ -21,6 +21,14 @@ import {
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
+/**
+ * @private
+ * @method getSvgProxy
+ * 
+ * ZImage 映射成 svgImage，ZText 映射成 svgText，其它所有都映射成 svgPath。
+ * 
+ * @param {Element} el 
+ */
 function getSvgProxy(el) {
     if (el instanceof Path) {
         return svgPath;
@@ -180,16 +188,12 @@ SVGPainter.prototype = {
                     this.clipPathManager.update(displayable);
 
                     // Update gradient and shadow
-                    if (displayable.style) {
-                        this.gradientManager
-                            .update(displayable.style.fill);
-                        this.gradientManager
-                            .update(displayable.style.stroke);
-
-                        this.shadowManager
-                            .update(svgElement, displayable);
+                    if (displayable.style.fill&&displayable.style.stroke) {
+                        this.gradientManager.update(displayable.style.fill);
+                        this.gradientManager.update(displayable.style.stroke);
                     }
-
+                    
+                    this.shadowManager.update(svgElement, displayable);
                     displayable.__dirty = false;
                 }
                 newVisibleList.push(displayable);
@@ -225,13 +229,9 @@ SVGPainter.prototype = {
                         : prepend(svgRoot, svgElement);
                     if (svgElement) {
                         insertAfter(svgRoot, textSvgElement, svgElement);
-                    }
-                    else if (prevSvgElement) {
-                        insertAfter(
-                            svgRoot, textSvgElement, prevSvgElement
-                        );
-                    }
-                    else {
+                    }else if (prevSvgElement) {
+                        insertAfter(svgRoot, textSvgElement, prevSvgElement);
+                    }else {
                         prepend(svgRoot, textSvgElement);
                     }
                     // Insert text
@@ -240,14 +240,11 @@ SVGPainter.prototype = {
                         || prevSvgElement;
 
                     // zrender.Text only create textSvgElement.
-                    this.gradientManager
-                        .addWithoutUpdate(svgElement || textSvgElement, displayable);
-                    this.shadowManager
-                        .addWithoutUpdate(svgElement || textSvgElement, displayable);
+                    this.gradientManager.addWithoutUpdate(svgElement || textSvgElement, displayable);
+                    this.shadowManager.addWithoutUpdate(svgElement || textSvgElement, displayable);
                     this.clipPathManager.markUsed(displayable);
                 }
-            }
-            else if (!item.removed) {
+            }else if (!item.removed) {
                 for (let k = 0; k < item.count; k++) {
                     let displayable = newVisibleList[item.indices[k]];
                     svgElement = getSvgElement(displayable);
@@ -257,20 +254,17 @@ SVGPainter.prototype = {
                     textSvgElement = getTextSvgElement(displayable);
 
                     this.gradientManager.markUsed(displayable);
-                    this.gradientManager
-                        .addWithoutUpdate(svgElement || textSvgElement, displayable);
+                    this.gradientManager.addWithoutUpdate(svgElement || textSvgElement, displayable);
 
                     this.shadowManager.markUsed(displayable);
-                    this.shadowManager
-                        .addWithoutUpdate(svgElement || textSvgElement, displayable);
+                    this.shadowManager.addWithoutUpdate(svgElement || textSvgElement, displayable);
 
                     this.clipPathManager.markUsed(displayable);
 
                     if (textSvgElement) { // Insert text.
                         insertAfter(svgRoot, textSvgElement, svgElement);
                     }
-                    prevSvgElement = svgElement
-                        || textSvgElement || prevSvgElement;
+                    prevSvgElement = svgElement || textSvgElement || prevSvgElement;
                 }
             }
         }
@@ -289,37 +283,34 @@ SVGPainter.prototype = {
     _getDefs: function (isForceCreating) {
         let svgRoot = this._svgRoot;
         let defs = this._svgRoot.getElementsByTagName('defs');
-        if (defs.length === 0) {
-            // Not exist
-            if (isForceCreating) {
-                let defs = svgRoot.insertBefore(
-                    createElement('defs'), // Create new tag
-                    svgRoot.firstChild // Insert in the front of svg
-                );
-                if (!defs.contains) {
-                    // IE doesn't support contains method
-                    defs.contains = function (el) {
-                        let children = defs.children;
-                        if (!children) {
-                            return false;
-                        }
-                        for (let i = children.length - 1; i >= 0; --i) {
-                            if (children[i] === el) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    };
-                }
-                return defs;
-            }
-            else {
-                return null;
-            }
-        }
-        else {
+        if(defs.length!==0){
             return defs[0];
         }
+        
+        // Not exist
+        if(!isForceCreating){
+            return null;
+        }
+        defs = svgRoot.insertBefore(
+            createElement('defs'), // Create new tag
+            svgRoot.firstChild // Insert in the front of svg
+        );
+        if (!defs.contains) {
+            // IE doesn't support contains method
+            defs.contains = function (el) {
+                let children = defs.children;
+                if (!children) {
+                    return false;
+                }
+                for (let i = children.length - 1; i >= 0; --i) {
+                    if (children[i] === el) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+        }
+        return defs;
     },
 
     /**

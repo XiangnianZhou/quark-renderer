@@ -77,7 +77,7 @@ function pageEventHandler(pageEventName, event) {
 
 /**
  * @method
- * 鼠标是否在指定的图元上方。
+ * 鼠标是否在指定的元素上方。
  * @param {Displayable} displayable 
  * @param {Number} x 
  * @param {Number} y 
@@ -383,7 +383,7 @@ ZRenderEventHandler.prototype = {
         var list = this.storage.getDisplayList();
         var out = {x: x, y: y};
 
-        //NOTE: 在图元数量非常庞大的时候，如 100 万个图元，这里的 for 循环会很慢，基本不能响应鼠标事件。
+        //NOTE: 在元素数量非常庞大的时候，如 100 万个元素，这里的 for 循环会很慢，基本不能响应鼠标事件。
         for (var i = list.length - 1; i >= 0; i--) {
             var hoverCheckResult;
             if (list[i] !== exclude
@@ -466,7 +466,7 @@ dataUtil.each(['click', 'mousedown',
             this._downPoint = null;
         }
 
-        //把事件派发给目标图元
+        //把事件派发给目标元素
         this.dispatchToElement(hovered, name, event);
     };
 });

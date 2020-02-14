@@ -10,25 +10,6 @@ import * as classUtil from '../../core/utils/classUtil';
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
-/**
- * @method constructor ShadowManager
- * 
- * Manages SVG shadow elements.
- *
- * @param   {Number}     zrId    zrender instance id
- * @param   {SVGElement} svgRoot root of SVG document
- */
-function ShadowManager(zrId, svgRoot) {
-    Definable.call(
-        this,
-        zrId,
-        svgRoot,
-        ['filter'],
-        '__filter_in_use__',
-        '_shadowDom'
-    );
-}
-
 function hasShadow(style) {
     // TODO: textBoxShadowBlur is not supported yet
     return style
@@ -37,8 +18,24 @@ function hasShadow(style) {
             || style.textShadowOffsetY);
 }
 
-ShadowManager.prototype={
-    constructor:ShadowManager,
+/**
+ * @method constructor ShadowManager
+ * 
+ * Manages SVG shadow elements.
+ *
+ * @param   {Number}     zrId    zrender instance id
+ * @param   {SVGElement} svgRoot root of SVG document
+ */
+class ShadowManager extends Definable{
+    constructor(zrId, svgRoot){
+        super(
+            zrId,
+            svgRoot,
+            ['filter'],
+            '__filter_in_use__',
+            '_shadowDom'
+        );
+    }
 
     /**
      * Create new shadow DOM for fill or stroke if not exist,
@@ -47,7 +44,7 @@ ShadowManager.prototype={
      * @param {SvgElement}  svgElement   SVG element to paint
      * @param {Displayable} displayable  zrender displayable element
      */
-    addWithoutUpdate:function (svgElement,displayable) {
+    addWithoutUpdate(svgElement,displayable) {
         if (displayable && hasShadow(displayable.style)) {
             // Create dom in <defs> if not exists
             let dom;
@@ -68,7 +65,7 @@ ShadowManager.prototype={
             let id = dom.getAttribute('id');
             svgElement.style.filter = 'url(#' + id + ')';
         }
-    },
+    }
 
     /**
      * Add a new shadow tag in <defs>
@@ -76,7 +73,7 @@ ShadowManager.prototype={
      * @param {Displayable} displayable  zrender displayable element
      * @return {SVGFilterElement} created DOM
      */
-    add:function (displayable) {
+    add(displayable) {
         let dom = this.createElement('filter');
         // Set dom id with shadow id, since each shadow instance
         // will have no more than one dom element.
@@ -89,14 +86,14 @@ ShadowManager.prototype={
         this.updateDom(displayable, dom);
         this.addDom(dom);
         return dom;
-    },
+    }
 
     /**
      * Update shadow.
      *
      * @param {Displayable} displayable  zrender displayable element
      */
-    update:function (svgElement, displayable) {
+    update(svgElement, displayable) {
         let style = displayable.style;
         if (hasShadow(style)) {
             let that = this;
@@ -107,17 +104,17 @@ ShadowManager.prototype={
             // Remove shadow
             this.remove(svgElement, displayable);
         }
-    },
+    }
 
     /**
      * Remove DOM and clear parent filter
      */
-    remove:function (svgElement, displayable) {
+    remove(svgElement, displayable) {
         if (displayable._shadowDomId != null) {
             this.removeDom(svgElement);
             svgElement.style.filter = '';
         }
-    },
+    }
 
     /**
      * Update shadow dom
@@ -125,7 +122,7 @@ ShadowManager.prototype={
      * @param {Displayable} displayable  zrender displayable element
      * @param {SVGFilterElement} dom DOM to update
      */
-    updateDom:function (displayable, dom) {
+    updateDom(displayable, dom) {
         let domChild = dom.getElementsByTagName('feDropShadow');
         if (domChild.length === 0) {
             domChild = this.createElement('feDropShadow');
@@ -178,20 +175,18 @@ ShadowManager.prototype={
         // Store dom element in shadow, to avoid creating multiple
         // dom instances for the same shadow element
         displayable._shadowDom = dom;
-    },
+    }
 
     /**
      * Mark a single shadow to be used
      *
      * @param {Displayable} displayable displayable element
      */
-    markUsed:function (displayable) {
+    markUsed(displayable) {
         if (displayable._shadowDom) {
             Definable.prototype.markUsed.call(this, displayable._shadowDom);
         }
     }
 }
-
-classUtil.inherits(ShadowManager, Definable);
 
 export default ShadowManager;

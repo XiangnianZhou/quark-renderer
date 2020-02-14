@@ -852,18 +852,20 @@ function interpolateString(p0, p1, percent) {
  */
 function interpolateArray(p0, p1, percent, out, arrDim) {
     var len = p0.length;
+    if(!len) return;
     if (arrDim === 1) {
         for (var i = 0; i < len; i++) {
             out[i] = interpolateNumber(p0[i], p1[i], percent);
         }
-    }
-    else {
-        var len2 = len && p0[0].length;
+    }else {
+        var len2 = p0[0].length;
+        if(!len2) return;
         for (var i = 0; i < len; i++) {
+            if(out[i]===undefined){
+                return;
+            }
             for (var j = 0; j < len2; j++) {
-                out[i][j] = interpolateNumber(
-                    p0[i][j], p1[i][j], percent
-                );
+                out[i][j] = interpolateNumber(p0[i][j], p1[i][j], percent);
             }
         }
     }
@@ -2224,7 +2226,7 @@ var stop = isDomLevel2
 
 /**
  * @class zrender.event.MultiDragDrop
- * 支持同时拖拽多个图元，按住 Ctrl 键可以多选。
+ * 支持同时拖拽多个元素，按住 Ctrl 键可以多选。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
@@ -2251,7 +2253,7 @@ class MultiDragDrop{
 
     /**
      * @method getSelectedItems
-     * 获取当前选中的图元
+     * 获取当前选中的元素
      * @return {Map} selectionMap
      */
     getSelectedItems(){
@@ -2541,7 +2543,7 @@ function pageEventHandler(pageEventName, event) {
 
 /**
  * @method
- * 鼠标是否在指定的图元上方。
+ * 鼠标是否在指定的元素上方。
  * @param {Displayable} displayable 
  * @param {Number} x 
  * @param {Number} y 
@@ -2847,7 +2849,7 @@ ZRenderEventHandler.prototype = {
         var list = this.storage.getDisplayList();
         var out = {x: x, y: y};
 
-        //NOTE: 在图元数量非常庞大的时候，如 100 万个图元，这里的 for 循环会很慢，基本不能响应鼠标事件。
+        //NOTE: 在元素数量非常庞大的时候，如 100 万个元素，这里的 for 循环会很慢，基本不能响应鼠标事件。
         for (var i = list.length - 1; i >= 0; i--) {
             var hoverCheckResult;
             if (list[i] !== exclude
@@ -2930,7 +2932,7 @@ each(['click', 'mousedown',
             this._downPoint = null;
         }
 
-        //把事件派发给目标图元
+        //把事件派发给目标元素
         this.dispatchToElement(hovered, name, event);
     };
 });
@@ -3423,7 +3425,7 @@ Transformable.getLocalTransform = function (target, m) {
  * @see http://sole.github.io/tween.js/examples/03_graphs.html
  * @exports zrender/animation/easing
  */
-var easing = {
+let easing = {
     /**
     * @param {Number} k
     * @return {Number}
@@ -3622,9 +3624,9 @@ var easing = {
     * @return {Number}
     */
     elasticIn: function (k) {
-        var s;
-        var a = 0.1;
-        var p = 0.4;
+        let s;
+        let a = 0.1;
+        let p = 0.4;
         if (k === 0) {
             return 0;
         }
@@ -3646,9 +3648,9 @@ var easing = {
     * @return {Number}
     */
     elasticOut: function (k) {
-        var s;
-        var a = 0.1;
-        var p = 0.4;
+        let s;
+        let a = 0.1;
+        let p = 0.4;
         if (k === 0) {
             return 0;
         }
@@ -3670,9 +3672,9 @@ var easing = {
     * @return {Number}
     */
     elasticInOut: function (k) {
-        var s;
-        var a = 0.1;
-        var p = 0.4;
+        let s;
+        let a = 0.1;
+        let p = 0.4;
         if (k === 0) {
             return 0;
         }
@@ -3701,7 +3703,7 @@ var easing = {
     * @return {Number}
     */
     backIn: function (k) {
-        var s = 1.70158;
+        let s = 1.70158;
         return k * k * ((s + 1) * k - s);
     },
     /**
@@ -3709,7 +3711,7 @@ var easing = {
     * @return {Number}
     */
     backOut: function (k) {
-        var s = 1.70158;
+        let s = 1.70158;
         return --k * k * ((s + 1) * k + s) + 1;
     },
     /**
@@ -3717,7 +3719,7 @@ var easing = {
     * @return {Number}
     */
     backInOut: function (k) {
-        var s = 1.70158 * 1.525;
+        let s = 1.70158 * 1.525;
         if ((k *= 2) < 1) {
             return 0.5 * (k * k * ((s + 1) * k - s));
         }
@@ -3764,7 +3766,7 @@ var easing = {
 
 /**
  * @class zrender.animation.Timeline
- * Timeline，时间线，用来计算图元上的某个属性在指定时间点的数值。
+ * Timeline，时间线，用来计算元素上的某个属性在指定时间点的数值。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
@@ -4637,8 +4639,8 @@ var colorUtil = (Object.freeze || Object)({
 /**
  * @class zrender.animation.Track
  * 
- * Track, 轨道，与图元（Element）上可以用来进行动画的属性一一对应。
- * 图元上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，
+ * Track, 轨道，与元素（Element）上可以用来进行动画的属性一一对应。
+ * 元素上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，
  * 每一种属性天然成为一条动画轨道，把这些轨道上的变化过程封装在 Timeline 中。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
@@ -4957,7 +4959,7 @@ class Track{
 /**
  * @class zrender.animation.AnimationProcess
  * 
- * AnimationProcess 表示一次完整的动画过程，每一个图元（Element）中都有一个列表，用来存储本实例上的动画过程。
+ * AnimationProcess 表示一次完整的动画过程，每一个元素（Element）中都有一个列表，用来存储本实例上的动画过程。
  * GlobalAnimationMgr 负责维护和调度所有 AnimationProcess 实例。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
@@ -4965,7 +4967,7 @@ class Track{
 
 /**
  * @method constructor AnimationProcess
- * @param {Object} target 需要进行动画的图元
+ * @param {Object} target 需要进行动画的元素
  * @param {Boolean} loop 动画是否循环播放
  * @param {Function} getter
  * @param {Function} setter
@@ -5212,7 +5214,7 @@ class AnimationProcess{
 /**
  * @class zrender.animation.Animatable
  * 
- * 动画接口类，在 Element 类中 mixin 此类提供的功能，为图元提供动画功能。
+ * 动画接口类，在 Element 类中 mixin 此类提供的功能，为元素提供动画功能。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
@@ -5517,7 +5519,7 @@ function setAttrByPath(el, path, prop, value) {
  * This is an abstract class, please don't creat an instance directly.
  * 
  * 根类，ZRender 中所有可见的对象都是 Element 的子类。这是一个抽象类，请不要
- * 直接 new 这个类的示例。
+ * 直接 new 这个类的实例。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
@@ -5767,6 +5769,7 @@ class Element{
     }
 
     /**
+     * @protected
      * @method dirty
      * Mark displayable element dirty and refresh next frame
      */
@@ -6054,8 +6057,8 @@ class Group extends Element{
     /**
      * @method constructor Group
      */
-    constructor(opts={}){
-        super(opts);
+    constructor(options={}){
+        super(options);
 
         /**
          * @private
@@ -6090,7 +6093,7 @@ class Group extends Element{
          */
         this.silent=false;
 
-        copyOwnProperties(this,opts);
+        copyOwnProperties(this,options);
     }
 
     /**
@@ -7276,8 +7279,8 @@ Storage.prototype = {
 /**
  * 兼容多种运行环境的 requestAnimationFrame 方法。
  * 有两个重要的地方会依赖此方法：
- * - 图元的渲染机制，在 Painter 类中会调用
- * - 图元的动画效果，在 Animation 类中会调用
+ * - 元素的渲染机制，在 Painter 类中会调用
+ * - 元素的动画效果，在 Animation 类中会调用
  * 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
  */
@@ -7336,14 +7339,18 @@ var fixShadow = function (ctx, propName, value) {
     return value;
 };
 
-var ContextCachedBy = {
+let ContextCachedBy = {
     NONE: 0,
     STYLE_BIND: 1,
     PLAIN_TEXT: 2
 };
-
 // Avoid confused with 0/false.
-var WILL_BE_RESTORED = 9;
+let WILL_BE_RESTORED = 9;
+let PI2 = Math.PI * 2;
+let mathSin=Math.sin;
+let mathCos=Math.cos;
+
+let mathMax$1=Math.max;
 
 /**
  * @class zrender.graphic.Style
@@ -8195,16 +8202,15 @@ function isImageReady(image) {
     return image && image.width && image.height;
 }
 
-var textWidthCache = {};
-var textWidthCacheCounter = 0;
+let textWidthCache = {};
+let textWidthCacheCounter = 0;
+let TEXT_CACHE_MAX = 5000;
+let STYLE_REG = /\{([a-zA-Z0-9_]+)\|([^}]*)\}/g;
 
-var TEXT_CACHE_MAX = 5000;
-var STYLE_REG = /\{([a-zA-Z0-9_]+)\|([^}]*)\}/g;
-
-var DEFAULT_FONT$1 = '12px sans-serif';
+let DEFAULT_FONT$1 = '12px sans-serif';
 
 // Avoid assign to an exported variable, for transforming to cjs.
-var methods$1 = {};
+let methods$1 = {};
 
 function $override$1(name, fn) {
     methods$1[name] = fn;
@@ -8218,15 +8224,15 @@ function $override$1(name, fn) {
  */
 function getWidth(text, font) {
     font = font || DEFAULT_FONT$1;
-    var key = text + ':' + font;
+    let key = text + ':' + font;
     if (textWidthCache[key]) {
         return textWidthCache[key];
     }
 
-    var textLines = (text + '').split('\n');
-    var width = 0;
+    let textLines = (text + '').split('\n');
+    let width = 0;
 
-    for (var i = 0, l = textLines.length; i < l; i++) {
+    for (let i = 0, l = textLines.length; i < l; i++) {
         // textContain.measureText may be overrided in SVG or VML
         width = Math.max(measureText(textLines[i], font).width, width);
     }
@@ -8259,24 +8265,24 @@ function getBoundingRect(text, font, textAlign, textVerticalAlign, textPadding, 
 }
 
 function getPlainTextRect(text, font, textAlign, textVerticalAlign, textPadding, textLineHeight, truncate) {
-    var contentBlock = parsePlainText(text, font, textPadding, textLineHeight, truncate);
-    var outerWidth = getWidth(text, font);
+    let contentBlock = parsePlainText(text, font, textPadding, textLineHeight, truncate);
+    let outerWidth = getWidth(text, font);
     if (textPadding) {
         outerWidth += textPadding[1] + textPadding[3];
     }
-    var outerHeight = contentBlock.outerHeight;
+    let outerHeight = contentBlock.outerHeight;
 
-    var x = adjustTextX(0, outerWidth, textAlign);
-    var y = adjustTextY(0, outerHeight, textVerticalAlign);
+    let x = adjustTextX(0, outerWidth, textAlign);
+    let y = adjustTextY(0, outerHeight, textVerticalAlign);
 
-    var rect = new BoundingRect(x, y, outerWidth, outerHeight);
+    let rect = new BoundingRect(x, y, outerWidth, outerHeight);
     rect.lineHeight = contentBlock.lineHeight;
 
     return rect;
 }
 
 function getRichTextRect(text, font, textAlign, textVerticalAlign, textPadding, textLineHeight, rich, truncate) {
-    var contentBlock = parseRichText(text, {
+    let contentBlock = parseRichText(text, {
         rich: rich,
         truncate: truncate,
         font: font,
@@ -8284,11 +8290,11 @@ function getRichTextRect(text, font, textAlign, textVerticalAlign, textPadding, 
         textPadding: textPadding,
         textLineHeight: textLineHeight
     });
-    var outerWidth = contentBlock.outerWidth;
-    var outerHeight = contentBlock.outerHeight;
+    let outerWidth = contentBlock.outerWidth;
+    let outerHeight = contentBlock.outerHeight;
 
-    var x = adjustTextX(0, outerWidth, textAlign);
-    var y = adjustTextY(0, outerHeight, textVerticalAlign);
+    let x = adjustTextX(0, outerWidth, textAlign);
+    let y = adjustTextY(0, outerHeight, textVerticalAlign);
 
     return new BoundingRect(x, y, outerWidth, outerHeight);
 }
@@ -8337,19 +8343,19 @@ function adjustTextY(y, height, textVerticalAlign) {
  * @return {Object} The input `out`. Set: {x, y, textAlign, textVerticalAlign}
  */
 function calculateTextPosition(out, style, rect) {
-    var textPosition = style.textPosition;
-    var distance = style.textDistance;
+    let textPosition = style.textPosition;
+    let distance = style.textDistance;
 
-    var x = rect.x;
-    var y = rect.y;
+    let x = rect.x;
+    let y = rect.y;
     distance = distance || 0;
 
-    var height = rect.height;
-    var width = rect.width;
-    var halfHeight = height / 2;
+    let height = rect.height;
+    let width = rect.width;
+    let halfHeight = height / 2;
 
-    var textAlign = 'left';
-    var textVerticalAlign = 'top';
+    let textAlign = 'left';
+    let textVerticalAlign = 'top';
 
     switch (textPosition) {
         case 'left':
@@ -8465,12 +8471,12 @@ function truncateText(text, containerWidth, font, ellipsis, options) {
         return '';
     }
 
-    var textLines = (text + '').split('\n');
+    let textLines = (text + '').split('\n');
     options = prepareTruncateOptions(containerWidth, font, ellipsis, options);
 
     // FIXME
     // It is not appropriate that every line has '...' when truncate multiple lines.
-    for (var i = 0, len = textLines.length; i < len; i++) {
+    for (let i = 0, len = textLines.length; i < len; i++) {
         textLines[i] = truncateSingleLine(textLines[i], options);
     }
 
@@ -8481,25 +8487,25 @@ function prepareTruncateOptions(containerWidth, font, ellipsis, options) {
     options = extend({}, options);
 
     options.font = font;
-    var ellipsis = retrieve2(ellipsis, '...');
+    ellipsis = retrieve2(ellipsis, '...');
     options.maxIterations = retrieve2(options.maxIterations, 2);
-    var minChar = options.minChar = retrieve2(options.minChar, 0);
+    let minChar = options.minChar = retrieve2(options.minChar, 0);
     // FIXME
     // Other languages?
     options.cnCharWidth = getWidth('国', font);
     // FIXME
     // Consider proportional font?
-    var ascCharWidth = options.ascCharWidth = getWidth('a', font);
+    let ascCharWidth = options.ascCharWidth = getWidth('a', font);
     options.placeholder = retrieve2(options.placeholder, '');
 
     // Example 1: minChar: 3, text: 'asdfzxcv', truncate result: 'asdf', but not: 'a...'.
     // Example 2: minChar: 3, text: '维度', truncate result: '维', but not: '...'.
-    var contentWidth = containerWidth = Math.max(0, containerWidth - 1); // Reserve some gap.
-    for (var i = 0; i < minChar && contentWidth >= ascCharWidth; i++) {
+    let contentWidth = containerWidth = Math.max(0, containerWidth - 1); // Reserve some gap.
+    for (let i = 0; i < minChar && contentWidth >= ascCharWidth; i++) {
         contentWidth -= ascCharWidth;
     }
 
-    var ellipsisWidth = getWidth(ellipsis, font);
+    let ellipsisWidth = getWidth(ellipsis, font);
     if (ellipsisWidth > contentWidth) {
         ellipsis = '';
         ellipsisWidth = 0;
@@ -8516,27 +8522,27 @@ function prepareTruncateOptions(containerWidth, font, ellipsis, options) {
 }
 
 function truncateSingleLine(textLine, options) {
-    var containerWidth = options.containerWidth;
-    var font = options.font;
-    var contentWidth = options.contentWidth;
+    let containerWidth = options.containerWidth;
+    let font = options.font;
+    let contentWidth = options.contentWidth;
 
     if (!containerWidth) {
         return '';
     }
 
-    var lineWidth = getWidth(textLine, font);
+    let lineWidth = getWidth(textLine, font);
 
     if (lineWidth <= containerWidth) {
         return textLine;
     }
 
-    for (var j = 0; ; j++) {
+    for (let j = 0; ; j++) {
         if (lineWidth <= contentWidth || j >= options.maxIterations) {
             textLine += options.ellipsis;
             break;
         }
 
-        var subLength = j === 0
+        let subLength = j === 0
             ? estimateLength(textLine, contentWidth, options.ascCharWidth, options.cnCharWidth)
             : lineWidth > 0
             ? Math.floor(textLine.length * contentWidth / lineWidth)
@@ -8554,10 +8560,10 @@ function truncateSingleLine(textLine, options) {
 }
 
 function estimateLength(text, contentWidth, ascCharWidth, cnCharWidth) {
-    var width = 0;
-    var i = 0;
-    for (var len = text.length; i < len && width < contentWidth; i++) {
-        var charCode = text.charCodeAt(i);
+    let width = 0;
+    let i = 0;
+    for (let len = text.length; i < len && width < contentWidth; i++) {
+        let charCode = text.charCodeAt(i);
         width += (0 <= charCode && charCode <= 127) ? ascCharWidth : cnCharWidth;
     }
     return i;
@@ -8585,7 +8591,7 @@ function measureText(text, font) {
 
 // Avoid assign to an exported variable, for transforming to cjs.
 methods$1.measureText = function (text, font) {
-    var ctx = getContext();
+    let ctx = getContext();
     ctx.font = font || DEFAULT_FONT$1;
     return ctx.measureText(text);
 };
@@ -8604,11 +8610,11 @@ methods$1.measureText = function (text, font) {
 function parsePlainText(text, font, padding, textLineHeight, truncate) {
     text != null && (text += '');
 
-    var lineHeight = retrieve2(textLineHeight, getLineHeight(font));
-    var lines = text ? text.split('\n') : [];
-    var height = lines.length * lineHeight;
-    var outerHeight = height;
-    var canCacheByTextString = true;
+    let lineHeight = retrieve2(textLineHeight, getLineHeight(font));
+    let lines = text ? text.split('\n') : [];
+    let height = lines.length * lineHeight;
+    let outerHeight = height;
+    let canCacheByTextString = true;
 
     if (padding) {
         outerHeight += padding[0] + padding[2];
@@ -8616,14 +8622,14 @@ function parsePlainText(text, font, padding, textLineHeight, truncate) {
 
     if (text && truncate) {
         canCacheByTextString = false;
-        var truncOuterHeight = truncate.outerHeight;
-        var truncOuterWidth = truncate.outerWidth;
+        let truncOuterHeight = truncate.outerHeight;
+        let truncOuterWidth = truncate.outerWidth;
         if (truncOuterHeight != null && outerHeight > truncOuterHeight) {
             text = '';
             lines = [];
         }
         else if (truncOuterWidth != null) {
-            var options = prepareTruncateOptions(
+            let options = prepareTruncateOptions(
                 truncOuterWidth - (padding ? padding[1] + padding[3] : 0),
                 font,
                 truncate.ellipsis,
@@ -8632,7 +8638,7 @@ function parsePlainText(text, font, padding, textLineHeight, truncate) {
 
             // FIXME
             // It is not appropriate that every line has '...' when truncate multiple lines.
-            for (var i = 0, len = lines.length; i < len; i++) {
+            for (let i = 0, len = lines.length; i < len; i++) {
                 lines[i] = truncateSingleLine(lines[i], options);
             }
         }
@@ -8678,17 +8684,17 @@ function parsePlainText(text, font, padding, textLineHeight, truncate) {
  * If styleName is undefined, it is plain text.
  */
 function parseRichText(text, style) {
-    var contentBlock = {lines: [], width: 0, height: 0};
+    let contentBlock = {lines: [], width: 0, height: 0};
 
     text != null && (text += '');
     if (!text) {
         return contentBlock;
     }
 
-    var lastIndex = STYLE_REG.lastIndex = 0;
-    var result;
+    let lastIndex = STYLE_REG.lastIndex = 0;
+    let result;
     while ((result = STYLE_REG.exec(text)) != null) {
-        var matchedIndex = result.index;
+        let matchedIndex = result.index;
         if (matchedIndex > lastIndex) {
             pushTokens(contentBlock, text.substring(lastIndex, matchedIndex));
         }
@@ -8700,39 +8706,39 @@ function parseRichText(text, style) {
         pushTokens(contentBlock, text.substring(lastIndex, text.length));
     }
 
-    var lines = contentBlock.lines;
-    var contentHeight = 0;
-    var contentWidth = 0;
+    let lines = contentBlock.lines;
+    let contentHeight = 0;
+    let contentWidth = 0;
     // For `textWidth: 100%`
-    var pendingList = [];
+    let pendingList = [];
 
-    var stlPadding = style.textPadding;
+    let stlPadding = style.textPadding;
 
-    var truncate = style.truncate;
-    var truncateWidth = truncate && truncate.outerWidth;
-    var truncateHeight = truncate && truncate.outerHeight;
+    let truncate = style.truncate;
+    let truncateWidth = truncate && truncate.outerWidth;
+    let truncateHeight = truncate && truncate.outerHeight;
     if (stlPadding) {
         truncateWidth != null && (truncateWidth -= stlPadding[1] + stlPadding[3]);
         truncateHeight != null && (truncateHeight -= stlPadding[0] + stlPadding[2]);
     }
 
     // Calculate layout info of tokens.
-    for (var i = 0; i < lines.length; i++) {
-        var line = lines[i];
-        var lineHeight = 0;
-        var lineWidth = 0;
+    for (let i = 0; i < lines.length; i++) {
+        let line = lines[i];
+        let lineHeight = 0;
+        let lineWidth = 0;
 
-        for (var j = 0; j < line.tokens.length; j++) {
-            var token = line.tokens[j];
-            var tokenStyle = token.styleName && style.rich[token.styleName] || {};
+        for (let j = 0; j < line.tokens.length; j++) {
+            let token = line.tokens[j];
+            let tokenStyle = token.styleName && style.rich[token.styleName] || {};
             // textPadding should not inherit from style.
-            var textPadding = token.textPadding = tokenStyle.textPadding;
+            let textPadding = token.textPadding = tokenStyle.textPadding;
 
             // textFont has been asigned to font by `normalizeStyle`.
-            var font = token.font = tokenStyle.font || style.font;
+            let font = token.font = tokenStyle.font || style.font;
 
             // textHeight can be used when textVerticalAlign is specified in token.
-            var tokenHeight = token.textHeight = retrieve2(
+            let tokenHeight = token.textHeight = retrieve2(
                 // textHeight should not be inherited, consider it can be specified
                 // as box height of the block.
                 tokenStyle.textHeight, getLineHeight(font)
@@ -8751,8 +8757,8 @@ function parseRichText(text, style) {
             }
 
             token.textWidth = getWidth(token.text, font);
-            var tokenWidth = tokenStyle.textWidth;
-            var tokenWidthNotSpecified = tokenWidth == null || tokenWidth === 'auto';
+            let tokenWidth = tokenStyle.textWidth;
+            let tokenWidthNotSpecified = tokenWidth == null || tokenWidth === 'auto';
 
             // Percent width, can be `100%`, can be used in drawing separate
             // line when box width is needed to be auto.
@@ -8769,8 +8775,8 @@ function parseRichText(text, style) {
 
                     // FIXME: If image is not loaded and textWidth is not specified, calling
                     // `getBoundingRect()` will not get correct result.
-                    var textBackgroundColor = tokenStyle.textBackgroundColor;
-                    var bgImg = textBackgroundColor && textBackgroundColor.image;
+                    let textBackgroundColor = tokenStyle.textBackgroundColor;
+                    let bgImg = textBackgroundColor && textBackgroundColor.image;
 
                     // Use cases:
                     // (1) If image is not loaded, it will be loaded at render phase and call
@@ -8790,10 +8796,10 @@ function parseRichText(text, style) {
                     }
                 }
 
-                var paddingW = textPadding ? textPadding[1] + textPadding[3] : 0;
+                let paddingW = textPadding ? textPadding[1] + textPadding[3] : 0;
                 tokenWidth += paddingW;
 
-                var remianTruncWidth = truncateWidth != null ? truncateWidth - lineWidth : null;
+                let remianTruncWidth = truncateWidth != null ? truncateWidth - lineWidth : null;
 
                 if (remianTruncWidth != null && remianTruncWidth < tokenWidth) {
                     if (!tokenWidthNotSpecified || remianTruncWidth < paddingW) {
@@ -8829,9 +8835,9 @@ function parseRichText(text, style) {
         contentBlock.outerHeight += stlPadding[0] + stlPadding[2];
     }
 
-    for (var i = 0; i < pendingList.length; i++) {
-        var token = pendingList[i];
-        var percentWidth = token.percentWidth;
+    for (let i = 0; i < pendingList.length; i++) {
+        let token = pendingList[i];
+        let percentWidth = token.percentWidth;
         // Should not base on outerWidth, because token can not be placed out of padding.
         token.width = parseInt(percentWidth, 10) / 100 * contentWidth;
     }
@@ -8840,13 +8846,13 @@ function parseRichText(text, style) {
 }
 
 function pushTokens(block, str, styleName) {
-    var isEmptyStr = str === '';
-    var strs = str.split('\n');
-    var lines = block.lines;
+    let isEmptyStr = str === '';
+    let strs = str.split('\n');
+    let lines = block.lines;
 
-    for (var i = 0; i < strs.length; i++) {
-        var text = strs[i];
-        var token = {
+    for (let i = 0; i < strs.length; i++) {
+        let text = strs[i];
+        let token = {
             styleName: styleName,
             text: text,
             isLineHolder: !text && !isEmptyStr
@@ -8854,7 +8860,7 @@ function pushTokens(block, str, styleName) {
 
         // The first token should be appended to the last line.
         if (!i) {
-            var tokens = (lines[lines.length - 1] || (lines[0] = {tokens: []})).tokens;
+            let tokens = (lines[lines.length - 1] || (lines[0] = {tokens: []})).tokens;
 
             // Consider cases:
             // (1) ''.split('\n') => ['', '\n', ''], the '' at the first item
@@ -8863,7 +8869,7 @@ function pushTokens(block, str, styleName) {
             // (3) A redundant '' will affect textAlign in line.
             // (4) tokens with the same tplName should not be merged, because
             // they should be displayed in different box (with border and padding).
-            var tokensLen = tokens.length;
+            let tokensLen = tokens.length;
             (tokensLen === 1 && tokens[0].isLineHolder)
                 ? (tokens[0] = token)
                 // Consider text is '', only insert when it is the "lineHolder" or
@@ -8881,7 +8887,7 @@ function pushTokens(block, str, styleName) {
 function makeFont(style) {
     // FIXME in node-canvas fontWeight is before fontStyle
     // Use `fontSize` `fontFamily` to check whether font properties are defined.
-    var font = (style.fontSize || style.fontFamily) && [
+    let font = (style.fontSize || style.fontFamily) && [
         style.fontStyle,
         style.fontWeight,
         (style.fontSize || 12) + 'px',
@@ -9630,12 +9636,7 @@ class Displayable extends Element{
      */
     constructor(options={}){
         super(options);
-        
-        /**
-         * @property {Style} style
-         */
-        this.style = new Style(options.style, this);
-        
+
         /**
          * @private
          * @property  __clipPaths
@@ -9751,25 +9752,57 @@ class Displayable extends Element{
          */
         this.globalScaleRatio=1;
 
-        copyOwnProperties(this,this.options,['style']);
+        /**
+         * @property {Style} style
+         */
+        this.style = new Style(options.style, this);
+
+        /**
+         * @property {Object} shape 形状
+         */
+        this.shape={};
+    
+        // Extend default shape
+        let defaultShape = this.options.shape;
+        if (defaultShape) {
+            for (let name in defaultShape) {
+                if (!this.shape.hasOwnProperty(name)&&defaultShape.hasOwnProperty(name)){
+                    this.shape[name] = defaultShape[name];
+                }
+            }
+        }
+        
+        // FIXME 不能 extend position, rotation 等引用对象 TODO:why?
+        copyOwnProperties(this,this.options,['style','shape']);
     }
 
+    /**
+     * @protected
+     * @method beforeBrush
+     */
     beforeBrush(ctx) {}
 
     /**
-     * @property {Function} brush
-     * Graphic drawing method.
+     * @protected
+     * @method brush
+     * Callback during brush.
      */
     brush(ctx, prevEl) {}
 
+    /**
+     * @protected
+     * @method afterBrush
+     */
     afterBrush(ctx) {}
 
     /**
-     * @property {Function} getBoundingRect
+     * @protected
+     * @method getBoundingRect
      */
     getBoundingRect() {}
 
     /**
+     * @protected
      * @method contain
      * 
      * If displayable element contain coord x, y, this is an util function for
@@ -9786,10 +9819,13 @@ class Displayable extends Element{
     }
 
     /**
+     * @protected
      * @method rectContain
+     * 
      * If bounding rect of element contain coord x, y.
      * 
      * 用来判断当前图元的外框矩形是否包含坐标点(x,y)。
+     * 
      * @param  {Number} x
      * @param  {Number} y
      * @return {Boolean}
@@ -9863,10 +9899,10 @@ mixin(Displayable, RectText);
 class ZImage extends Displayable{
     /**
      * @method constructor ZImage
-     * @param {Object} opts
+     * @param {Object} options
      */
-    constructor(opts){
-        super(opts);
+    constructor(options){
+        super(options);
         /**
          * @property {String}
          */
@@ -10401,7 +10437,7 @@ CanvasPainter.prototype = {
         }
 
         //如果在一帧的时间内没有绘制完，在下一帧继续绘制
-        //TODO:这里需要测试一个极限值出来，在 16ms 的时间里面最多能绘制多少个图元。
+        //TODO:这里需要测试一个极限值出来，在 16ms 的时间里面最多能绘制多少个元素。
         if (!finished) {
             let self = this;
             requestAnimationFrame(function () {
@@ -10483,8 +10519,8 @@ CanvasPainter.prototype = {
                     let dTime = Date.now() - startTime;
                     // Give 15 millisecond to draw.
                     // The rest elements will be drawn in the next frame.
-                    // 这里的时间计算非常重要，如果 15ms 的时间内没有能绘制完所有图元，则跳出，等待下一帧继续绘制
-                    // 但是 15ms 的时间依然是有限的，如果图元的数量非常巨大，例如有 1000 万个，还是会卡顿。
+                    // 这里的时间计算非常重要，如果 15ms 的时间内没有能绘制完所有元素，则跳出，等待下一帧继续绘制
+                    // 但是 15ms 的时间依然是有限的，如果元素的数量非常巨大，例如有 1000 万个，还是会卡顿。
                     // TODO: 这里需要实际 benchmark 一个数值出来。
                     if (dTime > 15) {
                         break;
@@ -10520,7 +10556,7 @@ CanvasPainter.prototype = {
 
     /**
      * @method _doPaintEl
-     * 绘制一个图元
+     * 绘制一个元素
      * @param {*} el 
      * @param {*} currentLayer 
      * @param {*} forcePaint 
@@ -11231,7 +11267,7 @@ class GlobalAnimationMgr{
     /**
      * @private
      * @method _startLoop
-     * TODO:需要确认在大量节点下的动画性能问题，比如 100 万个图元同时进行动画
+     * TODO:需要确认在大量节点下的动画性能问题，比如 100 万个元素同时进行动画
      * 这里开始利用requestAnimationFrame递归执行
      * 如果这里的 _update() 不能在16ms的时间内完成一轮动画，就会出现明显的卡顿。
      * 按照 W3C 的推荐标准 60fps，这里的 step 函数大约每隔 16ms 被调用一次
@@ -11317,7 +11353,7 @@ mixin(GlobalAnimationMgr, Eventful);
 /**
  * @class zrender.event.DomEventProxy
  * DomEventProxy 的主要功能是：把原生的 DOM 事件代理（转发）到 ZRender 实例上，
- * 在 ZRenderEventHandler 类中会把事件进一步分发给 canvas 中绘制的图元。
+ * 在 ZRenderEventHandler 类中会把事件进一步分发给 canvas 中绘制的元素。
  * 需要转发的大部分 DOM 事件挂载在 canvas 的外层容器 div 上面，例如：click, dbclick ；
  * 少部分 DOM 事件挂载在 document 对象上，例如：mousemove, mouseout。因为在实现拖拽和
  * 键盘交互的过程中，鼠标指针可能已经脱离了 canvas 所在的区域。
@@ -12130,7 +12166,7 @@ ZRender.prototype = {
             triggerRendered = true;
             this.refreshImmediately();
         }
-        if (this._needsRefreshHover) { //只重绘特定的图元，提升性能
+        if (this._needsRefreshHover) { //只重绘特定的元素，提升性能
             triggerRendered = true;
             this.refreshHoverImmediately();
         }
@@ -12141,7 +12177,7 @@ ZRender.prototype = {
     /**
      * @private
      * @method
-     * 与 Hover 相关的6个方法用来处理浮动层，当鼠标悬停在 canvas 中的图元上方时，可能会需要
+     * 与 Hover 相关的6个方法用来处理浮动层，当鼠标悬停在 canvas 中的元素上方时，可能会需要
      * 显示一些浮动的层来展现一些特殊的数据。
      * TODO:这里可能有点问题，Hover 一词可能指的是遮罩层，而不是浮动层，如果确认是遮罩，考虑
      * 把这里的 API 单词重构成 Mask。
@@ -12917,11 +12953,11 @@ function quadraticProjectPoint(
  * @author Yi Shen(https://github.com/pissang)
  */
 
-var mathMin$2 = Math.min;
-var mathMax$2 = Math.max;
-var mathSin$2 = Math.sin;
-var mathCos$2 = Math.cos;
-var PI2 = Math.PI * 2;
+var mathMin$3 = Math.min;
+var mathMax$3 = Math.max;
+var mathSin$3 = Math.sin;
+var mathCos$3 = Math.cos;
+var PI2$1 = Math.PI * 2;
 
 var start = create();
 var end = create();
@@ -12946,10 +12982,10 @@ var extremity = create();
  * @param {Array<Number>} max
  */
 function fromLine(x0, y0, x1, y1, min$$1, max$$1) {
-    min$$1[0] = mathMin$2(x0, x1);
-    min$$1[1] = mathMin$2(y0, y1);
-    max$$1[0] = mathMax$2(x0, x1);
-    max$$1[1] = mathMax$2(y0, y1);
+    min$$1[0] = mathMin$3(x0, x1);
+    min$$1[1] = mathMin$3(y0, y1);
+    max$$1[0] = mathMax$3(x0, x1);
+    max$$1[1] = mathMax$3(y0, y1);
 }
 
 var xDim = [];
@@ -12982,25 +13018,25 @@ function fromCubic(
 
     for (i = 0; i < n; i++) {
         var x = cubicAt$$1(x0, x1, x2, x3, xDim[i]);
-        min$$1[0] = mathMin$2(x, min$$1[0]);
-        max$$1[0] = mathMax$2(x, max$$1[0]);
+        min$$1[0] = mathMin$3(x, min$$1[0]);
+        max$$1[0] = mathMax$3(x, max$$1[0]);
     }
     n = cubicExtrema$$1(y0, y1, y2, y3, yDim);
     for (i = 0; i < n; i++) {
         var y = cubicAt$$1(y0, y1, y2, y3, yDim[i]);
-        min$$1[1] = mathMin$2(y, min$$1[1]);
-        max$$1[1] = mathMax$2(y, max$$1[1]);
+        min$$1[1] = mathMin$3(y, min$$1[1]);
+        max$$1[1] = mathMax$3(y, max$$1[1]);
     }
 
-    min$$1[0] = mathMin$2(x0, min$$1[0]);
-    max$$1[0] = mathMax$2(x0, max$$1[0]);
-    min$$1[0] = mathMin$2(x3, min$$1[0]);
-    max$$1[0] = mathMax$2(x3, max$$1[0]);
+    min$$1[0] = mathMin$3(x0, min$$1[0]);
+    max$$1[0] = mathMax$3(x0, max$$1[0]);
+    min$$1[0] = mathMin$3(x3, min$$1[0]);
+    max$$1[0] = mathMax$3(x3, max$$1[0]);
 
-    min$$1[1] = mathMin$2(y0, min$$1[1]);
-    max$$1[1] = mathMax$2(y0, max$$1[1]);
-    min$$1[1] = mathMin$2(y3, min$$1[1]);
-    max$$1[1] = mathMax$2(y3, max$$1[1]);
+    min$$1[1] = mathMin$3(y0, min$$1[1]);
+    max$$1[1] = mathMax$3(y0, max$$1[1]);
+    min$$1[1] = mathMin$3(y3, min$$1[1]);
+    max$$1[1] = mathMax$3(y3, max$$1[1]);
 }
 
 /**
@@ -13020,21 +13056,21 @@ function fromQuadratic(x0, y0, x1, y1, x2, y2, min$$1, max$$1) {
     var quadraticAt$$1 = quadraticAt;
     // Find extremities, where derivative in x dim or y dim is zero
     var tx =
-        mathMax$2(
-            mathMin$2(quadraticExtremum$$1(x0, x1, x2), 1), 0
+        mathMax$3(
+            mathMin$3(quadraticExtremum$$1(x0, x1, x2), 1), 0
         );
     var ty =
-        mathMax$2(
-            mathMin$2(quadraticExtremum$$1(y0, y1, y2), 1), 0
+        mathMax$3(
+            mathMin$3(quadraticExtremum$$1(y0, y1, y2), 1), 0
         );
 
     var x = quadraticAt$$1(x0, x1, x2, tx);
     var y = quadraticAt$$1(y0, y1, y2, ty);
 
-    min$$1[0] = mathMin$2(x0, x2, x);
-    min$$1[1] = mathMin$2(y0, y2, y);
-    max$$1[0] = mathMax$2(x0, x2, x);
-    max$$1[1] = mathMax$2(y0, y2, y);
+    min$$1[0] = mathMin$3(x0, x2, x);
+    min$$1[1] = mathMin$3(y0, y2, y);
+    max$$1[0] = mathMax$3(x0, x2, x);
+    max$$1[1] = mathMax$3(y0, y2, y);
 }
 
 /**
@@ -13060,7 +13096,7 @@ function fromArc(
     var diff = Math.abs(startAngle - endAngle);
 
 
-    if (diff % PI2 < 1e-4 && diff > 1e-4) {
+    if (diff % PI2$1 < 1e-4 && diff > 1e-4) {
         // Is a circle
         min$$1[0] = x - rx;
         min$$1[1] = y - ry;
@@ -13069,30 +13105,30 @@ function fromArc(
         return;
     }
 
-    start[0] = mathCos$2(startAngle) * rx + x;
-    start[1] = mathSin$2(startAngle) * ry + y;
+    start[0] = mathCos$3(startAngle) * rx + x;
+    start[1] = mathSin$3(startAngle) * ry + y;
 
-    end[0] = mathCos$2(endAngle) * rx + x;
-    end[1] = mathSin$2(endAngle) * ry + y;
+    end[0] = mathCos$3(endAngle) * rx + x;
+    end[1] = mathSin$3(endAngle) * ry + y;
 
     vec2Min(min$$1, start, end);
     vec2Max(max$$1, start, end);
 
     // Thresh to [0, Math.PI * 2]
-    startAngle = startAngle % (PI2);
+    startAngle = startAngle % (PI2$1);
     if (startAngle < 0) {
-        startAngle = startAngle + PI2;
+        startAngle = startAngle + PI2$1;
     }
-    endAngle = endAngle % (PI2);
+    endAngle = endAngle % (PI2$1);
     if (endAngle < 0) {
-        endAngle = endAngle + PI2;
+        endAngle = endAngle + PI2$1;
     }
 
     if (startAngle > endAngle && !anticlockwise) {
-        endAngle += PI2;
+        endAngle += PI2$1;
     }
     else if (startAngle < endAngle && anticlockwise) {
-        startAngle += PI2;
+        startAngle += PI2$1;
     }
     if (anticlockwise) {
         var tmp = endAngle;
@@ -13104,8 +13140,8 @@ function fromArc(
     // var step = (anticlockwise ? -Math.PI : Math.PI) / 2;
     for (var angle = 0; angle < endAngle; angle += Math.PI / 2) {
         if (angle > startAngle) {
-            extremity[0] = mathCos$2(angle) * rx + x;
-            extremity[1] = mathSin$2(angle) * ry + y;
+            extremity[0] = mathCos$3(angle) * rx + x;
+            extremity[1] = mathSin$3(angle) * ry + y;
 
             vec2Min(min$$1, extremity, min$$1);
             vec2Max(max$$1, extremity, max$$1);
@@ -13114,8 +13150,6 @@ function fromArc(
 }
 
 // TODO: getTotalLength, getPointAtLength
-
-/* global Float32Array */
 
 /**
  * @class zrender.core.PathProxy
@@ -13133,36 +13167,24 @@ var CMD = {
     Q: 4,
     A: 5,
     Z: 6,
-    // Rect
     R: 7
 };
-
-// var CMD_MEM_SIZE = {
-//     M: 3,
-//     L: 3,
-//     C: 7,
-//     Q: 5,
-//     A: 9,
-//     R: 5,
-//     Z: 1
-// };
 
 var min$1 = [];
 var max$1 = [];
 var min2 = [];
 var max2 = [];
-var mathMin$1 = Math.min;
-var mathMax$1 = Math.max;
-var mathCos$1 = Math.cos;
-var mathSin$1 = Math.sin;
+var mathMin$2 = Math.min;
+var mathMax$2 = Math.max;
+var mathCos$2 = Math.cos;
+var mathSin$2 = Math.sin;
 var mathSqrt$1 = Math.sqrt;
 var mathAbs = Math.abs;
 
 var hasTypedArray = typeof Float32Array !== 'undefined';
 
 /**
- * @alias module:zrender/core/PathProxy
- * @constructor
+ * @method constructor PathProxy
  */
 var PathProxy = function (notSaveData) {
 
@@ -13221,8 +13243,9 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method beginPath
      * @param  {CanvasRenderingContext2D} ctx
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     beginPath: function (ctx) {
 
@@ -13247,9 +13270,10 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method moveTo
      * @param  {Number} x
      * @param  {Number} y
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     moveTo: function (x, y) {
         this.addData(CMD.M, x, y);
@@ -13269,9 +13293,10 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method lineTo
      * @param  {Number} x
      * @param  {Number} y
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     lineTo: function (x, y) {
         var exceedUnit = mathAbs(x - this._xi) > this._ux
@@ -13294,13 +13319,14 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method bezierCurveTo
      * @param  {Number} x1
      * @param  {Number} y1
      * @param  {Number} x2
      * @param  {Number} y2
      * @param  {Number} x3
      * @param  {Number} y3
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     bezierCurveTo: function (x1, y1, x2, y2, x3, y3) {
         this.addData(CMD.C, x1, y1, x2, y2, x3, y3);
@@ -13314,11 +13340,12 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method quadraticCurveTo
      * @param  {Number} x1
      * @param  {Number} y1
      * @param  {Number} x2
      * @param  {Number} y2
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     quadraticCurveTo: function (x1, y1, x2, y2) {
         this.addData(CMD.Q, x1, y1, x2, y2);
@@ -13332,13 +13359,14 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method arc
      * @param  {Number} cx
      * @param  {Number} cy
      * @param  {Number} r
      * @param  {Number} startAngle
      * @param  {Number} endAngle
      * @param  {boolean} anticlockwise
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     arc: function (cx, cy, r, startAngle, endAngle, anticlockwise) {
         this.addData(
@@ -13346,8 +13374,8 @@ PathProxy.prototype = {
         );
         this._ctx && this._ctx.arc(cx, cy, r, startAngle, endAngle, anticlockwise);
 
-        this._xi = mathCos$1(endAngle) * r + cx;
-        this._yi = mathSin$1(endAngle) * r + cy;
+        this._xi = mathCos$2(endAngle) * r + cx;
+        this._yi = mathSin$2(endAngle) * r + cy;
         return this;
     },
 
@@ -13367,7 +13395,8 @@ PathProxy.prototype = {
     },
 
     /**
-     * @return {module:zrender/core/PathProxy}
+     * @method closePath
+     * @return {PathProxy}
      */
     closePath: function () {
         this.addData(CMD.Z);
@@ -13386,10 +13415,11 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method fill
      * Context 从外部传入，因为有可能是 rebuildPath 完之后再 fill。
      * stroke 同样
      * @param {CanvasRenderingContext2D} ctx
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     fill: function (ctx) {
         ctx && ctx.fill();
@@ -13397,8 +13427,9 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method stroke
      * @param {CanvasRenderingContext2D} ctx
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     stroke: function (ctx) {
         ctx && ctx.stroke();
@@ -13406,9 +13437,10 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method setLineDash
      * 必须在其它绘制命令前调用
      * Must be invoked before all other path drawing methods
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     setLineDash: function (lineDash) {
         if (lineDash instanceof Array) {
@@ -13426,9 +13458,10 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method setLineDashOffset
      * 必须在其它绘制命令前调用
      * Must be invoked before all other path drawing methods
-     * @return {module:zrender/core/PathProxy}
+     * @return {PathProxy}
      */
     setLineDashOffset: function (offset) {
         this._dashOffset = offset;
@@ -13436,7 +13469,7 @@ PathProxy.prototype = {
     },
 
     /**
-     *
+     * @method len
      * @return {boolean}
      */
     len: function () {
@@ -13444,6 +13477,7 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method setData
      * 直接设置 Path 数据
      */
     setData: function (data) {
@@ -13462,8 +13496,9 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method appendPath
      * 添加子路径
-     * @param {module:zrender/core/PathProxy|Array.<module:zrender/core/PathProxy>} path
+     * @param {PathProxy|Array.<PathProxy>} path
      */
     appendPath: function (path) {
         if (!(path instanceof Array)) {
@@ -13488,6 +13523,7 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method addData
      * 填充 Path 数据。
      * 尽量复用而不申明新的数组。大部分图形重绘的指令数据长度都是不变的。
      */
@@ -13569,8 +13605,8 @@ PathProxy.prototype = {
                 continue;
             }
             ctx[idx % 2 ? 'moveTo' : 'lineTo'](
-                dx >= 0 ? mathMin$1(x, x1) : mathMax$1(x, x1),
-                dy >= 0 ? mathMin$1(y, y1) : mathMax$1(y, y1)
+                dx >= 0 ? mathMin$2(x, x1) : mathMax$2(x, x1),
+                dy >= 0 ? mathMin$2(y, y1) : mathMax$2(y, y1)
             );
         }
         // Offset for next lineTo
@@ -13673,7 +13709,8 @@ PathProxy.prototype = {
     },
 
     /**
-     * @return {module:zrender/core/BoundingRect}
+     * @method getBoundingRect
+     * @return {BoundingRect}
      */
     getBoundingRect: function () {
         min$1[0] = min$1[1] = min2[0] = min2[1] = Number.MAX_VALUE;
@@ -13749,8 +13786,8 @@ PathProxy.prototype = {
                     if (i === 1) {
                         // 直接使用 arc 命令
                         // 第一个命令起点还未定义
-                        x0 = mathCos$1(startAngle) * rx + cx;
-                        y0 = mathSin$1(startAngle) * ry + cy;
+                        x0 = mathCos$2(startAngle) * rx + cx;
+                        y0 = mathSin$2(startAngle) * ry + cy;
                     }
 
                     fromArc(
@@ -13758,8 +13795,8 @@ PathProxy.prototype = {
                         anticlockwise, min2, max2
                     );
 
-                    xi = mathCos$1(endAngle) * rx + cx;
-                    yi = mathSin$1(endAngle) * ry + cy;
+                    xi = mathCos$2(endAngle) * rx + cx;
+                    yi = mathSin$2(endAngle) * ry + cy;
                     break;
                 case CMD.R:
                     x0 = xi = data[i++];
@@ -13791,6 +13828,7 @@ PathProxy.prototype = {
     },
 
     /**
+     * @method rebuildPath
      * Rebuild path from current data
      * Rebuild path will not consider javascript implemented line dash.
      * @param {CanvasRenderingContext2D} ctx
@@ -13878,11 +13916,11 @@ PathProxy.prototype = {
                     if (i === 1) {
                         // 直接使用 arc 命令
                         // 第一个命令起点还未定义
-                        x0 = mathCos$1(theta) * rx + cx;
-                        y0 = mathSin$1(theta) * ry + cy;
+                        x0 = mathCos$2(theta) * rx + cx;
+                        y0 = mathSin$2(theta) * ry + cy;
                     }
-                    xi = mathCos$1(endAngle) * rx + cx;
-                    yi = mathSin$1(endAngle) * ry + cy;
+                    xi = mathCos$2(endAngle) * rx + cx;
+                    yi = mathSin$2(endAngle) * ry + cy;
                     break;
                 case CMD.R:
                     x0 = xi = d[i];
@@ -13915,9 +13953,9 @@ function containStroke$1(x0, y0, x1, y1, lineWidth, x, y) {
     if (lineWidth === 0) {
         return false;
     }
-    var _l = lineWidth;
-    var _a = 0;
-    var _b = x0;
+    let _l = lineWidth;
+    let _a = 0;
+    let _b = x0;
     // Quick reject
     if (
         (y > y0 + _l && y > y1 + _l)
@@ -13935,8 +13973,8 @@ function containStroke$1(x0, y0, x1, y1, lineWidth, x, y) {
     else {
         return Math.abs(x - x0) <= _l / 2;
     }
-    var tmp = _a * x - y + _b;
-    var _s = tmp * tmp / (_a * _a + 1);
+    let tmp = _a * x - y + _b;
+    let _s = tmp * tmp / (_a * _a + 1);
     return _s <= _l / 2 * _l / 2;
 }
 
@@ -13959,7 +13997,7 @@ function containStroke$2(x0, y0, x1, y1, x2, y2, x3, y3, lineWidth, x, y) {
     if (lineWidth === 0) {
         return false;
     }
-    var _l = lineWidth;
+    let _l = lineWidth;
     // Quick reject
     if (
         (y > y0 + _l && y > y1 + _l && y > y2 + _l && y > y3 + _l)
@@ -13969,7 +14007,7 @@ function containStroke$2(x0, y0, x1, y1, x2, y2, x3, y3, lineWidth, x, y) {
     ) {
         return false;
     }
-    var d = cubicProjectPoint(
+    let d = cubicProjectPoint(
         x0, y0, x1, y1, x2, y2, x3, y3,
         x, y, null
     );
@@ -13993,7 +14031,7 @@ function containStroke$3(x0, y0, x1, y1, x2, y2, lineWidth, x, y) {
     if (lineWidth === 0) {
         return false;
     }
-    var _l = lineWidth;
+    let _l = lineWidth;
     // Quick reject
     if (
         (y > y0 + _l && y > y1 + _l && y > y2 + _l)
@@ -14003,24 +14041,22 @@ function containStroke$3(x0, y0, x1, y1, x2, y2, lineWidth, x, y) {
     ) {
         return false;
     }
-    var d = quadraticProjectPoint(
+    let d = quadraticProjectPoint(
         x0, y0, x1, y1, x2, y2,
         x, y, null
     );
     return d <= _l / 2;
 }
 
-var PI2$3 = Math.PI * 2;
-
 function normalizeRadian(angle) {
-    angle %= PI2$3;
+    angle %= PI2;
     if (angle < 0) {
-        angle += PI2$3;
+        angle += PI2;
     }
     return angle;
 }
 
-var PI2$2 = Math.PI * 2;
+let PI2$2 = Math.PI * 2;
 
 /**
  * 圆弧描边包含判断
@@ -14043,11 +14079,11 @@ function containStroke$4(
     if (lineWidth === 0) {
         return false;
     }
-    var _l = lineWidth;
+    let _l = lineWidth;
 
     x -= cx;
     y -= cy;
-    var d = Math.sqrt(x * x + y * y);
+    let d = Math.sqrt(x * x + y * y);
 
     if ((d - _l > r) || (d + _l < r)) {
         return false;
@@ -14057,7 +14093,7 @@ function containStroke$4(
         return true;
     }
     if (anticlockwise) {
-        var tmp = startAngle;
+        let tmp = startAngle;
         startAngle = normalizeRadian(endAngle);
         endAngle = normalizeRadian(tmp);
     }
@@ -14069,7 +14105,7 @@ function containStroke$4(
         endAngle += PI2$2;
     }
 
-    var angle = Math.atan2(y, x);
+    let angle = Math.atan2(y, x);
     if (angle < 0) {
         angle += PI2$2;
     }
@@ -14085,35 +14121,33 @@ function windingLine(x0, y0, x1, y1, x, y) {
     if (y1 === y0) {
         return 0;
     }
-    var dir = y1 < y0 ? 1 : -1;
-    var t = (y - y0) / (y1 - y0);
+    let dir = y1 < y0 ? 1 : -1;
+    let t = (y - y0) / (y1 - y0);
 
     // Avoid winding error when intersection point is the connect point of two line of polygon
     if (t === 1 || t === 0) {
         dir = y1 < y0 ? 0.5 : -0.5;
     }
 
-    var x_ = t * (x1 - x0) + x0;
+    let x_ = t * (x1 - x0) + x0;
 
     // If (x, y) on the line, considered as "contain".
     return x_ === x ? Infinity : x_ > x ? dir : 0;
 }
 
-var CMD$1 = PathProxy.CMD;
-var PI2$1 = Math.PI * 2;
-
-var EPSILON$2 = 1e-4;
+let CMD$1 = PathProxy.CMD;
+let EPSILON$2 = 1e-4;
 
 function isAroundEqual(a, b) {
     return Math.abs(a - b) < EPSILON$2;
 }
 
 // 临时数组
-var roots = [-1, -1, -1];
-var extrema = [-1, -1];
+let roots = [-1, -1, -1];
+let extrema = [-1, -1];
 
 function swapExtrema() {
-    var tmp = extrema[0];
+    let tmp = extrema[0];
     extrema[0] = extrema[1];
     extrema[1] = tmp;
 }
@@ -14126,22 +14160,22 @@ function windingCubic(x0, y0, x1, y1, x2, y2, x3, y3, x, y) {
     ) {
         return 0;
     }
-    var nRoots = cubicRootAt(y0, y1, y2, y3, y, roots);
+    let nRoots = cubicRootAt(y0, y1, y2, y3, y, roots);
     if (nRoots === 0) {
         return 0;
     }
     else {
-        var w = 0;
-        var nExtrema = -1;
-        var y0_;
-        var y1_;
-        for (var i = 0; i < nRoots; i++) {
-            var t = roots[i];
+        let w = 0;
+        let nExtrema = -1;
+        let y0_;
+        let y1_;
+        for (let i = 0; i < nRoots; i++) {
+            let t = roots[i];
 
             // Avoid winding error when intersection point is the connect point of two line of polygon
-            var unit = (t === 0 || t === 1) ? 0.5 : 1;
+            let unit = (t === 0 || t === 1) ? 0.5 : 1;
 
-            var x_ = cubicAt(x0, x1, x2, x3, t);
+            let x_ = cubicAt(x0, x1, x2, x3, t);
             if (x_ < x) { // Quick reject
                 continue;
             }
@@ -14189,20 +14223,20 @@ function windingQuadratic(x0, y0, x1, y1, x2, y2, x, y) {
     ) {
         return 0;
     }
-    var nRoots = quadraticRootAt(y0, y1, y2, y, roots);
+    let nRoots = quadraticRootAt(y0, y1, y2, y, roots);
     if (nRoots === 0) {
         return 0;
     }
     else {
-        var t = quadraticExtremum(y0, y1, y2);
+        let t = quadraticExtremum(y0, y1, y2);
         if (t >= 0 && t <= 1) {
-            var w = 0;
-            var y_ = quadraticAt(y0, y1, y2, t);
-            for (var i = 0; i < nRoots; i++) {
+            let w = 0;
+            let y_ = quadraticAt(y0, y1, y2, t);
+            for (let i = 0; i < nRoots; i++) {
                 // Remove one endpoint.
-                var unit = (roots[i] === 0 || roots[i] === 1) ? 0.5 : 1;
+                let unit = (roots[i] === 0 || roots[i] === 1) ? 0.5 : 1;
 
-                var x_ = quadraticAt(x0, x1, x2, roots[i]);
+                let x_ = quadraticAt(x0, x1, x2, roots[i]);
                 if (x_ < x) {   // Quick reject
                     continue;
                 }
@@ -14217,9 +14251,9 @@ function windingQuadratic(x0, y0, x1, y1, x2, y2, x, y) {
         }
         else {
             // Remove one endpoint.
-            var unit = (roots[0] === 0 || roots[0] === 1) ? 0.5 : 1;
+            let unit = (roots[0] === 0 || roots[0] === 1) ? 0.5 : 1;
 
-            var x_ = quadraticAt(x0, x1, x2, roots[0]);
+            let x_ = quadraticAt(x0, x1, x2, roots[0]);
             if (x_ < x) {   // Quick reject
                 return 0;
             }
@@ -14237,19 +14271,19 @@ function windingArc(
     if (y > r || y < -r) {
         return 0;
     }
-    var tmp = Math.sqrt(r * r - y * y);
+    let tmp = Math.sqrt(r * r - y * y);
     roots[0] = -tmp;
     roots[1] = tmp;
 
-    var diff = Math.abs(startAngle - endAngle);
+    let diff = Math.abs(startAngle - endAngle);
     if (diff < 1e-4) {
         return 0;
     }
-    if (diff % PI2$1 < 1e-4) {
+    if (diff % PI2 < 1e-4) {
         // Is a circle
         startAngle = 0;
-        endAngle = PI2$1;
-        var dir = anticlockwise ? 1 : -1;
+        endAngle = PI2;
+        let dir = anticlockwise ? 1 : -1;
         if (x >= roots[0] + cx && x <= roots[1] + cx) {
             return dir;
         }
@@ -14259,7 +14293,7 @@ function windingArc(
     }
 
     if (anticlockwise) {
-        var tmp = startAngle;
+        let tmp = startAngle;
         startAngle = normalizeRadian(endAngle);
         endAngle = normalizeRadian(tmp);
     }
@@ -14268,21 +14302,21 @@ function windingArc(
         endAngle = normalizeRadian(endAngle);
     }
     if (startAngle > endAngle) {
-        endAngle += PI2$1;
+        endAngle += PI2;
     }
 
-    var w = 0;
-    for (var i = 0; i < 2; i++) {
-        var x_ = roots[i];
+    let w = 0;
+    for (let i = 0; i < 2; i++) {
+        let x_ = roots[i];
         if (x_ + cx > x) {
-            var angle = Math.atan2(y, x_);
-            var dir = anticlockwise ? 1 : -1;
+            let angle = Math.atan2(y, x_);
+            let dir = anticlockwise ? 1 : -1;
             if (angle < 0) {
-                angle = PI2$1 + angle;
+                angle = PI2 + angle;
             }
             if (
                 (angle >= startAngle && angle <= endAngle)
-                || (angle + PI2$1 >= startAngle && angle + PI2$1 <= endAngle)
+                || (angle + PI2 >= startAngle && angle + PI2 <= endAngle)
             ) {
                 if (angle > Math.PI / 2 && angle < Math.PI * 1.5) {
                     dir = -dir;
@@ -14295,14 +14329,14 @@ function windingArc(
 }
 
 function containPath(data, lineWidth, isStroke, x, y) {
-    var w = 0;
-    var xi = 0;
-    var yi = 0;
-    var x0 = 0;
-    var y0 = 0;
+    let w = 0;
+    let xi = 0;
+    let yi = 0;
+    let x0 = 0;
+    let y0 = 0;
 
-    for (var i = 0; i < data.length;) {
-        var cmd = data[i++];
+    for (let i = 0; i < data.length;) {
+        let cmd = data[i++];
         // Begin a new subpath
         if (cmd === CMD$1.M && i > 1) {
             // Close previous subpath
@@ -14326,6 +14360,11 @@ function containPath(data, lineWidth, isStroke, x, y) {
             x0 = xi;
             y0 = yi;
         }
+
+        let x1;
+        let y1;
+        let width;
+        let height;
 
         switch (cmd) {
             case CMD$1.M:
@@ -14389,17 +14428,17 @@ function containPath(data, lineWidth, isStroke, x, y) {
                 break;
             case CMD$1.A:
                 // TODO Arc 判断的开销比较大
-                var cx = data[i++];
-                var cy = data[i++];
-                var rx = data[i++];
-                var ry = data[i++];
-                var theta = data[i++];
-                var dTheta = data[i++];
+                let cx = data[i++];
+                let cy = data[i++];
+                let rx = data[i++];
+                let ry = data[i++];
+                let theta = data[i++];
+                let dTheta = data[i++];
                 // TODO Arc 旋转
                 i += 1;
-                var anticlockwise = 1 - data[i++];
-                var x1 = Math.cos(theta) * rx + cx;
-                var y1 = Math.sin(theta) * ry + cy;
+                let anticlockwise = 1 - data[i++];
+                x1 = Math.cos(theta) * rx + cx;
+                y1 = Math.sin(theta) * ry + cy;
                 // 不是直接使用 arc 命令
                 if (i > 1) {
                     w += windingLine(xi, yi, x1, y1, x, y);
@@ -14410,7 +14449,7 @@ function containPath(data, lineWidth, isStroke, x, y) {
                     y0 = y1;
                 }
                 // zr 使用scale来模拟椭圆, 这里也对x做一定的缩放
-                var _x = (x - cx) * ry / rx + cx;
+                let _x = (x - cx) * ry / rx + cx;
                 if (isStroke) {
                     if (containStroke$4(
                         cx, cy, ry, theta, theta + dTheta, anticlockwise,
@@ -14431,10 +14470,10 @@ function containPath(data, lineWidth, isStroke, x, y) {
             case CMD$1.R:
                 x0 = xi = data[i++];
                 y0 = yi = data[i++];
-                var width = data[i++];
-                var height = data[i++];
-                var x1 = x0 + width;
-                var y1 = y0 + height;
+                width = data[i++];
+                height = data[i++];
+                x1 = x0 + width;
+                y1 = y0 + height;
                 if (isStroke) {
                     if (containStroke$1(x0, y0, x1, y0, lineWidth, x, y)
                         || containStroke$1(x1, y0, x1, y1, lineWidth, x, y)
@@ -14529,30 +14568,7 @@ class Path extends Displayable{
          */
         this.subPixelOptimize=false;
 
-        /**
-         * @property {Object} shape 形状
-         */
-        this.shape={};
-    
-        // Extend default shape
-        let defaultShape = this.options.shape;
-        if (defaultShape) {
-            for (let name in defaultShape) {
-                if (!this.shape.hasOwnProperty(name)&&defaultShape.hasOwnProperty(name)){
-                    this.shape[name] = defaultShape[name];
-                }
-            }
-        }
-        this.options.init && this.options.init.call(this, options);
-
-        // FIXME 不能 extend position, rotation 等引用对象
-        // TODO:What's going on here?
-        for (let name in this.options) {
-            // Extending prototype values and methods
-            if (name !== 'style' && name !== 'shape') {
-                Path.prototype[name] = this.options[name];
-            }
-        }
+        copyOwnProperties(this,this.options,['style','shape']);
     }
 
     /**
@@ -14699,6 +14715,7 @@ class Path extends Displayable{
     }
 
     /**
+     * @protected
      * @method getBoundingRect
      */
     getBoundingRect() {
@@ -14790,6 +14807,7 @@ class Path extends Displayable{
     }
 
     /**
+     * @protected
      * @method dirty
      * @param  {Boolean} dirtyPath
      */
@@ -14973,8 +14991,8 @@ var transformPath = function (path, m) {
 // ];
 
 var mathSqrt = Math.sqrt;
-var mathSin = Math.sin;
-var mathCos = Math.cos;
+var mathSin$1 = Math.sin;
+var mathCos$1 = Math.cos;
 var PI = Math.PI;
 
 var vMag = function (v) {
@@ -14990,10 +15008,10 @@ var vAngle = function (u, v) {
 
 function processArc(x1, y1, x2, y2, fa, fs, rx, ry, psiDeg, cmd, path) {
     var psi = psiDeg * (PI / 180.0);
-    var xp = mathCos(psi) * (x1 - x2) / 2.0
-                + mathSin(psi) * (y1 - y2) / 2.0;
-    var yp = -1 * mathSin(psi) * (x1 - x2) / 2.0
-                + mathCos(psi) * (y1 - y2) / 2.0;
+    var xp = mathCos$1(psi) * (x1 - x2) / 2.0
+                + mathSin$1(psi) * (y1 - y2) / 2.0;
+    var yp = -1 * mathSin$1(psi) * (x1 - x2) / 2.0
+                + mathCos$1(psi) * (y1 - y2) / 2.0;
 
     var lambda = (xp * xp) / (rx * rx) + (yp * yp) / (ry * ry);
 
@@ -15013,11 +15031,11 @@ function processArc(x1, y1, x2, y2, fa, fs, rx, ry, psiDeg, cmd, path) {
     var cyp = f * -ry * xp / rx;
 
     var cx = (x1 + x2) / 2.0
-                + mathCos(psi) * cxp
-                - mathSin(psi) * cyp;
+                + mathCos$1(psi) * cxp
+                - mathSin$1(psi) * cyp;
     var cy = (y1 + y2) / 2.0
-            + mathSin(psi) * cxp
-            + mathCos(psi) * cyp;
+            + mathSin$1(psi) * cxp
+            + mathCos$1(psi) * cyp;
 
     var theta = vAngle([ 1, 0 ], [ (xp - cxp) / rx, (yp - cyp) / ry ]);
     var u = [ (xp - cxp) / rx, (yp - cyp) / ry ];
@@ -15505,7 +15523,7 @@ class Circle extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -15670,7 +15688,7 @@ class Rect extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -15734,7 +15752,7 @@ class Droplet extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -15794,7 +15812,7 @@ class Line extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -16072,7 +16090,7 @@ class Polygon extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -16113,7 +16131,7 @@ class Polyline extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -16209,6 +16227,10 @@ function parseXML(svg) {
 
 /**
  * @class zrender.svg.SVGParser
+ * 
+ * This is a tool class for parsing SVG xml string to standard shape classes.
+ * 
+ * 这是一个工具类，用来把 SVG 格式的 xml 解析成 graphic 包中定义的标准类。
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
@@ -16825,12 +16847,19 @@ function makeViewBoxTransform(viewBoxRect, width, height) {
 }
 
 /**
- * @param {string|XMLElement} xml
+ * @static
+ * @method parseSVG
+ * 
+ * Parse SVG DOM to ZRender specific interfaces.
+ * 
+ * 把 SVG DOM 标签解析成 Zrender 所定义的接口。
+ * 
+ * @param {String|XMLElement} xml
  * @param {Object} [opt]
  * @param {Number} [opt.width] Default width if svg width not specified or is a percent value.
  * @param {Number} [opt.height] Default height if svg height not specified or is a percent value.
- * @param {boolean} [opt.ignoreViewBox]
- * @param {boolean} [opt.ignoreRootClip]
+ * @param {Boolean} [opt.ignoreViewBox]
+ * @param {Boolean} [opt.ignoreRootClip]
  * @return {Object} result:
  * {
  *     root: Group, The root of the the result tree of zrender shapes,
@@ -16907,7 +16936,7 @@ class CompoundPath extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17080,7 +17109,7 @@ let defaultConfig$7={
         cy: 0,
         r: 0,
         startAngle: 0,
-        endAngle: Math.PI * 2,
+        endAngle: PI2,
         clockwise: true
     },
     style: {
@@ -17100,20 +17129,20 @@ class Arc extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
     buildPath(ctx, shape) {
         let x = shape.cx;
         let y = shape.cy;
-        let r = Math.max(shape.r, 0);
+        let r = mathMax$1(shape.r, 0);
         let startAngle = shape.startAngle;
         let endAngle = shape.endAngle;
         let clockwise = shape.clockwise;
 
-        let unitX = Math.cos(startAngle);
-        let unitY = Math.sin(startAngle);
+        let unitX = mathCos(startAngle);
+        let unitY = mathSin(startAngle);
 
         ctx.moveTo(unitX * r + x, unitY * r + y);
         ctx.arc(x, y, r, startAngle, endAngle, !clockwise);
@@ -17174,7 +17203,7 @@ class BezierCurve extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17283,7 +17312,7 @@ class Droplet$1 extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17342,7 +17371,7 @@ class Heart extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17396,7 +17425,7 @@ class Isogon extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17454,7 +17483,7 @@ class Ring extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17507,7 +17536,7 @@ class Rose extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17641,7 +17670,7 @@ class Sector extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17706,7 +17735,7 @@ class Star extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17786,7 +17815,7 @@ class Trochold extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17888,7 +17917,7 @@ function createElement(name) {
 let CMD$3 = PathProxy.CMD;
 let NONE = 'none';
 let PI$3 = Math.PI;
-let PI2$4 = Math.PI * 2;
+let PI2$3 = Math.PI * 2;
 let degree = 180 / PI$3;
 let EPSILON$3 = 1e-4;
 
@@ -17974,15 +18003,13 @@ function bindStyle(svgEl, style, isText, el) {
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 function pathDataToString(path) {
-    let str = [];
-    let data = path.data;
-    let dataLength = path.len();
-    let cmdStr = '';
-    let nData = 0;
-    let x=0;
-    let y=0;
-    for (let i = 0; i < dataLength;) {
-        let cmd = data[i++];
+    var str = [];
+    var data = path.data;
+    var dataLength = path.len();
+    for (var i = 0; i < dataLength;) {
+        var cmd = data[i++];
+        var cmdStr = '';
+        var nData = 0;
         switch (cmd) {
             case CMD$3.M:
                 cmdStr = 'M';
@@ -18001,23 +18028,23 @@ function pathDataToString(path) {
                 nData = 6;
                 break;
             case CMD$3.A:
-                let cx = data[i++];
-                let cy = data[i++];
-                let rx = data[i++];
-                let ry = data[i++];
-                let theta = data[i++];
-                let dTheta = data[i++];
-                let psi = data[i++];
-                let clockwise = data[i++];
+                var cx = data[i++];
+                var cy = data[i++];
+                var rx = data[i++];
+                var ry = data[i++];
+                var theta = data[i++];
+                var dTheta = data[i++];
+                var psi = data[i++];
+                var clockwise = data[i++];
 
-                let dThetaPositive = Math.abs(dTheta);
-                let isCircle = isAroundZero$1(dThetaPositive - PI2$4)
-                    || (clockwise ? dTheta >= PI2$4 : -dTheta >= PI2$4);
+                var dThetaPositive = Math.abs(dTheta);
+                var isCircle = isAroundZero$1(dThetaPositive - PI2$3)
+                    || (clockwise ? dTheta >= PI2$3 : -dTheta >= PI2$3);
 
                 // Mapping to 0~2PI
-                let unifiedTheta = dTheta > 0 ? dTheta % PI2$4 : (dTheta % PI2$4 + PI2$4);
+                var unifiedTheta = dTheta > 0 ? dTheta % PI2$3 : (dTheta % PI2$3 + PI2$3);
 
-                let large = false;
+                var large = false;
                 if (isCircle) {
                     large = true;
                 }
@@ -18028,18 +18055,18 @@ function pathDataToString(path) {
                     large = (unifiedTheta >= PI$3) === !!clockwise;
                 }
 
-                let x0 = round4(cx + rx * Math.cos(theta));
-                let y0 = round4(cy + ry * Math.sin(theta));
+                var x0 = round4(cx + rx * Math.cos(theta));
+                var y0 = round4(cy + ry * Math.sin(theta));
 
                 // It will not draw if start point and end point are exactly the same
                 // We need to shift the end point with a small value
                 // FIXME A better way to draw circle ?
                 if (isCircle) {
                     if (clockwise) {
-                        dTheta = PI2$4 - 1e-4;
+                        dTheta = PI2$3 - 1e-4;
                     }
                     else {
-                        dTheta = -PI2$4 + 1e-4;
+                        dTheta = -PI2$3 + 1e-4;
                     }
 
                     large = true;
@@ -18054,8 +18081,8 @@ function pathDataToString(path) {
                     }
                 }
 
-                x = round4(cx + rx * Math.cos(theta + dTheta));
-                y = round4(cy + ry * Math.sin(theta + dTheta));
+                var x = round4(cx + rx * Math.cos(theta + dTheta));
+                var y = round4(cy + ry * Math.sin(theta + dTheta));
 
                 // FIXME Ellipse
                 str.push('A', round4(rx), round4(ry),
@@ -18065,10 +18092,10 @@ function pathDataToString(path) {
                 cmdStr = 'Z';
                 break;
             case CMD$3.R:
-                x = round4(data[i++]);
-                y = round4(data[i++]);
-                let w = round4(data[i++]);
-                let h = round4(data[i++]);
+                var x = round4(data[i++]);
+                var y = round4(data[i++]);
+                var w = round4(data[i++]);
+                var h = round4(data[i++]);
                 str.push(
                     'M', x, y,
                     'L', x + w, y,
@@ -18079,7 +18106,7 @@ function pathDataToString(path) {
                 break;
         }
         cmdStr && str.push(cmdStr);
-        for (let j = 0; j < nData; j++) {
+        for (var j = 0; j < nData; j++) {
             // PENDING With scale
             str.push(round4(data[i++]));
         }
@@ -18087,6 +18114,11 @@ function pathDataToString(path) {
     return str.join(' ');
 }
 
+/**
+ * @class zrender.svg.SVGPath
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ */
 let svgPath = {};
 svgPath.brush = function (el) {
     let style = el.style;
@@ -18582,31 +18614,28 @@ var arrayDiff$1 = function (oldArr, newArr, callback) {
 let MARK_UNUSED = '0';
 let MARK_USED = '1';
 
-/**
- * @method constructor Definable
- * 
- * Manages elements that can be defined in <defs> in SVG,
- * e.g., gradients, clip path, etc.
- *
- * @param {Number}          zrId      zrender instance id
- * @param {SVGElement}      svgRoot   root of SVG document
- * @param {String|String[]} tagNames  possible tag names
- * @param {String}          markLabel label name to make if the element
- *                                    is used
- */
-function Definable(zrId,svgRoot,tagNames,markLabel,domName) {
-    this._zrId = zrId;
-    this._svgRoot = svgRoot;
-    this._tagNames = typeof tagNames === 'string' ? [tagNames] : tagNames;
-    this._markLabel = markLabel;
-    this._domName = domName || '_dom';
-    this.nextId = 0;
-}
-
-Definable.prototype={
-    constructor:Definable,
-    
-    createElement:createElement,
+class Definable{
+    /**
+     * @method constructor Definable
+     * 
+     * Manages elements that can be defined in <defs> in SVG,
+     * e.g., gradients, clip path, etc.
+     *
+     * @param {Number}          zrId      zrender instance id
+     * @param {SVGElement}      svgRoot   root of SVG document
+     * @param {String|String[]} tagNames  possible tag names
+     * @param {String}          markLabel label name to make if the element
+     *                                    is used
+     */
+    constructor(zrId,svgRoot,tagNames,markLabel,domName) {
+        this._zrId = zrId;
+        this._svgRoot = svgRoot;
+        this._tagNames = typeof tagNames === 'string' ? [tagNames] : tagNames;
+        this._markLabel = markLabel;
+        this._domName = domName || '_dom';
+        this.nextId = 0;
+        this.createElement=createElement;
+    }
 
     /**
      * @method getDefs
@@ -18616,7 +18645,7 @@ Definable.prototype={
      * @param {Boolean} isForceCreating if need to create when not exists
      * @return {SVGDefsElement} SVG <defs> element, null if it doesn't exist and isForceCreating is false
      */
-    getDefs:function (isForceCreating) {
+    getDefs(isForceCreating) {
         let svgRoot = this._svgRoot;
         let defs = this._svgRoot.getElementsByTagName('defs');
         if (defs.length === 0) {
@@ -18650,18 +18679,17 @@ Definable.prototype={
         else {
             return defs[0];
         }
-    },
+    }
 
     /**
      * @method update
      * 
      * Update DOM element if necessary.
      *
-     * @param {Object|String} element style element. e.g., for gradient,
-     *                                it may be '#ccc' or {type: 'linear', ...}
+     * @param {Object|String} element style element. e.g., for gradient, it may be '#ccc' or {type: 'linear', ...}
      * @param {Function|undefined} onUpdate update callback
      */
-    update:function (element, onUpdate) {
+    update(element, onUpdate) {
         if (!element) {
             return;
         }
@@ -18672,15 +18700,14 @@ Definable.prototype={
             if (typeof onUpdate === 'function') {
                 onUpdate(element);
             }
-        }
-        else {
+        }else {
             // No previous dom, create new
             let dom = this.add(element);
             if (dom) {
                 element[this._domName] = dom;
             }
         }
-    },
+    }
 
     /**
      * @method addDom
@@ -18689,10 +18716,10 @@ Definable.prototype={
      *
      * @param {SVGElement} dom DOM to be added to <defs>
      */
-    addDom:function (dom) {
+    addDom(dom) {
         let defs = this.getDefs(true);
         defs.appendChild(dom);
-    },
+    }
 
     /**
      * @method removeDom
@@ -18701,13 +18728,13 @@ Definable.prototype={
      *
      * @param {SVGElement} element element to remove dom
      */
-    removeDom:function (element) {
+    removeDom(element) {
         let defs = this.getDefs(false);
         if (defs && element[this._domName]) {
             defs.removeChild(element[this._domName]);
             element[this._domName] = null;
         }
-    },
+    }
 
     /**
      * @method getDoms
@@ -18716,7 +18743,7 @@ Definable.prototype={
      *
      * @return {HTMLDomElement} doms of this defineable elements in <defs>
      */
-    getDoms:function () {
+    getDoms() {
         let defs = this.getDefs(false);
         if (!defs) {
             // No dom when defs is not defined
@@ -18733,7 +18760,7 @@ Definable.prototype={
         });
     
         return doms;
-    },
+    }
 
     /**
      * @method markAllUnused
@@ -18741,13 +18768,13 @@ Definable.prototype={
      * Mark DOMs to be unused before painting, and clear unused ones at the end
      * of the painting.
      */
-    markAllUnused:function () {
+    markAllUnused() {
         let doms = this.getDoms();
         let that = this;
         each(doms, function (dom) {
             dom[that._markLabel] = MARK_UNUSED;
         });
-    },
+    }
 
     /**
      * @method markUsed
@@ -18756,18 +18783,18 @@ Definable.prototype={
      *
      * @param {SVGElement} dom DOM to mark
      */
-    markUsed:function (dom) {
+    markUsed(dom) {
         if (dom) {
             dom[this._markLabel] = MARK_USED;
         }
-    },
+    }
 
     /**
      * @method removeUnused
      * 
      * Remove unused DOMs defined in <defs>
      */
-    removeUnused:function () {
+    removeUnused() {
         let defs = this.getDefs(false);
         if (!defs) {
             // Nothing to remove
@@ -18782,7 +18809,7 @@ Definable.prototype={
                 defs.removeChild(dom);
             }
         });
-    },
+    }
 
     /**
      * @method getSvgProxy
@@ -18792,7 +18819,7 @@ Definable.prototype={
      * @param {Displayable} displayable displayable element
      * @return {Path|Image|Text} svg proxy of given element
      */
-    getSvgProxy:function (displayable) {
+    getSvgProxy(displayable) {
         if (displayable instanceof Path) {
             return svgPath;
         }
@@ -18805,7 +18832,7 @@ Definable.prototype={
         else {
             return svgPath;
         }
-    },
+    }
 
     /**
      * @method getTextSvgElement
@@ -18815,9 +18842,9 @@ Definable.prototype={
      * @param {Displayable} displayable displayable element
      * @return {SVGElement} SVG element of text
      */
-    getTextSvgElement:function (displayable) {
+    getTextSvgElement(displayable) {
         return displayable.__textSvgEl;
-    },
+    }
 
     /**
      * @method getSvgElement
@@ -18827,10 +18854,10 @@ Definable.prototype={
      * @param {Displayable} displayable displayable element
      * @return {SVGElement} SVG element
      */
-    getSvgElement:function (displayable) {
+    getSvgElement(displayable) {
         return displayable.__svgEl;
     }
-};
+}
 
 /**
  * @class zrender.svg.helper.GradientManager
@@ -18841,25 +18868,22 @@ Definable.prototype={
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
-/**
- * @method constructor GradientManager
- * Manages SVG gradient elements.
- *
- * @param   {Number}     zrId    zrender instance id
- * @param   {SVGElement} svgRoot root of SVG document
- */
-function GradientManager(zrId, svgRoot) {
-    Definable.call(
-        this,
-        zrId,
-        svgRoot,
-        ['linearGradient', 'radialGradient'],
-        '__gradient_in_use__'
-    );
-}
-
-GradientManager.prototype={
-    constructor:GradientManager,
+class GradientManager extends Definable{
+    /**
+     * @method constructor GradientManager
+     * Manages SVG gradient elements.
+     *
+     * @param   {Number}     zrId    zrender instance id
+     * @param   {SVGElement} svgRoot root of SVG document
+     */
+    constructor(zrId, svgRoot){
+        super(
+            zrId,
+            svgRoot,
+            ['linearGradient', 'radialGradient'],
+            '__gradient_in_use__'
+        );    
+    }
 
     /**
      * @method addWithoutUpdate
@@ -18869,7 +18893,7 @@ GradientManager.prototype={
      * @param {SvgElement}  svgElement   SVG element to paint
      * @param {Displayable} displayable  zrender displayable element
      */
-    addWithoutUpdate:function (svgElement,displayable) {
+    addWithoutUpdate(svgElement,displayable) {
         if (displayable && displayable.style) {
             var that = this;
             each(['fill', 'stroke'], function (fillOrStroke) {
@@ -18902,7 +18926,7 @@ GradientManager.prototype={
                 }
             });
         }
-    },
+    }
 
     /**
      * @method add
@@ -18912,15 +18936,13 @@ GradientManager.prototype={
      * @param   {Gradient} gradient zr gradient instance
      * @return {SVGLinearGradientElement | SVGRadialGradientElement} created DOM
      */
-    add:function (gradient) {
+    add(gradient) {
         var dom;
         if (gradient.type === 'linear') {
             dom = this.createElement('linearGradient');
-        }
-        else if (gradient.type === 'radial') {
+        }else if (gradient.type === 'radial') {
             dom = this.createElement('radialGradient');
-        }
-        else {
+        }else {
             console.log('Illegal gradient type.');
             return null;
         }
@@ -18931,14 +18953,11 @@ GradientManager.prototype={
         // id should remain the same, and other attributes should be
         // updated.
         gradient.id = gradient.id || this.nextId++;
-        dom.setAttribute('id', 'zr' + this._zrId
-            + '-gradient-' + gradient.id);
-
+        dom.setAttribute('id', `zr${this._zrId}-gradient-${gradient.id}`);
         this.updateDom(gradient, dom);
         this.addDom(dom);
-
         return dom;
-    },
+    }
 
     /**
      * @method update
@@ -18947,7 +18966,7 @@ GradientManager.prototype={
      *
      * @param {Gradient} gradient zr gradient instance
      */
-    update:function (gradient) {
+    update(gradient) {
         var that = this;
         Definable.prototype.update.call(this, gradient, function () {
             var type = gradient.type;
@@ -18957,14 +18976,13 @@ GradientManager.prototype={
             ) {
                 // Gradient type is not changed, update gradient
                 that.updateDom(gradient, gradient._dom);
-            }
-            else {
+            }else {
                 // Remove and re-create if type is changed
                 that.removeDom(gradient);
                 that.add(gradient);
             }
         });
-    },
+    }
 
     /**
      * @method updateDom
@@ -18975,7 +18993,7 @@ GradientManager.prototype={
      * @param {SVGLinearGradientElement | SVGRadialGradientElement} dom
      *                            DOM to update
      */
-    updateDom:function (gradient, dom) {
+    updateDom(gradient, dom) {
         if (gradient.type === 'linear') {
             dom.setAttribute('x1', gradient.x);
             dom.setAttribute('y1', gradient.y);
@@ -19034,7 +19052,7 @@ GradientManager.prototype={
         // Store dom element in gradient, to avoid creating multiple
         // dom instances for the same gradient element
         gradient._dom = dom;
-    },
+    }
 
     /**
      * @method markUsed
@@ -19043,7 +19061,7 @@ GradientManager.prototype={
      *
      * @param {Displayable} displayable displayable element
      */
-    markUsed:function (displayable) {
+    markUsed(displayable) {
         if (displayable.style) {
             var gradient = displayable.style.fill;
             if (gradient && gradient._dom) {
@@ -19056,9 +19074,7 @@ GradientManager.prototype={
             }
         }
     }
-};
-
-inherits(GradientManager, Definable);
+}
 
 /**
  * @class zrender.svg.helper.ClippathManager
@@ -19068,18 +19084,15 @@ inherits(GradientManager, Definable);
  * @author Zhang Wenli
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
-
-/**
- * @method constructor ClippathManager
- * @param   {Number}     zrId    zrender instance id
- * @param   {SVGElement} svgRoot root of SVG document
- */
-function ClippathManager(zrId, svgRoot) {
-    Definable.call(this, zrId, svgRoot, 'clipPath', '__clippath_in_use__');
-}
-
-ClippathManager.prototype={
-    constructor:ClippathManager,
+class ClippathManager extends Definable{
+    /**
+     * @method constructor ClippathManager
+     * @param   {Number}     zrId    zrender instance id
+     * @param   {SVGElement} svgRoot root of SVG document
+     */
+    constructor(zrId, svgRoot){
+        super(zrId, svgRoot, 'clipPath', '__clippath_in_use__');
+    }
 
     /**
      * @method update
@@ -19087,7 +19100,7 @@ ClippathManager.prototype={
      *
      * @param {Displayable} displayable displayable element
      */
-    update:function (displayable) {
+    update(displayable) {
         let svgEl = this.getSvgElement(displayable);
         if (svgEl) {
             this.updateDom(svgEl, displayable.__clipPaths, false);
@@ -19101,7 +19114,7 @@ ClippathManager.prototype={
         }
     
         this.markUsed(displayable);
-    },
+    }
 
     /**
      * @method updateDom
@@ -19112,7 +19125,7 @@ ClippathManager.prototype={
      * @param {ClipPath[]}  clipPaths clipPaths of parent element
      * @param {boolean}     isText    if parent element is Text
      */
-    updateDom:function (parentEl,clipPaths,isText) {
+    updateDom(parentEl,clipPaths,isText) {
         if (clipPaths && clipPaths.length > 0) {
             // Has clipPath, create <clipPath> with the first clipPath
             let defs = this.getDefs(true);
@@ -19202,7 +19215,7 @@ ClippathManager.prototype={
                 parentEl.setAttribute('clip-path', 'none');
             }
         }
-    },
+    }
     
     /**
      * @method markUsed
@@ -19211,7 +19224,7 @@ ClippathManager.prototype={
      *
      * @param {Displayable} displayable displayable element
      */
-    markUsed:function (displayable) {
+    markUsed(displayable) {
         let that = this;
         // displayable.__clipPaths can only be `null`/`undefined` or an non-empty array.
         if (displayable.__clipPaths) {
@@ -19225,9 +19238,7 @@ ClippathManager.prototype={
             });
         }
     }
-};
-
-inherits(ClippathManager, Definable);
+}
 
 /**
  * @class zrender.svg.helper.ShadowManager
@@ -19238,25 +19249,6 @@ inherits(ClippathManager, Definable);
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
-/**
- * @method constructor ShadowManager
- * 
- * Manages SVG shadow elements.
- *
- * @param   {Number}     zrId    zrender instance id
- * @param   {SVGElement} svgRoot root of SVG document
- */
-function ShadowManager(zrId, svgRoot) {
-    Definable.call(
-        this,
-        zrId,
-        svgRoot,
-        ['filter'],
-        '__filter_in_use__',
-        '_shadowDom'
-    );
-}
-
 function hasShadow(style) {
     // TODO: textBoxShadowBlur is not supported yet
     return style
@@ -19265,8 +19257,24 @@ function hasShadow(style) {
             || style.textShadowOffsetY);
 }
 
-ShadowManager.prototype={
-    constructor:ShadowManager,
+/**
+ * @method constructor ShadowManager
+ * 
+ * Manages SVG shadow elements.
+ *
+ * @param   {Number}     zrId    zrender instance id
+ * @param   {SVGElement} svgRoot root of SVG document
+ */
+class ShadowManager extends Definable{
+    constructor(zrId, svgRoot){
+        super(
+            zrId,
+            svgRoot,
+            ['filter'],
+            '__filter_in_use__',
+            '_shadowDom'
+        );
+    }
 
     /**
      * Create new shadow DOM for fill or stroke if not exist,
@@ -19275,7 +19283,7 @@ ShadowManager.prototype={
      * @param {SvgElement}  svgElement   SVG element to paint
      * @param {Displayable} displayable  zrender displayable element
      */
-    addWithoutUpdate:function (svgElement,displayable) {
+    addWithoutUpdate(svgElement,displayable) {
         if (displayable && hasShadow(displayable.style)) {
             // Create dom in <defs> if not exists
             let dom;
@@ -19296,7 +19304,7 @@ ShadowManager.prototype={
             let id = dom.getAttribute('id');
             svgElement.style.filter = 'url(#' + id + ')';
         }
-    },
+    }
 
     /**
      * Add a new shadow tag in <defs>
@@ -19304,7 +19312,7 @@ ShadowManager.prototype={
      * @param {Displayable} displayable  zrender displayable element
      * @return {SVGFilterElement} created DOM
      */
-    add:function (displayable) {
+    add(displayable) {
         let dom = this.createElement('filter');
         // Set dom id with shadow id, since each shadow instance
         // will have no more than one dom element.
@@ -19317,14 +19325,14 @@ ShadowManager.prototype={
         this.updateDom(displayable, dom);
         this.addDom(dom);
         return dom;
-    },
+    }
 
     /**
      * Update shadow.
      *
      * @param {Displayable} displayable  zrender displayable element
      */
-    update:function (svgElement, displayable) {
+    update(svgElement, displayable) {
         let style = displayable.style;
         if (hasShadow(style)) {
             let that = this;
@@ -19335,17 +19343,17 @@ ShadowManager.prototype={
             // Remove shadow
             this.remove(svgElement, displayable);
         }
-    },
+    }
 
     /**
      * Remove DOM and clear parent filter
      */
-    remove:function (svgElement, displayable) {
+    remove(svgElement, displayable) {
         if (displayable._shadowDomId != null) {
             this.removeDom(svgElement);
             svgElement.style.filter = '';
         }
-    },
+    }
 
     /**
      * Update shadow dom
@@ -19353,7 +19361,7 @@ ShadowManager.prototype={
      * @param {Displayable} displayable  zrender displayable element
      * @param {SVGFilterElement} dom DOM to update
      */
-    updateDom:function (displayable, dom) {
+    updateDom(displayable, dom) {
         let domChild = dom.getElementsByTagName('feDropShadow');
         if (domChild.length === 0) {
             domChild = this.createElement('feDropShadow');
@@ -19406,21 +19414,19 @@ ShadowManager.prototype={
         // Store dom element in shadow, to avoid creating multiple
         // dom instances for the same shadow element
         displayable._shadowDom = dom;
-    },
+    }
 
     /**
      * Mark a single shadow to be used
      *
      * @param {Displayable} displayable displayable element
      */
-    markUsed:function (displayable) {
+    markUsed(displayable) {
         if (displayable._shadowDom) {
             Definable.prototype.markUsed.call(this, displayable._shadowDom);
         }
     }
-};
-
-inherits(ShadowManager, Definable);
+}
 
 /**
  * @class zrender.svg.SVGPainter
@@ -19430,19 +19436,23 @@ inherits(ShadowManager, Definable);
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
+/**
+ * @private
+ * @method getSvgProxy
+ * 
+ * ZImage 映射成 svgImage，ZText 映射成 svgText，其它所有都映射成 svgPath。
+ * 
+ * @param {Element} el 
+ */
 function getSvgProxy(el) {
     if (el instanceof Path) {
         return svgPath;
-    }
-    else if (el instanceof ZImage) {
+    }else if (el instanceof ZImage) {
         return svgImage;
-    }
-    else if (el instanceof Text) {
+    }else if (el instanceof Text) {
         return svgText;
     }
-    else {
-        return svgPath;
-    }
+    return svgPath;
 }
 
 function checkParentAvailable(parent, child) {
@@ -19486,12 +19496,11 @@ function getSvgElement(displayable) {
  * @param {Object} opts
  */
 let SVGPainter = function (root, storage, opts, zrId) {
-
     this.root = root;
     this.storage = storage;
     this._opts = opts = extend({}, opts || {});
-
     let svgRoot = createElement('svg');
+    
     svgRoot.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
     svgRoot.setAttribute('version', '1.1');
     svgRoot.setAttribute('baseProfile', 'full');
@@ -19594,16 +19603,12 @@ SVGPainter.prototype = {
                     this.clipPathManager.update(displayable);
 
                     // Update gradient and shadow
-                    if (displayable.style) {
-                        this.gradientManager
-                            .update(displayable.style.fill);
-                        this.gradientManager
-                            .update(displayable.style.stroke);
-
-                        this.shadowManager
-                            .update(svgElement, displayable);
+                    if (displayable.style.fill&&displayable.style.stroke) {
+                        this.gradientManager.update(displayable.style.fill);
+                        this.gradientManager.update(displayable.style.stroke);
                     }
-
+                    
+                    this.shadowManager.update(svgElement, displayable);
                     displayable.__dirty = false;
                 }
                 newVisibleList.push(displayable);
@@ -19639,13 +19644,9 @@ SVGPainter.prototype = {
                         : prepend(svgRoot, svgElement);
                     if (svgElement) {
                         insertAfter(svgRoot, textSvgElement, svgElement);
-                    }
-                    else if (prevSvgElement) {
-                        insertAfter(
-                            svgRoot, textSvgElement, prevSvgElement
-                        );
-                    }
-                    else {
+                    }else if (prevSvgElement) {
+                        insertAfter(svgRoot, textSvgElement, prevSvgElement);
+                    }else {
                         prepend(svgRoot, textSvgElement);
                     }
                     // Insert text
@@ -19654,14 +19655,11 @@ SVGPainter.prototype = {
                         || prevSvgElement;
 
                     // zrender.Text only create textSvgElement.
-                    this.gradientManager
-                        .addWithoutUpdate(svgElement || textSvgElement, displayable);
-                    this.shadowManager
-                        .addWithoutUpdate(svgElement || textSvgElement, displayable);
+                    this.gradientManager.addWithoutUpdate(svgElement || textSvgElement, displayable);
+                    this.shadowManager.addWithoutUpdate(svgElement || textSvgElement, displayable);
                     this.clipPathManager.markUsed(displayable);
                 }
-            }
-            else if (!item.removed) {
+            }else if (!item.removed) {
                 for (let k = 0; k < item.count; k++) {
                     let displayable = newVisibleList[item.indices[k]];
                     svgElement = getSvgElement(displayable);
@@ -19671,20 +19669,17 @@ SVGPainter.prototype = {
                     textSvgElement = getTextSvgElement(displayable);
 
                     this.gradientManager.markUsed(displayable);
-                    this.gradientManager
-                        .addWithoutUpdate(svgElement || textSvgElement, displayable);
+                    this.gradientManager.addWithoutUpdate(svgElement || textSvgElement, displayable);
 
                     this.shadowManager.markUsed(displayable);
-                    this.shadowManager
-                        .addWithoutUpdate(svgElement || textSvgElement, displayable);
+                    this.shadowManager.addWithoutUpdate(svgElement || textSvgElement, displayable);
 
                     this.clipPathManager.markUsed(displayable);
 
                     if (textSvgElement) { // Insert text.
                         insertAfter(svgRoot, textSvgElement, svgElement);
                     }
-                    prevSvgElement = svgElement
-                        || textSvgElement || prevSvgElement;
+                    prevSvgElement = svgElement || textSvgElement || prevSvgElement;
                 }
             }
         }
@@ -19703,37 +19698,34 @@ SVGPainter.prototype = {
     _getDefs: function (isForceCreating) {
         let svgRoot = this._svgRoot;
         let defs = this._svgRoot.getElementsByTagName('defs');
-        if (defs.length === 0) {
-            // Not exist
-            if (isForceCreating) {
-                let defs = svgRoot.insertBefore(
-                    createElement('defs'), // Create new tag
-                    svgRoot.firstChild // Insert in the front of svg
-                );
-                if (!defs.contains) {
-                    // IE doesn't support contains method
-                    defs.contains = function (el) {
-                        let children = defs.children;
-                        if (!children) {
-                            return false;
-                        }
-                        for (let i = children.length - 1; i >= 0; --i) {
-                            if (children[i] === el) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    };
-                }
-                return defs;
-            }
-            else {
-                return null;
-            }
-        }
-        else {
+        if(defs.length!==0){
             return defs[0];
         }
+        
+        // Not exist
+        if(!isForceCreating){
+            return null;
+        }
+        defs = svgRoot.insertBefore(
+            createElement('defs'), // Create new tag
+            svgRoot.firstChild // Insert in the front of svg
+        );
+        if (!defs.contains) {
+            // IE doesn't support contains method
+            defs.contains = function (el) {
+                let children = defs.children;
+                if (!children) {
+                    return false;
+                }
+                for (let i = children.length - 1; i >= 0; --i) {
+                    if (children[i] === el) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+        }
+        return defs;
     },
 
     /**
@@ -19911,7 +19903,7 @@ let sqrt = Math.sqrt;
 let abs = Math.abs;
 let cos$4 = Math.cos;
 let sin$4 = Math.sin;
-let mathMax$3 = Math.max;
+let mathMax$4 = Math.max;
 
 if (!env$1.canvasSupported) {
 
@@ -20035,7 +20027,7 @@ if (!env$1.canvasSupported) {
 
                     width /= scale$$1[0] * Z;
                     height /= scale$$1[1] * Z;
-                    let dimension = mathMax$3(width, height);
+                    let dimension = mathMax$4(width, height);
                     shift = 2 * 0 / dimension;
                     expansion = 2 * fill.r / dimension - shift;
                 }
@@ -20342,6 +20334,11 @@ if (!env$1.canvasSupported) {
     /**
      * @class zrender.vml.Path
      * 
+     * Append brushVML method to standard shape classes inside graphic package, VMLPainter will
+     * use this method instead of standard brush() method.
+     * 
+     * 在标准的 shape 类上扩展一个 brushVML 方法，在 VMLPainter 中会调用此方法，而不是标准的 brush 方法。
+     * 
      * @docauthor 大漠穷秋 damoqiongqiu@126.com
      */
 
@@ -20519,8 +20516,8 @@ if (!env$1.canvasSupported) {
             applyTransform(p2, p2, m);
             applyTransform(p3, p3, m);
 
-            let maxX = mathMax$3(p0[0], p1[0], p2[0], p3[0]);
-            let maxY = mathMax$3(p0[1], p1[1], p2[1], p3[1]);
+            let maxX = mathMax$4(p0[0], p1[0], p2[0], p3[0]);
+            let maxY = mathMax$4(p0[1], p1[1], p2[1], p3[1]);
 
             let transformFilter = [];
             transformFilter.push('M11=', m[0] / scaleX, comma,
@@ -21174,8 +21171,10 @@ function createMethodNotSupport$1(method) {
 
 // Unsupported methods
 [
-    'getLayer', 'insertLayer', 'eachLayer', 'eachBuiltinLayer', 'eachOtherLayer', 'getLayers',
-    'modLayer', 'delLayer', 'clearLayer', 'toDataURL', 'pathToImage'
+    'getLayer', 'insertLayer', 'eachLayer', 
+    'eachBuiltinLayer', 'eachOtherLayer', 'getLayers',
+    'modLayer', 'delLayer', 'clearLayer', 
+    'toDataURL', 'pathToImage'
 ].forEach((name,index)=>{
     VMLPainter.prototype[name] = createMethodNotSupport$1(name);
 });

@@ -21,7 +21,7 @@ var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
 
 var classUtil = require(&quot;../core/utils/classUtil&quot;);
 
-var PathProxy = require(&quot;../core/PathProxy&quot;);
+var PathProxy = require(&quot;./PathProxy&quot;);
 
 var pathContain = require(&quot;../core/contain/path&quot;);
 
@@ -100,32 +100,7 @@ function (_Displayable) {
      */
 
     _this.subPixelOptimize = false;
-<span id='zrender-graphic-Path-property-shape'>    /**
-</span>     * @property {Object} shape 形状
-     */
-
-    _this.shape = {}; // Extend default shape
-
-    var defaultShape = _this.options.shape;
-
-    if (defaultShape) {
-      for (var name in defaultShape) {
-        if (!_this.shape.hasOwnProperty(name) &amp;&amp; defaultShape.hasOwnProperty(name)) {
-          _this.shape[name] = defaultShape[name];
-        }
-      }
-    }
-
-    _this.options.init &amp;&amp; _this.options.init.call(_assertThisInitialized(_this), options); // FIXME 不能 extend position, rotation 等引用对象
-    // TODO:What&#39;s going on here?
-
-    for (var _name in _this.options) {
-      // Extending prototype values and methods
-      if (_name !== &#39;style&#39; &amp;&amp; _name !== &#39;shape&#39;) {
-        Path.prototype[_name] = _this.options[_name];
-      }
-    }
-
+    classUtil.copyOwnProperties(_assertThisInitialized(_this), _this.options, [&#39;style&#39;, &#39;shape&#39;]);
     return _this;
   }
 <span id='zrender-graphic-Path-method-brush'>  /**
@@ -276,7 +251,8 @@ function (_Displayable) {
       this.path = new PathProxy();
     }
 <span id='zrender-graphic-Path-method-getBoundingRect'>    /**
-</span>     * @method getBoundingRect
+</span>     * @protected
+     * @method getBoundingRect
      */
 
   }, {
@@ -379,7 +355,8 @@ function (_Displayable) {
       return false;
     }
 <span id='zrender-graphic-Path-method-dirty'>    /**
-</span>     * @method dirty
+</span>     * @protected
+     * @method dirty
      * @param  {Boolean} dirtyPath
      */
 

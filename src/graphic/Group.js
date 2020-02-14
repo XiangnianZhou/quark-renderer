@@ -33,8 +33,8 @@ class Group extends Element{
     /**
      * @method constructor Group
      */
-    constructor(opts={}){
-        super(opts);
+    constructor(options={}){
+        super(options);
 
         /**
          * @private
@@ -69,7 +69,7 @@ class Group extends Element{
          */
         this.silent=false;
 
-        classUtil.copyOwnProperties(this,opts);
+        classUtil.copyOwnProperties(this,options);
     }
 
     /**

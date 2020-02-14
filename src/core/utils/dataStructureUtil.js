@@ -657,18 +657,20 @@ export function interpolateString(p0, p1, percent) {
  */
 export function interpolateArray(p0, p1, percent, out, arrDim) {
     var len = p0.length;
+    if(!len) return;
     if (arrDim === 1) {
         for (var i = 0; i < len; i++) {
             out[i] = interpolateNumber(p0[i], p1[i], percent);
         }
-    }
-    else {
-        var len2 = len && p0[0].length;
+    }else {
+        var len2 = p0[0].length;
+        if(!len2) return;
         for (var i = 0; i < len; i++) {
+            if(out[i]===undefined){
+                return;
+            }
             for (var j = 0; j < len2; j++) {
-                out[i][j] = interpolateNumber(
-                    p0[i][j], p1[i][j], percent
-                );
+                out[i][j] = interpolateNumber(p0[i][j], p1[i][j], percent);
             }
         }
     }

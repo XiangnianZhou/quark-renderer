@@ -12,25 +12,22 @@ import * as colorTool from '../../core/utils/colorUtil';
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
-/**
- * @method constructor GradientManager
- * Manages SVG gradient elements.
- *
- * @param   {Number}     zrId    zrender instance id
- * @param   {SVGElement} svgRoot root of SVG document
- */
-function GradientManager(zrId, svgRoot) {
-    Definable.call(
-        this,
-        zrId,
-        svgRoot,
-        ['linearGradient', 'radialGradient'],
-        '__gradient_in_use__'
-    );
-}
-
-GradientManager.prototype={
-    constructor:GradientManager,
+class GradientManager extends Definable{
+    /**
+     * @method constructor GradientManager
+     * Manages SVG gradient elements.
+     *
+     * @param   {Number}     zrId    zrender instance id
+     * @param   {SVGElement} svgRoot root of SVG document
+     */
+    constructor(zrId, svgRoot){
+        super(
+            zrId,
+            svgRoot,
+            ['linearGradient', 'radialGradient'],
+            '__gradient_in_use__'
+        );    
+    }
 
     /**
      * @method addWithoutUpdate
@@ -40,7 +37,7 @@ GradientManager.prototype={
      * @param {SvgElement}  svgElement   SVG element to paint
      * @param {Displayable} displayable  zrender displayable element
      */
-    addWithoutUpdate:function (svgElement,displayable) {
+    addWithoutUpdate(svgElement,displayable) {
         if (displayable && displayable.style) {
             var that = this;
             dataUtil.each(['fill', 'stroke'], function (fillOrStroke) {
@@ -73,7 +70,7 @@ GradientManager.prototype={
                 }
             });
         }
-    },
+    }
 
     /**
      * @method add
@@ -83,15 +80,13 @@ GradientManager.prototype={
      * @param   {Gradient} gradient zr gradient instance
      * @return {SVGLinearGradientElement | SVGRadialGradientElement} created DOM
      */
-    add:function (gradient) {
+    add(gradient) {
         var dom;
         if (gradient.type === 'linear') {
             dom = this.createElement('linearGradient');
-        }
-        else if (gradient.type === 'radial') {
+        }else if (gradient.type === 'radial') {
             dom = this.createElement('radialGradient');
-        }
-        else {
+        }else {
             console.log('Illegal gradient type.');
             return null;
         }
@@ -102,14 +97,11 @@ GradientManager.prototype={
         // id should remain the same, and other attributes should be
         // updated.
         gradient.id = gradient.id || this.nextId++;
-        dom.setAttribute('id', 'zr' + this._zrId
-            + '-gradient-' + gradient.id);
-
+        dom.setAttribute('id', `zr${this._zrId}-gradient-${gradient.id}`);
         this.updateDom(gradient, dom);
         this.addDom(dom);
-
         return dom;
-    },
+    }
 
     /**
      * @method update
@@ -118,7 +110,7 @@ GradientManager.prototype={
      *
      * @param {Gradient} gradient zr gradient instance
      */
-    update:function (gradient) {
+    update(gradient) {
         var that = this;
         Definable.prototype.update.call(this, gradient, function () {
             var type = gradient.type;
@@ -128,14 +120,13 @@ GradientManager.prototype={
             ) {
                 // Gradient type is not changed, update gradient
                 that.updateDom(gradient, gradient._dom);
-            }
-            else {
+            }else {
                 // Remove and re-create if type is changed
                 that.removeDom(gradient);
                 that.add(gradient);
             }
         });
-    },
+    }
 
     /**
      * @method updateDom
@@ -146,7 +137,7 @@ GradientManager.prototype={
      * @param {SVGLinearGradientElement | SVGRadialGradientElement} dom
      *                            DOM to update
      */
-    updateDom:function (gradient, dom) {
+    updateDom(gradient, dom) {
         if (gradient.type === 'linear') {
             dom.setAttribute('x1', gradient.x);
             dom.setAttribute('y1', gradient.y);
@@ -205,7 +196,7 @@ GradientManager.prototype={
         // Store dom element in gradient, to avoid creating multiple
         // dom instances for the same gradient element
         gradient._dom = dom;
-    },
+    }
 
     /**
      * @method markUsed
@@ -214,7 +205,7 @@ GradientManager.prototype={
      *
      * @param {Displayable} displayable displayable element
      */
-    markUsed:function (displayable) {
+    markUsed(displayable) {
         if (displayable.style) {
             var gradient = displayable.style.fill;
             if (gradient && gradient._dom) {
@@ -229,5 +220,4 @@ GradientManager.prototype={
     }
 }
 
-classUtil.inherits(GradientManager, Definable);
 export default GradientManager;

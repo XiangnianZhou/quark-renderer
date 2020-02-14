@@ -48,6 +48,15 @@ var svgText = _graphic.text;
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
+
+<span id='zrender-svg-SVGPainter-method-getSvgProxy'>/**
+</span> * @private
+ * @method getSvgProxy
+ * 
+ * ZImage 映射成 svgImage，ZText 映射成 svgText，其它所有都映射成 svgPath。
+ * 
+ * @param {Element} el 
+ */
 function getSvgProxy(el) {
   if (el instanceof Path) {
     return svgPath;
@@ -55,9 +64,9 @@ function getSvgProxy(el) {
     return svgImage;
   } else if (el instanceof ZText) {
     return svgText;
-  } else {
-    return svgPath;
   }
+
+  return svgPath;
 }
 
 function checkParentAvailable(parent, child) {
@@ -196,12 +205,12 @@ SVGPainter.prototype = {
 
           this.clipPathManager.update(displayable); // Update gradient and shadow
 
-          if (displayable.style) {
+          if (displayable.style.fill &amp;&amp; displayable.style.stroke) {
             this.gradientManager.update(displayable.style.fill);
             this.gradientManager.update(displayable.style.stroke);
-            this.shadowManager.update(svgElement, displayable);
           }
 
+          this.shadowManager.update(svgElement, displayable);
           displayable.__dirty = false;
         }
 
@@ -291,39 +300,39 @@ SVGPainter.prototype = {
 
     var defs = this._svgRoot.getElementsByTagName(&#39;defs&#39;);
 
-    if (defs.length === 0) {
-      // Not exist
-      if (isForceCreating) {
-        var _defs = svgRoot.insertBefore(createElement(&#39;defs&#39;), // Create new tag
-        svgRoot.firstChild // Insert in the front of svg
-        );
+    if (defs.length !== 0) {
+      return defs[0];
+    } // Not exist
 
-        if (!_defs.contains) {
-          // IE doesn&#39;t support contains method
-          _defs.contains = function (el) {
-            var children = _defs.children;
 
-            if (!children) {
-              return false;
-            }
+    if (!isForceCreating) {
+      return null;
+    }
 
-            for (var i = children.length - 1; i &gt;= 0; --i) {
-              if (children[i] === el) {
-                return true;
-              }
-            }
+    defs = svgRoot.insertBefore(createElement(&#39;defs&#39;), // Create new tag
+    svgRoot.firstChild // Insert in the front of svg
+    );
 
-            return false;
-          };
+    if (!defs.contains) {
+      // IE doesn&#39;t support contains method
+      defs.contains = function (el) {
+        var children = defs.children;
+
+        if (!children) {
+          return false;
         }
 
-        return _defs;
-      } else {
-        return null;
-      }
-    } else {
-      return defs[0];
+        for (var i = children.length - 1; i &gt;= 0; --i) {
+          if (children[i] === el) {
+            return true;
+          }
+        }
+
+        return false;
+      };
     }
+
+    return defs;
   },
 
 <span id='zrender-svg-SVGPainter-method-resize'>  /**

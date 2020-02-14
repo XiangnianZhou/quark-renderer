@@ -19,7 +19,7 @@
 
 var createElement = _core.createElement;
 
-var PathProxy = require(&quot;../core/PathProxy&quot;);
+var PathProxy = require(&quot;../graphic/PathProxy&quot;);
 
 var BoundingRect = require(&quot;../core/BoundingRect&quot;);
 
@@ -124,13 +124,11 @@ function pathDataToString(path) {
   var str = [];
   var data = path.data;
   var dataLength = path.len();
-  var cmdStr = &#39;&#39;;
-  var nData = 0;
-  var x = 0;
-  var y = 0;
 
   for (var i = 0; i &lt; dataLength;) {
     var cmd = data[i++];
+    var cmdStr = &#39;&#39;;
+    var nData = 0;
 
     switch (cmd) {
       case CMD.M:
@@ -200,8 +198,8 @@ function pathDataToString(path) {
           }
         }
 
-        x = round4(cx + rx * Math.cos(theta + dTheta));
-        y = round4(cy + ry * Math.sin(theta + dTheta)); // FIXME Ellipse
+        var x = round4(cx + rx * Math.cos(theta + dTheta));
+        var y = round4(cy + ry * Math.sin(theta + dTheta)); // FIXME Ellipse
 
         str.push(&#39;A&#39;, round4(rx), round4(ry), Math.round(psi * degree), +large, +clockwise, x, y);
         break;
@@ -211,8 +209,8 @@ function pathDataToString(path) {
         break;
 
       case CMD.R:
-        x = round4(data[i++]);
-        y = round4(data[i++]);
+        var x = round4(data[i++]);
+        var y = round4(data[i++]);
         var w = round4(data[i++]);
         var h = round4(data[i++]);
         str.push(&#39;M&#39;, x, y, &#39;L&#39;, x + w, y, &#39;L&#39;, x + w, y + h, &#39;L&#39;, x, y + h, &#39;L&#39;, x, y);
@@ -229,6 +227,12 @@ function pathDataToString(path) {
 
   return str.join(&#39; &#39;);
 }
+<span id='zrender-svg-SVGPath'>/**
+</span> * @class zrender.svg.SVGPath
+ * 
+ * @docauthor 大漠穷秋 damoqiongqiu@126.com
+ */
+
 
 var svgPath = {};
 

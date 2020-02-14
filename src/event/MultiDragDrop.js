@@ -1,6 +1,6 @@
 /**
  * @class zrender.event.MultiDragDrop
- * 支持同时拖拽多个图元，按住 Ctrl 键可以多选。
+ * 支持同时拖拽多个元素，按住 Ctrl 键可以多选。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
@@ -27,7 +27,7 @@ export default class MultiDragDrop{
 
     /**
      * @method getSelectedItems
-     * 获取当前选中的图元
+     * 获取当前选中的元素
      * @return {Map} selectionMap
      */
     getSelectedItems(){
