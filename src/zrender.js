@@ -291,7 +291,7 @@ ZRender.prototype = {
             triggerRendered = true;
             this.refreshImmediately();
         }
-        if (this._needsRefreshHover) { //只重绘特定的图元，提升性能
+        if (this._needsRefreshHover) { //只重绘特定的元素，提升性能
             triggerRendered = true;
             this.refreshHoverImmediately();
         }
@@ -302,7 +302,7 @@ ZRender.prototype = {
     /**
      * @private
      * @method
-     * 与 Hover 相关的6个方法用来处理浮动层，当鼠标悬停在 canvas 中的图元上方时，可能会需要
+     * 与 Hover 相关的6个方法用来处理浮动层，当鼠标悬停在 canvas 中的元素上方时，可能会需要
      * 显示一些浮动的层来展现一些特殊的数据。
      * TODO:这里可能有点问题，Hover 一词可能指的是遮罩层，而不是浮动层，如果确认是遮罩，考虑
      * 把这里的 API 单词重构成 Mask。

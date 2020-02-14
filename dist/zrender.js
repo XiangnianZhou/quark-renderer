@@ -2226,7 +2226,7 @@ var stop = isDomLevel2
 
 /**
  * @class zrender.event.MultiDragDrop
- * 支持同时拖拽多个图元，按住 Ctrl 键可以多选。
+ * 支持同时拖拽多个元素，按住 Ctrl 键可以多选。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
@@ -2253,7 +2253,7 @@ class MultiDragDrop{
 
     /**
      * @method getSelectedItems
-     * 获取当前选中的图元
+     * 获取当前选中的元素
      * @return {Map} selectionMap
      */
     getSelectedItems(){
@@ -2543,7 +2543,7 @@ function pageEventHandler(pageEventName, event) {
 
 /**
  * @method
- * 鼠标是否在指定的图元上方。
+ * 鼠标是否在指定的元素上方。
  * @param {Displayable} displayable 
  * @param {Number} x 
  * @param {Number} y 
@@ -2849,7 +2849,7 @@ ZRenderEventHandler.prototype = {
         var list = this.storage.getDisplayList();
         var out = {x: x, y: y};
 
-        //NOTE: 在图元数量非常庞大的时候，如 100 万个图元，这里的 for 循环会很慢，基本不能响应鼠标事件。
+        //NOTE: 在元素数量非常庞大的时候，如 100 万个元素，这里的 for 循环会很慢，基本不能响应鼠标事件。
         for (var i = list.length - 1; i >= 0; i--) {
             var hoverCheckResult;
             if (list[i] !== exclude
@@ -2932,7 +2932,7 @@ each(['click', 'mousedown',
             this._downPoint = null;
         }
 
-        //把事件派发给目标图元
+        //把事件派发给目标元素
         this.dispatchToElement(hovered, name, event);
     };
 });
@@ -3766,7 +3766,7 @@ let easing = {
 
 /**
  * @class zrender.animation.Timeline
- * Timeline，时间线，用来计算图元上的某个属性在指定时间点的数值。
+ * Timeline，时间线，用来计算元素上的某个属性在指定时间点的数值。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
@@ -4639,8 +4639,8 @@ var colorUtil = (Object.freeze || Object)({
 /**
  * @class zrender.animation.Track
  * 
- * Track, 轨道，与图元（Element）上可以用来进行动画的属性一一对应。
- * 图元上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，
+ * Track, 轨道，与元素（Element）上可以用来进行动画的属性一一对应。
+ * 元素上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，
  * 每一种属性天然成为一条动画轨道，把这些轨道上的变化过程封装在 Timeline 中。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
@@ -4959,7 +4959,7 @@ class Track{
 /**
  * @class zrender.animation.AnimationProcess
  * 
- * AnimationProcess 表示一次完整的动画过程，每一个图元（Element）中都有一个列表，用来存储本实例上的动画过程。
+ * AnimationProcess 表示一次完整的动画过程，每一个元素（Element）中都有一个列表，用来存储本实例上的动画过程。
  * GlobalAnimationMgr 负责维护和调度所有 AnimationProcess 实例。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
@@ -4967,7 +4967,7 @@ class Track{
 
 /**
  * @method constructor AnimationProcess
- * @param {Object} target 需要进行动画的图元
+ * @param {Object} target 需要进行动画的元素
  * @param {Boolean} loop 动画是否循环播放
  * @param {Function} getter
  * @param {Function} setter
@@ -5214,7 +5214,7 @@ class AnimationProcess{
 /**
  * @class zrender.animation.Animatable
  * 
- * 动画接口类，在 Element 类中 mixin 此类提供的功能，为图元提供动画功能。
+ * 动画接口类，在 Element 类中 mixin 此类提供的功能，为元素提供动画功能。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
@@ -5519,7 +5519,7 @@ function setAttrByPath(el, path, prop, value) {
  * This is an abstract class, please don't creat an instance directly.
  * 
  * 根类，ZRender 中所有可见的对象都是 Element 的子类。这是一个抽象类，请不要
- * 直接 new 这个类的示例。
+ * 直接 new 这个类的实例。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
@@ -5769,6 +5769,7 @@ class Element{
     }
 
     /**
+     * @protected
      * @method dirty
      * Mark displayable element dirty and refresh next frame
      */
@@ -7278,8 +7279,8 @@ Storage.prototype = {
 /**
  * 兼容多种运行环境的 requestAnimationFrame 方法。
  * 有两个重要的地方会依赖此方法：
- * - 图元的渲染机制，在 Painter 类中会调用
- * - 图元的动画效果，在 Animation 类中会调用
+ * - 元素的渲染机制，在 Painter 类中会调用
+ * - 元素的动画效果，在 Animation 类中会调用
  * 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
  */
@@ -9635,12 +9636,7 @@ class Displayable extends Element{
      */
     constructor(options={}){
         super(options);
-        
-        /**
-         * @property {Style} style
-         */
-        this.style = new Style(options.style, this);
-        
+
         /**
          * @private
          * @property  __clipPaths
@@ -9757,6 +9753,11 @@ class Displayable extends Element{
         this.globalScaleRatio=1;
 
         /**
+         * @property {Style} style
+         */
+        this.style = new Style(options.style, this);
+
+        /**
          * @property {Object} shape 形状
          */
         this.shape={};
@@ -9773,26 +9774,35 @@ class Displayable extends Element{
         
         // FIXME 不能 extend position, rotation 等引用对象 TODO:why?
         copyOwnProperties(this,this.options,['style','shape']);
-        
-        this.options.init && this.options.init.call(this, options);
     }
 
+    /**
+     * @protected
+     * @method beforeBrush
+     */
     beforeBrush(ctx) {}
 
     /**
-     * @property {Function} brush
-     * Graphic drawing method.
+     * @protected
+     * @method brush
+     * Callback during brush.
      */
     brush(ctx, prevEl) {}
 
+    /**
+     * @protected
+     * @method afterBrush
+     */
     afterBrush(ctx) {}
 
     /**
-     * @property {Function} getBoundingRect
+     * @protected
+     * @method getBoundingRect
      */
     getBoundingRect() {}
 
     /**
+     * @protected
      * @method contain
      * 
      * If displayable element contain coord x, y, this is an util function for
@@ -9809,10 +9819,13 @@ class Displayable extends Element{
     }
 
     /**
+     * @protected
      * @method rectContain
+     * 
      * If bounding rect of element contain coord x, y.
      * 
      * 用来判断当前图元的外框矩形是否包含坐标点(x,y)。
+     * 
      * @param  {Number} x
      * @param  {Number} y
      * @return {Boolean}
@@ -10424,7 +10437,7 @@ CanvasPainter.prototype = {
         }
 
         //如果在一帧的时间内没有绘制完，在下一帧继续绘制
-        //TODO:这里需要测试一个极限值出来，在 16ms 的时间里面最多能绘制多少个图元。
+        //TODO:这里需要测试一个极限值出来，在 16ms 的时间里面最多能绘制多少个元素。
         if (!finished) {
             let self = this;
             requestAnimationFrame(function () {
@@ -10506,8 +10519,8 @@ CanvasPainter.prototype = {
                     let dTime = Date.now() - startTime;
                     // Give 15 millisecond to draw.
                     // The rest elements will be drawn in the next frame.
-                    // 这里的时间计算非常重要，如果 15ms 的时间内没有能绘制完所有图元，则跳出，等待下一帧继续绘制
-                    // 但是 15ms 的时间依然是有限的，如果图元的数量非常巨大，例如有 1000 万个，还是会卡顿。
+                    // 这里的时间计算非常重要，如果 15ms 的时间内没有能绘制完所有元素，则跳出，等待下一帧继续绘制
+                    // 但是 15ms 的时间依然是有限的，如果元素的数量非常巨大，例如有 1000 万个，还是会卡顿。
                     // TODO: 这里需要实际 benchmark 一个数值出来。
                     if (dTime > 15) {
                         break;
@@ -10543,7 +10556,7 @@ CanvasPainter.prototype = {
 
     /**
      * @method _doPaintEl
-     * 绘制一个图元
+     * 绘制一个元素
      * @param {*} el 
      * @param {*} currentLayer 
      * @param {*} forcePaint 
@@ -11254,7 +11267,7 @@ class GlobalAnimationMgr{
     /**
      * @private
      * @method _startLoop
-     * TODO:需要确认在大量节点下的动画性能问题，比如 100 万个图元同时进行动画
+     * TODO:需要确认在大量节点下的动画性能问题，比如 100 万个元素同时进行动画
      * 这里开始利用requestAnimationFrame递归执行
      * 如果这里的 _update() 不能在16ms的时间内完成一轮动画，就会出现明显的卡顿。
      * 按照 W3C 的推荐标准 60fps，这里的 step 函数大约每隔 16ms 被调用一次
@@ -11340,7 +11353,7 @@ mixin(GlobalAnimationMgr, Eventful);
 /**
  * @class zrender.event.DomEventProxy
  * DomEventProxy 的主要功能是：把原生的 DOM 事件代理（转发）到 ZRender 实例上，
- * 在 ZRenderEventHandler 类中会把事件进一步分发给 canvas 中绘制的图元。
+ * 在 ZRenderEventHandler 类中会把事件进一步分发给 canvas 中绘制的元素。
  * 需要转发的大部分 DOM 事件挂载在 canvas 的外层容器 div 上面，例如：click, dbclick ；
  * 少部分 DOM 事件挂载在 document 对象上，例如：mousemove, mouseout。因为在实现拖拽和
  * 键盘交互的过程中，鼠标指针可能已经脱离了 canvas 所在的区域。
@@ -12153,7 +12166,7 @@ ZRender.prototype = {
             triggerRendered = true;
             this.refreshImmediately();
         }
-        if (this._needsRefreshHover) { //只重绘特定的图元，提升性能
+        if (this._needsRefreshHover) { //只重绘特定的元素，提升性能
             triggerRendered = true;
             this.refreshHoverImmediately();
         }
@@ -12164,7 +12177,7 @@ ZRender.prototype = {
     /**
      * @private
      * @method
-     * 与 Hover 相关的6个方法用来处理浮动层，当鼠标悬停在 canvas 中的图元上方时，可能会需要
+     * 与 Hover 相关的6个方法用来处理浮动层，当鼠标悬停在 canvas 中的元素上方时，可能会需要
      * 显示一些浮动的层来展现一些特殊的数据。
      * TODO:这里可能有点问题，Hover 一词可能指的是遮罩层，而不是浮动层，如果确认是遮罩，考虑
      * 把这里的 API 单词重构成 Mask。
@@ -14702,6 +14715,7 @@ class Path extends Displayable{
     }
 
     /**
+     * @protected
      * @method getBoundingRect
      */
     getBoundingRect() {
@@ -14793,6 +14807,7 @@ class Path extends Displayable{
     }
 
     /**
+     * @protected
      * @method dirty
      * @param  {Boolean} dirtyPath
      */
@@ -15508,7 +15523,7 @@ class Circle extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -15673,7 +15688,7 @@ class Rect extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -15737,7 +15752,7 @@ class Droplet extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -15797,7 +15812,7 @@ class Line extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -16075,7 +16090,7 @@ class Polygon extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -16116,7 +16131,7 @@ class Polyline extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -16914,7 +16929,7 @@ class CompoundPath extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17107,7 +17122,7 @@ class Arc extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17181,7 +17196,7 @@ class BezierCurve extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17290,7 +17305,7 @@ class Droplet$1 extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17349,7 +17364,7 @@ class Heart extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17403,7 +17418,7 @@ class Isogon extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17461,7 +17476,7 @@ class Ring extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17514,7 +17529,7 @@ class Rose extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17648,7 +17663,7 @@ class Sector extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17713,7 +17728,7 @@ class Star extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -17793,7 +17808,7 @@ class Trochold extends Path{
 
     /**
      * @method buildPath
-     * 绘制图元路径
+     * 绘制元素路径
      * @param {Object} ctx 
      * @param {String} shape 
      */

@@ -195,6 +195,7 @@ class Path extends Displayable{
     }
 
     /**
+     * @protected
      * @method getBoundingRect
      */
     getBoundingRect() {
@@ -286,6 +287,7 @@ class Path extends Displayable{
     }
 
     /**
+     * @protected
      * @method dirty
      * @param  {Boolean} dirtyPath
      */

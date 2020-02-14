@@ -3,7 +3,7 @@ import Track from './Track';
 /**
  * @class zrender.animation.AnimationProcess
  * 
- * AnimationProcess 表示一次完整的动画过程，每一个图元（Element）中都有一个列表，用来存储本实例上的动画过程。
+ * AnimationProcess 表示一次完整的动画过程，每一个元素（Element）中都有一个列表，用来存储本实例上的动画过程。
  * GlobalAnimationMgr 负责维护和调度所有 AnimationProcess 实例。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
@@ -11,7 +11,7 @@ import Track from './Track';
 
 /**
  * @method constructor AnimationProcess
- * @param {Object} target 需要进行动画的图元
+ * @param {Object} target 需要进行动画的元素
  * @param {Boolean} loop 动画是否循环播放
  * @param {Function} getter
  * @param {Function} setter

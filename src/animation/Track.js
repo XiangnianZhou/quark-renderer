@@ -4,8 +4,8 @@ import * as dataUtil from '../core/utils/dataStructureUtil';
 /**
  * @class zrender.animation.Track
  * 
- * Track, 轨道，与图元（Element）上可以用来进行动画的属性一一对应。
- * 图元上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，
+ * Track, 轨道，与元素（Element）上可以用来进行动画的属性一一对应。
+ * 元素上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，
  * 每一种属性天然成为一条动画轨道，把这些轨道上的变化过程封装在 Timeline 中。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
