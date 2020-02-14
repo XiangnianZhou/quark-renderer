@@ -6,7 +6,7 @@ import * as matrix from './core/utils/matrix';
 import * as vector from './core/utils/vector';
 import * as colorTool from './core/utils/colorUtil';
 import * as pathTool from './core/utils/pathUtil';
-import {parseSVG} from './svg/parseSVG';
+import {parseSVG} from './svg/SVGParser';
 
 export {default as Group} from './graphic/Group';
 export {default as Path} from './graphic/Path';

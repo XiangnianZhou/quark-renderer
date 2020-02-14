@@ -57,7 +57,7 @@
     "../../lib/graphic/gradient/Gradient.js",
     "../../lib/graphic/gradient/LinearGradient.js",
     "../../lib/graphic/gradient/RadialGradient.js",
-    "../../lib/svg/parseSVG.js",
+    "../../lib/svg/SVGParser.js",
     "../../lib/svg/SVGPainter.js",
     "../../lib/svg/graphic.js",
     "../../lib/svg/helper/ClippathManager.js",

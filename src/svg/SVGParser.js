@@ -664,12 +664,19 @@ export function makeViewBoxTransform(viewBoxRect, width, height) {
 }
 
 /**
- * @param {string|XMLElement} xml
+ * @static
+ * @method parseSVG
+ * 
+ * Parse SVG DOM to ZRender specific interfaces.
+ * 
+ * 把 SVG DOM 标签解析成 Zrender 所定义的接口。
+ * 
+ * @param {String|XMLElement} xml
  * @param {Object} [opt]
  * @param {Number} [opt.width] Default width if svg width not specified or is a percent value.
  * @param {Number} [opt.height] Default height if svg height not specified or is a percent value.
- * @param {boolean} [opt.ignoreViewBox]
- * @param {boolean} [opt.ignoreRootClip]
+ * @param {Boolean} [opt.ignoreViewBox]
+ * @param {Boolean} [opt.ignoreRootClip]
  * @return {Object} result:
  * {
  *     root: Group, The root of the the result tree of zrender shapes,
