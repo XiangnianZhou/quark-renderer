@@ -188,12 +188,12 @@ SVGPainter.prototype = {
                     this.clipPathManager.update(displayable);
 
                     // Update gradient and shadow
-                    if (displayable.style) {
+                    if (displayable.style.fill&&displayable.style.stroke) {
                         this.gradientManager.update(displayable.style.fill);
                         this.gradientManager.update(displayable.style.stroke);
-                        this.shadowManager.update(svgElement, displayable);
                     }
-
+                    
+                    this.shadowManager.update(svgElement, displayable);
                     displayable.__dirty = false;
                 }
                 newVisibleList.push(displayable);
