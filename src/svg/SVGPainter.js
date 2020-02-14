@@ -21,6 +21,14 @@ import {
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
+/**
+ * @private
+ * @method getSvgProxy
+ * 
+ * ZImage 映射成 svgImage，ZText 映射成 svgText，其它所有都映射成 svgPath。
+ * 
+ * @param {Element} el 
+ */
 function getSvgProxy(el) {
     if (el instanceof Path) {
         return svgPath;
