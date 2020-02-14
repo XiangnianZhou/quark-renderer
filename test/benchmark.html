@@ -5,7 +5,7 @@
     <title>Animation</title>
     <script src="../dist/zrender.js"></script>
     <script src="stats.js"></script>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="./lib/d3.v4.min.js"></script>
 </head>
 <body style="margin:0px;">
 
@@ -191,9 +191,6 @@
             return points;
         }
 
-
-
-
         /**
          * Generate an object array of `numPoints` length with unique IDs
          * and assigned colors
@@ -229,14 +226,10 @@
         var points = createPoints(numPoints, pointWidth, width, height);
 
         // wrap layout helpers so they only take points as an argument
-        var toGrid = (points) => gridLayout(points,
-            pointWidth + pointMargin, width);
-        var toSine = (points) => sineLayout(points,
-            pointWidth + pointMargin, width, height);
-        var toSpiral = (points) => spiralLayout(points,
-            pointWidth + pointMargin, width, height);
-        var toPhyllotaxis = (points) => phyllotaxisLayout(points,
-            pointWidth + pointMargin, width / 2, height / 2);
+        var toGrid = (points) => gridLayout(points,pointWidth + pointMargin, width);
+        var toSine = (points) => sineLayout(points,pointWidth + pointMargin, width, height);
+        var toSpiral = (points) => spiralLayout(points,pointWidth + pointMargin, width, height);
+        var toPhyllotaxis = (points) => phyllotaxisLayout(points,pointWidth + pointMargin, width / 2, height / 2);
 
         // store the layouts in an array to sequence through
         var layouts = [toSine, toPhyllotaxis, toSpiral, toPhyllotaxis, toGrid];
@@ -264,16 +257,12 @@
                 var t = Math.min(1, ease(elapsed / duration));
 
                 // update point positions (interpolate between source and target)
-                points.forEach(point => {
+                points.forEach((point,index) => {
                     point.x = point.sx * (1 - t) + point.tx * t;
                     point.y = point.sy * (1 - t) + point.ty * t;
-                });
-
-                // update what is drawn on screen
-                rects.forEach(function(rect, idx) {
-                    rect.shape.x = rect.__point__.x;
-                    rect.shape.y = rect.__point__.y;
-                    rect.dirty(true);
+                    rects[index].shape.x = point.x;
+                    rects[index].shape.y = point.y;
+                    rects[index].dirty(true);
                 });
 
                 // if this animation is over
@@ -292,6 +281,7 @@
             });
         }
         zr.clear();
+
         var rects = points.map(function(pt) {
             var rect = new zrender.Rect({
                 shape: {
@@ -303,8 +293,7 @@
                     text: withText ? 'a' : null,
                     textFill: withText ? pt.color : null
                 },
-                silent: true,
-                __point__: pt
+                silent: true
             });
             zr.add(rect);
             return rect;
@@ -312,12 +301,6 @@
 
         // start off as a grid
         toGrid(points);
-
-        rects.forEach(function(rect, idx) {
-            rect.shape.x = rect.__point__.x;
-            rect.shape.y = rect.__point__.y;
-            rect.dirty(true);
-        });
 
         setTimeout(function () {
             // start the animation
