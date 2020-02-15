@@ -11,18 +11,18 @@
     /**
      * Usage:
      * var testCase = helper.prepare([
-     *     'zrender/core/dataStructureUtil'
-     *     'zrender/core/colorUtil'
+     *     'qrenderer/core/dataStructureUtil'
+     *     'qrenderer/core/colorUtil'
      * ])
      *
      * testCase('test_case_1', function (util, colorTool) {
      *     // Real test case.
-     *     // this.zrender can be visited.
+     *     // this.qrenderer can be visited.
      * });
      *
-     * testCase.requireId(['zrender/core/pathUtil'])('test_case_2', function (path) {
+     * testCase.requireId(['qrenderer/core/pathUtil'])('test_case_2', function (path) {
      *     // Real test case.
-     *     // this.zrender can be visited.
+     *     // this.qrenderer can be visited.
      * });
      *
      * @public
@@ -47,15 +47,15 @@
                 if (!(requireId instanceof Array)) {
                     requireId = requireId != null ? [] : [requireId];
                 }
-                requireId = ['zrender/src/zrender'].concat(requireId);
+                requireId = ['quark-renderer/src/quark-renderer'].concat(requireId);
 
                 window.it(name, function (done) {
 
                     window.requireES(requireId, onModuleLoaded);
 
-                    function onModuleLoaded(zrender) {
+                    function onModuleLoaded(qrenderer) {
                         var userScope = {
-                            zrender: zrender
+                            qrenderer: qrenderer
                         };
                         doTest.apply(
                             userScope,

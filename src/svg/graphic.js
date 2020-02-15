@@ -93,7 +93,7 @@ function bindStyle(svgEl, style, isText, el) {
 }
 
 /**
- * @class zrender.svg.SVGPath
+ * @class qrenderer.svg.SVGPath
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
@@ -210,7 +210,7 @@ function pathDataToString(path) {
 }
 
 /**
- * @class zrender.svg.SVGPath
+ * @class qrenderer.svg.SVGPath
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
@@ -256,7 +256,7 @@ svgPath.brush = function (el) {
 };
 
 /**
- * @class zrender.svg.SVGImage
+ * @class qrenderer.svg.SVGImage
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
@@ -309,7 +309,7 @@ svgImage.brush = function (el) {
 };
 
 /**
- * @class zrender.svg.SVGText
+ * @class qrenderer.svg.SVGText
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
@@ -440,7 +440,7 @@ let svgTextDrawRectText = function (el, hostRect) {
                 tspan = tspanList[idx] = createElement('tspan');
                 textSvgEl.appendChild(tspan);
                 tspan.appendChild(document.createTextNode(singleLineText));
-            }else if (tspan.__zrText !== singleLineText) {
+            }else if (tspan.__qrText !== singleLineText) {
                 tspan.innerHTML = '';
                 tspan.appendChild(document.createTextNode(singleLineText));
             }

@@ -2,7 +2,7 @@ import Path from '../Path';
 import * as dataUtil from '../../core/utils/dataStructureUtil';
 
 /**
- * @class zrender.graphic.shape.Isogon 
+ * @class qrenderer.graphic.shape.Isogon 
  * 正多边形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */

@@ -4,14 +4,14 @@ import {Dispatcher} from '../core/utils/eventUtil';
 import requestAnimationFrame from './utils/requestAnimationFrame';
 /**
  * @singleton
- * @class zrender.animation.GlobalAnimationMgr
+ * @class qrenderer.animation.GlobalAnimationMgr
  * 
  * Animation manager, global singleton, controls all the animation process.
- * Each ZRender instance has a GlobalAnimationMgr instance. GlobalAnimationMgr 
- * is designed to manage all the AnimationProcesses inside a zrender instance.
+ * Each QRenderer instance has a GlobalAnimationMgr instance. GlobalAnimationMgr 
+ * is designed to manage all the AnimationProcesses inside a qrenderer instance.
  * 
- * 动画管理器，全局单例，控制和调度所有动画过程。每个 zrender 实例中会持有一个 
- * GlobalAnimationMgr 实例。GlobalAnimationMgr 会管理 zrender 实例中的所有
+ * 动画管理器，全局单例，控制和调度所有动画过程。每个 qrenderer 实例中会持有一个 
+ * GlobalAnimationMgr 实例。GlobalAnimationMgr 会管理 qrenderer 实例中的所有
  * AnimationProcess。
  * 
  * @author pissang(https://github.com/pissang)
@@ -40,7 +40,7 @@ class GlobalAnimationMgr{
     /**
      * @method addAnimationProcess
      * 添加 animationProcess
-     * @param {zrender.animation.GlobalAnimationMgr} animationProcess
+     * @param {qrenderer.animation.GlobalAnimationMgr} animationProcess
      */
     addAnimationProcess(animationProcess) {
         this._animationProcessList.push(animationProcess);
@@ -49,7 +49,7 @@ class GlobalAnimationMgr{
     /**
      * @method removeAnimationProcess
      * 删除动画片段
-     * @param {zrender.animation.GlobalAnimationMgr} animationProcess
+     * @param {qrenderer.animation.GlobalAnimationMgr} animationProcess
      */
     removeAnimationProcess(animationProcess) {
         let index=this._animationProcessList.findIndex(animationProcess);

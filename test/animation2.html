@@ -3,15 +3,15 @@
 <head>
     <meta charset="utf-8" />
     <title>Animation2</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
 </head>
 <body>
     <div id="main" style="width:600px;height:400px;"></div>
     <script type="text/javascript">
-        // 初始化zrender
-        let zr = zrender.init(document.getElementById('main'));
+        // 初始化qrenderer
+        let qr = qrenderer.init(document.getElementById('main'));
 
-        let polygon = new zrender.Polygon({
+        let polygon = new qrenderer.Polygon({
             position: [100, 100],
             scale: [1, 1],
             style: {
@@ -35,7 +35,7 @@
                 }
             }, 500, 'cubicOut');
         }, 1000);
-        zr.add(polygon);
+        qr.add(polygon);
     </script>
 </body>
 </html>

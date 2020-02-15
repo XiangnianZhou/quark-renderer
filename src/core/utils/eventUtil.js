@@ -9,11 +9,11 @@ import {buildTransformer} from './fourPointsTransform';
 var isDomLevel2 = (typeof window !== 'undefined') && !!window.addEventListener;
 
 var MOUSE_EVENT_REG = /^(?:mouse|pointer|contextmenu|drag|drop)|click/;
-var EVENT_SAVED_PROP = '___zrEVENTSAVED';
+var EVENT_SAVED_PROP = '___qrEVENTSAVED';
 var _calcOut = [];
 
 /**
- * Get the `zrX` and `zrY`, which are relative to the top-left of
+ * Get the `qrX` and `qrY`, which are relative to the top-left of
  * the input `el`.
  * CSS transform (2D & 3D) is supported.
  *
@@ -27,11 +27,11 @@ var _calcOut = [];
  * + The input `el` should be positionable (not position:static).
  *
  * The force `calculate` can be used in case like:
- * When mousemove event triggered on ec tooltip, `e.target` is not `el`(zr painter.dom).
+ * When mousemove event triggered on ec tooltip, `e.target` is not `el`(qr painter.dom).
  *
  * @param {HTMLElement} el DOM element.
  * @param {Event} e Mouse event or touch event.
- * @param {Object} out Get `out.zrX` and `out.zrY` as the result.
+ * @param {Object} out Get `out.qrX` and `out.qrY` as the result.
  * @param {boolean} [calculate=false] Whether to force calculate
  *        the coordinates but not use ones provided by browser.
  */
@@ -43,10 +43,10 @@ export function clientToLocal(el, e, out, calculate) {
     // is IE. Webkit uses the border edge, Opera uses the content edge, and FireFox does
     // not support the properties.
     // (see http://www.jacklmoore.com/notes/mouse-position/)
-    // In zr painter.dom, padding edge equals to border edge.
+    // In qr painter.dom, padding edge equals to border edge.
 
     if (calculate || !env.canvasSupported) {
-        calculateZrXY(el, e, out);
+        calculateQrXY(el, e, out);
     }
     // Caution: In FireFox, layerX/layerY Mouse position relative to the closest positioned
     // ancestor element, so we should make sure el is positioned (e.g., not position:static).
@@ -56,23 +56,23 @@ export function clientToLocal(el, e, out, calculate) {
     // <https://bugs.jquery.com/ticket/8523#comment:14>
     // BTW3, In ff, offsetX/offsetY is always 0.
     else if (env.browser.firefox && e.layerX != null && e.layerX !== e.offsetX) {
-        out.zrX = e.layerX;
-        out.zrY = e.layerY;
+        out.qrX = e.layerX;
+        out.qrY = e.layerY;
     }
     // For IE6+, chrome, safari, opera. (When will ff support offsetX?)
     else if (e.offsetX != null) {
-        out.zrX = e.offsetX;
-        out.zrY = e.offsetY;
+        out.qrX = e.offsetX;
+        out.qrY = e.offsetY;
     }
     // For some other device, e.g., IOS safari.
     else {
-        calculateZrXY(el, e, out);
+        calculateQrXY(el, e, out);
     }
 
     return out;
 }
 
-function calculateZrXY(el, e, out) {
+function calculateQrXY(el, e, out) {
     // BlackBerry 5, iOS 3 (original iPhone) don't have getBoundingRect.
     if (el.getBoundingClientRect && env.domSupported) {
         var ex = e.clientX;
@@ -82,11 +82,11 @@ function calculateZrXY(el, e, out) {
             // Original approach, which do not support CSS transform.
             // marker can not be locationed in a canvas container
             // (getBoundingClientRect is always 0). We do not support
-            // that input a pre-created canvas to zr while using css
+            // that input a pre-created canvas to qr while using css
             // transform in iOS.
             var box = el.getBoundingClientRect();
-            out.zrX = ex - box.left;
-            out.zrY = ey - box.top;
+            out.qrX = ex - box.left;
+            out.qrY = ey - box.top;
             return;
         }
         else {
@@ -94,13 +94,13 @@ function calculateZrXY(el, e, out) {
             var transformer = preparePointerTransformer(prepareCoordMarkers(el, saved), saved);
             if (transformer) {
                 transformer(_calcOut, ex, ey);
-                out.zrX = _calcOut[0];
-                out.zrY = _calcOut[1];
+                out.qrX = _calcOut[0];
+                out.qrY = _calcOut[1];
                 return;
             }
         }
     }
-    out.zrX = out.zrY = 0;
+    out.qrX = out.qrY = 0;
 }
 
 function prepareCoordMarkers(el, saved) {
@@ -182,12 +182,12 @@ export function getNativeEvent(e) {
 /**
  * Normalize the coordinates of the input event.
  *
- * Get the `e.zrX` and `e.zrY`, which are relative to the top-left of
+ * Get the `e.qrX` and `e.qrY`, which are relative to the top-left of
  * the input `el`.
- * Get `e.zrDelta` if using mouse wheel.
+ * Get `e.qrDelta` if using mouse wheel.
  * Get `e.which`, see the comment inside this function.
  *
- * Do not calculate repeatly if `zrX` and `zrY` already exist.
+ * Do not calculate repeatly if `qrX` and `qrY` already exist.
  *
  * Notice: see comments in `clientToLocal`. check the relationship
  * between the result coords and the parameters `el` and `calculate`.
@@ -202,7 +202,7 @@ export function normalizeEvent(el, e, calculate) {
 
     e = getNativeEvent(e);
 
-    if (e.zrX != null) {
+    if (e.qrX != null) {
         return e;
     }
 
@@ -211,7 +211,7 @@ export function normalizeEvent(el, e, calculate) {
 
     if (!isTouch) {
         clientToLocal(el, e, e, calculate);
-        e.zrDelta = (e.wheelDelta) ? e.wheelDelta / 120 : -(e.detail || 0) / 3;
+        e.qrDelta = (e.wheelDelta) ? e.wheelDelta / 120 : -(e.detail || 0) / 3;
     }
     else {
         var touch = eventType !== 'touchend'
@@ -249,13 +249,13 @@ export function addEventListener(el, name, handler) {
         // Just set console log level: verbose in chrome dev tool.
         // then the warning log will be printed when addEventListener called.
         // See https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
-        // We have not yet found a neat way to using passive. Because in zrender the dom event
+        // We have not yet found a neat way to using passive. Because in qrenderer the dom event
         // listener delegate all of the upper events of element. Some of those events need
         // to prevent default. For example, the feature `preventDefaultMouseMove` of echarts.
         // Before passive can be adopted, these issues should be considered:
-        // (1) Whether and how a zrender user specifies an event listener passive. And by default,
+        // (1) Whether and how a qrenderer user specifies an event listener passive. And by default,
         // passive or not.
-        // (2) How to tread that some zrender event listener is passive, and some is not. If
+        // (2) How to tread that some qrenderer event listener is passive, and some is not. If
         // we use other way but not preventDefault of mousewheel and touchmove, browser
         // compatibility should be handled.
 
@@ -282,7 +282,7 @@ export function removeEventListener(el, name, handler) {
 
 /**
  * preventDefault and stopPropagation.
- * Notice: do not use this method in zrender. It can only be
+ * Notice: do not use this method in qrenderer. It can only be
  * used by upper applications if necessary.
  *
  * @param {Event} e A mouse or touch event.

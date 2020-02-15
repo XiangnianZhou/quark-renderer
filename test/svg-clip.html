@@ -4,19 +4,19 @@
     <meta charset="utf-8" />
     <title>Image</title>
     <script src="./lib/config.js"></script>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
     <div id="main" style="width:1000px;height:800px;"></div>
 
     <script type="text/javascript">
-    // 初始化zrender
-    var zr = zrender.init(document.getElementById('main'), {
-        renderer: window.__ZRENDER__DEFAULT__RENDERER__ || 'svg'
+    // 初始化qrenderer
+    var qr = qrenderer.init(document.getElementById('main'), {
+        renderer: window.__QRENDER__DEFAULT__RENDERER__ || 'svg'
     });
 
-    var rect = new zrender.Rect({
+    var rect = new qrenderer.Rect({
         shape: {
             x: 10,
             y: 10,
@@ -25,7 +25,7 @@
         }
     });
 
-    var circle = new zrender.Circle({
+    var circle = new qrenderer.Circle({
         shape: {
             cx: 80,
             cy: 30,
@@ -33,7 +33,7 @@
         }
     });
     rect.setClipPath(circle);
-    zr.add(rect);
+    qr.add(rect);
 
     setTimeout(function () {
         rect.removeClipPath();
@@ -43,7 +43,7 @@
         rect.setClipPath(circle);
     }, 12000);
 
-    var rect2 = new zrender.Rect({
+    var rect2 = new qrenderer.Rect({
         shape: {
             x: 100,
             y: 10,
@@ -52,7 +52,7 @@
         }
     });
     rect2.setClipPath(circle);
-    zr.add(rect2);
+    qr.add(rect2);
 
     setTimeout(function () {
         rect2.removeClipPath();
@@ -62,7 +62,7 @@
         heart.removeClipPath();
     }, 3000);
 
-    var ring = new zrender.Ring({
+    var ring = new qrenderer.Ring({
         shape: {
             cx: 250,
             cy: 50,
@@ -71,7 +71,7 @@
         }
     });
 
-    var heart = new zrender.Heart({
+    var heart = new qrenderer.Heart({
         shape: {
             cx: 250,
             cy: 25,
@@ -80,14 +80,14 @@
         }
     });
     heart.setClipPath(ring);
-    zr.add(heart);
+    qr.add(heart);
 
     setTimeout(function () {
         heart.removeClipPath();
     }, 3000);
 
 
-    var image = new zrender.Image({
+    var image = new qrenderer.Image({
         style: {
             x: 310,
             y: 10,
@@ -97,7 +97,7 @@
         }
     });
 
-    var imgClip = new zrender.Circle({
+    var imgClip = new qrenderer.Circle({
         shape: {
             cx: 380,
             cy: 30,
@@ -106,10 +106,10 @@
     });
     image.setClipPath(imgClip);
 
-    zr.add(image);
+    qr.add(image);
 
 
-    var text = new zrender.Text({
+    var text = new qrenderer.Text({
         style: {
             x: 400,
             y: 10,
@@ -118,7 +118,7 @@
         }
     });
 
-    var textClip = new zrender.Rect({
+    var textClip = new qrenderer.Rect({
         shape: {
             x: 420,
             y: 20,
@@ -128,10 +128,10 @@
     });
     text.setClipPath(textClip);
 
-    zr.add(text);
+    qr.add(text);
 
 
-    var text2 = new zrender.Rect({
+    var text2 = new qrenderer.Rect({
         shape: {
             x: 20,
             y: 20,
@@ -146,7 +146,7 @@
         },
         position: [400, 20]
     });
-    var text2Clip1 = new zrender.Rect({
+    var text2Clip1 = new qrenderer.Rect({
         shape: {
             x: 20,
             y: 20,
@@ -154,7 +154,7 @@
             height: 80
         }
     });
-    var text2Clip2 = new zrender.Rect({
+    var text2Clip2 = new qrenderer.Rect({
         shape: {
             x: 140,
             y: 20,
@@ -163,7 +163,7 @@
         }
     });
 
-    var bound = new zrender.Circle({
+    var bound = new qrenderer.Circle({
         shape: {
             cx: 120,
             cy: 70,
@@ -174,7 +174,7 @@
         }
     });
 
-    var group = new zrender.CompoundPath({
+    var group = new qrenderer.CompoundPath({
         shape: {
             paths: [text2Clip1, text2Clip2]
         },
@@ -187,9 +187,9 @@
 
     text2.setClipPath(group);
 
-    zr.add(text2);
+    qr.add(text2);
 
-    var parent = new zrender.Rect({
+    var parent = new qrenderer.Rect({
         shape: {
             x: 10,
             y: 10,
@@ -202,9 +202,9 @@
             fill: 'red'
         }
     });
-    zr.add(parent);
+    qr.add(parent);
 
-    var child = new zrender.Circle({
+    var child = new qrenderer.Circle({
         shape: {
             cx: 110,
             cy: 110,

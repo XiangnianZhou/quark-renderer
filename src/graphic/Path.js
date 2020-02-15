@@ -6,7 +6,7 @@ import * as pathContain from '../core/contain/path';
 import Pattern from './Pattern';
 
 /**
- * @class zrender.graphic.Path 
+ * @class qrenderer.graphic.Path 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 class Path extends Displayable{
@@ -303,7 +303,7 @@ class Path extends Displayable{
 
         this.__dirty = this.__dirtyText = true;
 
-        this.__zr && this.__zr.refresh();
+        this.__qr && this.__qr.refresh();
 
         // Used as a clipping path
         if (this.__clipTarget) {

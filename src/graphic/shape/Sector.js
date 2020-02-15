@@ -3,7 +3,7 @@ import fixClipWithShadow from '../utils/fixClipWithShadow';
 import * as dataUtil from '../../core/utils/dataStructureUtil';
 
 /**
- * @class zrender.graphic.shape.Sector 
+ * @class qrenderer.graphic.shape.Sector 
  * 扇形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */

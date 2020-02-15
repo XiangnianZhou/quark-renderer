@@ -6,7 +6,7 @@ import * as textContain from '../core/contain/text';
 import * as textUtil from '../graphic/utils/textUtil';
 import RectText from '../graphic/RectText';
 import Displayable from '../graphic/Displayable';
-import ZImage from '../graphic/Image';
+import QImage from '../graphic/Image';
 import Text from '../graphic/Text';
 import Path from '../graphic/Path';
 import PathProxy from '../graphic/PathProxy';
@@ -89,7 +89,7 @@ if (!env.canvasSupported) {
         ];
     };
 
-    let updateFillNode = function (el, style, zrEl) {
+    let updateFillNode = function (el, style, qrEl) {
         // TODO pattern
         let fill = style.fill;
         if (fill != null) {
@@ -102,12 +102,12 @@ if (!env.canvasSupported) {
                 let shift = 0;
                 // scale factor for offset
                 let expansion = 1;
-                let rect = zrEl.getBoundingRect();
+                let rect = qrEl.getBoundingRect();
                 let rectWidth = rect.width;
                 let rectHeight = rect.height;
                 if (fill.type === 'linear') {
                     gradientType = 'gradient';
-                    let transform = zrEl.transform;
+                    let transform = qrEl.transform;
                     let p0 = [fill.x * rectWidth, fill.y * rectHeight];
                     let p1 = [fill.x2 * rectWidth, fill.y2 * rectHeight];
                     if (transform) {
@@ -131,8 +131,8 @@ if (!env.canvasSupported) {
                 else {
                     gradientType = 'gradientradial';
                     let p0 = [fill.x * rectWidth, fill.y * rectHeight];
-                    let transform = zrEl.transform;
-                    let scale = zrEl.scale;
+                    let transform = qrEl.transform;
+                    let scale = qrEl.scale;
                     let width = rectWidth;
                     let height = rectHeight;
                     focus = [
@@ -219,7 +219,7 @@ if (!env.canvasSupported) {
         }
     };
 
-    let updateFillAndStroke = function (vmlEl, type, style, zrEl) {
+    let updateFillAndStroke = function (vmlEl, type, style, qrEl) {
         let isFill = type === 'fill';
         let el = vmlEl.getElementsByTagName(type)[0];
         // Stroke must have lineWidth
@@ -233,7 +233,7 @@ if (!env.canvasSupported) {
                 el = vmlCore.createNode(type);
             }
 
-            isFill ? updateFillNode(el, style, zrEl) : updateStrokeNode(el, style);
+            isFill ? updateFillNode(el, style, qrEl) : updateStrokeNode(el, style);
             append(vmlEl, el);
         }
         else {
@@ -451,7 +451,7 @@ if (!env.canvasSupported) {
     };
 
     /**
-     * @class zrender.vml.Path
+     * @class qrenderer.vml.Path
      * 
      * Append brushVML method to standard shape classes inside graphic package, VMLPainter will
      * use this method instead of standard brush() method.
@@ -534,12 +534,12 @@ if (!env.canvasSupported) {
     };
 
     /**
-     * @class zrender.vml.ZImage
+     * @class qrenderer.vml.QImage
      * 
      * @docauthor 大漠穷秋 damoqiongqiu@126.com
      */
     // Rewrite the original path method
-    ZImage.prototype.brushVML = function (vmlRoot) {
+    QImage.prototype.brushVML = function (vmlRoot) {
         let style = this.style;
         let image = style.image;
 
@@ -745,7 +745,7 @@ if (!env.canvasSupported) {
         }
     };
 
-    ZImage.prototype.onRemove = function (vmlRoot) {
+    QImage.prototype.onRemove = function (vmlRoot) {
         remove(vmlRoot, this._vmlEl);
 
         this._vmlEl = null;
@@ -755,7 +755,7 @@ if (!env.canvasSupported) {
         this.removeRectText(vmlRoot);
     };
 
-    ZImage.prototype.onAdd = function (vmlRoot) {
+    QImage.prototype.onAdd = function (vmlRoot) {
         append(vmlRoot, this._vmlEl);
         this.appendRectText(vmlRoot);
     };
@@ -1044,7 +1044,7 @@ if (!env.canvasSupported) {
         append(vmlRoot, this._textVmlEl);
     };
 
-    let list = [RectText, Displayable, ZImage, Path, Text];
+    let list = [RectText, Displayable, QImage, Path, Text];
 
     // In case Displayable has been mixed in RectText
     for (let i = 0; i < list.length; i++) {
@@ -1055,7 +1055,7 @@ if (!env.canvasSupported) {
     }
 
     /**
-     * @class zrender.vml.Text
+     * @class qrenderer.vml.Text
      * 
      * @docauthor 大漠穷秋 damoqiongqiu@126.com
      */

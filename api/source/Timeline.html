@@ -23,15 +23,15 @@ function _defineProperties(target, props) { for (var i = 0; i &lt; props.length;
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-<span id='zrender-animation-Timeline'>/**
-</span> * @class zrender.animation.Timeline
+<span id='qrenderer-animation-Timeline'>/**
+</span> * @class qrenderer.animation.Timeline
  * Timeline，时间线，用来计算元素上的某个属性在指定时间点的数值。
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 var Timeline =
 /*#__PURE__*/
 function () {
-<span id='zrender-animation-Timeline-method-constructor'>  /**
+<span id='qrenderer-animation-Timeline-method-constructor'>  /**
 </span>   * @method constructor Timeline
    * @param {Object} options 
    * @param {Element} options.target 动画对象，可以是数组，如果是数组的话会批量分发onframe等事件
@@ -60,7 +60,7 @@ function () {
     this._pausedTime = 0;
     this._paused = false;
   }
-<span id='zrender-animation-Timeline-method-nextFrame'>  /**
+<span id='qrenderer-animation-Timeline-method-nextFrame'>  /**
 </span>   * @method nextFrame
    * 进入下一帧
    * @param {Number} globalTime 当前时间
@@ -108,7 +108,7 @@ function () {
 
       return percent;
     }
-<span id='zrender-animation-Timeline-method-restart'>    /**
+<span id='qrenderer-animation-Timeline-method-restart'>    /**
 </span>     * @method restart
      * 重新开始
      * @param {Number} globalTime 
@@ -121,7 +121,7 @@ function () {
       this._startTime = globalTime - remainder + this.gap;
       this._pausedTime = 0;
     }
-<span id='zrender-animation-Timeline-method-fire'>    /**
+<span id='qrenderer-animation-Timeline-method-fire'>    /**
 </span>     * @method fire
      * 触发事件
      * @param {String} eventType 
@@ -137,7 +137,7 @@ function () {
         this[eventType](this._target, arg);
       }
     }
-<span id='zrender-animation-Timeline-method-pause'>    /**
+<span id='qrenderer-animation-Timeline-method-pause'>    /**
 </span>     * @method pause
      * 暂停
      */
@@ -147,7 +147,7 @@ function () {
     value: function pause() {
       this._paused = true;
     }
-<span id='zrender-animation-Timeline-method-resume'>    /**
+<span id='qrenderer-animation-Timeline-method-resume'>    /**
 </span>     * @method resume
      * 恢复运行
      */

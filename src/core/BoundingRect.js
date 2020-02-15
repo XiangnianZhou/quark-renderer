@@ -2,7 +2,7 @@ import * as vec2 from './utils/vector';
 import * as matrix from './utils/matrix';
 
 /**
- * @class zrender.core.BoundingRect
+ * @class qrenderer.core.BoundingRect
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 let v2ApplyTransform = vec2.applyTransform;

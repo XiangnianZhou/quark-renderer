@@ -1,8 +1,8 @@
 import {createElement} from '../core';
 import * as dataUtil from '../../core/utils/dataStructureUtil';
 import Path from '../../graphic/Path';
-import ZImage from '../../graphic/Image';
-import ZText from '../../graphic/Text';
+import QImage from '../../graphic/Image';
+import QText from '../../graphic/Text';
 import {
     path as svgPath,
     image as svgImage,
@@ -10,7 +10,7 @@ import {
 } from '../graphic';
 
 /**
- * @class zrender.svg.helper.Definable
+ * @class qrenderer.svg.helper.Definable
  * 
  * Manages elements that can be defined in <defs> in SVG,
  *       e.g., gradients, clip path, etc.
@@ -28,14 +28,14 @@ class Definable{
      * Manages elements that can be defined in <defs> in SVG,
      * e.g., gradients, clip path, etc.
      *
-     * @param {Number}          zrId      zrender instance id
+     * @param {Number}          qrId      qrenderer instance id
      * @param {SVGElement}      svgRoot   root of SVG document
      * @param {String|String[]} tagNames  possible tag names
      * @param {String}          markLabel label name to make if the element
      *                                    is used
      */
-    constructor(zrId,svgRoot,tagNames,markLabel,domName) {
-        this._zrId = zrId;
+    constructor(qrId,svgRoot,tagNames,markLabel,domName) {
+        this._qrId = qrId;
         this._svgRoot = svgRoot;
         this._tagNames = typeof tagNames === 'string' ? [tagNames] : tagNames;
         this._markLabel = markLabel;
@@ -230,10 +230,10 @@ class Definable{
         if (displayable instanceof Path) {
             return svgPath;
         }
-        else if (displayable instanceof ZImage) {
+        else if (displayable instanceof QImage) {
             return svgImage;
         }
-        else if (displayable instanceof ZText) {
+        else if (displayable instanceof QText) {
             return svgText;
         }
         else {

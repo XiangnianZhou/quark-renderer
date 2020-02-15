@@ -7,7 +7,7 @@ if (typeof window !== 'undefined') {
 
 /**
  * config默认配置项
- * @exports zrender/config
+ * @exports qrenderer/config
  * @author Kener (@Kener-林峰, kener.linfeng@gmail.com)
  */
 

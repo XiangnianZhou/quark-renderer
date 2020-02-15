@@ -23,7 +23,7 @@ var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
 
 var imageHelper = require(&quot;./utils/image&quot;);
 
-function _typeof(obj) { if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
 
@@ -41,8 +41,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== &quot;funct
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-<span id='zrender-graphic-ZImage'>/**
-</span> * @class zrender.graphic.ZImage 
+<span id='qrenderer-graphic-ZImage'>/**
+</span> * @class qrenderer.graphic.ZImage 
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 var ZImage =
@@ -50,7 +50,7 @@ var ZImage =
 function (_Displayable) {
   _inherits(ZImage, _Displayable);
 
-<span id='zrender-graphic-ZImage-method-constructor'>  /**
+<span id='qrenderer-graphic-ZImage-method-constructor'>  /**
 </span>   * @method constructor ZImage
    * @param {Object} options
    */
@@ -60,14 +60,14 @@ function (_Displayable) {
     _classCallCheck(this, ZImage);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(ZImage).call(this, options));
-<span id='zrender-graphic-ZImage-property-type'>    /**
+<span id='qrenderer-graphic-ZImage-property-type'>    /**
 </span>     * @property {String}
      */
 
     _this.type = &#39;image&#39;;
     return _this;
   }
-<span id='zrender-graphic-ZImage-method-brush'>  /**
+<span id='qrenderer-graphic-ZImage-method-brush'>  /**
 </span>   * @method brush
    * @param {Object} ctx 
    * @param {Element} prevEl 
@@ -127,7 +127,7 @@ function (_Displayable) {
         this.drawRectText(ctx, this.getBoundingRect());
       }
     }
-<span id='zrender-graphic-ZImage-method-getBoundingRect'>    /**
+<span id='qrenderer-graphic-ZImage-method-getBoundingRect'>    /**
 </span>     * @method getBoundingRect
      */
 

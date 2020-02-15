@@ -1,8 +1,8 @@
 import {createElement} from './core';
 import * as dataUtil from '../core/utils/dataStructureUtil';
 import Path from '../graphic/Path';
-import ZImage from '../graphic/Image';
-import ZText from '../graphic/Text';
+import QImage from '../graphic/Image';
+import QText from '../graphic/Text';
 import arrayDiff from '../core/utils/arrayDiff2';
 import GradientManager from './helper/GradientManager';
 import ClippathManager from './helper/ClippathManager';
@@ -14,7 +14,7 @@ import {
 } from './graphic';
 
 /**
- * @class zrender.svg.SVGPainter
+ * @class qrenderer.svg.SVGPainter
  * 
  * SVG 画笔。
  * 
@@ -25,16 +25,16 @@ import {
  * @private
  * @method getSvgProxy
  * 
- * ZImage 映射成 svgImage，ZText 映射成 svgText，其它所有都映射成 svgPath。
+ * QImage 映射成 svgImage，ZText 映射成 svgText，其它所有都映射成 svgPath。
  * 
  * @param {Element} el 
  */
 function getSvgProxy(el) {
     if (el instanceof Path) {
         return svgPath;
-    }else if (el instanceof ZImage) {
+    }else if (el instanceof QImage) {
         return svgImage;
-    }else if (el instanceof ZText) {
+    }else if (el instanceof QText) {
         return svgText;
     }
     return svgPath;
@@ -80,7 +80,7 @@ function getSvgElement(displayable) {
  * @param {Storage} storage
  * @param {Object} opts
  */
-let SVGPainter = function (root, storage, opts, zrId) {
+let SVGPainter = function (root, storage, opts, qrId) {
     this.root = root;
     this.storage = storage;
     this._opts = opts = dataUtil.extend({}, opts || {});
@@ -91,9 +91,9 @@ let SVGPainter = function (root, storage, opts, zrId) {
     svgRoot.setAttribute('baseProfile', 'full');
     svgRoot.style.cssText = 'user-select:none;position:absolute;left:0;top:0;';
 
-    this.gradientManager = new GradientManager(zrId, svgRoot);
-    this.clipPathManager = new ClippathManager(zrId, svgRoot);
-    this.shadowManager = new ShadowManager(zrId, svgRoot);
+    this.gradientManager = new GradientManager(qrId, svgRoot);
+    this.clipPathManager = new ClippathManager(qrId, svgRoot);
+    this.shadowManager = new ShadowManager(qrId, svgRoot);
 
     let viewport = document.createElement('div');
     viewport.style.cssText = 'overflow:hidden;position:relative';
@@ -239,7 +239,7 @@ SVGPainter.prototype = {
                     prevSvgElement = textSvgElement || svgElement
                         || prevSvgElement;
 
-                    // zrender.Text only create textSvgElement.
+                    // qrenderer.Text only create textSvgElement.
                     this.gradientManager.addWithoutUpdate(svgElement || textSvgElement, displayable);
                     this.shadowManager.addWithoutUpdate(svgElement || textSvgElement, displayable);
                     this.clipPathManager.markUsed(displayable);

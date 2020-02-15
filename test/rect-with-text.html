@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <script src="./lib/testHelper.js"></script>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
     <style>
         html {
             font-family: Arial;
@@ -293,7 +293,7 @@
                 var textVerticalAlign = _storage.textVerticalAlign;
                 for (var i = 0; i < _elList1.length; i++) {
                     var shape = _elList1[i];
-                    var text = shape.__zr_test_text;
+                    var text = shape.__qr_test_text;
                     text = text.substr(0, 3) + '\n' + text.substr(3, text.length - 1);
                     shape.attr({
                         style: {
@@ -317,7 +317,7 @@
                     var shape = _elList1[i];
                     var text = '';
                     for (var j = 0; j < 5; j++) {
-                        text += shape.__zr_test_text;
+                        text += shape.__qr_test_text;
                     }
                     shape.attr({
                         style: {
@@ -337,7 +337,7 @@
 
 
     <script type="text/javascript">
-        var clone = zrender.util.clone;
+        var clone = qrenderer.util.clone;
         var encodeHTML = testHelper.encodeHTML;
         var _timer;
         var _storage = {};
@@ -352,16 +352,16 @@
         }
 
         function initBase() {
-            var zr1 = zrender.init(document.getElementById('main1'), {
-                renderer: window.__ZRENDER__DEFAULT__RENDERER__
+            var qr1 = qrenderer.init(document.getElementById('main1'), {
+                renderer: window.__QRENDER__DEFAULT__RENDERER__
             });
 
             var text = 'ThisIsText中文';
-            var group = new zrender.Group({
+            var group = new qrenderer.Group({
                 position: [200, 50]
             });
-            zr1.add(group);
-            group.add(new zrender.Rect({
+            qr1.add(group);
+            group.add(new qrenderer.Rect({
                 style: {
                     fill: 'green'
                 },
@@ -369,8 +369,8 @@
                     x: 0, y: 0, width: 300, height: 100
                 }
             }));
-            var textEl = new zrender.Text({
-                __zr_test_text: text,
+            var textEl = new qrenderer.Text({
+                __qr_test_text: text,
                 style: {
                     text: text
                 }
@@ -378,11 +378,11 @@
             group.add(textEl);
             _elList1.push(textEl);
 
-            var group2 = new zrender.Group({
+            var group2 = new qrenderer.Group({
                 position: [200, 350]
             });
-            zr1.add(group2);
-            group2.add(new zrender.Rect({
+            qr1.add(group2);
+            group2.add(new qrenderer.Rect({
                 shape: {
                     x: 0, y: 0, width: 300, height: 100
                 },
@@ -390,7 +390,7 @@
                     fill: 'rgba(22, 55, 99)'
                 }
             }));
-            var textEl2 = new zrender.Text({
+            var textEl2 = new qrenderer.Text({
                 style: {
                     fill: '#eeaaff',
                     text: [

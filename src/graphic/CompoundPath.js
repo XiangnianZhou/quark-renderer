@@ -1,6 +1,6 @@
 import Path from './Path';
 /**
- * @class zrender.graphic.CompoundPath 
+ * @class qrenderer.graphic.CompoundPath 
  * 
  * CompoundPath to improve performance.
  * 

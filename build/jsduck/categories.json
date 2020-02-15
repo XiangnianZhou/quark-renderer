@@ -1,11 +1,11 @@
 [
   {
-    "name": "ZRender API",
+    "name": "Quark Renderer API",
     "groups": [
       {
         "name": "内核",
         "classes": [
-          "zrender.core.ZRender"
+          "qrenderer.core.QuarkRenderer"
         ]
       }
     ]

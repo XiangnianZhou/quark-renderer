@@ -1,6 +1,6 @@
 /**
  * @abstract
- * @class zrender.event.Eventful
+ * @class qrenderer.event.Eventful
  * 
  * Provide event system for the classes that do not support events, the implementation here
  * is similar to DOM events, the classes which need event support should mixin the functions
@@ -316,7 +316,7 @@ function on(eventful, event, query, handler, context, isOnce) {
         ctx: context || eventful,
         // FIXME
         // Do not publish this feature util it is proved that it makes sense.
-        callAtLast: handler.zrEventfulCallAtLast
+        callAtLast: handler.qrEventfulCallAtLast
     };
 
     let lastIndex = _h[event].length - 1;

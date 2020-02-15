@@ -1,5 +1,5 @@
 /**
- * @class zrender.graphic.Pattern
+ * @class qrenderer.graphic.Pattern
  * 
  * Pattern
  * 

@@ -4,7 +4,7 @@ import * as classUtil from '../../core/utils/classUtil';
 import * as colorTool from '../../core/utils/colorUtil';
 
 /**
- * @class zrender.svg.helper.GradientManager
+ * @class qrenderer.svg.helper.GradientManager
  * 
  * Manages SVG gradient elements.
  * 
@@ -17,12 +17,12 @@ class GradientManager extends Definable{
      * @method constructor GradientManager
      * Manages SVG gradient elements.
      *
-     * @param   {Number}     zrId    zrender instance id
+     * @param   {Number}     qrId    qrenderer instance id
      * @param   {SVGElement} svgRoot root of SVG document
      */
-    constructor(zrId, svgRoot){
+    constructor(qrId, svgRoot){
         super(
-            zrId,
+            qrId,
             svgRoot,
             ['linearGradient', 'radialGradient'],
             '__gradient_in_use__'
@@ -35,7 +35,7 @@ class GradientManager extends Definable{
      * but will not update gradient if exists.
      *
      * @param {SvgElement}  svgElement   SVG element to paint
-     * @param {Displayable} displayable  zrender displayable element
+     * @param {Displayable} displayable  qrenderer displayable element
      */
     addWithoutUpdate(svgElement,displayable) {
         if (displayable && displayable.style) {
@@ -77,7 +77,7 @@ class GradientManager extends Definable{
      * 
      * Add a new gradient tag in <defs>
      *
-     * @param   {Gradient} gradient zr gradient instance
+     * @param   {Gradient} gradient qr gradient instance
      * @return {SVGLinearGradientElement | SVGRadialGradientElement} created DOM
      */
     add(gradient) {
@@ -97,7 +97,7 @@ class GradientManager extends Definable{
         // id should remain the same, and other attributes should be
         // updated.
         gradient.id = gradient.id || this.nextId++;
-        dom.setAttribute('id', `zr${this._zrId}-gradient-${gradient.id}`);
+        dom.setAttribute('id', `qr${this._qrId}-gradient-${gradient.id}`);
         this.updateDom(gradient, dom);
         this.addDom(dom);
         return dom;
@@ -108,7 +108,7 @@ class GradientManager extends Definable{
      * 
      * Update gradient.
      *
-     * @param {Gradient} gradient zr gradient instance
+     * @param {Gradient} gradient qr gradient instance
      */
     update(gradient) {
         var that = this;
@@ -133,7 +133,7 @@ class GradientManager extends Definable{
      * 
      * Update gradient dom
      *
-     * @param {Gradient} gradient zr gradient instance
+     * @param {Gradient} gradient qr gradient instance
      * @param {SVGLinearGradientElement | SVGRadialGradientElement} dom
      *                            DOM to update
      */

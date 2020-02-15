@@ -3,7 +3,7 @@ import * as dataUtil from '../core/utils/dataStructureUtil';
 import {each} from '../core/utils/dataStructureUtil';
 
 /**
- * @class zrender.svg.VMLPainter
+ * @class qrenderer.svg.VMLPainter
  * 
  * VMLPainter.
  * 

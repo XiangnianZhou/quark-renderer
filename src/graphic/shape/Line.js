@@ -3,7 +3,7 @@ import {subPixelOptimizeLine} from '../utils/subPixelOptimize';
 import * as dataUtil from '../../core/utils/dataStructureUtil';
 
 /**
- * @class zrender.graphic.shape.Line 
+ * @class qrenderer.graphic.shape.Line 
  * 直线
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */

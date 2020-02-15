@@ -5,9 +5,9 @@ import * as classUtil from '../core/utils/classUtil';
 import env from '../core/env';
 
 /**
- * @class zrender.event.DomEventProxy
- * DomEventProxy 的主要功能是：把原生的 DOM 事件代理（转发）到 ZRender 实例上，
- * 在 ZRenderEventHandler 类中会把事件进一步分发给 canvas 中绘制的元素。
+ * @class qrenderer.event.DomEventProxy
+ * DomEventProxy 的主要功能是：把原生的 DOM 事件代理（转发）到 QuarkRender 实例上，
+ * 在 QuarkRendererEventHandler 类中会把事件进一步分发给 canvas 中绘制的元素。
  * 需要转发的大部分 DOM 事件挂载在 canvas 的外层容器 div 上面，例如：click, dbclick ；
  * 少部分 DOM 事件挂载在 document 对象上，例如：mousemove, mouseout。因为在实现拖拽和
  * 键盘交互的过程中，鼠标指针可能已经脱离了 canvas 所在的区域。
@@ -22,42 +22,42 @@ let pageEventSupported = env.domSupported;
  * [Page Event]
  * "page events" are `pagemousemove` and `pagemouseup`.
  * They are triggered when a user pointer interacts on the whole webpage
- * rather than only inside the zrender area.
+ * rather than only inside the qrenderer area.
  *
  * The use case of page events can be, for example, if we are implementing a dragging feature:
  * ```js
- * zr.on('mousedown', function (event) {
+ * qr.on('mousedown', function (event) {
  *     let dragging = true;
  *
  *     // Listen to `pagemousemove` and `pagemouseup` rather than `mousemove` and `mouseup`,
  *     // because `mousemove` and `mouseup` will not be triggered when the pointer is out
- *     // of the zrender area.
- *     zr.on('pagemousemove', handleMouseMove);
- *     zr.on('pagemouseup', handleMouseUp);
+ *     // of the qrenderer area.
+ *     qr.on('pagemousemove', handleMouseMove);
+ *     qr.on('pagemouseup', handleMouseUp);
  *
  *     function handleMouseMove(event) {
  *         if (dragging) { ... }
  *     }
  *     function handleMouseUp(event) {
  *         dragging = false; ...
- *         zr.off('pagemousemove', handleMouseMove);
- *         zr.off('pagemouseup', handleMouseUp);
+ *         qr.off('pagemousemove', handleMouseMove);
+ *         qr.off('pagemouseup', handleMouseUp);
  *     }
  * });
  * ```
  *
  * [NOTICE]:
  * (1) There are cases that `pagemousexxx` will not be triggered when the pointer is out of
- * zrender area:
+ * qrenderer area:
  * "document.eventUtil.addEventListener" is not available in the current runtime environment,
  * or there is any `stopPropagation` called at some user defined listeners on the ancestors
- * of the zrender dom.
+ * of the qrenderer dom.
  * (2) Although those bad cases exist, users do not need to worry about that. That is, if you
  * listen to `pagemousexxx`, you do not need to listen to the correspoinding event `mousexxx`
  * any more.
- * Becuase inside zrender area, `pagemousexxx` will always be triggered, where they are
+ * Becuase inside qrenderer area, `pagemousexxx` will always be triggered, where they are
  * triggered just after `mousexxx` triggered and sharing the same event object. Those bad
- * cases only happen when the pointer is out of zrender area.
+ * cases only happen when the pointer is out of qrenderer area.
  */
 let localNativeListenerNames = (function () {
     let mouseHandlerNames = [
@@ -120,17 +120,17 @@ function setTouchTimer(scope) {
 }
 
 function markTriggeredFromLocal(event) {
-    event && (event.zrIsFromLocal = true);
+    event && (event.qrIsFromLocal = true);
 }
 
 function isTriggeredFromLocal(event) {
-    return !!(event && event.zrIsFromLocal);
+    return !!(event && event.qrIsFromLocal);
 }
 
 // Mark touch, which is useful in distinguish touch and
 // mouse event in upper applicatoin.
 function markTouch(event) {
-    event && (event.zrByTouch = true);
+    event && (event.qrByTouch = true);
 }
 
 
@@ -160,7 +160,7 @@ let localDOMHandlers = {
             }
         }
 
-        // 这里的 trigger() 方法是从 Eventful 里面的 mixin 进来的，调用这个 trigger() 方法的时候，是在 ZRender 内部，也就是 canvas 里面触发事件。
+        // 这里的 trigger() 方法是从 Eventful 里面的 mixin 进来的，调用这个 trigger() 方法的时候，是在 QuarkRender 内部，也就是 canvas 里面触发事件。
         // 这里实现的目的是：把接受到的 HTML 事件转发到了 canvas 内部。
         this.trigger('mouseout', event);
     },
@@ -258,8 +258,8 @@ let localDOMHandlers = {
 };
 
 /**
- * Othere DOM UI Event handlers for zr dom.
- * ZRender 内部的 DOM 结构默认支持以下7个事件。
+ * Othere DOM UI Event handlers for qr dom.
+ * QuarkRender 内部的 DOM 结构默认支持以下7个事件。
  * @this {DomEventProxy}
  */
 dataUtil.each(['click', 'mousemove', 'mousedown', 

@@ -27,7 +27,7 @@ var pathContain = require(&quot;../core/contain/path&quot;);
 
 var Pattern = require(&quot;./Pattern&quot;);
 
-function _typeof(obj) { if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
 
@@ -45,8 +45,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== &quot;funct
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-<span id='zrender-graphic-Path'>/**
-</span> * @class zrender.graphic.Path 
+<span id='qrenderer-graphic-Path'>/**
+</span> * @class qrenderer.graphic.Path 
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 var Path =
@@ -54,7 +54,7 @@ var Path =
 function (_Displayable) {
   _inherits(Path, _Displayable);
 
-<span id='zrender-graphic-Path-method-constructor'>  /**
+<span id='qrenderer-graphic-Path-method-constructor'>  /**
 </span>   * @method constructor Path
    * @param {Object} options
    */
@@ -64,29 +64,29 @@ function (_Displayable) {
     _classCallCheck(this, Path);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Path).call(this, options));
-<span id='zrender-graphic-Path-property-path'>    /**
+<span id='qrenderer-graphic-Path-property-path'>    /**
 </span>     * @property {PathProxy}
      * @readOnly
      */
 
     _this.path = null;
-<span id='zrender-graphic-Path-property-type'>    /**
+<span id='qrenderer-graphic-Path-property-type'>    /**
 </span>     * @property {String} type
      */
 
     _this.type = &#39;path&#39;;
-<span id='zrender-graphic-Path-property-__dirtyPath'>    /**
+<span id='qrenderer-graphic-Path-property-__dirtyPath'>    /**
 </span>     * @private
      * @property __dirtyPath
      */
 
     _this.__dirtyPath = true;
-<span id='zrender-graphic-Path-property-strokeContainThreshold'>    /**
+<span id='qrenderer-graphic-Path-property-strokeContainThreshold'>    /**
 </span>     * @property {Number} strokeContainThreshold
      */
 
     _this.strokeContainThreshold = 5;
-<span id='zrender-graphic-Path-property-segmentIgnoreThreshold'>    /**
+<span id='qrenderer-graphic-Path-property-segmentIgnoreThreshold'>    /**
 </span>     * @property {Number} segmentIgnoreThreshold
      * This item default to be false. But in map series in echarts,
      * in order to improve performance, it should be set to true,
@@ -94,7 +94,7 @@ function (_Displayable) {
      */
 
     _this.segmentIgnoreThreshold = 0;
-<span id='zrender-graphic-Path-property-subPixelOptimize'>    /**
+<span id='qrenderer-graphic-Path-property-subPixelOptimize'>    /**
 </span>     * @property {Boolean} subPixelOptimize
      * See `subPixelOptimize`.
      */
@@ -103,7 +103,7 @@ function (_Displayable) {
     classUtil.copyOwnProperties(_assertThisInitialized(_this), _this.options, [&#39;style&#39;, &#39;shape&#39;]);
     return _this;
   }
-<span id='zrender-graphic-Path-method-brush'>  /**
+<span id='qrenderer-graphic-Path-method-brush'>  /**
 </span>   * @method brush
    * @param {Object} ctx 
    * @param {Element} prevEl 
@@ -224,7 +224,7 @@ function (_Displayable) {
         this.drawRectText(ctx, this.getBoundingRect());
       }
     }
-<span id='zrender-graphic-Path-method-buildPath'>    /**
+<span id='qrenderer-graphic-Path-method-buildPath'>    /**
 </span>     * @method buildPath
      * 
      * Each subclass should provide its own implement for this method.
@@ -241,7 +241,7 @@ function (_Displayable) {
   }, {
     key: &quot;buildPath&quot;,
     value: function buildPath(ctx, shapeCfg, inBundle) {}
-<span id='zrender-graphic-Path-method-createPathProxy'>    /**
+<span id='qrenderer-graphic-Path-method-createPathProxy'>    /**
 </span>     * @method createPathProxy
      */
 
@@ -250,7 +250,7 @@ function (_Displayable) {
     value: function createPathProxy() {
       this.path = new PathProxy();
     }
-<span id='zrender-graphic-Path-method-getBoundingRect'>    /**
+<span id='qrenderer-graphic-Path-method-getBoundingRect'>    /**
 </span>     * @protected
      * @method getBoundingRect
      */
@@ -313,7 +313,7 @@ function (_Displayable) {
 
       return rect;
     }
-<span id='zrender-graphic-Path-method-contain'>    /**
+<span id='qrenderer-graphic-Path-method-contain'>    /**
 </span>     * @method contain
      * @param {*} x 
      * @param {*} y 
@@ -354,7 +354,7 @@ function (_Displayable) {
 
       return false;
     }
-<span id='zrender-graphic-Path-method-dirty'>    /**
+<span id='qrenderer-graphic-Path-method-dirty'>    /**
 </span>     * @protected
      * @method dirty
      * @param  {Boolean} dirtyPath
@@ -374,13 +374,13 @@ function (_Displayable) {
       }
 
       this.__dirty = this.__dirtyText = true;
-      this.__zr &amp;&amp; this.__zr.refresh(); // Used as a clipping path
+      this.__qr &amp;&amp; this.__qr.refresh(); // Used as a clipping path
 
       if (this.__clipTarget) {
         this.__clipTarget.dirty();
       }
     }
-<span id='zrender-graphic-Path-method-animateShape'>    /**
+<span id='qrenderer-graphic-Path-method-animateShape'>    /**
 </span>     * @method animateShape
      * Alias for animate(&#39;shape&#39;)
      * @param {Boolean} loop
@@ -391,7 +391,7 @@ function (_Displayable) {
     value: function animateShape(loop) {
       return this.animate(&#39;shape&#39;, loop);
     }
-<span id='zrender-graphic-Path-method-attrKV'>    /**
+<span id='qrenderer-graphic-Path-method-attrKV'>    /**
 </span>     * @method attrKV
      * Overwrite attrKV
      * @param {*} key 
@@ -410,7 +410,7 @@ function (_Displayable) {
         Displayable.prototype.attrKV.call(this, key, value);
       }
     }
-<span id='zrender-graphic-Path-method-setShape'>    /**
+<span id='qrenderer-graphic-Path-method-setShape'>    /**
 </span>     * @method setShape
      * @param {Object|String} key
      * @param {Object} value
@@ -433,7 +433,7 @@ function (_Displayable) {
       this.dirty(true);
       return this;
     }
-<span id='zrender-graphic-Path-method-getLineScale'>    /**
+<span id='qrenderer-graphic-Path-method-getLineScale'>    /**
 </span>     * @method getLineScale
      */
 

@@ -1,5 +1,5 @@
 {
-  "--title": "ZRender API Documentation",
+  "--title": "Quark Renderer API Documentation",
   "--output": "../../api",
   "--categories": "./categories.json",
   "--examples": "./examples.json",
@@ -7,9 +7,9 @@
   "--image": "./resources",
   "--ignore-global": true,
   "--external": "jQuery,Promise",
-  "--footer": "https://github.com/damoqiongqiu/zrender",
+  "--footer": "https://github.com/damoqiongqiu/quark-renderer",
   "--": [
-    "../../lib/zrender.js",
+    "../../lib/quark-renderer.js",
     "../../lib/animation/Animatable.js",
     "../../lib/animation/AnimationProcess.js",
     "../../lib/animation/GlobalAnimationMgr.js",
@@ -18,7 +18,7 @@
     "../../lib/event/Eventful.js",
     "../../lib/event/DomEventProxy.js",
     "../../lib/event/MultiDragDrop.js",
-    "../../lib/event/ZRenderEventHandler.js",
+    "../../lib/event/QRendererEventHandler.js",
     "../../lib/Storage.js",
     "../../lib/CanvasPainter.js",
     "../../lib/CanvasLayer.js",

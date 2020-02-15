@@ -2,7 +2,7 @@ import * as textUtil from './utils/textUtil';
 import BoundingRect from '../core/BoundingRect';
 import {WILL_BE_RESTORED} from './constants';
 /**
- * @class zrender.graphic.RectText 
+ * @class qrenderer.graphic.RectText 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 

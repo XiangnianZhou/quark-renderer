@@ -2,7 +2,7 @@ import Path from '../Path';
 import * as dataUtil from '../../core/utils/dataStructureUtil';
 
 /**
- * @class zrender.graphic.shape.Droplet 
+ * @class qrenderer.graphic.shape.Droplet 
  * 水滴形状
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */

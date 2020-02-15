@@ -23,7 +23,7 @@ var curveUtil = require(&quot;../../core/utils/curveUtil&quot;);
 
 var dataUtil = require(&quot;../../core/utils/dataStructureUtil&quot;);
 
-function _typeof(obj) { if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
 
@@ -41,13 +41,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== &quot;funct
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-<span id='zrender-graphic-shape-BezierCurve'>/**
-</span> * @class zrender.graphic.shape.BezierCurve 
+<span id='qrenderer-graphic-shape-BezierCurve'>/**
+</span> * @class qrenderer.graphic.shape.BezierCurve 
  * 贝塞尔曲线
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 var defaultConfig = {
-<span id='zrender-graphic-shape-BezierCurve-property-type'>  /**
+<span id='qrenderer-graphic-shape-BezierCurve-property-type'>  /**
 </span>   * @property {String} type
    */
   type: &#39;bezier-curve&#39;,
@@ -83,7 +83,7 @@ var BezierCurve =
 function (_Path) {
   _inherits(BezierCurve, _Path);
 
-<span id='zrender-graphic-shape-BezierCurve-method-constructor'>  /**
+<span id='qrenderer-graphic-shape-BezierCurve-method-constructor'>  /**
 </span>   * @method constructor BezierCurve
    * @param {Object} options 
    */
@@ -92,7 +92,7 @@ function (_Path) {
 
     return _possibleConstructorReturn(this, _getPrototypeOf(BezierCurve).call(this, dataUtil.merge(defaultConfig, options, true)));
   }
-<span id='zrender-graphic-shape-BezierCurve-method-buildPath'>  /**
+<span id='qrenderer-graphic-shape-BezierCurve-method-buildPath'>  /**
 </span>   * @method buildPath
    * 绘制元素路径
    * @param {Object} ctx 
@@ -145,7 +145,7 @@ function (_Path) {
         ctx.bezierCurveTo(cpx1, cpy1, cpx2, cpy2, x2, y2);
       }
     }
-<span id='zrender-graphic-shape-BezierCurve-method-'>    /**
+<span id='qrenderer-graphic-shape-BezierCurve-method-'>    /**
 </span>     * Get point at percent
      * @param  {Number} t
      * @return {Array&lt;Number&gt;}
@@ -156,7 +156,7 @@ function (_Path) {
     value: function pointAt(t) {
       return someVectorAt(this.shape, t, false);
     }
-<span id='zrender-graphic-shape-BezierCurve-method-'>    /**
+<span id='qrenderer-graphic-shape-BezierCurve-method-'>    /**
 </span>     * Get tangent at percent
      * @param  {Number} t
      * @return {Array&lt;Number&gt;}

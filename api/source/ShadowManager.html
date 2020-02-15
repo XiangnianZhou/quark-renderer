@@ -19,7 +19,7 @@
 
 var classUtil = require(&quot;../../core/utils/classUtil&quot;);
 
-function _typeof(obj) { if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
 
@@ -37,8 +37,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== &quot;funct
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-<span id='zrender-svg-helper-ShadowManager'>/**
-</span> * @class zrender.svg.helper.ShadowManager
+<span id='qrenderer-svg-helper-ShadowManager'>/**
+</span> * @class qrenderer.svg.helper.ShadowManager
  * 
  * Manages SVG shadow elements.
  * 
@@ -49,12 +49,12 @@ function hasShadow(style) {
   // TODO: textBoxShadowBlur is not supported yet
   return style &amp;&amp; (style.shadowBlur || style.shadowOffsetX || style.shadowOffsetY || style.textShadowBlur || style.textShadowOffsetX || style.textShadowOffsetY);
 }
-<span id='zrender-svg-helper-ShadowManager-method-constructor'>/**
+<span id='qrenderer-svg-helper-ShadowManager-method-constructor'>/**
 </span> * @method constructor ShadowManager
  * 
  * Manages SVG shadow elements.
  *
- * @param   {Number}     zrId    zrender instance id
+ * @param   {Number}     qrId    qrenderer instance id
  * @param   {SVGElement} svgRoot root of SVG document
  */
 
@@ -64,17 +64,17 @@ var ShadowManager =
 function (_Definable) {
   _inherits(ShadowManager, _Definable);
 
-  function ShadowManager(zrId, svgRoot) {
+  function ShadowManager(qrId, svgRoot) {
     _classCallCheck(this, ShadowManager);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(ShadowManager).call(this, zrId, svgRoot, [&#39;filter&#39;], &#39;__filter_in_use__&#39;, &#39;_shadowDom&#39;));
+    return _possibleConstructorReturn(this, _getPrototypeOf(ShadowManager).call(this, qrId, svgRoot, [&#39;filter&#39;], &#39;__filter_in_use__&#39;, &#39;_shadowDom&#39;));
   }
-<span id='zrender-svg-helper-ShadowManager-method-'>  /**
+<span id='qrenderer-svg-helper-ShadowManager-method-'>  /**
 </span>   * Create new shadow DOM for fill or stroke if not exist,
    * but will not update shadow if exists.
    *
    * @param {SvgElement}  svgElement   SVG element to paint
-   * @param {Displayable} displayable  zrender displayable element
+   * @param {Displayable} displayable  qrenderer displayable element
    */
 
 
@@ -104,10 +104,10 @@ function (_Definable) {
         svgElement.style.filter = &#39;url(#&#39; + id + &#39;)&#39;;
       }
     }
-<span id='zrender-svg-helper-ShadowManager-method-'>    /**
+<span id='qrenderer-svg-helper-ShadowManager-method-'>    /**
 </span>     * Add a new shadow tag in &lt;defs&gt;
      *
-     * @param {Displayable} displayable  zrender displayable element
+     * @param {Displayable} displayable  qrenderer displayable element
      * @return {SVGFilterElement} created DOM
      */
 
@@ -121,15 +121,15 @@ function (_Definable) {
       // updated.
 
       displayable._shadowDomId = displayable._shadowDomId || this.nextId++;
-      dom.setAttribute(&#39;id&#39;, &#39;zr&#39; + this._zrId + &#39;-shadow-&#39; + displayable._shadowDomId);
+      dom.setAttribute(&#39;id&#39;, &#39;qr&#39; + this._qrId + &#39;-shadow-&#39; + displayable._shadowDomId);
       this.updateDom(displayable, dom);
       this.addDom(dom);
       return dom;
     }
-<span id='zrender-svg-helper-ShadowManager-method-'>    /**
+<span id='qrenderer-svg-helper-ShadowManager-method-'>    /**
 </span>     * Update shadow.
      *
-     * @param {Displayable} displayable  zrender displayable element
+     * @param {Displayable} displayable  qrenderer displayable element
      */
 
   }, {
@@ -147,7 +147,7 @@ function (_Definable) {
         this.remove(svgElement, displayable);
       }
     }
-<span id='zrender-svg-helper-ShadowManager-property-'>    /**
+<span id='qrenderer-svg-helper-ShadowManager-property-'>    /**
 </span>     * Remove DOM and clear parent filter
      */
 
@@ -159,10 +159,10 @@ function (_Definable) {
         svgElement.style.filter = &#39;&#39;;
       }
     }
-<span id='zrender-svg-helper-ShadowManager-method-'>    /**
+<span id='qrenderer-svg-helper-ShadowManager-method-'>    /**
 </span>     * Update shadow dom
      *
-     * @param {Displayable} displayable  zrender displayable element
+     * @param {Displayable} displayable  qrenderer displayable element
      * @param {SVGFilterElement} dom DOM to update
      */
 
@@ -221,7 +221,7 @@ function (_Definable) {
 
       displayable._shadowDom = dom;
     }
-<span id='zrender-svg-helper-ShadowManager-method-'>    /**
+<span id='qrenderer-svg-helper-ShadowManager-method-'>    /**
 </span>     * Mark a single shadow to be used
      *
      * @param {Displayable} displayable displayable element

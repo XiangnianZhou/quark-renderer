@@ -24,7 +24,7 @@ under the License.
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <script src="lib/facePrint.js"></script>
-        <script src="../dist/zrender.js"></script>
+        <script src="../dist/quark-renderer.js"></script>
     </head>
     <body>
         <style>
@@ -79,7 +79,7 @@ under the License.
         <div style="position: fixed; right: 5px; bottom: 15px; z-index: 999999;">
             <!-- <button id="showBoundingRectBtn">Draw Bounding Rect</button> -->
             <select id="switchCaseMode">
-                <option value="zrevt">zrender (click and draw something on iOS)</option>
+                <option value="qrevt">qrenderer (click and draw something on iOS)</option>
                 <option value="4point">4 point Perspective Transform</option>
                 <option value="2d">2D Transform (CSS 3D is not supported)</option>
             </select>
@@ -166,14 +166,14 @@ under the License.
             var CASE_MODE = {
                 CASE_4POINT: '4point',
                 CASE_2D: '2d',
-                CASE_ZREVT: 'zrevt'
+                CASE_QREVT: 'qrevt'
             };
 
             var $getCaseMode;
             var $drawRect;
 
             (function () {
-                var caseModeReg = /__zr__cssTransform__case__([a-zA-Z0-9]+)__/;
+                var caseModeReg = /__qr__cssTransform__case__([a-zA-Z0-9]+)__/;
                 var boundingRectPainter = document.getElementById('boundingRectPainter');
 
                 document.addEventListener('click', function (e) {
@@ -182,7 +182,7 @@ under the License.
                 })
 
                 $getCaseMode = function () {
-                    return getCaseModeOnURL() || CASE_MODE.CASE_ZREVT;
+                    return getCaseModeOnURL() || CASE_MODE.CASE_QREVT;
                 }
                 function getCaseModeOnURL() {
                     var result = location.href.match(caseModeReg);
@@ -190,7 +190,7 @@ under the License.
                 }
                 function setCaseMode(caseMode) {
                     var currentCaseModeOnURL = getCaseModeOnURL();
-                    var newCaseModeTag = '__zr__cssTransform__case__' + caseMode + '__';
+                    var newCaseModeTag = '__qr__cssTransform__case__' + caseMode + '__';
                     if (currentCaseModeOnURL) {
                         location.href = location.href.replace(caseModeReg, newCaseModeTag);
                     }
@@ -244,14 +244,14 @@ under the License.
 
 
         <script>
-            var $calculateZrXYStrategies = {};
+            var $calculateQrXYStrategies = {};
 
 
 
-            $calculateZrXYStrategies[CASE_MODE.CASE_2D] = function () {
+            $calculateQrXYStrategies[CASE_MODE.CASE_2D] = function () {
                 var markers;
 
-                function calculateZrXY(tryBox, e, out) {
+                function calculateQrXY(tryBox, e, out) {
                     if (!markers) {
                         markers = initTryCoordinatesMarker(tryBox);
                     }
@@ -273,17 +273,17 @@ under the License.
                     var py = e.clientY;
 
                     var den = eoYx * eoXy - eoYy * eoXx;
-                    var zrX = 0;
-                    var zrY = 0;
+                    var qrX = 0;
+                    var qrY = 0;
                     if (den) {
-                        zrX = (py * eoYx - px * eoYy + ox * eoYy - oy * eoYx) / den * boxWidth;
-                        zrY = (px * eoXy - py * eoXx + oy * eoXx - ox * eoXy) / den * boxHeight;
+                        qrX = (py * eoYx - px * eoYy + ox * eoYy - oy * eoYx) / den * boxWidth;
+                        qrY = (px * eoXy - py * eoXx + oy * eoXx - ox * eoXy) / den * boxHeight;
                     }
 
-                    out.zrX = zrX;
-                    out.zrY = zrY;
+                    out.qrX = qrX;
+                    out.qrY = qrY;
                 }
-                return calculateZrXY;
+                return calculateQrXY;
             };
 
 
@@ -292,7 +292,7 @@ under the License.
             // And we made some optimization for matrix inversion.
             // Other similar approaches:
             // cv::getPerspectiveTransform, "Direct Linear Transformation".
-            $calculateZrXYStrategies[CASE_MODE.CASE_4POINT] = function () {
+            $calculateQrXYStrategies[CASE_MODE.CASE_4POINT] = function () {
 
                 var markers;
                 var LN2 = Math.log(2);
@@ -372,7 +372,7 @@ under the License.
                     }
                 }
 
-                function calculateZrXY(tryBox, e, out) {
+                function calculateQrXY(tryBox, e, out) {
                     if (!markers) {
                         markers = initTryCoordinatesMarker(tryBox);
                     }
@@ -402,15 +402,15 @@ under the License.
                     var transformer = buildFourPointsTransformer(srcMarkers, destMarkers);
                     var result = transformer([e.clientX, e.clientY]);
 
-                    out.zrX = result[0];
-                    out.zrY = result[1];
+                    out.qrX = result[0];
+                    out.qrY = result[1];
 
                     var timeB = {timeB: performance.now() - timeB};
                     facePrint(timeB);
                     console.log('timeB', timeB.timeB);
                 }
 
-                return calculateZrXY;
+                return calculateQrXY;
             };
 
 
@@ -478,14 +478,14 @@ under the License.
                     var tryBox = tryDom.querySelector('.try-box');
                     var caseMode = $getCaseMode();
 
-                    if (caseMode === CASE_MODE.CASE_ZREVT) {
-                        var zr = zrender.init(tryBox, {
+                    if (caseMode === CASE_MODE.CASE_QREVT) {
+                        var qr = qrenderer.init(tryBox, {
                             renderer: 'canvas'
                         });
                         var drawing = false;
-                        zr.on('click', function (e) {
+                        qr.on('click', function (e) {
                             var size = 10;
-                            zr.add(new zrender.Rect({
+                            qr.add(new qrenderer.Rect({
                                 shape: {
                                     x: e.offsetX - size / 2,
                                     y: e.offsetY - size / 2,
@@ -497,8 +497,8 @@ under the License.
                                 }
                             }));
                         });
-                        zr.on('mousedown', function (e) {
-                            drawing = new zrender.Polyline({
+                        qr.on('mousedown', function (e) {
+                            drawing = new qrenderer.Polyline({
                                 shape: {
                                     points: [[e.offsetX, e.offsetY]]
                                 },
@@ -507,27 +507,27 @@ under the License.
                                     lineWidth: 3
                                 }
                             });
-                            zr.add(drawing);
+                            qr.add(drawing);
                         });
-                        zr.on('mousemove', function (e) {
+                        qr.on('mousemove', function (e) {
                             if (drawing) {
                                 drawing.shape.points.push([e.offsetX, e.offsetY]);
                                 drawing.dirty();
                                 e.stop();
                             }
                         });
-                        zr.on('mouseup', stopDrawing);
-                        zr.on('globalout', stopDrawing);
+                        qr.on('mouseup', stopDrawing);
+                        qr.on('globalout', stopDrawing);
                         function stopDrawing() {
                             drawing = false;
                         }
                     }
                     else {
-                        var calculateZrXY = $calculateZrXYStrategies[caseMode]();
+                        var calculateQrXY = $calculateQrXYStrategies[caseMode]();
 
                         tryBox.addEventListener('click', function (e) {
                             var out = {};
-                            calculateZrXY(tryBox, e, out);
+                            calculateQrXY(tryBox, e, out);
                             facePrint(out);
                             drawPointer(tryBox, out);
                         });
@@ -549,8 +549,8 @@ under the License.
                 function drawPointer(tryBox, localCoord) {
                     var pointerMarker = document.createElement('div');
                     pointerMarker.classList.add('pointer-marker');
-                    pointerMarker.style.left = localCoord.zrX.toFixed(0) + 'px';
-                    pointerMarker.style.top = localCoord.zrY.toFixed(0) + 'px';
+                    pointerMarker.style.left = localCoord.qrX.toFixed(0) + 'px';
+                    pointerMarker.style.top = localCoord.qrY.toFixed(0) + 'px';
                     tryBox.appendChild(pointerMarker);
                 }
             }

@@ -17,7 +17,6 @@ var extremity = vec2.create();
 
 /**
  * 从顶点数组中计算出最小包围盒，写入`min`和`max`中
- * @module zrender/core/bboxUtil
  * @param {Array<Object>} points 顶点数组
  * @param {Number} min
  * @param {Number} max

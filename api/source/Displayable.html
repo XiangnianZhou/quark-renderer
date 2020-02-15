@@ -23,7 +23,7 @@ var Element = require(&quot;./Element&quot;);
 
 var RectText = require(&quot;./RectText&quot;);
 
-function _typeof(obj) { if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
 
@@ -41,9 +41,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== &quot;funct
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-<span id='zrender-graphic-Displayable'>/**
+<span id='qrenderer-graphic-Displayable'>/**
 </span> * @abstract
- * @class zrender.graphic.Displayable 
+ * @class qrenderer.graphic.Displayable 
  * 
  * Base class of all displayable graphic objects.
  * 
@@ -56,7 +56,7 @@ var Displayable =
 function (_Element) {
   _inherits(Displayable, _Element);
 
-<span id='zrender-graphic-Displayable-method-constructor'>  /**
+<span id='qrenderer-graphic-Displayable-method-constructor'>  /**
 </span>   * @method constructor
    * @param {*} options 
    */
@@ -68,7 +68,7 @@ function (_Element) {
     _classCallCheck(this, Displayable);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Displayable).call(this, options));
-<span id='zrender-graphic-Displayable-property-__clipPaths'>    /**
+<span id='qrenderer-graphic-Displayable-property-__clipPaths'>    /**
 </span>     * @private
      * @property  __clipPaths
      * Shapes for cascade clipping.
@@ -79,7 +79,7 @@ function (_Element) {
     _this.__clipPaths = null; // FIXME Stateful must be mixined after style is setted
     // Stateful.call(this, options);
 
-<span id='zrender-graphic-Displayable-method-calculateTextPosition'>    /**
+<span id='qrenderer-graphic-Displayable-method-calculateTextPosition'>    /**
 </span>     * The String value of `textPosition` needs to be calculated to a real postion.
      * For example, `&#39;inside&#39;` is calculated to `[rect.width/2, rect.height/2]`
      * by default. See `contain/text.js#calculateTextPosition` for more details.
@@ -100,94 +100,94 @@ function (_Element) {
      */
 
     _this.calculateTextPosition = null;
-<span id='zrender-graphic-Displayable-property-type'>    /**
+<span id='qrenderer-graphic-Displayable-property-type'>    /**
 </span>     * @property {String} type
      */
 
     _this.type = &#39;displayable&#39;;
-<span id='zrender-graphic-Displayable-property-invisible'>    /**
+<span id='qrenderer-graphic-Displayable-property-invisible'>    /**
 </span>     * @property {Boolean} invisible
      * Whether the displayable object is visible. when it is true, the displayable object
      * is not drawn, but the mouse event can still trigger the object.
      */
 
     _this.invisible = false;
-<span id='zrender-graphic-Displayable-property-z'>    /**
+<span id='qrenderer-graphic-Displayable-property-z'>    /**
 </span>     * @property {Number} z
      */
 
     _this.z = 0;
-<span id='zrender-graphic-Displayable-property-z2'>    /**
+<span id='qrenderer-graphic-Displayable-property-z2'>    /**
 </span>     * @property {Number} z2
      */
 
     _this.z2 = 0;
-<span id='zrender-graphic-Displayable-property-zlevel'>    /**
-</span>     * @property {Number} zlevel
-     * The z level determines the displayable object can be drawn in which layer canvas.
+<span id='qrenderer-graphic-Displayable-property-qlevel'>    /**
+</span>     * @property {Number} qlevel
+     * The q level determines the displayable object can be drawn in which layer canvas.
      */
 
-    _this.zlevel = 0;
-<span id='zrender-graphic-Displayable-property-draggable'>    /**
+    _this.qlevel = 0;
+<span id='qrenderer-graphic-Displayable-property-draggable'>    /**
 </span>     * @property {Boolean} draggable
      * Whether it can be dragged.
      */
 
     _this.draggable = false;
-<span id='zrender-graphic-Displayable-property-dragging'>    /**
+<span id='qrenderer-graphic-Displayable-property-dragging'>    /**
 </span>     * @property {Boolean} dragging
      * Whether is it dragging.
      */
 
     _this.dragging = false;
-<span id='zrender-graphic-Displayable-property-silent'>    /**
+<span id='qrenderer-graphic-Displayable-property-silent'>    /**
 </span>     * @property {Boolean} silent
      * Whether to respond to mouse events.
      */
 
     _this.silent = false;
-<span id='zrender-graphic-Displayable-property-culling'>    /**
+<span id='qrenderer-graphic-Displayable-property-culling'>    /**
 </span>     * @property {Boolean} culling
      * If enable culling
      */
 
     _this.culling = false;
-<span id='zrender-graphic-Displayable-property-cursor'>    /**
+<span id='qrenderer-graphic-Displayable-property-cursor'>    /**
 </span>     * @property {String} cursor
      * Mouse cursor when hovered
      */
 
     _this.cursor = &#39;pointer&#39;;
-<span id='zrender-graphic-Displayable-property-rectHover'>    /**
+<span id='qrenderer-graphic-Displayable-property-rectHover'>    /**
 </span>     * @property {String} rectHover
      * If hover area is bounding rect
      */
 
     _this.rectHover = false;
-<span id='zrender-graphic-Displayable-property-progressive'>    /**
+<span id='qrenderer-graphic-Displayable-property-progressive'>    /**
 </span>     * @property {Boolean} progressive
      * Render the element progressively when the value &gt;= 0,
      * usefull for large data.
      */
 
     _this.progressive = false;
-<span id='zrender-graphic-Displayable-property-incremental'>    /**
+<span id='qrenderer-graphic-Displayable-property-incremental'>    /**
 </span>     * @property {Boolean} incremental
      */
 
     _this.incremental = false;
-<span id='zrender-graphic-Displayable-property-globalScaleRatio'>    /**
+<span id='qrenderer-graphic-Displayable-property-globalScaleRatio'>    /**
 </span>     * @property {Boolean} globalScaleRatio
      * Scale ratio for global scale.
      */
 
     _this.globalScaleRatio = 1;
-<span id='zrender-graphic-Displayable-property-style'>    /**
+<span id='qrenderer-graphic-Displayable-property-style'>    /**
 </span>     * @property {Style} style
      */
 
     _this.style = new Style(options.style, _assertThisInitialized(_this));
-<span id='zrender-graphic-Displayable-property-shape'>    /**
+<span id='qrenderer-graphic-Displayable-property-shape'>    /**
 </span>     * @property {Object} shape 形状
      */
 
@@ -207,7 +207,7 @@ function (_Element) {
     classUtil.copyOwnProperties(_assertThisInitialized(_this), _this.options, [&#39;style&#39;, &#39;shape&#39;]);
     return _this;
   }
-<span id='zrender-graphic-Displayable-method-beforeBrush'>  /**
+<span id='qrenderer-graphic-Displayable-method-beforeBrush'>  /**
 </span>   * @protected
    * @method beforeBrush
    */
@@ -216,7 +216,7 @@ function (_Element) {
   _createClass(Displayable, [{
     key: &quot;beforeBrush&quot;,
     value: function beforeBrush(ctx) {}
-<span id='zrender-graphic-Displayable-method-brush'>    /**
+<span id='qrenderer-graphic-Displayable-method-brush'>    /**
 </span>     * @protected
      * @method brush
      * Callback during brush.
@@ -225,7 +225,7 @@ function (_Element) {
   }, {
     key: &quot;brush&quot;,
     value: function brush(ctx, prevEl) {}
-<span id='zrender-graphic-Displayable-method-afterBrush'>    /**
+<span id='qrenderer-graphic-Displayable-method-afterBrush'>    /**
 </span>     * @protected
      * @method afterBrush
      */
@@ -233,7 +233,7 @@ function (_Element) {
   }, {
     key: &quot;afterBrush&quot;,
     value: function afterBrush(ctx) {}
-<span id='zrender-graphic-Displayable-method-getBoundingRect'>    /**
+<span id='qrenderer-graphic-Displayable-method-getBoundingRect'>    /**
 </span>     * @protected
      * @method getBoundingRect
      */
@@ -241,7 +241,7 @@ function (_Element) {
   }, {
     key: &quot;getBoundingRect&quot;,
     value: function getBoundingRect() {}
-<span id='zrender-graphic-Displayable-method-contain'>    /**
+<span id='qrenderer-graphic-Displayable-method-contain'>    /**
 </span>     * @protected
      * @method contain
      * 
@@ -260,7 +260,7 @@ function (_Element) {
     value: function contain(x, y) {
       return this.rectContain(x, y);
     }
-<span id='zrender-graphic-Displayable-method-rectContain'>    /**
+<span id='qrenderer-graphic-Displayable-method-rectContain'>    /**
 </span>     * @protected
      * @method rectContain
      * 
@@ -280,7 +280,7 @@ function (_Element) {
       var rect = this.getBoundingRect();
       return rect.contain(coord[0], coord[1]);
     }
-<span id='zrender-graphic-Displayable-method-traverse'>    /**
+<span id='qrenderer-graphic-Displayable-method-traverse'>    /**
 </span>     * @method traverse
      * @param  {Function} cb
      * @param  {Object}  context
@@ -291,7 +291,7 @@ function (_Element) {
     value: function traverse(cb, context) {
       cb.call(context, this);
     }
-<span id='zrender-graphic-Displayable-method-animateStyle'>    /**
+<span id='qrenderer-graphic-Displayable-method-animateStyle'>    /**
 </span>     * @method animateStyle
      * Alias for animate(&#39;style&#39;)
      * @param {Boolean} loop
@@ -302,7 +302,7 @@ function (_Element) {
     value: function animateStyle(loop) {
       return this.animate(&#39;style&#39;, loop);
     }
-<span id='zrender-graphic-Displayable-method-attrKV'>    /**
+<span id='qrenderer-graphic-Displayable-method-attrKV'>    /**
 </span>     * @method attrKV
      * @param {*} key 
      * @param {*} value 
@@ -317,7 +317,7 @@ function (_Element) {
         this.style.set(value);
       }
     }
-<span id='zrender-graphic-Displayable-method-setStyle'>    /**
+<span id='qrenderer-graphic-Displayable-method-setStyle'>    /**
 </span>     * @method setStyle
      * @param {Object|String} key
      * @param {*} value
@@ -330,7 +330,7 @@ function (_Element) {
       this.dirty(false);
       return this;
     }
-<span id='zrender-graphic-Displayable-method-useStyle'>    /**
+<span id='qrenderer-graphic-Displayable-method-useStyle'>    /**
 </span>     * @method useStyle
      * Use given style object
      * @param  {Object} obj

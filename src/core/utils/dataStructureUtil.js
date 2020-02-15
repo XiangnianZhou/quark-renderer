@@ -1,6 +1,5 @@
 /**
  * 用来操作数据的一些工具函数。
- * @module zrender/core/dataStructureUtil
  */
 
 // 用于处理merge时无法遍历Date等对象的问题

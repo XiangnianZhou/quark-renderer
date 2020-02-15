@@ -11,13 +11,13 @@
     <script type="text/javascript">
 
     requireES([
-        'zrender/src/zrender',
-        'zrender/src/graphic/Image',
-        'zrender/src/graphic/States'
-    ], function(zrender, ImageShape, States){
+        'quark-renderer/src/quark-renderer',
+        'quark-renderer/src/graphic/Image',
+        'quark-renderer/src/graphic/States'
+    ], function(qrenderer, ImageShape, States){
 
-        // 初始化zrender
-        var zr = zrender.init(document.getElementById("Main"), {
+        // 初始化qrenderer
+        var qr = qrenderer.init(document.getElementById("Main"), {
             renderer: 'canvas'
         });
 
@@ -63,7 +63,7 @@
                         z: 1
                     }
                 })
-                zr.add(image);
+                qr.add(image);
             }
         }
 

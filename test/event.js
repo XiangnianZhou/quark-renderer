@@ -1,5 +1,5 @@
-var zr = zrender.init(document.getElementById('main'));
-var circle1 = new zrender.Circle({
+var qr = qrenderer.init(document.getElementById('main'));
+var circle1 = new qrenderer.Circle({
     shape: {
         cx: 20,
         cy: 20,
@@ -11,7 +11,7 @@ var circle1 = new zrender.Circle({
     draggable: true
 });
 
-var circle3 = new zrender.Circle({
+var circle3 = new qrenderer.Circle({
     shape: {
         cx: 70,
         cy: 70,
@@ -23,7 +23,7 @@ var circle3 = new zrender.Circle({
     draggable: true
 });
 
-var circle2 = new zrender.Circle({
+var circle2 = new qrenderer.Circle({
     shape: {
         cx: 300,
         cy: 300,
@@ -33,10 +33,10 @@ var circle2 = new zrender.Circle({
 });
 
 circle1.on('mouseover', function () {
-    zr.dom.style.cursor = 'move';
+    qr.dom.style.cursor = 'move';
 });
 circle1.on('mouseout', function () {
-    zr.dom.style.cursor = 'default';
+    qr.dom.style.cursor = 'default';
 });
 
 circle2.on('dragenter', function () {
@@ -47,15 +47,15 @@ circle2.on('dragenter', function () {
     this.setStyle('fill', 'green');
 });
 
-zr.add(circle2);
-zr.add(circle1);
-zr.add(circle3);
+qr.add(circle2);
+qr.add(circle1);
+qr.add(circle3);
 
 circle2.attr('shape', {
     r: 50 
 });
 
-zr.on("click",function(event){
+qr.on("click",function(event){
     console.log(event);
 });
 

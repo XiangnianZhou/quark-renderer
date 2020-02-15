@@ -1,5 +1,5 @@
 import './graphic';
-import {registerPainter} from '../zrender';
+import {registerPainter} from '../quark-renderer';
 import VMLPainter from './VMLPainter';
 
 registerPainter('vml', VMLPainter);

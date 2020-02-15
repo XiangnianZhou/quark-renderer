@@ -10,14 +10,14 @@
     <script type="text/javascript">
 
     requireES([
-        'zrender/src/zrender',
-        'zrender/src/graphic/shape/Sector',
-        'zrender/src/vml/vml'
-    ], function(zrender, SectorShape){
-        // 初始化zrender
-        var zr = zrender.init(document.getElementById('main'));
+        'quark-renderer/src/quark-renderer',
+        'quark-renderer/src/graphic/shape/Sector',
+        'quark-renderer/src/vml/vml'
+    ], function(qrenderer, SectorShape){
+        // 初始化qrenderer
+        var qr = qrenderer.init(document.getElementById('main'));
 
-        zr.add(new SectorShape({
+        qr.add(new SectorShape({
             position: [100, 100],
             scale: [1, 1],
             style: {
@@ -31,7 +31,7 @@
             }
         }));
 
-        zr.add(new SectorShape({
+        qr.add(new SectorShape({
             position: [100, 100],
             scale: [1, 1],
             style: {
@@ -45,7 +45,7 @@
             }
         }));
 
-        zr.add(new SectorShape({
+        qr.add(new SectorShape({
             position: [100, 100],
             scale: [1, 1],
             style: {
@@ -59,7 +59,7 @@
             }
         }));
 
-        zr.add(new SectorShape({
+        qr.add(new SectorShape({
             position: [100, 100],
             scale: [1, 1],
             style: {

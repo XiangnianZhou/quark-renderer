@@ -23,9 +23,9 @@ var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
 
 var Path = require(&quot;../graphic/Path&quot;);
 
-var ZImage = require(&quot;../graphic/Image&quot;);
+var QImage = require(&quot;../graphic/Image&quot;);
 
-var ZText = require(&quot;../graphic/Text&quot;);
+var QText = require(&quot;../graphic/Text&quot;);
 
 var arrayDiff = require(&quot;../core/utils/arrayDiff2&quot;);
 
@@ -41,28 +41,28 @@ var svgPath = _graphic.path;
 var svgImage = _graphic.image;
 var svgText = _graphic.text;
 
-<span id='zrender-svg-SVGPainter'>/**
-</span> * @class zrender.svg.SVGPainter
+<span id='qrenderer-svg-SVGPainter'>/**
+</span> * @class qrenderer.svg.SVGPainter
  * 
  * SVG 画笔。
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
-<span id='zrender-svg-SVGPainter-method-getSvgProxy'>/**
+<span id='qrenderer-svg-SVGPainter-method-getSvgProxy'>/**
 </span> * @private
  * @method getSvgProxy
  * 
- * ZImage 映射成 svgImage，ZText 映射成 svgText，其它所有都映射成 svgPath。
+ * QImage 映射成 svgImage，ZText 映射成 svgText，其它所有都映射成 svgPath。
  * 
  * @param {Element} el 
  */
 function getSvgProxy(el) {
   if (el instanceof Path) {
     return svgPath;
-  } else if (el instanceof ZImage) {
+  } else if (el instanceof QImage) {
     return svgImage;
-  } else if (el instanceof ZText) {
+  } else if (el instanceof QText) {
     return svgText;
   }
 
@@ -100,7 +100,7 @@ function getTextSvgElement(displayable) {
 function getSvgElement(displayable) {
   return displayable.__svgEl;
 }
-<span id='zrender-svg-SVGPainter-method-constructor'>/**
+<span id='qrenderer-svg-SVGPainter-method-constructor'>/**
 </span> * @method constructor SVGPainter
  * @param {HTMLElement} root 绘图容器
  * @param {Storage} storage
@@ -108,7 +108,7 @@ function getSvgElement(displayable) {
  */
 
 
-var SVGPainter = function SVGPainter(root, storage, opts, zrId) {
+var SVGPainter = function SVGPainter(root, storage, opts, qrId) {
   this.root = root;
   this.storage = storage;
   this._opts = opts = dataUtil.extend({}, opts || {});
@@ -117,9 +117,9 @@ var SVGPainter = function SVGPainter(root, storage, opts, zrId) {
   svgRoot.setAttribute(&#39;version&#39;, &#39;1.1&#39;);
   svgRoot.setAttribute(&#39;baseProfile&#39;, &#39;full&#39;);
   svgRoot.style.cssText = &#39;user-select:none;position:absolute;left:0;top:0;&#39;;
-  this.gradientManager = new GradientManager(zrId, svgRoot);
-  this.clipPathManager = new ClippathManager(zrId, svgRoot);
-  this.shadowManager = new ShadowManager(zrId, svgRoot);
+  this.gradientManager = new GradientManager(qrId, svgRoot);
+  this.clipPathManager = new ClippathManager(qrId, svgRoot);
+  this.shadowManager = new ShadowManager(qrId, svgRoot);
   var viewport = document.createElement(&#39;div&#39;);
   viewport.style.cssText = &#39;overflow:hidden;position:relative&#39;;
   this._svgRoot = svgRoot;
@@ -133,21 +133,21 @@ var SVGPainter = function SVGPainter(root, storage, opts, zrId) {
 SVGPainter.prototype = {
   constructor: SVGPainter,
 
-<span id='zrender-svg-SVGPainter-method-getType'>  /**
+<span id='qrenderer-svg-SVGPainter-method-getType'>  /**
 </span>   * @method getType
    */
   getType: function getType() {
     return &#39;svg&#39;;
   },
 
-<span id='zrender-svg-SVGPainter-method-getViewportRoot'>  /**
+<span id='qrenderer-svg-SVGPainter-method-getViewportRoot'>  /**
 </span>   * @method getViewportRoot
    */
   getViewportRoot: function getViewportRoot() {
     return this._viewport;
   },
 
-<span id='zrender-svg-SVGPainter-method-getViewportRootOffset'>  /**
+<span id='qrenderer-svg-SVGPainter-method-getViewportRootOffset'>  /**
 </span>   * @method getViewportRootOffset
    */
   getViewportRootOffset: function getViewportRootOffset() {
@@ -161,7 +161,7 @@ SVGPainter.prototype = {
     }
   },
 
-<span id='zrender-svg-SVGPainter-method-refresh'>  /**
+<span id='qrenderer-svg-SVGPainter-method-refresh'>  /**
 </span>   * @method refresh
    */
   refresh: function refresh() {
@@ -170,7 +170,7 @@ SVGPainter.prototype = {
     this._paintList(list);
   },
 
-<span id='zrender-svg-SVGPainter-method-setBackgroundColor'>  /**
+<span id='qrenderer-svg-SVGPainter-method-setBackgroundColor'>  /**
 </span>   * @method setBackgroundColor
    */
   setBackgroundColor: function setBackgroundColor(backgroundColor) {
@@ -178,7 +178,7 @@ SVGPainter.prototype = {
     this._viewport.style.background = backgroundColor;
   },
 
-<span id='zrender-svg-SVGPainter-method-_paintList'>  /**
+<span id='qrenderer-svg-SVGPainter-method-_paintList'>  /**
 </span>   * @private
    * @method _paintList
    */
@@ -256,7 +256,7 @@ SVGPainter.prototype = {
 
 
           insertAfter(svgRoot, textSvgElement, svgElement);
-          prevSvgElement = textSvgElement || svgElement || prevSvgElement; // zrender.Text only create textSvgElement.
+          prevSvgElement = textSvgElement || svgElement || prevSvgElement; // qrenderer.Text only create textSvgElement.
 
           this.gradientManager.addWithoutUpdate(svgElement || textSvgElement, _displayable2);
           this.shadowManager.addWithoutUpdate(svgElement || textSvgElement, _displayable2);
@@ -291,7 +291,7 @@ SVGPainter.prototype = {
     this._visibleList = newVisibleList;
   },
 
-<span id='zrender-svg-SVGPainter-method-_paintList'>  /**
+<span id='qrenderer-svg-SVGPainter-method-_paintList'>  /**
 </span>   * @private
    * @method _paintList
    */
@@ -335,7 +335,7 @@ SVGPainter.prototype = {
     return defs;
   },
 
-<span id='zrender-svg-SVGPainter-method-resize'>  /**
+<span id='qrenderer-svg-SVGPainter-method-resize'>  /**
 </span>   * @method resize
    */
   resize: function resize(width, height) {
@@ -363,7 +363,7 @@ SVGPainter.prototype = {
     }
   },
 
-<span id='zrender-svg-SVGPainter-method-getWidth'>  /**
+<span id='qrenderer-svg-SVGPainter-method-getWidth'>  /**
 </span>   * @method getWidth
    * 获取绘图区域宽度
    */
@@ -371,7 +371,7 @@ SVGPainter.prototype = {
     return this._width;
   },
 
-<span id='zrender-svg-SVGPainter-method-getHeight'>  /**
+<span id='qrenderer-svg-SVGPainter-method-getHeight'>  /**
 </span>   * @method getHeight
    * 获取绘图区域高度
    */
@@ -379,7 +379,7 @@ SVGPainter.prototype = {
     return this._height;
   },
 
-<span id='zrender-svg-SVGPainter-method-_getSize'>  /**
+<span id='qrenderer-svg-SVGPainter-method-_getSize'>  /**
 </span>   * @private
    * @method _getSize
    */
@@ -400,7 +400,7 @@ SVGPainter.prototype = {
     return (root[cwh] || dataUtil.parseInt10(stl[wh]) || dataUtil.parseInt10(root.style[wh])) - (dataUtil.parseInt10(stl[plt]) || 0) - (dataUtil.parseInt10(stl[prb]) || 0) | 0;
   },
 
-<span id='zrender-svg-SVGPainter-method-dispose'>  /**
+<span id='qrenderer-svg-SVGPainter-method-dispose'>  /**
 </span>   * @method dispose
    */
   dispose: function dispose() {
@@ -408,7 +408,7 @@ SVGPainter.prototype = {
     this._svgRoot = this._viewport = this.storage = null;
   },
 
-<span id='zrender-svg-SVGPainter-method-clear'>  /**
+<span id='qrenderer-svg-SVGPainter-method-clear'>  /**
 </span>   * @method clear
    */
   clear: function clear() {
@@ -417,7 +417,7 @@ SVGPainter.prototype = {
     }
   },
 
-<span id='zrender-svg-SVGPainter-method-pathToDataUrl'>  /**
+<span id='qrenderer-svg-SVGPainter-method-pathToDataUrl'>  /**
 </span>   * @method pathToDataUrl
    */
   pathToDataUrl: function pathToDataUrl() {

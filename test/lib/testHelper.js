@@ -7,7 +7,7 @@
     // Set default renderer in dev mode from hash.
     var matchResult = location.href.match(/[?&]__RENDERER__=(canvas|svg)(&|$)/);
     if (matchResult) {
-        window.__ZRENDER__DEFAULT__RENDERER__ = matchResult[1];
+        window.__QRENDER__DEFAULT__RENDERER__ = matchResult[1];
     }
 
     // ----------------------------
@@ -17,8 +17,8 @@
     (function (exports) {
 
         var _urlStorageInitialized;
-        var _hashSegmentKey = 'zrTestHashStorage';
-        var _searchSegmentKey = 'zrTestSearchStorage';
+        var _hashSegmentKey = 'qrTestHashStorage';
+        var _searchSegmentKey = 'qrTestSearchStorage';
         var _modes = {
             // Do not need to escapse for RegExp because the characters in key is safe.
             // Hash segment is ended with '&' because it can be escapsed by
@@ -53,7 +53,7 @@
             _urlStorageInitialized = true;
 
             // export to window for visit cross iframe.
-            window.zrTestURLStorage = exports;
+            window.qrTestURLStorage = exports;
 
             function doUpdateView() {
                 updateView && updateView(); // no arguments.

@@ -26,6 +26,6 @@ jobs:
           jshint
       - name: build
         run: |
-          node build/build-zrender/build.js
+          node build/build-quark-renderer/build.js
         env:
           CI: true

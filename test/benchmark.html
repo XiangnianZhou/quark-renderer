@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Animation</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
     <script src="stats.js"></script>
     <script src="./lib/d3.v4.min.js"></script>
 </head>
@@ -48,7 +48,7 @@
         var withText = hasParam('with-text');
         var renderMode = hasParam('svg') ? 'svg' : 'canvas';
 
-        var zr = zrender.init(document.getElementById('main'), {
+        var qr = qrenderer.init(document.getElementById('main'), {
             renderer: renderMode
         });
 
@@ -208,8 +208,8 @@
         }
 
         // canvas settings
-        var width = zr.getWidth();
-        var height = zr.getHeight();
+        var width = qr.getWidth();
+        var height = qr.getHeight();
 
         // point settings
         var numPoints = withText ? 2000 : 10000;
@@ -280,10 +280,10 @@
                 stats.end();
             });
         }
-        zr.clear();
+        qr.clear();
         
         var rects = points.map(function(pt) {
-            var rect = new zrender.Rect({
+            var rect = new qrenderer.Rect({
                 shape: {
                     width: pointWidth,
                     height: pointWidth
@@ -295,7 +295,7 @@
                 },
                 silent: true
             });
-            zr.add(rect);
+            qr.add(rect);
             return rect;
         });
 

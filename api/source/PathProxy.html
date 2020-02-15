@@ -28,8 +28,8 @@ var _config = require(&quot;../config&quot;);
 var dpr = _config.devicePixelRatio;
 // TODO: getTotalLength, getPointAtLength
 
-<span id='zrender-core-PathProxy'>/**
-</span> * @class zrender.core.PathProxy
+<span id='qrenderer-core-PathProxy'>/**
+</span> * @class qrenderer.core.PathProxy
  * 
  * Path 代理，可以在`buildPath`中用于替代`ctx`, 会保存每个path操作的命令到pathCommands属性中
  * 可以用于 isInsidePath 判断以及获取boundingRect
@@ -57,7 +57,7 @@ var mathSin = Math.sin;
 var mathSqrt = Math.sqrt;
 var mathAbs = Math.abs;
 var hasTypedArray = typeof Float32Array !== &#39;undefined&#39;;
-<span id='zrender-core-PathProxy-method-constructor'>/**
+<span id='qrenderer-core-PathProxy-method-constructor'>/**
 </span> * @method constructor PathProxy
  */
 
@@ -65,7 +65,7 @@ var PathProxy = function PathProxy(notSaveData) {
   this._saveData = !(notSaveData || false);
 
   if (this._saveData) {
-<span id='zrender-core-PathProxy-property-data'>    /**
+<span id='qrenderer-core-PathProxy-property-data'>    /**
 </span>     * Path data. Stored as flat array
      * @property {Array&lt;Object&gt;}
      */
@@ -74,7 +74,7 @@ var PathProxy = function PathProxy(notSaveData) {
 
   this._ctx = null;
 };
-<span id='zrender-core-PathProxy-method-prototype'>/**
+<span id='qrenderer-core-PathProxy-method-prototype'>/**
 </span> * 快速计算Path包围盒（并不是最小包围盒）
  * @return {Object}
  */
@@ -95,7 +95,7 @@ PathProxy.prototype = {
   _dashIdx: 0,
   _dashSum: 0,
 
-<span id='zrender-core-PathProxy-method-setScale'>  /**
+<span id='qrenderer-core-PathProxy-method-setScale'>  /**
 </span>   * @readOnly
    */
   setScale: function setScale(sx, sy, segmentIgnoreThreshold) {
@@ -108,7 +108,7 @@ PathProxy.prototype = {
     return this._ctx;
   },
 
-<span id='zrender-core-PathProxy-method-beginPath'>  /**
+<span id='qrenderer-core-PathProxy-method-beginPath'>  /**
 </span>   * @method beginPath
    * @param  {CanvasRenderingContext2D} ctx
    * @return {PathProxy}
@@ -130,7 +130,7 @@ PathProxy.prototype = {
     return this;
   },
 
-<span id='zrender-core-PathProxy-method-moveTo'>  /**
+<span id='qrenderer-core-PathProxy-method-moveTo'>  /**
 </span>   * @method moveTo
    * @param  {Number} x
    * @param  {Number} y
@@ -150,7 +150,7 @@ PathProxy.prototype = {
     return this;
   },
 
-<span id='zrender-core-PathProxy-method-lineTo'>  /**
+<span id='qrenderer-core-PathProxy-method-lineTo'>  /**
 </span>   * @method lineTo
    * @param  {Number} x
    * @param  {Number} y
@@ -173,7 +173,7 @@ PathProxy.prototype = {
     return this;
   },
 
-<span id='zrender-core-PathProxy-method-bezierCurveTo'>  /**
+<span id='qrenderer-core-PathProxy-method-bezierCurveTo'>  /**
 </span>   * @method bezierCurveTo
    * @param  {Number} x1
    * @param  {Number} y1
@@ -195,7 +195,7 @@ PathProxy.prototype = {
     return this;
   },
 
-<span id='zrender-core-PathProxy-method-quadraticCurveTo'>  /**
+<span id='qrenderer-core-PathProxy-method-quadraticCurveTo'>  /**
 </span>   * @method quadraticCurveTo
    * @param  {Number} x1
    * @param  {Number} y1
@@ -215,7 +215,7 @@ PathProxy.prototype = {
     return this;
   },
 
-<span id='zrender-core-PathProxy-method-arc'>  /**
+<span id='qrenderer-core-PathProxy-method-arc'>  /**
 </span>   * @method arc
    * @param  {Number} cx
    * @param  {Number} cy
@@ -247,7 +247,7 @@ PathProxy.prototype = {
     return this;
   },
 
-<span id='zrender-core-PathProxy-method-closePath'>  /**
+<span id='qrenderer-core-PathProxy-method-closePath'>  /**
 </span>   * @method closePath
    * @return {PathProxy}
    */
@@ -267,7 +267,7 @@ PathProxy.prototype = {
     return this;
   },
 
-<span id='zrender-core-PathProxy-method-fill'>  /**
+<span id='qrenderer-core-PathProxy-method-fill'>  /**
 </span>   * @method fill
    * Context 从外部传入，因为有可能是 rebuildPath 完之后再 fill。
    * stroke 同样
@@ -279,7 +279,7 @@ PathProxy.prototype = {
     this.toStatic();
   },
 
-<span id='zrender-core-PathProxy-method-stroke'>  /**
+<span id='qrenderer-core-PathProxy-method-stroke'>  /**
 </span>   * @method stroke
    * @param {CanvasRenderingContext2D} ctx
    * @return {PathProxy}
@@ -289,7 +289,7 @@ PathProxy.prototype = {
     this.toStatic();
   },
 
-<span id='zrender-core-PathProxy-method-setLineDash'>  /**
+<span id='qrenderer-core-PathProxy-method-setLineDash'>  /**
 </span>   * @method setLineDash
    * 必须在其它绘制命令前调用
    * Must be invoked before all other path drawing methods
@@ -311,7 +311,7 @@ PathProxy.prototype = {
     return this;
   },
 
-<span id='zrender-core-PathProxy-method-setLineDashOffset'>  /**
+<span id='qrenderer-core-PathProxy-method-setLineDashOffset'>  /**
 </span>   * @method setLineDashOffset
    * 必须在其它绘制命令前调用
    * Must be invoked before all other path drawing methods
@@ -322,7 +322,7 @@ PathProxy.prototype = {
     return this;
   },
 
-<span id='zrender-core-PathProxy-method-len'>  /**
+<span id='qrenderer-core-PathProxy-method-len'>  /**
 </span>   * @method len
    * @return {boolean}
    */
@@ -330,7 +330,7 @@ PathProxy.prototype = {
     return this._len;
   },
 
-<span id='zrender-core-PathProxy-method-setData'>  /**
+<span id='qrenderer-core-PathProxy-method-setData'>  /**
 </span>   * @method setData
    * 直接设置 Path 数据
    */
@@ -348,7 +348,7 @@ PathProxy.prototype = {
     this._len = len;
   },
 
-<span id='zrender-core-PathProxy-method-appendPath'>  /**
+<span id='qrenderer-core-PathProxy-method-appendPath'>  /**
 </span>   * @method appendPath
    * 添加子路径
    * @param {PathProxy|Array.&lt;PathProxy&gt;} path
@@ -381,7 +381,7 @@ PathProxy.prototype = {
     this._len = offset;
   },
 
-<span id='zrender-core-PathProxy-method-addData'>  /**
+<span id='qrenderer-core-PathProxy-method-addData'>  /**
 </span>   * @method addData
    * 填充 Path 数据。
    * 尽量复用而不申明新的数组。大部分图形重绘的指令数据长度都是不变的。
@@ -420,7 +420,7 @@ PathProxy.prototype = {
     }
   },
 
-<span id='zrender-core-PathProxy-method-_needsDash'>  /**
+<span id='qrenderer-core-PathProxy-method-_needsDash'>  /**
 </span>   * If needs js implemented dashed line
    * @return {boolean}
    * @private
@@ -545,7 +545,7 @@ PathProxy.prototype = {
     this._dashedBezierTo(x1, y1, x2, y2, x3, y3);
   },
 
-<span id='zrender-core-PathProxy-method-toStatic'>  /**
+<span id='qrenderer-core-PathProxy-method-toStatic'>  /**
 </span>   * 转成静态的 Float32Array 减少堆内存占用
    * Convert dynamic array to static Float32Array
    */
@@ -561,7 +561,7 @@ PathProxy.prototype = {
     }
   },
 
-<span id='zrender-core-PathProxy-method-getBoundingRect'>  /**
+<span id='qrenderer-core-PathProxy-method-getBoundingRect'>  /**
 </span>   * @method getBoundingRect
    * @return {BoundingRect}
    */
@@ -672,7 +672,7 @@ PathProxy.prototype = {
     return new BoundingRect(min[0], min[1], max[0] - min[0], max[1] - min[1]);
   },
 
-<span id='zrender-core-PathProxy-method-rebuildPath'>  /**
+<span id='qrenderer-core-PathProxy-method-rebuildPath'>  /**
 </span>   * @method rebuildPath
    * Rebuild path from current data
    * Rebuild path will not consider javascript implemented line dash.

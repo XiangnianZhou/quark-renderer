@@ -4,7 +4,7 @@ import Element from './Element';
 import RectText from './RectText';
 /**
  * @abstract
- * @class zrender.graphic.Displayable 
+ * @class qrenderer.graphic.Displayable 
  * 
  * Base class of all displayable graphic objects.
  * 
@@ -77,10 +77,10 @@ class Displayable extends Element{
         this.z2=0;
 
         /**
-         * @property {Number} zlevel
-         * The z level determines the displayable object can be drawn in which layer canvas.
+         * @property {Number} qlevel
+         * The q level determines the displayable object can be drawn in which layer canvas.
          */
-        this.zlevel=0;
+        this.qlevel=0;
 
         /**
          * @property {Boolean} draggable

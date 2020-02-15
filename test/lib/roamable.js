@@ -1,23 +1,23 @@
-/* global zrender */
+/* global qrenderer */
 (function () {
 
     var roots = [];
 
-    var rawTransformable = new zrender.Group();
-    var roamTransformable = new zrender.Group();
+    var rawTransformable = new qrenderer.Group();
+    var roamTransformable = new qrenderer.Group();
     roamTransformable.add(rawTransformable);
 
     var moving;
 
     /**
-     * @param {module:zrender|boolean} zr Clear if `false`
-     * @param {module:zrender/Element|boolean} root Target root to be roamed. Clear if `false`.
+     * @param {module:qrenderer|boolean} qr Clear if `false`
+     * @param {module:qrenderer/Element|boolean} root Target root to be roamed. Clear if `false`.
      * @param {Function|boolean} handler Roam event handler or disable roam if `false`.
      */
-    window.roamable = function (zr, root, handler) {
+    window.roamable = function (qr, root, handler) {
         var indexExists = find(root);
 
-        if (zr === false || root === false) {
+        if (qr === false || root === false) {
             roots.length = 0;
             return;
         }
@@ -35,12 +35,12 @@
 
         roots.push({root: root, handler: handler});
 
-        if (!zr.__testRoamableMounted) {
-            zr.on('mousewheel', handleMouseWheel);
-            zr.on('mousedown', handleMouseDown);
-            zr.on('mousemove', handleMouseMove);
-            zr.on('mouseup', handleMouseUp);
-            zr.__testRoamableMounted = true;
+        if (!qr.__testRoamableMounted) {
+            qr.on('mousewheel', handleMouseWheel);
+            qr.on('mousedown', handleMouseDown);
+            qr.on('mousemove', handleMouseMove);
+            qr.on('mouseup', handleMouseUp);
+            qr.__testRoamableMounted = true;
         }
     };
 
@@ -113,9 +113,9 @@
         roamTransformable.updateTransform();
         rawTransformable.updateTransform();
 
-        zrender.matrix.copy(
+        qrenderer.matrix.copy(
             root.transform || (root.transform = []),
-            rawTransformable.transform || zrender.matrix.create()
+            rawTransformable.transform || qrenderer.matrix.create()
         );
 
         root.decomposeTransform();

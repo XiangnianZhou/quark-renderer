@@ -1,7 +1,7 @@
 import * as dataUtil from '../core/utils/dataStructureUtil';
 import Track from './Track';
 /**
- * @class zrender.animation.AnimationProcess
+ * @class qrenderer.animation.AnimationProcess
  * 
  * AnimationProcess 表示一次完整的动画过程，每一个元素（Element）中都有一个列表，用来存储本实例上的动画过程。
  * GlobalAnimationMgr 负责维护和调度所有 AnimationProcess 实例。
@@ -45,7 +45,7 @@ class AnimationProcess{
      * 为每一种需要进行动画的属性创建一条轨道
      * @param  {Number} time 关键帧时间，单位ms
      * @param  {Object} props 关键帧的属性值，key-value表示
-     * @return {zrender.animation.AnimationProcess}
+     * @return {qrenderer.animation.AnimationProcess}
      */
     when(time, props) {
         for (let propName in props) {
@@ -56,7 +56,7 @@ class AnimationProcess{
             // Invalid value
             let value = this._getter(this._target, propName);
             if (value == null) {
-                // zrLog('Invalid property ' + propName);
+                // qrLog('Invalid property ' + propName);
                 continue;
             }
 
@@ -92,7 +92,7 @@ class AnimationProcess{
      * @method during
      * 添加动画每一帧的回调函数
      * @param  {Function} callback
-     * @return {zrender.animation.AnimationProcess}
+     * @return {qrenderer.animation.AnimationProcess}
      */
     during(callback) {
         this._onframeList.push(callback);
@@ -128,9 +128,9 @@ class AnimationProcess{
     /**
      * @method start
      * 开始执行动画
-     * @param  {String|Function} [easing] 缓动函数名称，详见{@link zrender.animation.easing 缓动引擎}
+     * @param  {String|Function} [easing] 缓动函数名称，详见{@link qrenderer.animation.easing 缓动引擎}
      * @param  {Boolean} forceAnimate
-     * @return {zrender.animation.AnimationProcess}
+     * @return {qrenderer.animation.AnimationProcess}
      */
     start(easing, forceAnimate) {
         let self = this;
@@ -235,7 +235,7 @@ class AnimationProcess{
      * @method delay
      * 设置动画延迟开始的时间
      * @param  {Number} time 单位ms
-     * @return {zrender.animation.AnimationProcess}
+     * @return {qrenderer.animation.AnimationProcess}
      */
     delay(time) {
         this._delay = time;
@@ -246,7 +246,7 @@ class AnimationProcess{
      * @method done
      * 添加动画结束的回调
      * @param  {Function} cb
-     * @return {zrender.animation.AnimationProcess}
+     * @return {qrenderer.animation.AnimationProcess}
      */
     done(cb) {
         if (cb) {

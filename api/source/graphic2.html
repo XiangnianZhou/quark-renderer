@@ -33,7 +33,7 @@ var RectText = require(&quot;../graphic/RectText&quot;);
 
 var Displayable = require(&quot;../graphic/Displayable&quot;);
 
-var ZImage = require(&quot;../graphic/Image&quot;);
+var QImage = require(&quot;../graphic/Image&quot;);
 
 var Text = require(&quot;../graphic/Text&quot;);
 
@@ -45,7 +45,7 @@ var Gradient = require(&quot;../graphic/gradient/Gradient&quot;);
 
 var vmlCore = require(&quot;./core&quot;);
 
-function _typeof(obj) { if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
 // http://www.w3.org/TR/NOTE-VML
 // TODO:Use proxy like svg instead of overwrite brush methods
@@ -117,7 +117,7 @@ if (!env.canvasSupported) {
     return [rgb2Str(colorArr[0], colorArr[1], colorArr[2]), colorArr[3]];
   };
 
-  var updateFillNode = function updateFillNode(el, style, zrEl) {
+  var updateFillNode = function updateFillNode(el, style, qrEl) {
     // TODO pattern
     var fill = style.fill;
 
@@ -131,13 +131,13 @@ if (!env.canvasSupported) {
         var shift = 0; // scale factor for offset
 
         var expansion = 1;
-        var rect = zrEl.getBoundingRect();
+        var rect = qrEl.getBoundingRect();
         var rectWidth = rect.width;
         var rectHeight = rect.height;
 
         if (fill.type === &#39;linear&#39;) {
           gradientType = &#39;gradient&#39;;
-          var transform = zrEl.transform;
+          var transform = qrEl.transform;
           var p0 = [fill.x * rectWidth, fill.y * rectHeight];
           var p1 = [fill.x2 * rectWidth, fill.y2 * rectHeight];
 
@@ -162,8 +162,8 @@ if (!env.canvasSupported) {
         } else {
           gradientType = &#39;gradientradial&#39;;
           var _p = [fill.x * rectWidth, fill.y * rectHeight];
-          var _transform = zrEl.transform;
-          var scale = zrEl.scale;
+          var _transform = qrEl.transform;
+          var scale = qrEl.scale;
           var width = rectWidth;
           var height = rectHeight;
           focus = [// Percent in bounding rect
@@ -249,7 +249,7 @@ if (!env.canvasSupported) {
     }
   };
 
-  var updateFillAndStroke = function updateFillAndStroke(vmlEl, type, style, zrEl) {
+  var updateFillAndStroke = function updateFillAndStroke(vmlEl, type, style, qrEl) {
     var isFill = type === &#39;fill&#39;;
     var el = vmlEl.getElementsByTagName(type)[0]; // Stroke must have lineWidth
 
@@ -264,7 +264,7 @@ if (!env.canvasSupported) {
         el = vmlCore.createNode(type);
       }
 
-      isFill ? updateFillNode(el, style, zrEl) : updateStrokeNode(el, style);
+      isFill ? updateFillNode(el, style, qrEl) : updateStrokeNode(el, style);
       append(vmlEl, el);
     } else {
       vmlEl[isFill ? &#39;filled&#39; : &#39;stroked&#39;] = &#39;false&#39;;
@@ -468,8 +468,8 @@ if (!env.canvasSupported) {
 
     return str.join(&#39;&#39;);
   };
-<span id='zrender-vml-Path'>  /**
-</span>   * @class zrender.vml.Path
+<span id='qrenderer-vml-Path'>  /**
+</span>   * @class qrenderer.vml.Path
    * 
    * Append brushVML method to standard shape classes inside graphic package, VMLPainter will
    * use this method instead of standard brush() method.
@@ -548,15 +548,15 @@ if (!env.canvasSupported) {
     // FIXME img instanceof Image 如果 img 是一个字符串的时候，IE8 下会报错
     return _typeof(img) === &#39;object&#39; &amp;&amp; img.tagName &amp;&amp; img.tagName.toUpperCase() === &#39;IMG&#39;; // return img instanceof Image;
   };
-<span id='zrender-vml-ZImage'>  /**
-</span>   * @class zrender.vml.ZImage
+<span id='qrenderer-vml-QImage'>  /**
+</span>   * @class qrenderer.vml.QImage
    * 
    * @docauthor 大漠穷秋 damoqiongqiu@126.com
    */
   // Rewrite the original path method
 
 
-  ZImage.prototype.brushVML = function (vmlRoot) {
+  QImage.prototype.brushVML = function (vmlRoot) {
     var style = this.style;
     var image = style.image; // Image original width, height
 
@@ -745,7 +745,7 @@ if (!env.canvasSupported) {
     }
   };
 
-  ZImage.prototype.onRemove = function (vmlRoot) {
+  QImage.prototype.onRemove = function (vmlRoot) {
     remove(vmlRoot, this._vmlEl);
     this._vmlEl = null;
     this._cropEl = null;
@@ -753,7 +753,7 @@ if (!env.canvasSupported) {
     this.removeRectText(vmlRoot);
   };
 
-  ZImage.prototype.onAdd = function (vmlRoot) {
+  QImage.prototype.onAdd = function (vmlRoot) {
     append(vmlRoot, this._vmlEl);
     this.appendRectText(vmlRoot);
   }; //--------------TEXT----------------------
@@ -1010,7 +1010,7 @@ if (!env.canvasSupported) {
     append(vmlRoot, this._textVmlEl);
   };
 
-  var list = [RectText, Displayable, ZImage, Path, Text]; // In case Displayable has been mixed in RectText
+  var list = [RectText, Displayable, QImage, Path, Text]; // In case Displayable has been mixed in RectText
 
   for (var i = 0; i &lt; list.length; i++) {
     var proto = list[i].prototype;
@@ -1018,8 +1018,8 @@ if (!env.canvasSupported) {
     proto.removeRectText = removeRectText;
     proto.appendRectText = appendRectText;
   }
-<span id='zrender-vml-Text'>  /**
-</span>   * @class zrender.vml.Text
+<span id='qrenderer-vml-Text'>  /**
+</span>   * @class qrenderer.vml.Text
    * 
    * @docauthor 大漠穷秋 damoqiongqiu@126.com
    */

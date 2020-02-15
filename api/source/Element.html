@@ -33,56 +33,56 @@ function _defineProperties(target, props) { for (var i = 0; i &lt; props.length;
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-<span id='zrender-graphic-Element'>/**
-</span> * @class zrender.graphic.Element
+<span id='qrenderer-graphic-Element'>/**
+</span> * @class qrenderer.graphic.Element
  * 
- * Root class, everything in ZRender is an Element. 
+ * Root class, everything in QuarkRenderer is an Element. 
  * This is an abstract class, please don&#39;t creat an instance directly.
  * 
- * 根类，ZRender 中所有对象都是 Element 的子类。这是一个抽象类，请不要直接创建这个类的实例。
+ * 根类，QRenderer 中所有对象都是 Element 的子类。这是一个抽象类，请不要直接创建这个类的实例。
  * 
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 var Element =
 /*#__PURE__*/
 function () {
-<span id='zrender-graphic-Element-method-constructor'>  /**
+<span id='qrenderer-graphic-Element-method-constructor'>  /**
 </span>   * @method constructor Element
    */
   function Element(options) {
     _classCallCheck(this, Element);
 
-<span id='zrender-graphic-Element-property-options'>    /**
+<span id='qrenderer-graphic-Element-property-options'>    /**
 </span>     * @protected
      * @property options 配置项
      */
     this.options = options;
-<span id='zrender-graphic-Element-property-id'>    /**
+<span id='qrenderer-graphic-Element-property-id'>    /**
 </span>     * @property {String} id
      */
 
     this.id = this.options.id || guid();
-<span id='zrender-graphic-Element-property-type'>    /**
+<span id='qrenderer-graphic-Element-property-type'>    /**
 </span>     * @property {String} type 元素类型
      */
 
     this.type = &#39;element&#39;;
-<span id='zrender-graphic-Element-property-name'>    /**
+<span id='qrenderer-graphic-Element-property-name'>    /**
 </span>     * @property {String} name 元素名字
      */
 
     this.name = &#39;&#39;;
-<span id='zrender-graphic-Element-property-__zr'>    /**
+<span id='qrenderer-graphic-Element-property-__qr'>    /**
 </span>     * @private
-     * @property {ZRender} __zr
+     * @property {QuarkRenderer} __qr
      * 
-     * ZRender instance will be assigned when element is associated with zrender
+     * QuarkRenderer instance will be assigned when element is associated with qrenderer
      * 
-     * ZRender 实例对象，会在 element 添加到 zrender 实例中后自动赋值
+     * QuarkRenderer 实例对象，会在 element 添加到 qrenderer 实例中后自动赋值
      */
 
-    this.__zr = null;
-<span id='zrender-graphic-Element-property-__dirty'>    /**
+    this.__qr = null;
+<span id='qrenderer-graphic-Element-property-__dirty'>    /**
 </span>     * @private
      * @property {Boolean} __dirty
      * 
@@ -92,13 +92,13 @@ function () {
      */
 
     this.__dirty = true;
-<span id='zrender-graphic-Element-property-_rect'>    /**
+<span id='qrenderer-graphic-Element-property-_rect'>    /**
 </span>     * @private
      * @property  _rect
      */
 
     this._rect = null;
-<span id='zrender-graphic-Element-property-ignore'>    /**
+<span id='qrenderer-graphic-Element-property-ignore'>    /**
 </span>     * @property {Boolean} ignore
      * 
      * Whether ignore drawing and events of this object.
@@ -107,7 +107,7 @@ function () {
      */
 
     this.ignore = false;
-<span id='zrender-graphic-Element-property-clipPath'>    /**
+<span id='qrenderer-graphic-Element-property-clipPath'>    /**
 </span>     * @property {Path} clipPath
      * 
      * This is used for clipping path, all the paths inside Group will be clipped by this path, 
@@ -120,7 +120,7 @@ function () {
      */
 
     this.clipPath = null;
-<span id='zrender-graphic-Element-property-isGroup'>    /**
+<span id='qrenderer-graphic-Element-property-isGroup'>    /**
 </span>     * @property {Boolean} isGroup
      * 
      * Whether this object is a Group.
@@ -134,7 +134,7 @@ function () {
     classUtil.inheritProperties(this, Animatable, this.options);
     classUtil.copyOwnProperties(this, this.options);
   }
-<span id='zrender-graphic-Element-method-'>  /**
+<span id='qrenderer-graphic-Element-method-'>  /**
 </span>   * @method
    * 
    * Drift element
@@ -170,7 +170,7 @@ function () {
       this.decomposeTransform();
       this.dirty(false);
     }
-<span id='zrender-graphic-Element-property-beforeUpdate'>    /**
+<span id='qrenderer-graphic-Element-property-beforeUpdate'>    /**
 </span>     * @property {Function} beforeUpdate
      * 
      * Hook before update.
@@ -181,7 +181,7 @@ function () {
   }, {
     key: &quot;beforeUpdate&quot;,
     value: function beforeUpdate() {}
-<span id='zrender-graphic-Element-property-update'>    /**
+<span id='qrenderer-graphic-Element-property-update'>    /**
 </span>     * @property {Function} update
      * 
      * Update each frame.
@@ -194,7 +194,7 @@ function () {
     value: function update() {
       this.updateTransform();
     }
-<span id='zrender-graphic-Element-property-afterUpdate'>    /**
+<span id='qrenderer-graphic-Element-property-afterUpdate'>    /**
 </span>     * @property {Function} afterUpdate
      * 
      * Hook after update.
@@ -205,7 +205,7 @@ function () {
   }, {
     key: &quot;afterUpdate&quot;,
     value: function afterUpdate() {}
-<span id='zrender-graphic-Element-property-traverse'>    /**
+<span id='qrenderer-graphic-Element-property-traverse'>    /**
 </span>     * @property {Function} traverse
      * @param  {Function} cb
      * @param  {Object}   context
@@ -214,7 +214,7 @@ function () {
   }, {
     key: &quot;traverse&quot;,
     value: function traverse(cb, context) {}
-<span id='zrender-graphic-Element-method-attrKV'>    /**
+<span id='qrenderer-graphic-Element-method-attrKV'>    /**
 </span>     * @protected
      * @method attrKV
      * @param {String} key
@@ -240,7 +240,7 @@ function () {
         this[key] = value;
       }
     }
-<span id='zrender-graphic-Element-method-hide'>    /**
+<span id='qrenderer-graphic-Element-method-hide'>    /**
 </span>     * @method hide
      * 
      * Hide the element.
@@ -252,9 +252,9 @@ function () {
     key: &quot;hide&quot;,
     value: function hide() {
       this.ignore = true;
-      this.__zr &amp;&amp; this.__zr.refresh();
+      this.__qr &amp;&amp; this.__qr.refresh();
     }
-<span id='zrender-graphic-Element-method-show'>    /**
+<span id='qrenderer-graphic-Element-method-show'>    /**
 </span>     * @method show
      * 
      * Show the element.
@@ -266,9 +266,9 @@ function () {
     key: &quot;show&quot;,
     value: function show() {
       this.ignore = false;
-      this.__zr &amp;&amp; this.__zr.refresh();
+      this.__qr &amp;&amp; this.__qr.refresh();
     }
-<span id='zrender-graphic-Element-method-attr'>    /**
+<span id='qrenderer-graphic-Element-method-attr'>    /**
 </span>     * @method attr
      * 
      * Modify attribute.
@@ -295,7 +295,7 @@ function () {
       this.dirty(false);
       return this;
     }
-<span id='zrender-graphic-Element-method-setClipPath'>    /**
+<span id='qrenderer-graphic-Element-method-setClipPath'>    /**
 </span>     * @method setClipPath
      * 
      * Set the clip path.
@@ -308,10 +308,10 @@ function () {
   }, {
     key: &quot;setClipPath&quot;,
     value: function setClipPath(clipPath) {
-      var zr = this.__zr;
+      var qr = this.__qr;
 
-      if (zr) {
-        clipPath.addSelfToZr(zr);
+      if (qr) {
+        clipPath.addSelfToQr(qr);
       } // Remove previous clip path
 
 
@@ -320,14 +320,14 @@ function () {
       }
 
       this.clipPath = clipPath;
-      clipPath.__zr = zr;
+      clipPath.__qr = qr;
       clipPath.__clipTarget = this; //TODO: FIX this，需要重写一下，考虑把 Element 类和 Displayable 类合并起来。
       //dirty() 方法定义在子类 Displayable 中，这里似乎不应该直接调用，作为父类的 Element 不应该了解子类的实现，否则不易理解和维护。
       //另，Displayable 中的 dirty() 方法没有参数，而孙类 Path 中的 dirty() 方法有参数。
 
       this.dirty(false);
     }
-<span id='zrender-graphic-Element-method-removeClipPath'>    /**
+<span id='qrenderer-graphic-Element-method-removeClipPath'>    /**
 </span>     * @method removeClipPath
      * 
      * Remove the clip path.
@@ -342,17 +342,17 @@ function () {
       var clipPath = this.clipPath;
 
       if (clipPath) {
-        if (clipPath.__zr) {
-          clipPath.removeSelfFromZr(clipPath.__zr);
+        if (clipPath.__qr) {
+          clipPath.removeSelfFromQr(clipPath.__qr);
         }
 
-        clipPath.__zr = null;
+        clipPath.__qr = null;
         clipPath.__clipTarget = null;
         this.clipPath = null;
         this.dirty(false);
       }
     }
-<span id='zrender-graphic-Element-method-dirty'>    /**
+<span id='qrenderer-graphic-Element-method-dirty'>    /**
 </span>     * @protected
      * @method dirty
      * 
@@ -366,60 +366,60 @@ function () {
     value: function dirty() {
       this.__dirty = this.__dirtyText = true;
       this._rect = null;
-      this.__zr &amp;&amp; this.__zr.refresh();
+      this.__qr &amp;&amp; this.__qr.refresh();
     }
-<span id='zrender-graphic-Element-method-addSelfToZr'>    /**
-</span>     * @method addSelfToZr
-     * Add self to zrender instance.
+<span id='qrenderer-graphic-Element-method-addSelfToQr'>    /**
+</span>     * @method addSelfToQr
+     * Add self to qrenderer instance.
      * Not recursively because it will be invoked when element added to storage.
      * 
-     * 把当前对象添加到 zrender 实例中去。
+     * 把当前对象添加到 qrenderer 实例中去。
      * 不会递归添加，因为当元素被添加到 storage 中的时候会执行递归操作。
      * 
-     * @param {ZRender} zr
+     * @param {QuarkRenderer} qr
      */
 
   }, {
-    key: &quot;addSelfToZr&quot;,
-    value: function addSelfToZr(zr) {
-      this.__zr = zr; // 添加动画
+    key: &quot;addSelfToQr&quot;,
+    value: function addSelfToQr(qr) {
+      this.__qr = qr; // 添加动画
 
       var animationProcessList = this.animationProcessList;
 
       if (animationProcessList) {
         for (var i = 0; i &lt; animationProcessList.length; i++) {
-          zr.globalAnimationMgr.addAnimationProcess(animationProcessList[i]);
+          qr.globalAnimationMgr.addAnimationProcess(animationProcessList[i]);
         }
       }
 
       if (this.clipPath) {
-        this.clipPath.addSelfToZr(zr);
+        this.clipPath.addSelfToQr(qr);
       }
     }
-<span id='zrender-graphic-Element-method-removeSelfFromZr'>    /**
-</span>     * @method removeSelfFromZr
-     * Remove self from zrender instance.
+<span id='qrenderer-graphic-Element-method-removeSelfFromQr'>    /**
+</span>     * @method removeSelfFromQr
+     * Remove self from qrenderer instance.
      * 
-     * 把当前对象从 zrender 实例中删除。
+     * 把当前对象从 qrenderer 实例中删除。
      * 
-     * @param {ZRender} zr
+     * @param {QuarkRenderer} qr
      */
 
   }, {
-    key: &quot;removeSelfFromZr&quot;,
-    value: function removeSelfFromZr(zr) {
-      this.__zr = null; // 移除动画
+    key: &quot;removeSelfFromQr&quot;,
+    value: function removeSelfFromQr(qr) {
+      this.__qr = null; // 移除动画
 
       var animationProcessList = this.animationProcessList;
 
       if (animationProcessList) {
         for (var i = 0; i &lt; animationProcessList.length; i++) {
-          zr.globalAnimationMgr.removeAnimationProcess(animationProcessList[i]);
+          qr.globalAnimationMgr.removeAnimationProcess(animationProcessList[i]);
         }
       }
 
       if (this.clipPath) {
-        this.clipPath.removeSelfFromZr(zr);
+        this.clipPath.removeSelfFromQr(qr);
       }
     }
   }]);

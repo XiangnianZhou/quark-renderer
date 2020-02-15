@@ -4,23 +4,23 @@
     <meta charset="utf-8" />
     <title>Image</title>
     <script src="./lib/config.js"></script>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
     <div id="main" style="width:1000px;height:800px;"></div>
     <script type="text/javascript">
-        // 初始化zrender
-        var zr = zrender.init(document.getElementById('main'), {
-            renderer: window.__ZRENDER__DEFAULT__RENDERER__ || 'svg'
+        // 初始化qrenderer
+        var qr = qrenderer.init(document.getElementById('main'), {
+            renderer: window.__QRENDER__DEFAULT__RENDERER__ || 'svg'
         });
 
-        var gradient1 = new zrender.LinearGradient();
+        var gradient1 = new qrenderer.LinearGradient();
         gradient1.addColorStop(0, 'red');
         gradient1.addColorStop(0.7, 'rgb(255, 255, 0)');
         gradient1.addColorStop(1, '#0f0');
 
-        var rect = new zrender.Rect({
+        var rect = new qrenderer.Rect({
             shape: {
                 x: 10,
                 y: 10,
@@ -31,7 +31,7 @@
                 fill: gradient1
             }
         });
-        zr.add(rect);
+        qr.add(rect);
 
         setTimeout(function () {
             rect.style.fill = {
@@ -57,20 +57,20 @@
         }, 1000);
 
         setTimeout(function () {
-            zr.remove(rect);
+            qr.remove(rect);
         }, 3000);
 
         setTimeout(function () {
-            zr.add(rect);
+            qr.add(rect);
         }, 5000);
 
-        var gradient2 = new zrender.LinearGradient();
+        var gradient2 = new qrenderer.LinearGradient();
         gradient2.addColorStop(0, 'blue');
         gradient2.addColorStop(1, 'yellow');
         gradient2.x2 = 0;
         gradient2.y2 = 1;
 
-        var circle = new zrender.Circle({
+        var circle = new qrenderer.Circle({
             shape: {
                 cx: 150,
                 cy: 50,
@@ -80,17 +80,17 @@
                 fill: gradient2
             }
         });
-        zr.add(circle);
+        qr.add(circle);
 
         setTimeout(function () {
-            zr.remove(circle);
+            qr.remove(circle);
         }, 2000);
 
         setTimeout(function () {
-            zr.add(circle);
+            qr.add(circle);
         }, 4000);
 
-        var ring = new zrender.Ring({
+        var ring = new qrenderer.Ring({
             shape: {
                 cx: 250,
                 cy: 50,
@@ -101,17 +101,17 @@
                 fill: gradient1
             }
         });
-        zr.add(ring);
+        qr.add(ring);
 
         setTimeout(function () {
-            zr.remove(ring);
+            qr.remove(ring);
         }, 4000);
 
         setTimeout(function () {
-            zr.add(ring);
+            qr.add(ring);
         }, 6000);
 
-        var sector = new zrender.Sector({
+        var sector = new qrenderer.Sector({
             shape: {
                 cx: 350,
                 cy: 50,
@@ -121,13 +121,13 @@
                 endAngle: Math.PI
             }
         });
-        zr.add(sector);
+        qr.add(sector);
 
-        var gradient3 = new zrender.RadialGradient();
+        var gradient3 = new qrenderer.RadialGradient();
         gradient3.addColorStop(0, 'red');
         gradient3.addColorStop(1, 'green');
 
-        var drop = new zrender.Droplet({
+        var drop = new qrenderer.Droplet({
             shape: {
                 cx: 350,
                 cy: 50,
@@ -138,9 +138,9 @@
                 fill: gradient3
             }
         });
-        zr.add(drop);
+        qr.add(drop);
 
-        var curve = new zrender.BezierCurve({
+        var curve = new qrenderer.BezierCurve({
             shape: {
                 x1: 400,
                 y1: 0,
@@ -152,9 +152,9 @@
                 cpy2: 50
             }
         });
-        zr.add(curve);
+        qr.add(curve);
 
-        var ellipse = new zrender.Ellipse({
+        var ellipse = new qrenderer.Ellipse({
             shape: {
                 cx: 550,
                 cy: 50,
@@ -162,9 +162,9 @@
                 ry: 30
             }
         });
-        zr.add(ellipse);
+        qr.add(ellipse);
 
-        var heart = new zrender.Heart({
+        var heart = new qrenderer.Heart({
             shape: {
                 cx: 650,
                 cy: 25,
@@ -172,9 +172,9 @@
                 height: 60
             }
         });
-        zr.add(heart);
+        qr.add(heart);
 
-        var rose = new zrender.Rose({
+        var rose = new qrenderer.Rose({
             shape: {
                 cx: 750,
                 cy: 50,
@@ -183,9 +183,9 @@
                 n: 5
             }
         });
-        zr.add(rose);
+        qr.add(rose);
 
-        var trochoid = new zrender.Trochoid({
+        var trochoid = new qrenderer.Trochoid({
             shape: {
                 cx: 850,
                 cy: 50,
@@ -194,9 +194,9 @@
                 d: 10
             }
         });
-        zr.add(trochoid);
+        qr.add(trochoid);
 
-        var isogon = new zrender.Isogon({
+        var isogon = new qrenderer.Isogon({
             shape: {
                 x: 50,
                 y: 150,
@@ -204,9 +204,9 @@
                 n: 7
             }
         });
-        zr.add(isogon);
+        qr.add(isogon);
 
-        var line = new zrender.Line({
+        var line = new qrenderer.Line({
             shape: {
                 x1: 100,
                 y1: 100,
@@ -214,9 +214,9 @@
                 y2: 200
             }
         });
-        zr.add(line);
+        qr.add(line);
 
-        var polygon = new zrender.Polygon({
+        var polygon = new qrenderer.Polygon({
             shape: {
                 points: [
                     [200, 100],
@@ -227,9 +227,9 @@
                 ]
             }
         });
-        zr.add(polygon);
+        qr.add(polygon);
 
-        var polyline = new zrender.Polyline({
+        var polyline = new qrenderer.Polyline({
             shape: {
                 points: [
                     [300, 100],
@@ -240,9 +240,9 @@
                 ]
             }
         });
-        zr.add(polyline);
+        qr.add(polyline);
 
-        var star = new zrender.Star({
+        var star = new qrenderer.Star({
             shape: {
                 cx: 450,
                 cy: 150,
@@ -251,7 +251,7 @@
                 r: 50
             }
         });
-        zr.add(star);
+        qr.add(star);
     </script>
 
 </body>

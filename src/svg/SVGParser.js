@@ -1,5 +1,5 @@
 import Group from '../graphic/Group';
-import ZImage from '../graphic/Image';
+import QImage from '../graphic/Image';
 import Text from '../graphic/Text';
 import Circle from '../graphic/shape/Circle';
 import Rect from '../graphic/shape/Rect';
@@ -43,7 +43,7 @@ export function parseXML(svg) {
 }
 
 /**
- * @class zrender.svg.SVGParser
+ * @class qrenderer.svg.SVGParser
  * 
  * This is a tool class for parsing SVG xml string to standard shape classes.
  * 
@@ -326,7 +326,7 @@ let nodeParsers = {
         return polyline;
     },
     'image': function (xmlNode, parentGroup) {
-        let img = new ZImage();
+        let img = new QImage();
         inheritStyle(parentGroup, img);
         parseAttributes(xmlNode, img, this._defs);
 
@@ -485,21 +485,21 @@ let attributesMap = {
 };
 
 function parseAttributes(xmlNode, el, defs, onlyInlineStyle) {
-    let zrStyle = el.__inheritedStyle || {};
+    let qrStyle = el.__inheritedStyle || {};
     let isTextEl = el.type === 'text';
 
     // TODO Shadow
     if (xmlNode.nodeType === 1) {
         parseTransformAttribute(xmlNode, el);
 
-        extend(zrStyle, parseStyleAttribute(xmlNode));
+        extend(qrStyle, parseStyleAttribute(xmlNode));
 
         if (!onlyInlineStyle) {
             for (let svgAttrName in attributesMap) {
                 if (attributesMap.hasOwnProperty(svgAttrName)) {
                     let attrValue = xmlNode.getAttribute(svgAttrName);
                     if (attrValue != null) {
-                        zrStyle[attributesMap[svgAttrName]] = attrValue;
+                        qrStyle[attributesMap[svgAttrName]] = attrValue;
                     }
                 }
             }
@@ -512,37 +512,37 @@ function parseAttributes(xmlNode, el, defs, onlyInlineStyle) {
     el.style = el.style || new Style();
     let elStyle = el.style;
 
-    zrStyle.fill != null && elStyle.set(elFillProp, getPaint(zrStyle.fill, defs));
-    zrStyle.stroke != null && elStyle.set(elStrokeProp, getPaint(zrStyle.stroke, defs));
+    qrStyle.fill != null && elStyle.set(elFillProp, getPaint(qrStyle.fill, defs));
+    qrStyle.stroke != null && elStyle.set(elStrokeProp, getPaint(qrStyle.stroke, defs));
 
     each([
         'lineWidth', 'opacity', 'fillOpacity', 'strokeOpacity', 'miterLimit', 'fontSize'
     ], function (propName) {
         let elPropName = (propName === 'lineWidth' && isTextEl) ? 'textStrokeWidth' : propName;
-        zrStyle[propName] != null && elStyle.set(elPropName, parseFloat(zrStyle[propName]));
+        qrStyle[propName] != null && elStyle.set(elPropName, parseFloat(qrStyle[propName]));
     });
 
-    if (!zrStyle.textBaseline || zrStyle.textBaseline === 'auto') {
-        zrStyle.textBaseline = 'alphabetic';
+    if (!qrStyle.textBaseline || qrStyle.textBaseline === 'auto') {
+        qrStyle.textBaseline = 'alphabetic';
     }
-    if (zrStyle.textBaseline === 'alphabetic') {
-        zrStyle.textBaseline = 'bottom';
+    if (qrStyle.textBaseline === 'alphabetic') {
+        qrStyle.textBaseline = 'bottom';
     }
-    if (zrStyle.textAlign === 'start') {
-        zrStyle.textAlign = 'left';
+    if (qrStyle.textAlign === 'start') {
+        qrStyle.textAlign = 'left';
     }
-    if (zrStyle.textAlign === 'end') {
-        zrStyle.textAlign = 'right';
+    if (qrStyle.textAlign === 'end') {
+        qrStyle.textAlign = 'right';
     }
 
     each(['lineDashOffset', 'lineCap', 'lineJoin',
         'fontWeight', 'fontFamily', 'fontStyle', 'textAlign', 'textBaseline'
     ], function (propName) {
-        zrStyle[propName] != null && elStyle.set(propName, zrStyle[propName]);
+        qrStyle[propName] != null && elStyle.set(propName, qrStyle[propName]);
     });
 
-    if (zrStyle.lineDash) {
-        el.style.lineDash = trim(zrStyle.lineDash).split(DILIMITER_REG);
+    if (qrStyle.lineDash) {
+        el.style.lineDash = trim(qrStyle.lineDash).split(DILIMITER_REG);
     }
 
     if (elStyle[elStrokeProp] && elStyle[elStrokeProp] !== 'none') {
@@ -550,7 +550,7 @@ function parseAttributes(xmlNode, el, defs, onlyInlineStyle) {
         el[elStrokeProp] = true;
     }
 
-    el.__inheritedStyle = zrStyle;
+    el.__inheritedStyle = qrStyle;
 }
 
 let urlRegex = /url\(\s*#(.*?)\)/;
@@ -667,9 +667,9 @@ export function makeViewBoxTransform(viewBoxRect, width, height) {
  * @static
  * @method parseSVG
  * 
- * Parse SVG DOM to ZRender specific interfaces.
+ * Parse SVG DOM to QuarkRenderer specific interfaces.
  * 
- * 把 SVG DOM 标签解析成 Zrender 所定义的接口。
+ * 把 SVG DOM 标签解析成 QuarkRenderer 所定义的接口。
  * 
  * @param {String|XMLElement} xml
  * @param {Object} [opt]
@@ -679,7 +679,7 @@ export function makeViewBoxTransform(viewBoxRect, width, height) {
  * @param {Boolean} [opt.ignoreRootClip]
  * @return {Object} result:
  * {
- *     root: Group, The root of the the result tree of zrender shapes,
+ *     root: Group, The root of the the result tree of qrenderer shapes,
  *     width: number, the viewport width of the SVG,
  *     height: number, the viewport height of the SVG,
  *     viewBoxRect: {x, y, width, height}, the declared viewBox rect of the SVG, if exists,

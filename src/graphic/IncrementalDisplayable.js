@@ -3,7 +3,7 @@ import Displayble from './Displayable';
 import BoundingRect from '../core/BoundingRect';
 
 /**
- * @class zrender.graphic.IncrementalDisplayble 
+ * @class qrenderer.graphic.IncrementalDisplayble 
  * Displayable for incremental rendering. It will be rendered in a separate layer
  * IncrementalDisplay have two main methods. `clearDisplayables` and `addDisplayables`
  * addDisplayables will render the added displayables incremetally.

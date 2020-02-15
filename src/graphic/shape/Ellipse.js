@@ -2,7 +2,7 @@ import Path from '../Path';
 import * as dataUtil from '../../core/utils/dataStructureUtil';
 
 /**
- * @class zrender.graphic.shape.Ellipse 
+ * @class qrenderer.graphic.shape.Ellipse 
  * 椭圆形状
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */

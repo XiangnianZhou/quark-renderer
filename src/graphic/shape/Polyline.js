@@ -3,7 +3,7 @@ import * as polyHelper from '../utils/poly';
 import * as dataUtil from '../../core/utils/dataStructureUtil';
 
 /**
- * @class zrender.graphic.shape.Polyline 
+ * @class qrenderer.graphic.shape.Polyline 
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */

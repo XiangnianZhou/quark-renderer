@@ -1,7 +1,7 @@
 /**
- * Do not mount those modules on 'src/zrender' for better tree shaking.
+ * Do not mount those modules on 'src/qrenderer' for better tree shaking.
  */
-import * as zrUtil from './core/utils/dataStructureUtil';
+import * as qrUtil from './core/utils/dataStructureUtil';
 import * as matrix from './core/utils/matrix';
 import * as vector from './core/utils/vector';
 import * as colorTool from './core/utils/colorUtil';
@@ -38,5 +38,5 @@ export {matrix};
 export {vector};
 export {colorTool as color};
 export {pathTool as path};
-export {zrUtil as util};
+export {qrUtil as util};
 export {parseSVG};

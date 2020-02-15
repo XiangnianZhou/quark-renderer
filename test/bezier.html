@@ -3,14 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <title>Bezier Animation</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
 </head>
 <body>
     <div id="main" style="width:1000px;height:600px;"></div>
     <script type="text/javascript">
-        var zr = zrender.init(document.getElementById('main'));
+        var qr = qrenderer.init(document.getElementById('main'));
 
-        var curve = new zrender.BezierCurve({
+        var curve = new qrenderer.BezierCurve({
             position: [0, 0],
             scale: [1, 1],
             shape: {
@@ -26,7 +26,7 @@
             draggable: true
         });
 
-        zr.add(curve);
+        qr.add(curve);
 
         curve.animateTo({
             shape: {

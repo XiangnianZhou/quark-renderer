@@ -4,14 +4,14 @@
     <meta charset="utf-8" />
     <title>Image</title>
     <script src="./lib/config.js"></script>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
     <div id="main" style="width:1000px;height:900px;"></div>
 
     <script type="text/javascript">
-        let zr = zrender.init(document.getElementById('main'), {
+        let qr = qrenderer.init(document.getElementById('main'), {
             renderer: 'svg'
         });
 
@@ -19,7 +19,7 @@
             let s = 0 + Math.PI / 4 * i;
             for (let j = 0; j < 16; ++j) {
                 let e = Math.PI / 4 * j;
-                let arc = new zrender.Arc({
+                let arc = new qrenderer.Arc({
                     shape: {
                         cx: 50 + 50 * i,
                         cy: 50 + 50 * j,
@@ -29,9 +29,9 @@
                         stroke: '#333'
                     }
                 });
-                zr.add(arc);
+                qr.add(arc);
                 
-                arc = new zrender.Arc({
+                arc = new qrenderer.Arc({
                     shape: {
                         cx: 50 + 50 * i,
                         cy: 50 + 50 * j,
@@ -45,16 +45,16 @@
                         fill: 'rgba(255, 255, 0, 0.3)'
                     }
                 });
-                zr.add(arc);
+                qr.add(arc);
 
-                let text = new zrender.Text({
+                let text = new qrenderer.Text({
                     style: {
                         text: i + ',' + j,
                         fontSize: 12
                     },
                     position: [40 + 50 * i, 40 + 50 * j]
                 });
-                zr.add(text);
+                qr.add(text);
             }
         }
     </script>

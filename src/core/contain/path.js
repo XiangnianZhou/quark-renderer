@@ -321,7 +321,7 @@ function containPath(data, lineWidth, isStroke, x, y) {
                     x0 = x1;
                     y0 = y1;
                 }
-                // zr 使用scale来模拟椭圆, 这里也对x做一定的缩放
+                // qr 使用scale来模拟椭圆, 这里也对x做一定的缩放
                 let _x = (x - cx) * ry / rx + cx;
                 if (isStroke) {
                     if (arc.containStroke(

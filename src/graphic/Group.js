@@ -4,7 +4,7 @@ import BoundingRect from '../core/BoundingRect';
 import { extend } from '../core/utils/dataStructureUtil';
 
 /**
- * @class zrender.graphic.Group
+ * @class qrenderer.graphic.Group
  * 
  * - Group is a container, it's not visible.
  * - Group can have child nodes, not the other Element types.
@@ -15,8 +15,8 @@ import { extend } from '../core/utils/dataStructureUtil';
  * - Group 上的变换也会被应用到子节点上。
  * 
  *      @example small frame
- *      let Group = require('zrender/Group');
- *      let Circle = require('zrender/graphic/shape/Circle');
+ *      let Group = require('qrenderer/Group');
+ *      let Circle = require('qrenderer/graphic/shape/Circle');
  *      let g = new Group();
  *      g.position[0] = 100;
  *      g.position[1] = 100;
@@ -27,7 +27,7 @@ import { extend } from '../core/utils/dataStructureUtil';
  *              r: 20,
  *          }
  *      }));
- *      zr.add(g);
+ *      qr.add(g);
  */
 class Group extends Element{
     /**
@@ -160,7 +160,7 @@ class Group extends Element{
         child.parent = this;//把子节点的 parent 属性指向自己，在事件冒泡的时候会使用 parent 属性。
 
         let storage = this.__storage;
-        let zr = this.__zr;
+        let qr = this.__qr;
         if (storage && storage !== child.__storage) {
 
             storage.addToStorage(child);
@@ -169,7 +169,7 @@ class Group extends Element{
                 child.addChildrenToStorage(storage);
             }
         }
-        zr && zr.refresh();
+        qr && qr.refresh();
     }
 
     /**
@@ -178,7 +178,7 @@ class Group extends Element{
      * @param {Element} child
      */
     remove(child) {
-        let zr = this.__zr;
+        let qr = this.__qr;
         let storage = this.__storage;
         let children = this._children;
 
@@ -196,7 +196,7 @@ class Group extends Element{
             }
         }
 
-        zr && zr.refresh();
+        qr && qr.refresh();
         return this;
     }
 
@@ -291,7 +291,7 @@ class Group extends Element{
      */
     dirty() {
         this.__dirty = true;
-        this.__zr && this.__zr.refresh();
+        this.__qr && this.__qr.refresh();
         return this;
     }
 

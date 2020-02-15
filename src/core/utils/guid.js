@@ -1,6 +1,5 @@
 /**
- * zrender: 生成唯一id
- *
+ * 生成唯一id
  * @author errorrik (errorrik@gmail.com)
  */
 

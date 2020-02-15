@@ -21,18 +21,19 @@ function _defineProperties(target, props) { for (var i = 0; i &lt; props.length;
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-<span id='zrender-event-MultiDragDrop'>/**
-</span> * @class zrender.event.MultiDragDrop
+<span id='qrenderer-event-MultiDragDrop'>/**
+</span> * @class qrenderer.event.MultiDragDrop
  * 支持同时拖拽多个元素，按住 Ctrl 键可以多选。
  * 
+ * @author 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 var MultiDragDrop =
 /*#__PURE__*/
 function () {
-<span id='zrender-event-MultiDragDrop-method-constructor'>  /**
+<span id='qrenderer-event-MultiDragDrop-method-constructor'>  /**
 </span>   * @method constructor MultiDragDrop
-   * @param {ZRenderEventHandler} handler 
+   * @param {QRendererEventHandler} handler 
    */
   function MultiDragDrop(handler) {
     _classCallCheck(this, MultiDragDrop);
@@ -41,7 +42,7 @@ function () {
     this.handler = handler;
     this.handler.on(&#39;mousedown&#39;, this._dragStart, this);
   }
-<span id='zrender-event-MultiDragDrop-method-param'>  /**
+<span id='qrenderer-event-MultiDragDrop-method-param'>  /**
 </span>   * @private
    * @method param
    * @param {Element} target 
@@ -57,7 +58,7 @@ function () {
         topTarget: e &amp;&amp; e.topTarget
       };
     }
-<span id='zrender-event-MultiDragDrop-method-getSelectedItems'>    /**
+<span id='qrenderer-event-MultiDragDrop-method-getSelectedItems'>    /**
 </span>     * @method getSelectedItems
      * 获取当前选中的元素
      * @return {Map} selectionMap
@@ -68,7 +69,7 @@ function () {
     value: function getSelectedItems() {
       return this.selectionMap;
     }
-<span id='zrender-event-MultiDragDrop-method-clearSelectionMap'>    /**
+<span id='qrenderer-event-MultiDragDrop-method-clearSelectionMap'>    /**
 </span>     * @method clearSelectionMap
      * 清除选中
      */
@@ -81,7 +82,7 @@ function () {
       });
       this.selectionMap.clear();
     }
-<span id='zrender-event-MultiDragDrop-method-_dragStart'>    /**
+<span id='qrenderer-event-MultiDragDrop-method-_dragStart'>    /**
 </span>     * @private
      * @method _dragStart
      * 开始拖动
@@ -122,7 +123,7 @@ function () {
         _this.handler.dispatchToElement(_this.param(el, e), &#39;dragstart&#39;, e.event);
       });
     }
-<span id='zrender-event-MultiDragDrop-method-_drag'>    /**
+<span id='qrenderer-event-MultiDragDrop-method-_drag'>    /**
 </span>     * @private
      * @method _drag
      * 拖动过程中
@@ -159,7 +160,7 @@ function () {
         }
       }
     }
-<span id='zrender-event-MultiDragDrop-method-_dragEnd'>    /**
+<span id='qrenderer-event-MultiDragDrop-method-_dragEnd'>    /**
 </span>     * @private
      * @method _dragEnd
      * 拖动结束

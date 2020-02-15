@@ -21,8 +21,8 @@ var _constants = require(&quot;./constants&quot;);
 
 var ContextCachedBy = _constants.ContextCachedBy;
 
-<span id='zrender-graphic-Style'>/**
-</span> * @class zrender.graphic.Style
+<span id='qrenderer-graphic-Style'>/**
+</span> * @class qrenderer.graphic.Style
  * 
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
@@ -75,32 +75,32 @@ var Style = function Style(opts) {
 Style.prototype = {
   constructor: Style,
 
-<span id='zrender-graphic-Style-property-fill'>  /**
+<span id='qrenderer-graphic-Style-property-fill'>  /**
 </span>   * @property {String} fill
    */
   fill: &#39;#000&#39;,
 
-<span id='zrender-graphic-Style-property-stroke'>  /**
+<span id='qrenderer-graphic-Style-property-stroke'>  /**
 </span>   * @property {String} stroke
    */
   stroke: null,
 
-<span id='zrender-graphic-Style-property-opacity'>  /**
+<span id='qrenderer-graphic-Style-property-opacity'>  /**
 </span>   * @property {Number} opacity
    */
   opacity: 1,
 
-<span id='zrender-graphic-Style-property-fillOpacity'>  /**
+<span id='qrenderer-graphic-Style-property-fillOpacity'>  /**
 </span>   * @property {Number} fillOpacity
    */
   fillOpacity: null,
 
-<span id='zrender-graphic-Style-property-strokeOpacity'>  /**
+<span id='qrenderer-graphic-Style-property-strokeOpacity'>  /**
 </span>   * @property {Number} strokeOpacity
    */
   strokeOpacity: null,
 
-<span id='zrender-graphic-Style-property-lineDash'>  /**
+<span id='qrenderer-graphic-Style-property-lineDash'>  /**
 </span>   * @property {Array&lt;Number&gt;|Boolean} lineDash
    * `true` is not supported.
    * `false`/`null`/`undefined` are the same.
@@ -110,32 +110,32 @@ Style.prototype = {
    */
   lineDash: null,
 
-<span id='zrender-graphic-Style-property-lineDashOffset'>  /**
+<span id='qrenderer-graphic-Style-property-lineDashOffset'>  /**
 </span>   * @property {Number} lineDashOffset
    */
   lineDashOffset: 0,
 
-<span id='zrender-graphic-Style-property-shadowBlur'>  /**
+<span id='qrenderer-graphic-Style-property-shadowBlur'>  /**
 </span>   * @property {Number} shadowBlur
    */
   shadowBlur: 0,
 
-<span id='zrender-graphic-Style-property-shadowOffsetX'>  /**
+<span id='qrenderer-graphic-Style-property-shadowOffsetX'>  /**
 </span>   * @property {Number} shadowOffsetX
    */
   shadowOffsetX: 0,
 
-<span id='zrender-graphic-Style-property-shadowOffsetY'>  /**
+<span id='qrenderer-graphic-Style-property-shadowOffsetY'>  /**
 </span>   * @property {Number} shadowOffsetY
    */
   shadowOffsetY: 0,
 
-<span id='zrender-graphic-Style-property-lineWidth'>  /**
+<span id='qrenderer-graphic-Style-property-lineWidth'>  /**
 </span>   * @property {Number} lineWidth
    */
   lineWidth: 1,
 
-<span id='zrender-graphic-Style-property-strokeNoScale'>  /**
+<span id='qrenderer-graphic-Style-property-strokeNoScale'>  /**
 </span>   * @property {Boolean} strokeNoScale
    * If stroke ignore scale
    */
@@ -143,12 +143,12 @@ Style.prototype = {
   // Bounding rect text configuration
   // Not affected by element transform
 
-<span id='zrender-graphic-Style-property-text'>  /**
+<span id='qrenderer-graphic-Style-property-text'>  /**
 </span>   * @property {String} text
    */
   text: null,
 
-<span id='zrender-graphic-Style-property-font'>  /**
+<span id='qrenderer-graphic-Style-property-font'>  /**
 </span>   * @property {String} font
    * If `fontSize` or `fontFamily` exists, `font` will be reset by
    * `fontSize`, `fontStyle`, `fontWeight`, `fontFamily`.
@@ -157,66 +157,66 @@ Style.prototype = {
    */
   font: null,
 
-<span id='zrender-graphic-Style-property-textFont'>  /**
+<span id='qrenderer-graphic-Style-property-textFont'>  /**
 </span>   * @deprecated
    * @property {String} textFont
    * The same as font. Use font please.
    */
   textFont: null,
 
-<span id='zrender-graphic-Style-property-fontStyle'>  /**
+<span id='qrenderer-graphic-Style-property-fontStyle'>  /**
 </span>   * @property {String} fontStyle
    * It helps merging respectively, rather than parsing an entire font string.
    */
   fontStyle: null,
 
-<span id='zrender-graphic-Style-property-fontWeight'>  /**
+<span id='qrenderer-graphic-Style-property-fontWeight'>  /**
 </span>   * @property {String} fontWeight
    * It helps merging respectively, rather than parsing an entire font string.
    */
   fontWeight: null,
 
-<span id='zrender-graphic-Style-property-fontSize'>  /**
+<span id='qrenderer-graphic-Style-property-fontSize'>  /**
 </span>   * @property {Number} fontSize
    * It helps merging respectively, rather than parsing an entire font string.
    * Should be 12 but not &#39;12px&#39;.
    */
   fontSize: null,
 
-<span id='zrender-graphic-Style-property-fontFamily'>  /**
+<span id='qrenderer-graphic-Style-property-fontFamily'>  /**
 </span>   * @property {String} fontFamily
    * It helps merging respectively, rather than parsing an entire font string.
    */
   fontFamily: null,
 
-<span id='zrender-graphic-Style-property-textTag'>  /**
+<span id='qrenderer-graphic-Style-property-textTag'>  /**
 </span>   * @property {String} textTag
    * Reserved for special functinality, like &#39;hr&#39;.
    */
   textTag: null,
 
-<span id='zrender-graphic-Style-property-textFill'>  /**
+<span id='qrenderer-graphic-Style-property-textFill'>  /**
 </span>   * @property {String} textFill
    */
   textFill: &#39;#000&#39;,
 
-<span id='zrender-graphic-Style-property-textStroke'>  /**
+<span id='qrenderer-graphic-Style-property-textStroke'>  /**
 </span>   * @property {String} textStroke
    */
   textStroke: null,
 
-<span id='zrender-graphic-Style-property-textWidth'>  /**
+<span id='qrenderer-graphic-Style-property-textWidth'>  /**
 </span>   * @property {Number} textWidth
    */
   textWidth: null,
 
-<span id='zrender-graphic-Style-property-textHeight'>  /**
+<span id='qrenderer-graphic-Style-property-textHeight'>  /**
 </span>   * @property {Number} textHeight
    * Only for textBackground.
    */
   textHeight: null,
 
-<span id='zrender-graphic-Style-property-textStrokeWidth'>  /**
+<span id='qrenderer-graphic-Style-property-textStrokeWidth'>  /**
 </span>   * @property {Number} textStrokeWidth
    * textStroke may be set as some color as a default
    * value in upper applicaion, where the default value
@@ -225,12 +225,12 @@ Style.prototype = {
    */
   textStrokeWidth: 0,
 
-<span id='zrender-graphic-Style-property-textLineHeight'>  /**
+<span id='qrenderer-graphic-Style-property-textLineHeight'>  /**
 </span>   * @property {Number} textLineHeight
    */
   textLineHeight: null,
 
-<span id='zrender-graphic-Style-property-textPosition'>  /**
+<span id='qrenderer-graphic-Style-property-textPosition'>  /**
 </span>   * @property {string|Array&lt;Number&gt;} textPosition
    * &#39;inside&#39;, &#39;left&#39;, &#39;right&#39;, &#39;top&#39;, &#39;bottom&#39;
    * [x, y]
@@ -238,74 +238,74 @@ Style.prototype = {
    */
   textPosition: &#39;inside&#39;,
 
-<span id='zrender-graphic-Style-property-textRect'>  /**
+<span id='qrenderer-graphic-Style-property-textRect'>  /**
 </span>   * @property {Object} textRect
    * If not specified, use the boundingRect of a `displayable`.
    */
   textRect: null,
 
-<span id='zrender-graphic-Style-property-textOffset'>  /**
+<span id='qrenderer-graphic-Style-property-textOffset'>  /**
 </span>   * @property {Array&lt;Number&gt;} textOffset
    * [x, y]
    */
   textOffset: null,
 
-<span id='zrender-graphic-Style-property-textAlign'>  /**
+<span id='qrenderer-graphic-Style-property-textAlign'>  /**
 </span>   * @property {String} textAlign
    */
   textAlign: null,
 
-<span id='zrender-graphic-Style-property-textVerticalAlign'>  /**
+<span id='qrenderer-graphic-Style-property-textVerticalAlign'>  /**
 </span>   * @property {String} textVerticalAlign
    */
   textVerticalAlign: null,
 
-<span id='zrender-graphic-Style-property-textDistance'>  /**
+<span id='qrenderer-graphic-Style-property-textDistance'>  /**
 </span>   * @property {Number} textDistance
    */
   textDistance: 5,
 
-<span id='zrender-graphic-Style-property-textShadowColor'>  /**
+<span id='qrenderer-graphic-Style-property-textShadowColor'>  /**
 </span>   * @property {String} textShadowColor
    */
   textShadowColor: &#39;transparent&#39;,
 
-<span id='zrender-graphic-Style-property-textShadowBlur'>  /**
+<span id='qrenderer-graphic-Style-property-textShadowBlur'>  /**
 </span>   * @property {Number} textShadowBlur
    */
   textShadowBlur: 0,
 
-<span id='zrender-graphic-Style-property-textShadowOffsetX'>  /**
+<span id='qrenderer-graphic-Style-property-textShadowOffsetX'>  /**
 </span>   * @property {Number} textShadowOffsetX
    */
   textShadowOffsetX: 0,
 
-<span id='zrender-graphic-Style-property-textShadowOffsetY'>  /**
+<span id='qrenderer-graphic-Style-property-textShadowOffsetY'>  /**
 </span>   * @property {Number} textShadowOffsetY
    */
   textShadowOffsetY: 0,
 
-<span id='zrender-graphic-Style-property-textBoxShadowColor'>  /**
+<span id='qrenderer-graphic-Style-property-textBoxShadowColor'>  /**
 </span>   * @property {String} textBoxShadowColor
    */
   textBoxShadowColor: &#39;transparent&#39;,
 
-<span id='zrender-graphic-Style-property-textBoxShadowBlur'>  /**
+<span id='qrenderer-graphic-Style-property-textBoxShadowBlur'>  /**
 </span>   * @property {Number} textBoxShadowBlur
    */
   textBoxShadowBlur: 0,
 
-<span id='zrender-graphic-Style-property-textBoxShadowOffsetX'>  /**
+<span id='qrenderer-graphic-Style-property-textBoxShadowOffsetX'>  /**
 </span>   * @property {Number} textBoxShadowOffsetX
    */
   textBoxShadowOffsetX: 0,
 
-<span id='zrender-graphic-Style-property-textBoxShadowOffsetY'>  /**
+<span id='qrenderer-graphic-Style-property-textBoxShadowOffsetY'>  /**
 </span>   * @property {Number} textBoxShadowOffsetY
    */
   textBoxShadowOffsetY: 0,
 
-<span id='zrender-graphic-Style-property-transformText'>  /**
+<span id='qrenderer-graphic-Style-property-transformText'>  /**
 </span>   * @property {Boolean} transformText
    * Whether transform text.
    * Only available in Path and Image element,
@@ -313,7 +313,7 @@ Style.prototype = {
    */
   transformText: false,
 
-<span id='zrender-graphic-Style-property-textRotation'>  /**
+<span id='qrenderer-graphic-Style-property-textRotation'>  /**
 </span>   * @property {Number} textRotation
    * Text rotate around position of Path or Image.
    * The origin of the rotation can be specified by `textOrigin`.
@@ -322,7 +322,7 @@ Style.prototype = {
    */
   textRotation: 0,
 
-<span id='zrender-graphic-Style-property-textOrigin'>  /**
+<span id='qrenderer-graphic-Style-property-textOrigin'>  /**
 </span>   * @property {String|Array&lt;Number&gt;} textOrigin
    * Text origin of text rotation.
    * Useful in the case like label rotation of circular symbol.
@@ -337,51 +337,51 @@ Style.prototype = {
    */
   textOrigin: null,
 
-<span id='zrender-graphic-Style-property-textBackgroundColor'>  /**
+<span id='qrenderer-graphic-Style-property-textBackgroundColor'>  /**
 </span>   * @property {String} textBackgroundColor
    */
   textBackgroundColor: null,
 
-<span id='zrender-graphic-Style-property-textBorderColor'>  /**
+<span id='qrenderer-graphic-Style-property-textBorderColor'>  /**
 </span>   * @property {String} textBorderColor
    */
   textBorderColor: null,
 
-<span id='zrender-graphic-Style-property-textBorderWidth'>  /**
+<span id='qrenderer-graphic-Style-property-textBorderWidth'>  /**
 </span>   * @property {Number} textBorderWidth
    */
   textBorderWidth: 0,
 
-<span id='zrender-graphic-Style-property-textBorderRadius'>  /**
+<span id='qrenderer-graphic-Style-property-textBorderRadius'>  /**
 </span>   * @property {Number} textBorderRadius
    */
   textBorderRadius: 0,
 
-<span id='zrender-graphic-Style-property-textPadding'>  /**
+<span id='qrenderer-graphic-Style-property-textPadding'>  /**
 </span>   * @property {number|Array&lt;Number&gt;} textPadding
    * Can be `2` or `[2, 4]` or `[2, 3, 4, 5]`
    */
   textPadding: null,
 
-<span id='zrender-graphic-Style-property-rich'>  /**
+<span id='qrenderer-graphic-Style-property-rich'>  /**
 </span>   * @property {Object} rich
    * Text styles for rich text.
    */
   rich: null,
 
-<span id='zrender-graphic-Style-property-truncate'>  /**
+<span id='qrenderer-graphic-Style-property-truncate'>  /**
 </span>   * @property {Object} truncate
    * {outerWidth, outerHeight, ellipsis, placeholder}
    */
   truncate: null,
 
-<span id='zrender-graphic-Style-property-blend'>  /**
+<span id='qrenderer-graphic-Style-property-blend'>  /**
 </span>   * @property {String} blend
    * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/globalCompositeOperation
    */
   blend: null,
 
-<span id='zrender-graphic-Style-method-bind'>  /**
+<span id='qrenderer-graphic-Style-method-bind'>  /**
 </span>   * @method bind
    * @param {CanvasRenderingContext2D} ctx
    * @param {Element} el
@@ -427,7 +427,7 @@ Style.prototype = {
     }
   },
 
-<span id='zrender-graphic-Style-method-hasFill'>  /**
+<span id='qrenderer-graphic-Style-method-hasFill'>  /**
 </span>   * @method hasFill
    */
   hasFill: function hasFill() {
@@ -435,7 +435,7 @@ Style.prototype = {
     return fill != null &amp;&amp; fill !== &#39;none&#39;;
   },
 
-<span id='zrender-graphic-Style-method-hasStroke'>  /**
+<span id='qrenderer-graphic-Style-method-hasStroke'>  /**
 </span>   * @method hasStroke
    */
   hasStroke: function hasStroke() {
@@ -443,7 +443,7 @@ Style.prototype = {
     return stroke != null &amp;&amp; stroke !== &#39;none&#39; &amp;&amp; this.lineWidth &gt; 0;
   },
 
-<span id='zrender-graphic-Style-method-extendStyle'>  /**
+<span id='qrenderer-graphic-Style-method-extendStyle'>  /**
 </span>   * @method extendStyle
    * Extend from other style
    * @param {Style} otherStyle
@@ -461,7 +461,7 @@ Style.prototype = {
     }
   },
 
-<span id='zrender-graphic-Style-method-set'>  /**
+<span id='qrenderer-graphic-Style-method-set'>  /**
 </span>   * @method set
    * Batch setting style with a given object
    * @param {Object|String} obj
@@ -475,7 +475,7 @@ Style.prototype = {
     }
   },
 
-<span id='zrender-graphic-Style-method-clone'>  /**
+<span id='qrenderer-graphic-Style-method-clone'>  /**
 </span>   * @method clone
    * @return {Style}
    */
@@ -485,7 +485,7 @@ Style.prototype = {
     return newStyle;
   },
 
-<span id='zrender-graphic-Style-method-getGradient'>  /**
+<span id='qrenderer-graphic-Style-method-getGradient'>  /**
 </span>   * @method getGradient
    * @param {*} ctx 
    * @param {*} obj 

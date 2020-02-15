@@ -2,7 +2,7 @@ import Definable from './Definable';
 import * as classUtil from '../../core/utils/classUtil';
 
 /**
- * @class zrender.svg.helper.ShadowManager
+ * @class qrenderer.svg.helper.ShadowManager
  * 
  * Manages SVG shadow elements.
  * 
@@ -23,13 +23,13 @@ function hasShadow(style) {
  * 
  * Manages SVG shadow elements.
  *
- * @param   {Number}     zrId    zrender instance id
+ * @param   {Number}     qrId    qrenderer instance id
  * @param   {SVGElement} svgRoot root of SVG document
  */
 class ShadowManager extends Definable{
-    constructor(zrId, svgRoot){
+    constructor(qrId, svgRoot){
         super(
-            zrId,
+            qrId,
             svgRoot,
             ['filter'],
             '__filter_in_use__',
@@ -42,7 +42,7 @@ class ShadowManager extends Definable{
      * but will not update shadow if exists.
      *
      * @param {SvgElement}  svgElement   SVG element to paint
-     * @param {Displayable} displayable  zrender displayable element
+     * @param {Displayable} displayable  qrenderer displayable element
      */
     addWithoutUpdate(svgElement,displayable) {
         if (displayable && hasShadow(displayable.style)) {
@@ -70,7 +70,7 @@ class ShadowManager extends Definable{
     /**
      * Add a new shadow tag in <defs>
      *
-     * @param {Displayable} displayable  zrender displayable element
+     * @param {Displayable} displayable  qrenderer displayable element
      * @return {SVGFilterElement} created DOM
      */
     add(displayable) {
@@ -81,7 +81,7 @@ class ShadowManager extends Definable{
         // id should remain the same, and other attributes should be
         // updated.
         displayable._shadowDomId = displayable._shadowDomId || this.nextId++;
-        dom.setAttribute('id', 'zr' + this._zrId
+        dom.setAttribute('id', 'qr' + this._qrId
             + '-shadow-' + displayable._shadowDomId);
         this.updateDom(displayable, dom);
         this.addDom(dom);
@@ -91,7 +91,7 @@ class ShadowManager extends Definable{
     /**
      * Update shadow.
      *
-     * @param {Displayable} displayable  zrender displayable element
+     * @param {Displayable} displayable  qrenderer displayable element
      */
     update(svgElement, displayable) {
         let style = displayable.style;
@@ -119,7 +119,7 @@ class ShadowManager extends Definable{
     /**
      * Update shadow dom
      *
-     * @param {Displayable} displayable  zrender displayable element
+     * @param {Displayable} displayable  qrenderer displayable element
      * @param {SVGFilterElement} dom DOM to update
      */
     updateDom(displayable, dom) {

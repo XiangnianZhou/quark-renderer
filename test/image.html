@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Image</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
 </head>
 <body>
     <style>
@@ -14,11 +14,11 @@
     </style>
     <div id="main"></div>
     <script type="text/javascript">
-        var zr = zrender.init(document.getElementById('main'));
+        var qr = qrenderer.init(document.getElementById('main'));
 
         for (var i = 0; i < 200; i++) {
             for (var j = 0; j < 200; j++) {
-                var image = new zrender.Image({
+                var image = new qrenderer.Image({
                     position: [i * 20, j * 20],
                     scale: [1, 1],
                     style: {
@@ -30,7 +30,7 @@
                     },
                     draggable: true
                 });
-                zr.add(image);
+                qr.add(image);
             }
         }
     </script>
