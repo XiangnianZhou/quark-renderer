@@ -37,9 +37,9 @@ The document is in /api directory, open /api/index.html in your browser then you
 ## ScreenShots
 
 <img src="./docs/images/1.gif">
-
+<br/>
 <img src="./docs/images/2.gif">
-
+<br/>
 <img src="./docs/images/3.gif">
 
 ## License
