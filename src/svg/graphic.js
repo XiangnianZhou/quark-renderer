@@ -326,7 +326,7 @@ let TEXT_ALIGN_TO_ANCHRO = {
 };
 
 /**
- * @param {module:zrender/Element} el
+ * @param {Element} el
  * @param {Object|boolean} [hostRect] {x, y, width, height}
  *        If set false, rect text is not used.
  */

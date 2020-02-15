@@ -60,7 +60,7 @@ export function init(dom, opts) {
 /**
  * TODO: 不要export这个全局函数看起来也没有问题。
  * Dispose zrender instance
- * @param {module:zrender/ZRender} zr
+ * @param {ZRender} zr
  */
 export function dispose(zr) {
     if (zr) {
@@ -81,7 +81,7 @@ export function dispose(zr) {
 /**
  * Get zrender instance by id
  * @param {String} id zrender instance id
- * @return {module:zrender/ZRender}
+ * @return {ZRender}
  */
 export function getInstance(id) {
     return instances[id];
@@ -308,7 +308,7 @@ ZRender.prototype = {
      * 把这里的 API 单词重构成 Mask。
      * 
      * Add element to hover layer
-     * @param  {module:zrender/Element} el
+     * @param  {Element} el
      * @param {Object} style
      */
     addHover: function (el, style) {
@@ -323,7 +323,7 @@ ZRender.prototype = {
      * @private
      * @method
      * Remove element from hover layer
-     * @param  {module:zrender/Element} el
+     * @param  {Element} el
      */
     removeHover: function (el) {
         if (this.painter.removeHover) {
@@ -348,7 +348,7 @@ ZRender.prototype = {
      * @private
      * @method
      * Clear all hover elements in hover layer
-     * @param  {module:zrender/Element} el
+     * @param  {Element} el
      */
     clearHover: function () {
         if (this.painter.clearHover) {
@@ -418,7 +418,7 @@ ZRender.prototype = {
      * @method
      * Converting a path to image.
      * It has much better performance of drawing image rather than drawing a vector path.
-     * @param {module:zrender/graphic/Path} e
+     * @param {graphic/Path} e
      * @param {Number} width
      * @param {Number} height
      */

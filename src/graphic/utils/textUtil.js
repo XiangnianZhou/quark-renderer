@@ -22,8 +22,8 @@ var _tmpTextPositionResult = {};
 var _tmpBoxPositionResult = {};
 
 /**
- * @param {module:zrender/graphic/Style} style
- * @return {module:zrender/graphic/Style} The input style.
+ * @param {Style} style
+ * @return {Style} The input style.
  */
 export function normalizeTextStyle(style) {
     normalizeStyle(style);
@@ -59,10 +59,10 @@ function normalizeStyle(style) {
 /**
  * @param {CanvasRenderingContext2D} ctx
  * @param {String} text
- * @param {module:zrender/graphic/Style} style
+ * @param {Style} style
  * @param {Object|boolean} [rect] {x, y, width, height}
  *                  If set false, rect text is not used.
- * @param {Element|module:zrender/graphic/helper/constant.WILL_BE_RESTORED} [prevEl] For ctx prop cache.
+ * @param {Element|helper/constant.WILL_BE_RESTORED} [prevEl] For ctx prop cache.
  */
 export function renderText(hostEl, ctx, text, style, rect, prevEl) {
     style.rich
@@ -574,7 +574,7 @@ function getTextXForPadding(x, textAlign, textPadding) {
 
 /**
  * @param {String} text
- * @param {module:zrender/Style} style
+ * @param {Style} style
  * @return {boolean}
  */
 export function needDrawText(text, style) {

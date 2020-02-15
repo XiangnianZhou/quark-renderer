@@ -108,7 +108,6 @@ export function clone(source) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} target
  * @param {*} source
  * @param {boolean} [overwrite=false]
@@ -166,7 +165,6 @@ export function mergeAll(targetAndSources, overwrite) {
 /**
  * @param {*} target
  * @param {*} source
- * @memberOf module:zrender/core/dataStructureUtil
  */
 export function extend(target, source) {
     for (var key in source) {
@@ -199,7 +197,6 @@ export function getContext() {
 
 /**
  * 查询数组中元素的index
- * @memberOf module:zrender/core/dataStructureUtil
  */
 export function indexOf(array, value) {
     if (array) {
@@ -231,7 +228,6 @@ export function isArrayLike(data) {
 
 /**
  * 数组或对象遍历
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Object|Array} obj
  * @param {Function} cb
  * @param {*} [context]
@@ -259,7 +255,6 @@ export function each(obj, cb, context) {
 
 /**
  * 数组映射
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Array} obj
  * @param {Function} cb
  * @param {*} [context]
@@ -282,7 +277,6 @@ export function map(obj, cb, context) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Array} obj
  * @param {Function} cb
  * @param {Object} [memo]
@@ -306,7 +300,6 @@ export function reduce(obj, cb, memo, context) {
 
 /**
  * 数组过滤
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Array} obj
  * @param {Function} cb
  * @param {*} [context]
@@ -332,7 +325,6 @@ export function filter(obj, cb, context) {
 
 /**
  * 数组项查找
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Array} obj
  * @param {Function} cb
  * @param {*} [context]
@@ -350,7 +342,6 @@ export function find(obj, cb, context) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Function} func
  * @param {*} context
  * @return {Function}
@@ -363,7 +354,6 @@ export function bind(func, context) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Function} func
  * @return {Function}
  */
@@ -375,7 +365,6 @@ export function curry(func) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -384,7 +373,6 @@ export function isArray(value) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -393,7 +381,6 @@ export function isFunction(value) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -406,7 +393,6 @@ export function isNumeric(n) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -418,7 +404,6 @@ export function isObject(value) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -427,7 +412,6 @@ export function isBuiltInObject(value) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -436,7 +420,6 @@ export function isTypedArray(value) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -459,7 +442,6 @@ export function eqNaN(value) {
 /**
  * If value1 is not null, then return value1, otherwise judget rest of values.
  * Low performance.
- * @memberOf module:zrender/core/dataStructureUtil
  * @return {*} Final value
  */
 export function retrieve(values) {
@@ -485,7 +467,6 @@ export function retrieve3(value0, value1, value2) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Array} arr
  * @param {Number} startIndex
  * @param {Number} endIndex
@@ -521,7 +502,6 @@ export function normalizeCssArray(val) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {boolean} condition
  * @param {String} message
  */
@@ -532,7 +512,6 @@ export function assert(condition, message) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {String} str string to be trimed
  * @return {String} trimed string
  */
