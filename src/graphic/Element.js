@@ -25,10 +25,6 @@ class Element{
          * @property options 配置项
          */
         this.options=options;
-
-        classUtil.inheritProperties(this,Transformable,this.options);
-        classUtil.inheritProperties(this,Eventful,this.options);
-        classUtil.inheritProperties(this,Animatable,this.options);
     
         /**
          * @property {String}
@@ -93,6 +89,9 @@ class Element{
          */
         this.isGroup=false;
 
+        classUtil.inheritProperties(this,Transformable,this.options);
+        classUtil.inheritProperties(this,Eventful,this.options);
+        classUtil.inheritProperties(this,Animatable,this.options);
         classUtil.copyOwnProperties(this,this.options);
     }
 

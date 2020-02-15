@@ -5533,10 +5533,6 @@ class Element{
          * @property options 配置项
          */
         this.options=options;
-
-        inheritProperties(this,Transformable,this.options);
-        inheritProperties(this,Eventful,this.options);
-        inheritProperties(this,Animatable,this.options);
     
         /**
          * @property {String}
@@ -5601,6 +5597,9 @@ class Element{
          */
         this.isGroup=false;
 
+        inheritProperties(this,Transformable,this.options);
+        inheritProperties(this,Eventful,this.options);
+        inheritProperties(this,Animatable,this.options);
         copyOwnProperties(this,this.options);
     }
 
