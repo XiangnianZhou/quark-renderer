@@ -34,9 +34,9 @@ exports.create = function (min) {
         input: getPath(`./zrender.all.js`),
         legacy: true, // Support IE8-
         output: {
-            name: 'zrender',
+            name: 'zrender', //global name
             format: 'umd',
-            legacy: true, // Must be declared both in inputOptions and outputOptions.
+            legacy: true,    // Must be declared both in inputOptions and outputOptions.
             sourcemap: !min,
             file: getPath(`dist/zrender${postfixMin}.js`)
         },
