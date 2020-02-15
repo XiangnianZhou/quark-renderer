@@ -6,7 +6,7 @@
     <!-- <script src="lib/rollup.browser.js"></script> -->
     <!-- <script src="lib/requireES.js"></script> -->
     <!-- <script src="lib/config.js"></script> -->
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
 
     <style>
         .title {
@@ -69,13 +69,13 @@
 
     <script type="text/javascript">
 
-        function createCase(zrender, domId, opt) {
+        function createCase(qrenderer, domId, opt) {
             var dom = document.getElementById(domId);
             var wrap = {};
             var log = [];
 
             if (!dom) {
-                return {zrList: []};
+                return {qrList: []};
             }
 
             var titleEl = document.createElement('div');
@@ -95,9 +95,9 @@
             div.style.height = '150px';
             dom.appendChild(div);
 
-            wrap.zrList = [
-                zrender.init(canvas),
-                zrender.init(div)
+            wrap.qrList = [
+                qrenderer.init(canvas),
+                qrenderer.init(div)
             ];
 
             delayGetResult(wrap);
@@ -134,8 +134,8 @@
                     renderResult('Round 1');
 
                     log.length = 0;
-                    wrap.zrList.forEach(function (zr) {
-                        zr.storage.traverse(function (el) {
+                    wrap.qrList.forEach(function (qr) {
+                        qr.storage.traverse(function (el) {
                             !el.isGroup && el.dirty();
                         });
                     });
@@ -215,20 +215,20 @@
 
     <script type="text/javascript">
 
-        var Text = zrender.Text;
-        var Rect = zrender.Rect;
+        var Text = qrenderer.Text;
+        var Rect = qrenderer.Rect;
 
-        var wrap = createCase(zrender, 'main0', {
+        var wrap = createCase(qrenderer, 'main0', {
             title: 'Only green Rect * 3, no text, should cache',
             logProps: ['fillStyle', 'strokeStyle'],
             expectLog: [
                 ['fillStyle', 'blue'],
                 ['strokeStyle', 'red']
             ]
-        }).zrList.forEach(function (zr) {
+        }).qrList.forEach(function (qr) {
             var unit = 100;
             for (var i = 0; i < 3; i++) {
-                zr.add(new Rect({
+                qr.add(new Rect({
                     shape: {x: i * unit, y: 0, width: 50, height: 50},
                     style: {
                         fill: 'blue',
@@ -238,7 +238,7 @@
             }
         });
 
-        var wrap = createCase(zrender, 'main1', {
+        var wrap = createCase(qrenderer, 'main1', {
             title: 'Rect text and rect one by one, only cache rect',
             logProps: ['fillStyle', 'strokeStyle'],
             expectLog: [
@@ -248,10 +248,10 @@
                 ['fillStyle', 'yellow'],
                 ['fillStyle', 'yellow']
             ]
-        }).zrList.forEach(function (zr) {
+        }).qrList.forEach(function (qr) {
             var unit = 100;
             for (var i = 0; i < 3; i++) {
-                zr.add(new Rect({
+                qr.add(new Rect({
                     shape: {x: i * unit, y: 0, width: 50, height: 50},
                     style: {
                         fill: 'blue',
@@ -263,7 +263,7 @@
             }
         });
 
-        var wrap = createCase(zrender, 'main2', {
+        var wrap = createCase(qrenderer, 'main2', {
             title: 'textStroke the same as stroke (red)',
             logProps: ['fillStyle', 'strokeStyle'],
             expectLog: [
@@ -276,10 +276,10 @@
                 ['strokeStyle', 'red'],
                 ['fillStyle', 'blue'],
             ]
-        }).zrList.forEach(function (zr) {
+        }).qrList.forEach(function (qr) {
             var unit = 100;
             for (var i = 0; i < 3; i++) {
-                zr.add(new Rect({
+                qr.add(new Rect({
                     shape: {x: i * unit, y: 0, width: 50, height: 50},
                     style: {
                         fill: 'blue',
@@ -295,7 +295,7 @@
 
 
 
-        var wrap = createCase(zrender, 'main3', {
+        var wrap = createCase(qrenderer, 'main3', {
             title: 'blue, red, blue (no text)',
             logProps: ['fillStyle', 'strokeStyle'],
             expectLog: [
@@ -304,20 +304,20 @@
                 ['fillStyle', 'red'],
                 ['fillStyle', 'blue']
             ]
-        }).zrList.forEach(function (zr) {
-            zr.add(new Rect({
+        }).qrList.forEach(function (qr) {
+            qr.add(new Rect({
                 shape: {x: 0, y: 0, width: 50, height: 50},
                 style: {
                     fill: 'blue'
                 }
             }));
-            zr.add(new Rect({
+            qr.add(new Rect({
                 shape: {x: 100, y: 0, width: 50, height: 50},
                 style: {
                     fill: 'red'
                 }
             }));
-            zr.add(new Rect({
+            qr.add(new Rect({
                 shape: {x: 200, y: 0, width: 50, height: 50},
                 style: {
                     fill: 'blue'
@@ -327,7 +327,7 @@
 
 
 
-        var wrap = createCase(zrender, 'main4', {
+        var wrap = createCase(qrenderer, 'main4', {
             title: 'Only the first has red text',
             logProps: ['fillStyle', 'strokeStyle'],
             expectLog: [
@@ -335,8 +335,8 @@
                 ['strokeStyle', null],
                 ['fillStyle', 'red'],
             ]
-        }).zrList.forEach(function (zr) {
-            zr.add(new Rect({
+        }).qrList.forEach(function (qr) {
+            qr.add(new Rect({
                 shape: {x: 0, y: 0, width: 50, height: 50},
                 style: {
                     fill: 'blue',
@@ -344,13 +344,13 @@
                     text: 'asdf',
                 }
             }));
-            zr.add(new Rect({
+            qr.add(new Rect({
                 shape: {x: 100, y: 0, width: 50, height: 50},
                 style: {
                     fill: 'blue'
                 }
             }));
-            zr.add(new Rect({
+            qr.add(new Rect({
                 shape: {x: 200, y: 0, width: 50, height: 50},
                 style: {
                     fill: 'blue'
@@ -362,7 +362,7 @@
 
 
 
-        var wrap = createCase(zrender, 'main5', {
+        var wrap = createCase(qrenderer, 'main5', {
             title: 'should be: blue rect, red text, blue rect with red text, red text, red text',
             logProps: ['fillStyle', 'strokeStyle', 'font'],
             expectLog: [
@@ -382,14 +382,14 @@
                 ['fillStyle', 'red'],
                 // el5 (font cache from el2, fillStyle cache from el4)
             ]
-        }).zrList.forEach(function (zr, idx) {
-            zr.add(new Rect({
+        }).qrList.forEach(function (qr, idx) {
+            qr.add(new Rect({
                 shape: {x: 0, y: 0, width: 50, height: 50},
                 style: {
                     fill: 'blue'
                 }
             }));
-            zr.add(new Text({
+            qr.add(new Text({
                 style: {
                     x: 100, y: 0,
                     font: '14px Arial',
@@ -397,7 +397,7 @@
                     text: 'red100'
                 }
             }));
-            zr.add(new Rect({
+            qr.add(new Rect({
                 shape: {x: 200, y: 0, width: 50, height: 50},
                 style: {
                     fill: 'blue',
@@ -406,7 +406,7 @@
                     text: 'red200'
                 }
             }));
-            zr.add(new Text({
+            qr.add(new Text({
                 style: {
                     x: 300, y: 0,
                     font: '14px Arial',
@@ -414,7 +414,7 @@
                     text: 'red300'
                 }
             }));
-            zr.add(new Text({
+            qr.add(new Text({
                 style: {
                     x: 400, y: 0,
                     font: '14px Arial',
@@ -428,7 +428,7 @@
 
 
 
-        var wrap = createCase(zrender, 'main6', {
+        var wrap = createCase(qrenderer, 'main6', {
             logProps: ['fillStyle', 'strokeStyle', 'font'],
             expectLog: [
                 // el1
@@ -443,8 +443,8 @@
                 ['font', '14px Arial'],
                 ['fillStyle', 'red']
             ]
-        }).zrList.forEach(function (zr, idx) {
-            zr.add(new Text({
+        }).qrList.forEach(function (qr, idx) {
+            qr.add(new Text({
                 style: {
                     x: 0, y: 0,
                     font: '14px Arial',
@@ -452,7 +452,7 @@
                     text: 'red000,14px'
                 }
             }));
-            zr.add(new Rect({
+            qr.add(new Rect({
                 shape: {x: 100, y: 0, width: 50, height: 50},
                 style: {
                     fill: 'red',
@@ -461,7 +461,7 @@
                     text: 'blue100,24px'
                 }
             }));
-            zr.add(new Text({
+            qr.add(new Text({
                 style: {
                     x: 200, y: 0,
                     font: '14px Arial',
@@ -474,7 +474,7 @@
 
 
 
-        var wrap = createCase(zrender, 'main7', {
+        var wrap = createCase(qrenderer, 'main7', {
             title: 'Can not cache RectFont because of save/restore.',
             logProps: ['fillStyle', 'strokeStyle', 'font'],
             expectLog: [
@@ -493,8 +493,8 @@
                 ['font', '14px Arial'],
                 ['fillStyle', 'red']
             ]
-        }).zrList.forEach(function (zr, idx) {
-            zr.add(new Text({
+        }).qrList.forEach(function (qr, idx) {
+            qr.add(new Text({
                 style: {
                     x: 0, y: 0,
                     font: '14px Arial',
@@ -502,7 +502,7 @@
                     text: 'red000,14px'
                 }
             }));
-            zr.add(new Rect({
+            qr.add(new Rect({
                 shape: {x: 100, y: 0, width: 50, height: 50},
                 style: {
                     fill: 'red',
@@ -511,7 +511,7 @@
                     text: 'blue100,24px'
                 }
             }));
-            zr.add(new Rect({
+            qr.add(new Rect({
                 shape: {x: 200, y: 0, width: 50, height: 50},
                 style: {
                     fill: 'red',
@@ -520,7 +520,7 @@
                     text: 'blue200,24px'
                 }
             }));
-            zr.add(new Text({
+            qr.add(new Text({
                 style: {
                     x: 300, y: 0,
                     font: '14px Arial',
@@ -532,7 +532,7 @@
 
 
 
-        var wrap = createCase(zrender, 'main7', {
+        var wrap = createCase(qrenderer, 'main7', {
             title: 'Can not cache RectFont because of save/restore.',
             logProps: ['fillStyle', 'strokeStyle', 'font', 'globalAlpha'],
             expectLog: [
@@ -552,15 +552,15 @@
                 ['globalAlpha', .5],
                 // el5 (fillStyle cached from el4, globalAlpha cached from el4)
             ]
-        }).zrList.forEach(function (zr, idx) {
-            zr.add(new Rect({
+        }).qrList.forEach(function (qr, idx) {
+            qr.add(new Rect({
                 shape: {x: 0, y: 0, width: 50, height: 50},
                 style: {
                     fill: 'red',
                     opacity: .5
                 }
             }));
-            zr.add(new Text({
+            qr.add(new Text({
                 style: {
                     x: 100, y: 0,
                     font: '14px Arial',
@@ -569,7 +569,7 @@
                     opacity: .5
                 }
             }));
-            zr.add(new Text({
+            qr.add(new Text({
                 style: {
                     x: 200, y: 0,
                     font: '14px Arial',
@@ -578,14 +578,14 @@
                     opacity: .5
                 }
             }));
-            zr.add(new Rect({
+            qr.add(new Rect({
                 shape: {x: 300, y: 0, width: 50, height: 50},
                 style: {
                     fill: 'red',
                     opacity: .5
                 }
             }));
-            zr.add(new Rect({
+            qr.add(new Rect({
                 shape: {x: 400, y: 0, width: 50, height: 50},
                 style: {
                     fill: 'red',
@@ -598,7 +598,7 @@
 
 
 
-        var wrap = createCase(zrender, 'main8', {
+        var wrap = createCase(qrenderer, 'main8', {
             title: 'Can not cache because of backgroundColor.',
             logProps: ['fillStyle', 'strokeStyle'],
             expectLog: [
@@ -610,8 +610,8 @@
                 // el3
                 ['fillStyle', 'red'],
             ]
-        }).zrList.forEach(function (zr, idx) {
-            zr.add(new Text({
+        }).qrList.forEach(function (qr, idx) {
+            qr.add(new Text({
                 style: {
                     x: 0, y: 0,
                     textFill: 'red',
@@ -619,7 +619,7 @@
                     opacity: .5
                 }
             }));
-            zr.add(new Text({
+            qr.add(new Text({
                 style: {
                     x: 100, y: 0,
                     font: '14px Arial',
@@ -629,7 +629,7 @@
                     textBackgroundColor: 'blue'
                 }
             }));
-            zr.add(new Text({
+            qr.add(new Text({
                 style: {
                     x: 200, y: 0,
                     textFill: 'red',
@@ -645,7 +645,7 @@
 
 
 
-        var wrap = createCase(zrender, 'main9', {
+        var wrap = createCase(qrenderer, 'main9', {
             title: 'Can not cache because of rich. But RectRich do not effect the cache of Rect.',
             logProps: ['fillStyle', 'strokeStyle'],
             expectLog: [
@@ -663,8 +663,8 @@
                 // el5 (rect fillStyle cached from el4)
                 ['fillStyle', 'red'],
             ]
-        }).zrList.forEach(function (zr, idx) {
-            zr.add(new Text({
+        }).qrList.forEach(function (qr, idx) {
+            qr.add(new Text({
                 style: {
                     x: 0, y: 0,
                     textFill: 'red',
@@ -672,7 +672,7 @@
                     opacity: .5
                 }
             }));
-            zr.add(new Text({
+            qr.add(new Text({
                 style: {
                     x: 100, y: 0,
                     font: '14px Arial',
@@ -682,7 +682,7 @@
                     rich: {}
                 }
             }));
-            zr.add(new Text({
+            qr.add(new Text({
                 style: {
                     x: 200, y: 0,
                     textFill: 'red',
@@ -690,7 +690,7 @@
                     opacity: .5
                 }
             }));
-            zr.add(new Rect({
+            qr.add(new Rect({
                 shape: {x: 300, y: 0, width: 50, height: 50},
                 style: {
                     fill: 'blue',
@@ -700,7 +700,7 @@
                     // rich: {}
                 }
             }));
-            zr.add(new Rect({
+            qr.add(new Rect({
                 shape: {x: 400, y: 0, width: 50, height: 50},
                 style: {
                     fill: 'blue',
@@ -717,7 +717,7 @@
 
 
 
-        var wrap = createCase(zrender, 'main10', {
+        var wrap = createCase(qrenderer, 'main10', {
             title: 'The 2nd text el do not needed be draw',
             logProps: ['fillStyle', 'strokeStyle'],
             expectLog: [
@@ -726,15 +726,15 @@
                 // el3
                 ['fillStyle', 'blue'],
             ]
-        }).zrList.forEach(function (zr, idx) {
-            zr.add(new Text({
+        }).qrList.forEach(function (qr, idx) {
+            qr.add(new Text({
                 style: {
                     x: 0, y: 0,
                     textFill: 'red',
                     text: '10red000'
                 }
             }));
-            zr.add(new Text({
+            qr.add(new Text({
                 style: {
                     x: 100, y: 0,
                     font: '14px Arial',
@@ -742,7 +742,7 @@
                     text: '' // do not draw
                 }
             }));
-            zr.add(new Text({
+            qr.add(new Text({
                 style: {
                     x: 200, y: 0,
                     textFill: 'blue',

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Animation</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
 </head>
 <body>
     <style>
@@ -16,8 +16,8 @@
     </style>
     <div id="main"></div>
     <script type="text/javascript">
-        var zr = zrender.init(document.getElementById('main'));
-        var starShape = new zrender.Star({
+        var qr = qrenderer.init(document.getElementById('main'));
+        var starShape = new qrenderer.Star({
             shape: {
                 x: 10,
                 y: 10,
@@ -32,12 +32,12 @@
                 shadowOffsetY: 0
             }
         });
-        var zImage = zr.pathToImage(starShape);
+        var zImage = qr.pathToImage(starShape);
 
         var NUMBER = 10000;
 
         for (var i = 0; i < NUMBER; i++) {
-            var star = new zrender.Image({
+            var star = new qrenderer.Image({
                 scale: [1, 1],
                 zlevel: 1,
                 style: {
@@ -47,27 +47,27 @@
                 }
             });
 
-            zr.add(star);
+            qr.add(star);
             var ap = star.animate('', true);
 
             var points = [];
             var point = [
-                Math.random() * zr.getWidth(),
-                Math.random() * zr.getHeight()
+                Math.random() * qr.getWidth(),
+                Math.random() * qr.getHeight()
             ];
             //star.position = point;
             points.push(point);
             for (var j = 1; j < 10; j++) {
                 var point = [
-                    Math.random() * zr.getWidth(),
-                    Math.random() * zr.getHeight()
+                    Math.random() * qr.getWidth(),
+                    Math.random() * qr.getHeight()
                 ];
                 ap.when(j * 2000, {
                     position: point
                 });
                 points.push(point);
             }
-            var polyline = new zrender.Polyline({
+            var polyline = new qrenderer.Polyline({
                 zlevel: 0,
                 shape: {
                     smooth: 'spline',
@@ -80,18 +80,18 @@
                 },
                 silent: true
             });
-            // zr.add(polyline);
+            // qr.add(polyline);
 
             ap.start('spline');
         }
-        zr.configLayer(1, {
+        qr.configLayer(1, {
             // clearColor: 'rgba(255, 255, 255, 0.1)'
             motionBlur: true,
             lastFrameAlpha: 0.8
         });
 
         console.profile('render');
-        zr.refreshImmediately();
+        qr.refreshImmediately();
         console.profileEnd('render');
     </script>
 </body>

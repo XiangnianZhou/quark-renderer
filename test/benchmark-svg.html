@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>SVG Benchmark</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
     <script src="stats.js"></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,7 +11,7 @@
 <body style="margin:0px;">
     <div id="main" style="position: absolute; left: 0; right: 0; top: 0; bottom: 0"></div>
     <script type="text/javascript">
-        var zr = zrender.init(document.getElementById('main'), {
+        var qr = qrenderer.init(document.getElementById('main'), {
             renderer: 'svg'
         });
 
@@ -25,9 +25,9 @@
 
         var route = [];
         for (var i = cnt - 1; i >= 0; --i) {
-            var x = zr.getWidth() / cnt * i;
-            var y = zr.getHeight() / cnt * i;
-            var rect = new zrender.Rect({
+            var x = qr.getWidth() / cnt * i;
+            var y = qr.getHeight() / cnt * i;
+            var rect = new qrenderer.Rect({
                 shape: {
                     width: 10,
                     height: 10,
@@ -37,13 +37,13 @@
                 silent: true
             });
             elements.push(rect);
-            zr.add(rect);
+            qr.add(rect);
             route.push([x, y]);
         }
         routes.push(route);
 
-        var w = zr.getWidth();
-        var h = zr.getHeight();
+        var w = qr.getWidth();
+        var h = qr.getHeight();
         for (var r = 1; r < routeCnt; ++r) {
             var route = [];
             for (var i = cnt - 1; i >= 0; --i) {

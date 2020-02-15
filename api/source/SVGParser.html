@@ -17,7 +17,7 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">var Group = require(&quot;../graphic/Group&quot;);
 
-var ZImage = require(&quot;../graphic/Image&quot;);
+var QImage = require(&quot;../graphic/Image&quot;);
 
 var Text = require(&quot;../graphic/Text&quot;);
 
@@ -82,8 +82,8 @@ function parseXML(svg) {
 
   return svg;
 }
-<span id='zrender-svg-SVGParser'>/**
-</span> * @class zrender.svg.SVGParser
+<span id='qrenderer-svg-SVGParser'>/**
+</span> * @class qrenderer.svg.SVGParser
  * 
  * This is a tool class for parsing SVG xml string to standard shape classes.
  * 
@@ -366,7 +366,7 @@ var nodeParsers = {
     return polyline;
   },
   &#39;image&#39;: function image(xmlNode, parentGroup) {
-    var img = new ZImage();
+    var img = new QImage();
     inheritStyle(parentGroup, img);
     parseAttributes(xmlNode, img, this._defs);
     img.setStyle({
@@ -509,12 +509,12 @@ var attributesMap = {
 };
 
 function parseAttributes(xmlNode, el, defs, onlyInlineStyle) {
-  var zrStyle = el.__inheritedStyle || {};
+  var qrStyle = el.__inheritedStyle || {};
   var isTextEl = el.type === &#39;text&#39;; // TODO Shadow
 
   if (xmlNode.nodeType === 1) {
     parseTransformAttribute(xmlNode, el);
-    extend(zrStyle, parseStyleAttribute(xmlNode));
+    extend(qrStyle, parseStyleAttribute(xmlNode));
 
     if (!onlyInlineStyle) {
       for (var svgAttrName in attributesMap) {
@@ -522,7 +522,7 @@ function parseAttributes(xmlNode, el, defs, onlyInlineStyle) {
           var attrValue = xmlNode.getAttribute(svgAttrName);
 
           if (attrValue != null) {
-            zrStyle[attributesMap[svgAttrName]] = attrValue;
+            qrStyle[attributesMap[svgAttrName]] = attrValue;
           }
         }
       }
@@ -533,35 +533,35 @@ function parseAttributes(xmlNode, el, defs, onlyInlineStyle) {
   var elStrokeProp = isTextEl ? &#39;textStroke&#39; : &#39;stroke&#39;;
   el.style = el.style || new Style();
   var elStyle = el.style;
-  zrStyle.fill != null &amp;&amp; elStyle.set(elFillProp, getPaint(zrStyle.fill, defs));
-  zrStyle.stroke != null &amp;&amp; elStyle.set(elStrokeProp, getPaint(zrStyle.stroke, defs));
+  qrStyle.fill != null &amp;&amp; elStyle.set(elFillProp, getPaint(qrStyle.fill, defs));
+  qrStyle.stroke != null &amp;&amp; elStyle.set(elStrokeProp, getPaint(qrStyle.stroke, defs));
   each([&#39;lineWidth&#39;, &#39;opacity&#39;, &#39;fillOpacity&#39;, &#39;strokeOpacity&#39;, &#39;miterLimit&#39;, &#39;fontSize&#39;], function (propName) {
     var elPropName = propName === &#39;lineWidth&#39; &amp;&amp; isTextEl ? &#39;textStrokeWidth&#39; : propName;
-    zrStyle[propName] != null &amp;&amp; elStyle.set(elPropName, parseFloat(zrStyle[propName]));
+    qrStyle[propName] != null &amp;&amp; elStyle.set(elPropName, parseFloat(qrStyle[propName]));
   });
 
-  if (!zrStyle.textBaseline || zrStyle.textBaseline === &#39;auto&#39;) {
-    zrStyle.textBaseline = &#39;alphabetic&#39;;
+  if (!qrStyle.textBaseline || qrStyle.textBaseline === &#39;auto&#39;) {
+    qrStyle.textBaseline = &#39;alphabetic&#39;;
   }
 
-  if (zrStyle.textBaseline === &#39;alphabetic&#39;) {
-    zrStyle.textBaseline = &#39;bottom&#39;;
+  if (qrStyle.textBaseline === &#39;alphabetic&#39;) {
+    qrStyle.textBaseline = &#39;bottom&#39;;
   }
 
-  if (zrStyle.textAlign === &#39;start&#39;) {
-    zrStyle.textAlign = &#39;left&#39;;
+  if (qrStyle.textAlign === &#39;start&#39;) {
+    qrStyle.textAlign = &#39;left&#39;;
   }
 
-  if (zrStyle.textAlign === &#39;end&#39;) {
-    zrStyle.textAlign = &#39;right&#39;;
+  if (qrStyle.textAlign === &#39;end&#39;) {
+    qrStyle.textAlign = &#39;right&#39;;
   }
 
   each([&#39;lineDashOffset&#39;, &#39;lineCap&#39;, &#39;lineJoin&#39;, &#39;fontWeight&#39;, &#39;fontFamily&#39;, &#39;fontStyle&#39;, &#39;textAlign&#39;, &#39;textBaseline&#39;], function (propName) {
-    zrStyle[propName] != null &amp;&amp; elStyle.set(propName, zrStyle[propName]);
+    qrStyle[propName] != null &amp;&amp; elStyle.set(propName, qrStyle[propName]);
   });
 
-  if (zrStyle.lineDash) {
-    el.style.lineDash = trim(zrStyle.lineDash).split(DILIMITER_REG);
+  if (qrStyle.lineDash) {
+    el.style.lineDash = trim(qrStyle.lineDash).split(DILIMITER_REG);
   }
 
   if (elStyle[elStrokeProp] &amp;&amp; elStyle[elStrokeProp] !== &#39;none&#39;) {
@@ -569,7 +569,7 @@ function parseAttributes(xmlNode, el, defs, onlyInlineStyle) {
     el[elStrokeProp] = true;
   }
 
-  el.__inheritedStyle = zrStyle;
+  el.__inheritedStyle = qrStyle;
 }
 
 var urlRegex = /url\(\s*#(.*?)\)/;
@@ -671,7 +671,7 @@ function parseStyleAttribute(xmlNode) {
 
   return result;
 }
-<span id='zrender-svg-SVGParser-method-makeViewBoxTransform'>/**
+<span id='qrenderer-svg-SVGParser-method-makeViewBoxTransform'>/**
 </span> * @param {Array&lt;Number&gt;} viewBoxRect
  * @param {Number} width
  * @param {Number} height
@@ -691,13 +691,13 @@ function makeViewBoxTransform(viewBoxRect, width, height) {
     position: viewBoxPosition
   };
 }
-<span id='zrender-svg-SVGParser-static-method-parseSVG'>/**
+<span id='qrenderer-svg-SVGParser-static-method-parseSVG'>/**
 </span> * @static
  * @method parseSVG
  * 
- * Parse SVG DOM to ZRender specific interfaces.
+ * Parse SVG DOM to QuarkRenderer specific interfaces.
  * 
- * 把 SVG DOM 标签解析成 Zrender 所定义的接口。
+ * 把 SVG DOM 标签解析成 QuarkRenderer 所定义的接口。
  * 
  * @param {String|XMLElement} xml
  * @param {Object} [opt]
@@ -707,7 +707,7 @@ function makeViewBoxTransform(viewBoxRect, width, height) {
  * @param {Boolean} [opt.ignoreRootClip]
  * @return {Object} result:
  * {
- *     root: Group, The root of the the result tree of zrender shapes,
+ *     root: Group, The root of the the result tree of qrenderer shapes,
  *     width: number, the viewport width of the SVG,
  *     height: number, the viewport height of the SVG,
  *     viewBoxRect: {x, y, width, height}, the declared viewBox rect of the SVG, if exists,

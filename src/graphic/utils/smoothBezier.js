@@ -1,6 +1,5 @@
 /**
  * 贝塞尔平滑曲线
- * @module zrender/shape/util/smoothBezier
  * @author pissang (https://www.github.com/pissang)
  *         Kener (@Kener-林峰, kener.linfeng@gmail.com)
  *         errorrik (errorrik@gmail.com)

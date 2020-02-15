@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Parse SVG</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
 </head>
 <body>
     <style>
@@ -15,14 +15,14 @@
     </style>
     <div id="main"></div>
     <script type="text/javascript">
-        var zr = zrender.init(document.getElementById('main'));
+        var qr = qrenderer.init(document.getElementById('main'));
 
         fetch('./Tehran_topo.svg')
             .then(response => response.text())
-            .then(zrender.parseSVG)
+            .then(qrenderer.parseSVG)
             .then(result => {
                 result.root.scale = [0.4, 0.4];
-                zr.add(result.root);
+                qr.add(result.root);
             });
     </script>
 </body>

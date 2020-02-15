@@ -5,7 +5,7 @@ import * as textUtil from './utils/textUtil';
 import {ContextCachedBy} from './constants';
 
 /**
- * @class zrender.graphic.Text
+ * @class qrenderer.graphic.Text
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */

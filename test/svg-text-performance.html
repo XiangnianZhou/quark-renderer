@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Text</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
     <script src="./lib/roamable.js"></script>
 </head>
 <body style="margin:0">
@@ -61,16 +61,16 @@
         return txts.join('');
     }
 
-    var zr = zrender.init(document.getElementById('main'));
+    var qr = qrenderer.init(document.getElementById('main'));
 
-    var result = zrender.parseSVG(svg);
+    var result = qrenderer.parseSVG(svg);
 
-    var zrEl = document.getElementById('main');
+    var qrEl = document.getElementById('main');
     mainGroup = result.root;
-    zr = zrender.init(zrEl);
-    zr.add(mainGroup);
+    qr = qrenderer.init(qrEl);
+    qr.add(mainGroup);
 
-    roamable(zr, mainGroup);
+    roamable(qr, mainGroup);
 
 </script>
 </body>

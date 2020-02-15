@@ -33,17 +33,17 @@ var Image = require(&quot;./graphic/Image&quot;);
 
 var env = require(&quot;./core/env&quot;);
 
-<span id='zrender-canvas-CanvasPainter'>/**
-</span> * @class zrender.canvas.CanvasPainter
+<span id='qrenderer-canvas-CanvasPainter'>/**
+</span> * @class qrenderer.canvas.CanvasPainter
  * 这是基于 canvas 接口的 CanvasPainter 类
  * @see 基于 SVG 接口的 CanvasPainter 类在 svg 目录下
  * @see 基于 VML 接口的 CanvasPainter 类在 vml 目录下
  */
-var HOVER_LAYER_ZLEVEL = 1e5;
-var CANVAS_ZLEVEL = 314159;
+var HOVER_LAYER_QLEVEL = 1e5;
+var CANVAS_QLEVEL = 314159;
 var EL_AFTER_INCREMENTAL_INC = 0.01;
 var INCREMENTAL_INC = 0.001;
-<span id='zrender-canvas-CanvasPainter-method-isLayerValid'>/**
+<span id='qrenderer-canvas-CanvasPainter-method-isLayerValid'>/**
 </span> * @private
  * @method isLayerValid
  * @param {*} layer 
@@ -67,7 +67,7 @@ function isLayerValid(layer) {
 
 var tmpRect = new BoundingRect(0, 0, 0, 0);
 var viewRect = new BoundingRect(0, 0, 0, 0);
-<span id='zrender-canvas-CanvasPainter-method-isDisplayableCulled'>/**
+<span id='qrenderer-canvas-CanvasPainter-method-isDisplayableCulled'>/**
 </span> * @private
  * @method isDisplayableCulled
  * @param {*} el 
@@ -86,7 +86,7 @@ function isDisplayableCulled(el, width, height) {
   viewRect.height = height;
   return !tmpRect.intersect(viewRect);
 }
-<span id='zrender-canvas-CanvasPainter-method-isClipPathChanged'>/**
+<span id='qrenderer-canvas-CanvasPainter-method-isClipPathChanged'>/**
 </span> * @private
  * @method isClipPathChanged
  * @param {*} clipPaths 
@@ -112,7 +112,7 @@ function isClipPathChanged(clipPaths, prevClipPaths) {
 
   return false;
 }
-<span id='zrender-canvas-CanvasPainter-method-doClip'>/**
+<span id='qrenderer-canvas-CanvasPainter-method-doClip'>/**
 </span> * @private
  * @method doClip
  * @param {*} clipPaths 
@@ -131,7 +131,7 @@ function doClip(clipPaths, ctx) {
     clipPath.restoreTransform(ctx);
   }
 }
-<span id='zrender-canvas-CanvasPainter-method-createRoot'>/**
+<span id='qrenderer-canvas-CanvasPainter-method-createRoot'>/**
 </span> * @private
  * @method createRoot
  * 不会直接在传入的 dom 节点内部创建 canvas 标签，而是再套一层div
@@ -156,7 +156,7 @@ function createRoot(width, height) {
 
   return domRoot;
 }
-<span id='zrender-canvas-CanvasPainter-method-constructor'>/**
+<span id='qrenderer-canvas-CanvasPainter-method-constructor'>/**
 </span> * @method constructor
  * @param {HTMLElement} root 绘图容器
  * @param {Storage} storage
@@ -170,18 +170,18 @@ var CanvasPainter = function CanvasPainter(root, storage, opts) {
   var singleCanvas = !root.nodeName // In node ?
   || root.nodeName.toUpperCase() === &#39;CANVAS&#39;;
   this._opts = opts = dataUtil.extend({}, opts || {});
-<span id='zrender-canvas-CanvasPainter-property-dpr'>  /**
+<span id='qrenderer-canvas-CanvasPainter-property-dpr'>  /**
 </span>   * @property {Number} dpr
    */
 
   this.dpr = opts.devicePixelRatio || devicePixelRatio;
-<span id='zrender-canvas-CanvasPainter-property-_singleCanvas'>  /**
+<span id='qrenderer-canvas-CanvasPainter-property-_singleCanvas'>  /**
 </span>   * @property {Boolean} _singleCanvas
    * @private
    */
 
   this._singleCanvas = singleCanvas;
-<span id='zrender-canvas-CanvasPainter-property-root'>  /**
+<span id='qrenderer-canvas-CanvasPainter-property-root'>  /**
 </span>   * @property {HTMLElement} root 绘图容器
    */
 
@@ -193,34 +193,34 @@ var CanvasPainter = function CanvasPainter(root, storage, opts) {
     rootStyle[&#39;-webkit-user-select&#39;] = rootStyle[&#39;user-select&#39;] = rootStyle[&#39;-webkit-touch-callout&#39;] = &#39;none&#39;;
     root.innerHTML = &#39;&#39;;
   }
-<span id='zrender-canvas-CanvasPainter-property-storage'>  /**
+<span id='qrenderer-canvas-CanvasPainter-property-storage'>  /**
 </span>   * @property {Storage} storage
    */
 
 
   this.storage = storage;
-<span id='zrender-canvas-CanvasPainter-property-zlevelList'>  /**
+<span id='qrenderer-canvas-CanvasPainter-property-qlevelList'>  /**
 </span>   * @property {Array&lt;Number&gt;}
    * @private
    */
 
-  var zlevelList = this._zlevelList = [];
-<span id='zrender-canvas-CanvasPainter-property-layers'>  /**
+  var qlevelList = this._qlevelList = [];
+<span id='qrenderer-canvas-CanvasPainter-property-layers'>  /**
 </span>   * @private
    * @property {Object&lt;String, Layer&gt;} layers
    */
 
   var layers = this._layers = {};
-<span id='zrender-canvas-CanvasPainter-property-_layerConfig'>  /**
+<span id='qrenderer-canvas-CanvasPainter-property-_layerConfig'>  /**
 </span>   * @private
    * @property {Object&lt;String, Object&gt;} _layerConfig
    */
 
   this._layerConfig = {};
-<span id='zrender-canvas-CanvasPainter-property-_needsManuallyCompositing'>  /**
+<span id='qrenderer-canvas-CanvasPainter-property-_needsManuallyCompositing'>  /**
 </span>   * @private
    * @property _needsManuallyCompositing
-   * zrender will do compositing when root is a canvas and have multiple zlevels.
+   * qrenderer will do compositing when root is a canvas and have multiple zlevels.
    */
 
   this._needsManuallyCompositing = false;
@@ -255,20 +255,20 @@ var CanvasPainter = function CanvasPainter(root, storage, opts) {
     mainLayer.initContext(); // FIXME Use canvas width and height
     // mainLayer.resize(width, height);
 
-    layers[CANVAS_ZLEVEL] = mainLayer;
-    mainLayer.zlevel = CANVAS_ZLEVEL; // Not use common zlevel.
+    layers[CANVAS_QLEVEL] = mainLayer;
+    mainLayer.qlevel = CANVAS_QLEVEL; // Not use common qlevel.
 
-    zlevelList.push(CANVAS_ZLEVEL);
+    qlevelList.push(CANVAS_QLEVEL);
     this._domRoot = root;
   }
-<span id='zrender-canvas-CanvasPainter-property-_hoverlayer'>  /**
+<span id='qrenderer-canvas-CanvasPainter-property-_hoverlayer'>  /**
 </span>   * @private
    * @property {Layer} _hoverlayer
    */
 
 
   this._hoverlayer = null;
-<span id='zrender-canvas-CanvasPainter-property-_hoverElements'>  /**
+<span id='qrenderer-canvas-CanvasPainter-property-_hoverElements'>  /**
 </span>   * @private
    * @property {Array} _hoverElements
    */
@@ -279,7 +279,7 @@ var CanvasPainter = function CanvasPainter(root, storage, opts) {
 CanvasPainter.prototype = {
   constructor: CanvasPainter,
 
-<span id='zrender-canvas-CanvasPainter-method-getType'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-getType'>  /**
 </span>   * @method getType
    * @return {String}
    */
@@ -287,7 +287,7 @@ CanvasPainter.prototype = {
     return &#39;canvas&#39;;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-isSingleCanvas'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-isSingleCanvas'>  /**
 </span>   * @method isSingleCanvas
    * If painter use a single canvas
    * @return {Boolean}
@@ -296,7 +296,7 @@ CanvasPainter.prototype = {
     return this._singleCanvas;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-getViewportRoot'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-getViewportRoot'>  /**
 </span>   * @method getViewportRoot
    * @return {HTMLDivElement}
    */
@@ -304,7 +304,7 @@ CanvasPainter.prototype = {
     return this._domRoot;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-getViewportRootOffset'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-getViewportRootOffset'>  /**
 </span>   * @method getViewportRootOffset
    * @return {Object}
    */
@@ -319,21 +319,21 @@ CanvasPainter.prototype = {
     }
   },
 
-<span id='zrender-canvas-CanvasPainter-method-refresh'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-refresh'>  /**
 </span>   * @method
    * 刷新
    * @param {Boolean} [paintAll=false] 是否强制绘制所有displayable
    */
   refresh: function refresh(paintAll) {
     var list = this.storage.getDisplayList(true);
-    var zlevelList = this._zlevelList;
+    var qlevelList = this._qlevelList;
     this._redrawId = Math.random();
 
     this._paintList(list, paintAll, this._redrawId); // Paint custum layers
 
 
-    for (var i = 0; i &lt; zlevelList.length; i++) {
-      var z = zlevelList[i];
+    for (var i = 0; i &lt; qlevelList.length; i++) {
+      var z = qlevelList[i];
       var layer = this._layers[z];
 
       if (!layer.__builtin__ &amp;&amp; layer.refresh) {
@@ -346,7 +346,7 @@ CanvasPainter.prototype = {
     return this;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-addHover'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-addHover'>  /**
 </span>   * @method addHover
    * 
    * @param {*} el 
@@ -373,7 +373,7 @@ CanvasPainter.prototype = {
     return elMirror;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-removeHover'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-removeHover'>  /**
 </span>   * @method removeHover
    * @param {*} el 
    */
@@ -389,7 +389,7 @@ CanvasPainter.prototype = {
     el.__hoverMir = null;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-clearHover'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-clearHover'>  /**
 </span>   * @method clearHover
    * @param {*} el 
    */
@@ -407,7 +407,7 @@ CanvasPainter.prototype = {
     hoverElements.length = 0;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-refreshHover'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-refreshHover'>  /**
 </span>   * @method refreshHover
    */
   refreshHover: function refreshHover() {
@@ -420,11 +420,11 @@ CanvasPainter.prototype = {
       return;
     }
 
-    timsort(hoverElements, this.storage.displayableSortFunc); // Use a extream large zlevel
+    timsort(hoverElements, this.storage.displayableSortFunc); // Use a extream large qlevel
     // FIXME?
 
     if (!hoverLayer) {
-      hoverLayer = this._hoverlayer = this.getLayer(HOVER_LAYER_ZLEVEL);
+      hoverLayer = this._hoverlayer = this.getLayer(HOVER_LAYER_QLEVEL);
     }
 
     var scope = {};
@@ -435,7 +435,7 @@ CanvasPainter.prototype = {
       var originalEl = el.__from; // Original el is removed
       // PENDING
 
-      if (!(originalEl &amp;&amp; originalEl.__zr)) {
+      if (!(originalEl &amp;&amp; originalEl.__qr)) {
         hoverElements.splice(i, 1);
         originalEl.__hoverMir = null;
         len--;
@@ -457,14 +457,14 @@ CanvasPainter.prototype = {
     hoverLayer.ctx.restore();
   },
 
-<span id='zrender-canvas-CanvasPainter-method-getHoverLayer'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-getHoverLayer'>  /**
 </span>   * @method getHoverLayer
    */
   getHoverLayer: function getHoverLayer() {
-    return this.getLayer(HOVER_LAYER_ZLEVEL);
+    return this.getLayer(HOVER_LAYER_QLEVEL);
   },
 
-<span id='zrender-canvas-CanvasPainter-method-_paintList'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-_paintList'>  /**
 </span>   * @method _paintList
    * @param {*} list 
    * @param {*} paintAll 
@@ -496,11 +496,11 @@ CanvasPainter.prototype = {
     }
   },
 
-<span id='zrender-canvas-CanvasPainter-method-_compositeManually'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-_compositeManually'>  /**
 </span>   * @method _compositeManually
    */
   _compositeManually: function _compositeManually() {
-    var ctx = this.getLayer(CANVAS_ZLEVEL).ctx;
+    var ctx = this.getLayer(CANVAS_QLEVEL).ctx;
     var width = this._domRoot.width;
     var height = this._domRoot.height;
     ctx.clearRect(0, 0, width, height); // PENDING, If only builtin layer?
@@ -512,15 +512,15 @@ CanvasPainter.prototype = {
     });
   },
 
-<span id='zrender-canvas-CanvasPainter-method-_doPaintList'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-_doPaintList'>  /**
 </span>   * @method _doPaintList
    */
   _doPaintList: function _doPaintList(list, paintAll) {
     var layerList = [];
 
-    for (var zi = 0; zi &lt; this._zlevelList.length; zi++) {
-      var zlevel = this._zlevelList[zi];
-      var layer = this._layers[zlevel];
+    for (var zi = 0; zi &lt; this._qlevelList.length; zi++) {
+      var qlevel = this._qlevelList[zi];
+      var layer = this._layers[qlevel];
 
       if (layer.__builtin__ &amp;&amp; layer !== this._hoverlayer &amp;&amp; (layer.__dirty || paintAll)) {
         layerList.push(layer);
@@ -537,7 +537,7 @@ CanvasPainter.prototype = {
       var start = paintAll ? _layer.__startIndex : _layer.__drawIndex;
       var useTimer = !paintAll &amp;&amp; _layer.incremental &amp;&amp; Date.now;
       var startTime = useTimer &amp;&amp; Date.now();
-      var clearColor = _layer.zlevel === this._zlevelList[0] ? this._backgroundColor : null; // All elements in this layer are cleared.
+      var clearColor = _layer.qlevel === this._qlevelList[0] ? this._backgroundColor : null; // All elements in this layer are cleared.
 
       if (_layer.__startIndex === _layer.__endIndex) {
         _layer.clear(false, clearColor);
@@ -603,7 +603,7 @@ CanvasPainter.prototype = {
     return finished;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-_doPaintEl'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-_doPaintEl'>  /**
 </span>   * @method _doPaintEl
    * 绘制一个元素
    * @param {*} el 
@@ -651,35 +651,35 @@ CanvasPainter.prototype = {
     }
   },
 
-<span id='zrender-canvas-CanvasPainter-method-getLayer'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-getLayer'>  /**
 </span>   * @method getLayer
-   * 获取 zlevel 所在层，如果不存在则会创建一个新的层
-   * @param {Number} zlevel
+   * 获取 qlevel 所在层，如果不存在则会创建一个新的层
+   * @param {Number} qlevel
    * @param {Boolean} virtual Virtual layer will not be inserted into dom.
    * @return {Layer}
    */
-  getLayer: function getLayer(zlevel, virtual) {
+  getLayer: function getLayer(qlevel, virtual) {
     if (this._singleCanvas &amp;&amp; !this._needsManuallyCompositing) {
-      zlevel = CANVAS_ZLEVEL;
+      qlevel = CANVAS_QLEVEL;
     }
 
-    var layer = this._layers[zlevel];
+    var layer = this._layers[qlevel];
 
     if (!layer) {
       // Create a new layer
-      layer = new Layer(&#39;zr_&#39; + zlevel, this, this.dpr);
-      layer.zlevel = zlevel;
+      layer = new Layer(&#39;qr_&#39; + qlevel, this, this.dpr);
+      layer.qlevel = qlevel;
       layer.__builtin__ = true;
 
-      if (this._layerConfig[zlevel]) {
-        dataUtil.merge(layer, this._layerConfig[zlevel], true);
+      if (this._layerConfig[qlevel]) {
+        dataUtil.merge(layer, this._layerConfig[qlevel], true);
       }
 
       if (virtual) {
         layer.virtual = virtual;
       }
 
-      this.insertLayer(zlevel, layer); // Context is created after dom inserted to document
+      this.insertLayer(qlevel, layer); // Context is created after dom inserted to document
       // Or excanvas will get 0px clientWidth and clientHeight
 
       layer.initContext();
@@ -688,44 +688,44 @@ CanvasPainter.prototype = {
     return layer;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-insertLayer'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-insertLayer'>  /**
 </span>   * @method insertLayer
-   * @param {*} zlevel 
+   * @param {*} qlevel 
    * @param {*} layer 
    */
-  insertLayer: function insertLayer(zlevel, layer) {
+  insertLayer: function insertLayer(qlevel, layer) {
     var layersMap = this._layers;
-    var zlevelList = this._zlevelList;
-    var len = zlevelList.length;
+    var qlevelList = this._qlevelList;
+    var len = qlevelList.length;
     var prevLayer = null;
     var i = -1;
     var domRoot = this._domRoot;
 
-    if (layersMap[zlevel]) {
-      console.log(&#39;ZLevel &#39; + zlevel + &#39; has been used already&#39;);
+    if (layersMap[qlevel]) {
+      console.log(&#39;ZLevel &#39; + qlevel + &#39; has been used already&#39;);
       return;
     } // Check if is a valid layer
 
 
     if (!isLayerValid(layer)) {
-      console.log(&#39;Layer of zlevel &#39; + zlevel + &#39; is not valid&#39;);
+      console.log(&#39;Layer of qlevel &#39; + qlevel + &#39; is not valid&#39;);
       return;
     }
 
-    if (len &gt; 0 &amp;&amp; zlevel &gt; zlevelList[0]) {
+    if (len &gt; 0 &amp;&amp; qlevel &gt; qlevelList[0]) {
       for (i = 0; i &lt; len - 1; i++) {
-        if (zlevelList[i] &lt; zlevel &amp;&amp; zlevelList[i + 1] &gt; zlevel) {
+        if (qlevelList[i] &lt; qlevel &amp;&amp; qlevelList[i + 1] &gt; qlevel) {
           break;
         }
       }
 
-      prevLayer = layersMap[zlevelList[i]];
+      prevLayer = layersMap[qlevelList[i]];
     }
 
-    zlevelList.splice(i + 1, 0, zlevel);
-    layersMap[zlevel] = layer; // Vitual layer will not directly show on the screen.
+    qlevelList.splice(i + 1, 0, qlevel);
+    layersMap[qlevel] = layer; // Vitual layer will not directly show on the screen.
     // (It can be a WebGL layer and assigned to a ZImage element)
-    // But it still under management of zrender.
+    // But it still under management of qrenderer.
 
     if (!layer.virtual) {
       if (prevLayer) {
@@ -746,7 +746,7 @@ CanvasPainter.prototype = {
     }
   },
 
-<span id='zrender-canvas-CanvasPainter-method-eachLayer'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-eachLayer'>  /**
 </span>   * @private
    * @method eachLayer
    * Iterate each layer
@@ -754,17 +754,17 @@ CanvasPainter.prototype = {
    * @param {Object} context 
    */
   eachLayer: function eachLayer(cb, context) {
-    var zlevelList = this._zlevelList;
+    var qlevelList = this._qlevelList;
     var z;
     var i;
 
-    for (i = 0; i &lt; zlevelList.length; i++) {
-      z = zlevelList[i];
+    for (i = 0; i &lt; qlevelList.length; i++) {
+      z = qlevelList[i];
       cb.call(context, this._layers[z], z);
     }
   },
 
-<span id='zrender-canvas-CanvasPainter-method-eachBuiltinLayer'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-eachBuiltinLayer'>  /**
 </span>   * @private
    * @method eachBuiltinLayer
    * Iterate each buildin layer
@@ -772,13 +772,13 @@ CanvasPainter.prototype = {
    * @param {Object} context 
    */
   eachBuiltinLayer: function eachBuiltinLayer(cb, context) {
-    var zlevelList = this._zlevelList;
+    var qlevelList = this._qlevelList;
     var layer;
     var z;
     var i;
 
-    for (i = 0; i &lt; zlevelList.length; i++) {
-      z = zlevelList[i];
+    for (i = 0; i &lt; qlevelList.length; i++) {
+      z = qlevelList[i];
       layer = this._layers[z];
 
       if (layer.__builtin__) {
@@ -787,7 +787,7 @@ CanvasPainter.prototype = {
     }
   },
 
-<span id='zrender-canvas-CanvasPainter-method-eachOtherLayer'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-eachOtherLayer'>  /**
 </span>   * @private
    * @method eachOtherLayer
    * Iterate each other layer except buildin layer
@@ -795,13 +795,13 @@ CanvasPainter.prototype = {
    * @param {Object} context 
    */
   eachOtherLayer: function eachOtherLayer(cb, context) {
-    var zlevelList = this._zlevelList;
+    var qlevelList = this._qlevelList;
     var layer;
     var z;
     var i;
 
-    for (i = 0; i &lt; zlevelList.length; i++) {
-      z = zlevelList[i];
+    for (i = 0; i &lt; qlevelList.length; i++) {
+      z = qlevelList[i];
       layer = this._layers[z];
 
       if (!layer.__builtin__) {
@@ -810,7 +810,7 @@ CanvasPainter.prototype = {
     }
   },
 
-<span id='zrender-canvas-CanvasPainter-method-getLayers'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-getLayers'>  /**
 </span>   * @method getLayers
    * 获取所有已创建的层
    * @param {Array&lt;Layer&gt;} [prevLayer]
@@ -819,7 +819,7 @@ CanvasPainter.prototype = {
     return this._layers;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-_updateLayerStatus'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-_updateLayerStatus'>  /**
 </span>   * @private
    * @method _updateLayerStatus
    * @param {*} list 
@@ -843,7 +843,7 @@ CanvasPainter.prototype = {
       for (var _i = 1; _i &lt; list.length; _i++) {
         var el = list[_i];
 
-        if (el.zlevel !== list[_i - 1].zlevel || el.incremental) {
+        if (el.qlevel !== list[_i - 1].qlevel || el.incremental) {
           this._needsManuallyCompositing = true;
           break;
         }
@@ -856,20 +856,20 @@ CanvasPainter.prototype = {
 
     for (; i &lt; list.length; i++) {
       var _el = list[i];
-      var zlevel = _el.zlevel;
+      var qlevel = _el.qlevel;
       var layer = void 0; // PENDING If change one incremental element style ?
       // TODO Where there are non-incremental elements between incremental elements.
 
       if (_el.incremental) {
-        layer = this.getLayer(zlevel + INCREMENTAL_INC, this._needsManuallyCompositing);
+        layer = this.getLayer(qlevel + INCREMENTAL_INC, this._needsManuallyCompositing);
         layer.incremental = true;
         incrementalLayerCount = 1;
       } else {
-        layer = this.getLayer(zlevel + (incrementalLayerCount &gt; 0 ? EL_AFTER_INCREMENTAL_INC : 0), this._needsManuallyCompositing);
+        layer = this.getLayer(qlevel + (incrementalLayerCount &gt; 0 ? EL_AFTER_INCREMENTAL_INC : 0), this._needsManuallyCompositing);
       }
 
       if (!layer.__builtin__) {
-        console.log(&#39;ZLevel &#39; + zlevel + &#39; has been used by unkown layer &#39; + layer.id);
+        console.log(&#39;ZLevel &#39; + qlevel + &#39; has been used by unkown layer &#39; + layer.id);
       }
 
       if (layer !== prevLayer) {
@@ -917,7 +917,7 @@ CanvasPainter.prototype = {
     });
   },
 
-<span id='zrender-canvas-CanvasPainter-method-clear'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-clear'>  /**
 </span>   * @method clear
    * 清除hover层外所有内容
    */
@@ -926,7 +926,7 @@ CanvasPainter.prototype = {
     return this;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-_clearLayer'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-_clearLayer'>  /**
 </span>   * @private
    * @method _clearLayer
    */
@@ -934,64 +934,64 @@ CanvasPainter.prototype = {
     layer.clear();
   },
 
-<span id='zrender-canvas-CanvasPainter-method-setBackgroundColor'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-setBackgroundColor'>  /**
 </span>   * @method setBackgroundColor
    */
   setBackgroundColor: function setBackgroundColor(backgroundColor) {
     this._backgroundColor = backgroundColor;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-configLayer'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-configLayer'>  /**
 </span>   * @method configLayer
    * 修改指定zlevel的绘制参数
    *
-   * @param {String} zlevel
+   * @param {String} qlevel
    * @param {Object} [config] 配置对象
    * @param {String} [config.clearColor=0] 每次清空画布的颜色
    * @param {String} [config.motionBlur=false] 是否开启动态模糊
    * @param {Number} [config.lastFrameAlpha=0.7] 在开启动态模糊的时候使用，与上一帧混合的alpha值，值越大尾迹越明显
    */
-  configLayer: function configLayer(zlevel, config) {
+  configLayer: function configLayer(qlevel, config) {
     if (config) {
       var layerConfig = this._layerConfig;
 
-      if (!layerConfig[zlevel]) {
-        layerConfig[zlevel] = config;
+      if (!layerConfig[qlevel]) {
+        layerConfig[qlevel] = config;
       } else {
-        dataUtil.merge(layerConfig[zlevel], config, true);
+        dataUtil.merge(layerConfig[qlevel], config, true);
       }
 
-      for (var i = 0; i &lt; this._zlevelList.length; i++) {
-        var _zlevel = this._zlevelList[i];
+      for (var i = 0; i &lt; this._qlevelList.length; i++) {
+        var _zlevel = this._qlevelList[i];
 
-        if (_zlevel === zlevel || _zlevel === zlevel + EL_AFTER_INCREMENTAL_INC) {
+        if (_zlevel === qlevel || _zlevel === qlevel + EL_AFTER_INCREMENTAL_INC) {
           var layer = this._layers[_zlevel];
-          dataUtil.merge(layer, layerConfig[zlevel], true);
+          dataUtil.merge(layer, layerConfig[qlevel], true);
         }
       }
     }
   },
 
-<span id='zrender-canvas-CanvasPainter-method-delLayer'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-delLayer'>  /**
 </span>   * @method delLayer
    * 删除指定层
-   * @param {Number} zlevel 层所在的zlevel
+   * @param {Number} qlevel 层所在的zlevel
    */
-  delLayer: function delLayer(zlevel) {
+  delLayer: function delLayer(qlevel) {
     var layers = this._layers;
-    var zlevelList = this._zlevelList;
-    var layer = layers[zlevel];
+    var qlevelList = this._qlevelList;
+    var layer = layers[qlevel];
 
     if (!layer) {
       return;
     }
 
     layer.dom.parentNode.removeChild(layer.dom);
-    delete layers[zlevel];
-    zlevelList.splice(dataUtil.indexOf(zlevelList, zlevel), 1);
+    delete layers[qlevel];
+    qlevelList.splice(dataUtil.indexOf(qlevelList, qlevel), 1);
   },
 
-<span id='zrender-canvas-CanvasPainter-method-resize'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-resize'>  /**
 </span>   * @method resize
    * 区域大小变化后重绘
    * @param {Number} width
@@ -1006,7 +1006,7 @@ CanvasPainter.prototype = {
 
       this._width = width;
       this._height = height;
-      this.getLayer(CANVAS_ZLEVEL).resize(width, height);
+      this.getLayer(CANVAS_QLEVEL).resize(width, height);
     } else {
       var domRoot = this._domRoot; // FIXME Why ?
 
@@ -1042,20 +1042,20 @@ CanvasPainter.prototype = {
     return this;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-clearLayer'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-clearLayer'>  /**
 </span>   * @method clearLayer
    * 清除单独的一个层
-   * @param {Number} zlevel
+   * @param {Number} qlevel
    */
-  clearLayer: function clearLayer(zlevel) {
-    var layer = this._layers[zlevel];
+  clearLayer: function clearLayer(qlevel) {
+    var layer = this._layers[qlevel];
 
     if (layer) {
       layer.clear();
     }
   },
 
-<span id='zrender-canvas-CanvasPainter-method-dispose'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-dispose'>  /**
 </span>   * @method dispose
    * 释放
    */
@@ -1064,7 +1064,7 @@ CanvasPainter.prototype = {
     this.root = this.storage = this._domRoot = this._layers = null;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-getRenderedCanvas'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-getRenderedCanvas'>  /**
 </span>   * @method getRenderedCanvas
    * Get canvas which has all thing rendered
    * @param {Object} [opts]
@@ -1075,7 +1075,7 @@ CanvasPainter.prototype = {
     opts = opts || {};
 
     if (this._singleCanvas &amp;&amp; !this._compositeManually) {
-      return this._layers[CANVAS_ZLEVEL].dom;
+      return this._layers[CANVAS_QLEVEL].dom;
     }
 
     var imageLayer = new Layer(&#39;image&#39;, this, opts.pixelRatio || this.dpr);
@@ -1111,7 +1111,7 @@ CanvasPainter.prototype = {
     return imageLayer.dom;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-getWidth'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-getWidth'>  /**
 </span>   * @method getWidth
    * 获取绘图区域宽度
    * @return {Number}
@@ -1120,7 +1120,7 @@ CanvasPainter.prototype = {
     return this._width;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-getHeight'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-getHeight'>  /**
 </span>   * @method getHeight
    * 获取绘图区域高度
    * @return {Number}
@@ -1129,7 +1129,7 @@ CanvasPainter.prototype = {
     return this._height;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-_getSize'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-_getSize'>  /**
 </span>   * @method _getSize
    * @param {*} whIdx 
    */
@@ -1150,7 +1150,7 @@ CanvasPainter.prototype = {
     return (root[cwh] || dataUtil.parseInt10(stl[wh]) || dataUtil.parseInt10(root.style[wh])) - (dataUtil.parseInt10(stl[plt]) || 0) - (dataUtil.parseInt10(stl[prb]) || 0) | 0;
   },
 
-<span id='zrender-canvas-CanvasPainter-method-pathToImage'>  /**
+<span id='qrenderer-canvas-CanvasPainter-method-pathToImage'>  /**
 </span>   * @method pathToImage
    * @param {*} path 
    * @param {*} dpr 

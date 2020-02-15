@@ -8,14 +8,14 @@
     // Set default renderer in dev mode from hash.
     var matchResult = location.href.match(/[?&]__RENDERER__=(canvas|svg)(&|$)/);
     if (matchResult) {
-        window.__ZRENDER__DEFAULT__RENDERER__ = matchResult[1];
+        window.__QRENDER__DEFAULT__RENDERER__ = matchResult[1];
     }
 
     if (typeof require !== 'undefined') {
         require.config({
             baseUrl: baseUrl,
             paths: {
-                'zrender': 'dist/zrender',
+                'quark-renderer': 'dist/quark-renderer',
                 'data': 'test/data'
             }
             // urlArgs will prevent break point on init in debug tool.
@@ -27,7 +27,7 @@
         requireES.config({
             baseUrl: baseUrl,
             paths: {
-                'zrender': './',
+                'quark-renderer': './',
                 'data': 'test/data'
             },
             sourceMap: sourceMap

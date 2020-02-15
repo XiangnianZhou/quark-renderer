@@ -26,33 +26,33 @@ var timsort = require(&quot;./core/utils/timsort&quot;);
 // Use timsort because in most case elements are partially sorted
 // https://jsfiddle.net/pissang/jr4x7mdm/8/
 
-<span id='zrender-core-Storage'>/**
-</span> * @class zrender.core.Storage
+<span id='qrenderer-core-Storage'>/**
+</span> * @class qrenderer.core.Storage
  * 内容仓库 (M)，用来存储和管理画布上的所有对象，同时提供绘制和更新队列的功能。
  * 需要绘制的对象首先存储在 Storage 中，然后 Painter 类会从 Storage 中依次取出进行绘图。
  * 利用 Storage 作为内存中转站，对于不需要刷新的对象可以不进行绘制，从而可以提升整体性能。
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
-<span id='zrender-core-Storage-method-constructor'>/**
+<span id='qrenderer-core-Storage-method-constructor'>/**
 </span> * @method constructor Storage
  */
 var Storage = function Storage() {
   // jshint ignore:line
 
-<span id='zrender-core-Storage-property-_roots'>  /**
+<span id='qrenderer-core-Storage-property-_roots'>  /**
 </span>   * @private
    * @property _roots
    */
   this._roots = []; //直接放在画布上的对象为根对象
 
-<span id='zrender-core-Storage-property-_displayList'>  /**
+<span id='qrenderer-core-Storage-property-_displayList'>  /**
 </span>   * @private
    * @property _displayList
    */
 
   this._displayList = [];
-<span id='zrender-core-Storage-property-_displayListLen'>  /**
+<span id='qrenderer-core-Storage-property-_displayListLen'>  /**
 </span>   * @private
    * @property _displayListLen
    */
@@ -63,7 +63,7 @@ var Storage = function Storage() {
 Storage.prototype = {
   constructor: Storage,
 
-<span id='zrender-core-Storage-method-traverse'>  /**
+<span id='qrenderer-core-Storage-method-traverse'>  /**
 </span>   * @method traverse
    * @param  {Function} cb
    * @param  {Object} context
@@ -74,7 +74,7 @@ Storage.prototype = {
     }
   },
 
-<span id='zrender-core-Storage-method-getDisplayList'>  /**
+<span id='qrenderer-core-Storage-method-getDisplayList'>  /**
 </span>   * @method getDisplayList
    * 返回所有图形的绘制队列
    * @param {boolean} [update=false] 是否在返回前更新该数组
@@ -93,7 +93,7 @@ Storage.prototype = {
     return this._displayList;
   },
 
-<span id='zrender-core-Storage-method-updateDisplayList'>  /**
+<span id='qrenderer-core-Storage-method-updateDisplayList'>  /**
 </span>   * @method updateDisplayList
    * 更新图形的绘制队列。
    * 每次绘制前都会调用，该方法会先深度优先遍历整个树，更新所有Group和Shape的变换并且把所有可见的Shape保存到数组中，
@@ -113,7 +113,7 @@ Storage.prototype = {
     env.canvasSupported &amp;&amp; timsort(displayList, this.displayableSortFunc);
   },
 
-<span id='zrender-core-Storage-method-_updateAndAddDisplayable'>  /**
+<span id='qrenderer-core-Storage-method-_updateAndAddDisplayable'>  /**
 </span>   * @method _updateAndAddDisplayable
    * @param {*} el 
    * @param {*} clipPaths 
@@ -176,7 +176,7 @@ Storage.prototype = {
     }
   },
 
-<span id='zrender-core-Storage-method-addRoot'>  /**
+<span id='qrenderer-core-Storage-method-addRoot'>  /**
 </span>   * @method addRoot
    * 添加图形(Shape)或者组(Group)到根节点
    * @param {Element} el
@@ -195,7 +195,7 @@ Storage.prototype = {
     this._roots.push(el);
   },
 
-<span id='zrender-core-Storage-method-delRoot'>  /**
+<span id='qrenderer-core-Storage-method-delRoot'>  /**
 </span>   * @method
    * 删除指定的图形(Shape)或者组(Group)
    * @param {string|Array.&lt;String&gt;} [el] 如果为空清空整个Storage
@@ -238,7 +238,7 @@ Storage.prototype = {
     }
   },
 
-<span id='zrender-core-Storage-method-addToStorage'>  /**
+<span id='qrenderer-core-Storage-method-addToStorage'>  /**
 </span>   * @method addToStorage
    * @param {Element} el 
    */
@@ -251,7 +251,7 @@ Storage.prototype = {
     return this;
   },
 
-<span id='zrender-core-Storage-method-delFromStorage'>  /**
+<span id='qrenderer-core-Storage-method-delFromStorage'>  /**
 </span>   * @method delFromStorage
    * @param {Element} el 
    */
@@ -263,7 +263,7 @@ Storage.prototype = {
     return this;
   },
 
-<span id='zrender-core-Storage-method-dispose'>  /**
+<span id='qrenderer-core-Storage-method-dispose'>  /**
 </span>   * @method dispose
    * 清空并且释放Storage
    */
@@ -271,7 +271,7 @@ Storage.prototype = {
     this._renderList = this._roots = null;
   },
   displayableSortFunc: function displayableSortFunc(a, b) {
-    if (a.zlevel === b.zlevel) {
+    if (a.qlevel === b.qlevel) {
       if (a.z === b.z) {
         // if (a.z2 === b.z2) {
         //     // FIXME Slow has renderidx compare
@@ -285,7 +285,7 @@ Storage.prototype = {
       return a.z - b.z;
     }
 
-    return a.zlevel - b.zlevel;
+    return a.qlevel - b.qlevel;
   }
 };
 var _default = Storage;

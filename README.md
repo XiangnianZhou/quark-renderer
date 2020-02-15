@@ -1,42 +1,41 @@
-ZRender
-=======
+<h1 align="center">Quark Renderer</h1>
 
-A lightweight canvas library which providing 2d draw for [ECharts](https://github.com/ecomfe/echarts).
+A lightweight yet powerful canvas renderer engine improved from [ZRender](https://github.com/ecomfe/zrender)
 
-[![Build Status](https://travis-ci.com/ecomfe/zrender.svg?branch=master)](https://travis-ci.com/ecomfe/zrender) [![](https://img.shields.io/npm/dw/zrender.svg?label=npm%20downloads&style=flat)](https://www.npmjs.com/package/zrender) ![Commits Since 4.0.0](https://img.shields.io/github/commits-since/ecomfe/zrender/4.0.0.svg?colorB=%234c1&style=flat)
+## Background
+
+**Important: Quark Renderer is not built from scratch, but improved from ZRender, which is used as the renderer engine behind the famous chart framework ECharts.**
+
+I have used ECharts and ZRender for many years, both of them are extremly powerful tools for making some charting stuff.
+
+To better understand the core ideas behind ZRender, I spent some days to read through its source code recently. In this process, I refactored a bunch of code and comments, because:
+
+- I want a very customized version to implement some cool stuff in the future.
+- I want a cleaner repo to teach my students how to understand and design a canvas engine for modern web and Wechat mini-programs.
+- I want to make the code easier to read.
+- ZRender exported a global variable 'zrender', so I have to rename my repo to a different name to avoid potential naming conflicts. 
+
+Here are the key improvements compare to the original ZRender:
+
+- Modified a bunch of classes and js files with ES6 syntax.
+- Added keyboard event support.
+- Added multi drag-drop feature.
+- Refactored the structure of js files and directories for better understanding.
+- Refactored some implementation details for better understanding.
+- Fixed some bugs in /test directory.
+- Use [jsduck](https://github.com/senchalabs/jsduck) for better API document.
+- Refactored all the comments for jsduck.
+
+## Usage
+
+Pull this repo to your local device, check the examples inside /test directory.
 
 ## Document
 
-[https://ecomfe.github.io/zrender-doc/public/](https://ecomfe.github.io/zrender-doc/public/)
+The document is in /api directory, open /api/index.html in your browser then you can see a beautiful API document just like Sencha(ExtJS).
 
 ## License
 
 BSD 3-Clause License
 
-Copyright (c) 2017, Baidu Inc.
-All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-
-* Redistributions of source code must retain the above copyright notice, this
-  list of conditions and the following disclaimer.
-
-* Redistributions in binary form must reproduce the above copyright notice,
-  this list of conditions and the following disclaimer in the documentation
-  and/or other materials provided with the distribution.
-
-* Neither the name of the copyright holder nor the names of its
-  contributors may be used to endorse or promote products derived from
-  this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+[LICENSE](./LICENSE)

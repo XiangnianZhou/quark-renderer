@@ -2,7 +2,7 @@ import Path from '../Path';
 import * as dataUtil from '../../core/utils/dataStructureUtil';
 
 /**
- * @class zrender.graphic.shape.Circle 
+ * @class qrenderer.graphic.shape.Circle 
  * 圆形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */

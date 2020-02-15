@@ -27,8 +27,8 @@ function _defineProperties(target, props) { for (var i = 0; i &lt; props.length;
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-<span id='zrender-animation-Track'>/**
-</span> * @class zrender.animation.Track
+<span id='qrenderer-animation-Track'>/**
+</span> * @class qrenderer.animation.Track
  * 
  * Track, 轨道，与元素（Element）上可以用来进行动画的属性一一对应。
  * 元素上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，
@@ -39,7 +39,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Track =
 /*#__PURE__*/
 function () {
-<span id='zrender-animation-Track-method-constructor'>  /**
+<span id='qrenderer-animation-Track-method-constructor'>  /**
 </span>   * @method constructor Track
    * @param {Object} options 
    */
@@ -55,7 +55,7 @@ function () {
     this.keyframes = [];
     this.timeline;
   }
-<span id='zrender-animation-Track-method-addKeyFrame'>  /**
+<span id='qrenderer-animation-Track-method-addKeyFrame'>  /**
 </span>   * @method addKeyFrame
    * 添加关键帧
    * @param {Object} kf 数据结构为 {time:0,value:0}
@@ -67,7 +67,7 @@ function () {
     value: function addKeyFrame(kf) {
       this.keyframes.push(kf);
     }
-<span id='zrender-animation-Track-method-nextFrame'>    /**
+<span id='qrenderer-animation-Track-method-nextFrame'>    /**
 </span>     * @method nextFrame
      * 进入下一帧
      * @param {Number} time  当前时间
@@ -90,7 +90,7 @@ function () {
 
       return result;
     }
-<span id='zrender-animation-Track-method-fire'>    /**
+<span id='qrenderer-animation-Track-method-fire'>    /**
 </span>     * @method fire
      * 触发事件
      * @param {String} eventType 
@@ -102,7 +102,7 @@ function () {
     value: function fire(eventType, arg) {
       this.timeline.fire(eventType, arg);
     }
-<span id='zrender-animation-Track-method-start'>    /**
+<span id='qrenderer-animation-Track-method-start'>    /**
 </span>     * @method start
      * 开始动画
      * @param {String} easing 缓动函数名称
@@ -123,7 +123,7 @@ function () {
       var timeline = new Timeline(options);
       this.timeline = timeline;
     }
-<span id='zrender-animation-Track-method-stop'>    /**
+<span id='qrenderer-animation-Track-method-stop'>    /**
 </span>     * @method stop
      * 停止动画
      * @param {Boolean} forwardToLast 是否快进到最后一帧 
@@ -137,7 +137,7 @@ function () {
         this.timeline.onframe(this._target, 1);
       }
     }
-<span id='zrender-animation-Track-method-pause'>    /**
+<span id='qrenderer-animation-Track-method-pause'>    /**
 </span>     * @method pause
      * 暂停
      */
@@ -147,7 +147,7 @@ function () {
     value: function pause() {
       this.timeline.pause();
     }
-<span id='zrender-animation-Track-method-resume'>    /**
+<span id='qrenderer-animation-Track-method-resume'>    /**
 </span>     * @method resume
      * 重启
      */
@@ -157,7 +157,7 @@ function () {
     value: function resume() {
       this.timeline.resume();
     }
-<span id='zrender-animation-Track-method-_parseKeyFrames'>    /**
+<span id='qrenderer-animation-Track-method-_parseKeyFrames'>    /**
 </span>     * @private
      * @method _parseKeyFrames
      * 解析关键帧，创建时间线

@@ -1,7 +1,7 @@
 import * as eventUtil from './utils/eventUtil';
 
 /**
- * @class zrender.core.GestureMgr
+ * @class qrenderer.core.GestureMgr
  * 
  * Implement necessary gestures for mobile platform.
  * 
@@ -92,7 +92,7 @@ class GestureMgr{
         for (let i = 0, len = touches.length; i < len; i++) {
             let touch = touches[i];
             let pos = eventUtil.clientToLocal(root, touch, {});
-            trackItem.points.push([pos.zrX, pos.zrY]);
+            trackItem.points.push([pos.qrX, pos.qrY]);
             trackItem.touches.push(touch);
         }
 

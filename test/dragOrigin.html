@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <title>Drag on Object with Origin</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
 </head>
 <body>
     <div id="main" style="width:1000px;height:500px;"></div>
     <script type="text/javascript">
-        var zr = zrender.init(document.getElementById('main'));
-        const image = new zrender.Image({
+        var qr = qrenderer.init(document.getElementById('main'));
+        const image = new qrenderer.Image({
             draggable: true,
             rotation: 2,
             origin: [50, 50],
@@ -20,10 +20,10 @@
             }
         })
 
-        const group = new zrender.Group({
+        const group = new qrenderer.Group({
             position: [100, 100]
         })
-        const image2 = new zrender.Image({
+        const image2 = new qrenderer.Image({
             draggable: true,
             rotation: 2,
             origin: [50, 50],
@@ -34,8 +34,8 @@
             }
         })
 
-        zr.add(image);
-        zr.add(group);
+        qr.add(image);
+        qr.add(group);
         group.add(image2);
     </script>
 </body>

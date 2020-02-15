@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>globalScaleRatio</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
         html, body, #main {
@@ -23,14 +23,14 @@
     <input type="range" id="global-scale-ratio" min="0" max="2" value="1" step="0.1">
     <script type="text/javascript">
         var main = document.getElementById('main');
-        // 初始化zrender
-        var zr = zrender.init(main);
+        // 初始化qrenderer
+        var qr = qrenderer.init(main);
 
-        var gradient = new zrender.LinearGradient();
+        var gradient = new qrenderer.LinearGradient();
         gradient.addColorStop(0, 'red');
         gradient.addColorStop(1, 'black');
 
-        var circle = new zrender.Circle({
+        var circle = new qrenderer.Circle({
             position: [300, 300],
             scale: [1, 1],
             shape: {
@@ -45,7 +45,7 @@
                 textPosition:'inside'
             }
         });
-        zr.add(circle);
+        qr.add(circle);
 
         circle.animate('', true)
             .when(0, {

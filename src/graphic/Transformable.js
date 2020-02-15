@@ -3,7 +3,7 @@ import * as vector from '../core/utils/vector';
 
 /**
  * @abstract
- * @class zrender.graphic.Transformable
+ * @class qrenderer.graphic.Transformable
  * 提供变换扩展
  * @author pissang (https://www.github.com/pissang)
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>

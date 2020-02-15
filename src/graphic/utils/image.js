@@ -35,7 +35,7 @@ export function createOrUpdateImage(newImageOrSrc, image, hostEl, cb, cbPayload)
     else if (typeof newImageOrSrc === 'string') {
 
         // Image should not be loaded repeatly.
-        if ((image && image.__zrImageSrc === newImageOrSrc) || !hostEl) {
+        if ((image && image.__qrImageSrc === newImageOrSrc) || !hostEl) {
             return image;
         }
 
@@ -61,7 +61,7 @@ export function createOrUpdateImage(newImageOrSrc, image, hostEl, cb, cbPayload)
                 }
             );
 
-            image.src = image.__zrImageSrc = newImageOrSrc;
+            image.src = image.__qrImageSrc = newImageOrSrc;
         }
 
         return image;

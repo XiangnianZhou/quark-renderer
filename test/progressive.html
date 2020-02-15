@@ -3,20 +3,20 @@
 <head>
     <meta charset="utf-8" />
     <title>Progressive Rendering</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
 </head>
 <body>
     <div id="main" style="width:1000px;height:600px;"></div>
     <script type="text/javascript">
-        // 初始化zrender
-        var zr = zrender.init(document.getElementById('main'));
+        // 初始化qrenderer
+        var qr = qrenderer.init(document.getElementById('main'));
 
         var x1 = Math.random() * 2;
-        var y1 = Math.random() * zr.getHeight();
-        var cpx1 = Math.random() * zr.getWidth();
-        var cpy1 = Math.random() * zr.getHeight();
-        var x2 = Math.random() * zr.getWidth();
-        var y2 = Math.random() * zr.getHeight();
+        var y1 = Math.random() * qr.getHeight();
+        var cpx1 = Math.random() * qr.getWidth();
+        var cpy1 = Math.random() * qr.getHeight();
+        var x2 = Math.random() * qr.getWidth();
+        var y2 = Math.random() * qr.getHeight();
         for (var i = 0; i < 10000; i++) {
             x1 += (Math.random() - 0.5) * 10;
             y1 += (Math.random() - 0.5) * 10;
@@ -26,7 +26,7 @@
             y2 += (Math.random() - 0.5) * 10;
             var checkpoint = !(i % 1000);
             var checkpointIdx = Math.round(i / 1000);
-            zr.add(new zrender.BezierCurve({
+            qr.add(new qrenderer.BezierCurve({
                 shape: {
                     x1: x1,
                     y1: y1,

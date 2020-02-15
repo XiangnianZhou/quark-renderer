@@ -21,15 +21,15 @@ var dataUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
 
 var each = dataUtil.each;
 
-<span id='zrender-svg-VMLPainter'>/**
-</span> * @class zrender.svg.VMLPainter
+<span id='qrenderer-svg-VMLPainter'>/**
+</span> * @class qrenderer.svg.VMLPainter
  * 
  * VMLPainter.
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
-<span id='zrender-svg-VMLPainter-method-constructor'>/**
+<span id='qrenderer-svg-VMLPainter-method-constructor'>/**
 </span> * @method constructor VMLPainter
  * @param {*} root 
  * @param {*} storage 
@@ -70,14 +70,14 @@ function VMLPainter(root, storage) {
 VMLPainter.prototype = {
   constructor: VMLPainter,
 
-<span id='zrender-svg-VMLPainter-method-getType'>  /**
+<span id='qrenderer-svg-VMLPainter-method-getType'>  /**
 </span>   * @method getType
    */
   getType: function getType() {
     return &#39;vml&#39;;
   },
 
-<span id='zrender-svg-VMLPainter-method-getViewportRoot'>  /**
+<span id='qrenderer-svg-VMLPainter-method-getViewportRoot'>  /**
 </span>   * @method getViewportRoot
    * @return {HTMLDivElement}
    */
@@ -85,7 +85,7 @@ VMLPainter.prototype = {
     return this._vmlViewport;
   },
 
-<span id='zrender-svg-VMLPainter-method-getViewportRootOffset'>  /**
+<span id='qrenderer-svg-VMLPainter-method-getViewportRootOffset'>  /**
 </span>   * @method getViewportRootOffset
    */
   getViewportRootOffset: function getViewportRootOffset() {
@@ -99,7 +99,7 @@ VMLPainter.prototype = {
     }
   },
 
-<span id='zrender-svg-VMLPainter-method-refresh'>  /**
+<span id='qrenderer-svg-VMLPainter-method-refresh'>  /**
 </span>   * @method refresh 刷新
    */
   refresh: function refresh() {
@@ -108,7 +108,7 @@ VMLPainter.prototype = {
     this._paintList(list);
   },
 
-<span id='zrender-svg-VMLPainter-method-_paintList'>  /**
+<span id='qrenderer-svg-VMLPainter-method-_paintList'>  /**
 </span>   * @private
    * @method _paintList
    * @param {*} list 
@@ -153,7 +153,7 @@ VMLPainter.prototype = {
     }
   },
 
-<span id='zrender-svg-VMLPainter-method-resize'>  /**
+<span id='qrenderer-svg-VMLPainter-method-resize'>  /**
 </span>   * @method resize
    * @param {Number} width 
    * @param {Number} height 
@@ -171,7 +171,7 @@ VMLPainter.prototype = {
     }
   },
 
-<span id='zrender-svg-VMLPainter-method-dispose'>  /**
+<span id='qrenderer-svg-VMLPainter-method-dispose'>  /**
 </span>   * @method dispose
    */
   dispose: function dispose() {
@@ -179,21 +179,21 @@ VMLPainter.prototype = {
     this._vmlRoot = this._vmlViewport = this.storage = null;
   },
 
-<span id='zrender-svg-VMLPainter-method-getWidth'>  /**
+<span id='qrenderer-svg-VMLPainter-method-getWidth'>  /**
 </span>   * @method getWidth
    */
   getWidth: function getWidth() {
     return this._width;
   },
 
-<span id='zrender-svg-VMLPainter-method-getHeight'>  /**
+<span id='qrenderer-svg-VMLPainter-method-getHeight'>  /**
 </span>   * @method getHeight
    */
   getHeight: function getHeight() {
     return this._height;
   },
 
-<span id='zrender-svg-VMLPainter-method-clear'>  /**
+<span id='qrenderer-svg-VMLPainter-method-clear'>  /**
 </span>   * @method clear
    */
   clear: function clear() {
@@ -202,7 +202,7 @@ VMLPainter.prototype = {
     }
   },
 
-<span id='zrender-svg-VMLPainter-method-_getWidth'>  /**
+<span id='qrenderer-svg-VMLPainter-method-_getWidth'>  /**
 </span>   * @private
    * @method _getWidth
    */
@@ -212,7 +212,7 @@ VMLPainter.prototype = {
     return (root.clientWidth || dataUtil.parseInt10(stl.width)) - dataUtil.parseInt10(stl.paddingLeft) - dataUtil.parseInt10(stl.paddingRight) | 0;
   },
 
-<span id='zrender-svg-VMLPainter-method-_getHeight'>  /**
+<span id='qrenderer-svg-VMLPainter-method-_getHeight'>  /**
 </span>   * @private
    * @method _getHeight
    */

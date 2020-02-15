@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <script src="./lib/testHelper.js"></script>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
     <style>
         html {
             font-family: Arial;
@@ -318,7 +318,7 @@
                 var textVerticalAlign = _storage.textVerticalAlign;
                 for (var i = 0; i < _shapes1.length; i++) {
                     var shape = _shapes1[i];
-                    var text = shape.__zr_test_text;
+                    var text = shape.__qr_test_text;
                     text = text.substr(0, 3) + '\n' + text.substr(3, text.length - 1);
                     shape.attr({
                         style: {
@@ -342,7 +342,7 @@
                     var shape = _shapes1[i];
                     var text = '';
                     for (var j = 0; j < 5; j++) {
-                        text += shape.__zr_test_text;
+                        text += shape.__qr_test_text;
                     }
                     shape.attr({
                         style: {
@@ -363,7 +363,7 @@
 
 
     <script type="text/javascript">
-        var clone = zrender.util.clone;
+        var clone = qrenderer.util.clone;
         var encodeHTML = testHelper.encodeHTML;
         var _timer;
         var _storage = {};
@@ -385,13 +385,13 @@
                 'insideTopLeft', 'insideTopRight', 'insideBottomLeft', 'insideBottomRight'
             ];
 
-            var zr1 = zrender.init(document.getElementById('main1'), {
-                renderer: window.__ZRENDER__DEFAULT__RENDERER__
+            var qr1 = qrenderer.init(document.getElementById('main1'), {
+                renderer: window.__QRENDER__DEFAULT__RENDERER__
             });
 
-            zrender.util.each(posList, function (textPos, idx) {
+            qrenderer.util.each(posList, function (textPos, idx) {
                 var text = textPos + '中文';
-                var shape = new zrender.Rect({
+                var shape = new qrenderer.Rect({
                     position: [(idx % 3) * 220, 120 * Math.floor(idx / 3)],
                     scale: [1, 1],
                     style: {
@@ -399,7 +399,7 @@
                         text: text,
                         textPosition: textPos
                     },
-                    __zr_test_text: text,
+                    __qr_test_text: text,
                     shape: {
                         x: 100,
                         y: 50,
@@ -408,17 +408,17 @@
                     }
                 });
                 _shapes1.push(shape);
-                zr1.add(shape);
+                qr1.add(shape);
             });
 
-            var zr2 = zrender.init(document.getElementById('main2'), {
-                renderer: window.__ZRENDER__DEFAULT__RENDERER__
+            var qr2 = qrenderer.init(document.getElementById('main2'), {
+                renderer: window.__QRENDER__DEFAULT__RENDERER__
             });
 
-            zrender.util.each(posList, function (textPos, idx) {
+            qrenderer.util.each(posList, function (textPos, idx) {
                 var text = textPos;
 
-                var shape = new zrender.Rect({
+                var shape = new qrenderer.Rect({
                     position: [(idx % 2) * 300, 150 * Math.floor(idx / 2)],
                     style: {
                         fill: '#eeaaff',
@@ -446,7 +446,7 @@
                     }
                 });
                 _shapes2.push(shape);
-                zr2.add(shape);
+                qr2.add(shape);
             });
         }
 

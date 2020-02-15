@@ -3,26 +3,26 @@
 <head>
     <meta charset="utf-8" />
     <title>Incremental Rendering</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
 </head>
 <body style="margin:0px;">
     <canvas id="main" width="1000px" height="600px" style="width:1000px;height:600px;"></canvas>
     <script type="text/javascript">
-        var zr = zrender.init(document.getElementById('main'));
+        var qr = qrenderer.init(document.getElementById('main'));
 
-        zr.add(new zrender.Rect({
+        qr.add(new qrenderer.Rect({
             shape: {
                 x: 0,
                 y: 0,
-                width: zr.getWidth(),
-                height: zr.getHeight()
+                width: qr.getWidth(),
+                height: qr.getHeight()
             },
             style: {
                 fill: 'red'
             }
         }));
 
-        var countText = new zrender.Text({
+        var countText = new qrenderer.Text({
             zlevel: 1,
             style: {
                 text: 0,
@@ -34,16 +34,16 @@
                 textStrokeWidth: 2
             }
         });
-        zr.add(countText);
+        qr.add(countText);
 
         var count = 0;
 
-        zr.globalAnimationMgr.on('frame', function ()  {
+        qr.globalAnimationMgr.on('frame', function ()  {
             if (count > 2e4) {
                 return;
             }
             for (var i = 0; i < 200; i++) {
-                var circleShape = new zrender.Circle({
+                var circleShape = new qrenderer.Circle({
                     shape: {
                         r: 5 + Math.random() * 5
                     },
@@ -52,9 +52,9 @@
                         blend: 'lighter'
                     },
                     incremental: true,
-                    position: [Math.random() * zr.getWidth(), Math.random() * zr.getHeight()]
+                    position: [Math.random() * qr.getWidth(), Math.random() * qr.getHeight()]
                 });
-                zr.add(circleShape);
+                qr.add(circleShape);
             }
 
             countText.style.text += 200;

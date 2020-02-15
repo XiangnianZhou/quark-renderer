@@ -19,9 +19,9 @@
 
 var vector = require(&quot;../core/utils/vector&quot;);
 
-<span id='zrender-graphic-Transformable'>/**
+<span id='qrenderer-graphic-Transformable'>/**
 </span> * @abstract
- * @class zrender.graphic.Transformable
+ * @class qrenderer.graphic.Transformable
  * 提供变换扩展
  * @author pissang (https://www.github.com/pissang)
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
@@ -32,7 +32,7 @@ var EPSILON = 5e-5;
 function isNotAroundZero(val) {
   return val &gt; EPSILON || val &lt; -EPSILON;
 }
-<span id='zrender-graphic-Transformable-method-constructor'>/**
+<span id='qrenderer-graphic-Transformable-method-constructor'>/**
 </span> * @method constructor Transformable
  */
 
@@ -41,7 +41,7 @@ var Transformable = function Transformable(opts) {
   opts = opts || {}; // If there are no given position, rotation, scale
 
   if (!opts.position) {
-<span id='zrender-graphic-Transformable-property-position'>    /**
+<span id='qrenderer-graphic-Transformable-property-position'>    /**
 </span>     * @property {Array&lt;Number&gt;}
      * 平移
      */
@@ -49,7 +49,7 @@ var Transformable = function Transformable(opts) {
   }
 
   if (opts.rotation == null) {
-<span id='zrender-graphic-Transformable-property-rotation'>    /**
+<span id='qrenderer-graphic-Transformable-property-rotation'>    /**
 </span>     * @property {Array&lt;Number&gt;}
      * 旋转
      */
@@ -57,13 +57,13 @@ var Transformable = function Transformable(opts) {
   }
 
   if (!opts.scale) {
-<span id='zrender-graphic-Transformable-property-scale'>    /**
+<span id='qrenderer-graphic-Transformable-property-scale'>    /**
 </span>     * @property {Array&lt;Number&gt;}
      * 缩放
      */
     this.scale = [1, 1];
   }
-<span id='zrender-graphic-Transformable-property-origin'>  /**
+<span id='qrenderer-graphic-Transformable-property-origin'>  /**
 </span>   * @property {Array&lt;Number&gt;}
    * 旋转和缩放的原点
    */
@@ -74,7 +74,7 @@ var Transformable = function Transformable(opts) {
 
 var transformableProto = Transformable.prototype;
 transformableProto.transform = null;
-<span id='zrender-graphic-Transformable-method-needLocalTransform'>/**
+<span id='qrenderer-graphic-Transformable-method-needLocalTransform'>/**
 </span> * @method needLocalTransform
  * 判断是否需要有坐标变换
  * 如果有坐标变换, 则从position, rotation, scale以及父节点的transform计算出自身的transform矩阵
@@ -137,7 +137,7 @@ transformableProto.updateTransform = function () {
 transformableProto.getLocalTransform = function (m) {
   return Transformable.getLocalTransform(this, m);
 };
-<span id='zrender-graphic-Transformable-method-setTransform'>/**
+<span id='qrenderer-graphic-Transformable-method-setTransform'>/**
 </span> * @method setTransform
  * 将自己的transform应用到context上
  * @param {CanvasRenderingContext2D} ctx
@@ -196,7 +196,7 @@ transformableProto.setLocalTransform = function (m) {
   scale[1] = sy;
   this.rotation = Math.atan2(-m[1] / sy, m[0] / sx);
 };
-<span id='zrender-graphic-Transformable-method-decomposeTransform'>/**
+<span id='qrenderer-graphic-Transformable-method-decomposeTransform'>/**
 </span> * 分解`transform`矩阵到`position`, `rotation`, `scale`
  */
 
@@ -228,7 +228,7 @@ transformableProto.decomposeTransform = function () {
 
   this.setLocalTransform(m);
 };
-<span id='zrender-graphic-Transformable-method-getGlobalScale'>/**
+<span id='qrenderer-graphic-Transformable-method-getGlobalScale'>/**
 </span> * @method getGlobalScale
  * Get global scale
  * @return {Array&lt;Number&gt;}
@@ -258,7 +258,7 @@ transformableProto.getGlobalScale = function (out) {
 
   return out;
 };
-<span id='zrender-graphic-Transformable-method-transformCoordToLocal'>/**
+<span id='qrenderer-graphic-Transformable-method-transformCoordToLocal'>/**
 </span> * @method transformCoordToLocal
  * 变换坐标位置到 shape 的局部坐标空间
  * @param {Number} x
@@ -277,7 +277,7 @@ transformableProto.transformCoordToLocal = function (x, y) {
 
   return v2;
 };
-<span id='zrender-graphic-Transformable-method-transformCoordToGlobal'>/**
+<span id='qrenderer-graphic-Transformable-method-transformCoordToGlobal'>/**
 </span> * @method transformCoordToGlobal
  * 变换局部坐标位置到全局坐标空间
  * @param {Number} x
@@ -296,7 +296,7 @@ transformableProto.transformCoordToGlobal = function (x, y) {
 
   return v2;
 };
-<span id='zrender-graphic-Transformable-static-method-getLocalTransform'>/**
+<span id='qrenderer-graphic-Transformable-static-method-getLocalTransform'>/**
 </span> * @static
  * @method getLocalTransform
  * @param {Object} target

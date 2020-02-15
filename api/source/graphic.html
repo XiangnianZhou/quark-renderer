@@ -113,8 +113,8 @@ function bindStyle(svgEl, style, isText, el) {
     attr(svgEl, &#39;stroke&#39;, NONE);
   }
 }
-<span id='zrender-svg-SVGPath'>/**
-</span> * @class zrender.svg.SVGPath
+<span id='qrenderer-svg-SVGPath'>/**
+</span> * @class qrenderer.svg.SVGPath
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
@@ -227,8 +227,8 @@ function pathDataToString(path) {
 
   return str.join(&#39; &#39;);
 }
-<span id='zrender-svg-SVGPath'>/**
-</span> * @class zrender.svg.SVGPath
+<span id='qrenderer-svg-SVGPath'>/**
+</span> * @class qrenderer.svg.SVGPath
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
@@ -274,8 +274,8 @@ svgPath.brush = function (el) {
     removeOldTextNode(el);
   }
 };
-<span id='zrender-svg-SVGImage'>/**
-</span> * @class zrender.svg.SVGImage
+<span id='qrenderer-svg-SVGImage'>/**
+</span> * @class qrenderer.svg.SVGImage
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
@@ -325,8 +325,8 @@ svgImage.brush = function (el) {
     removeOldTextNode(el);
   }
 };
-<span id='zrender-svg-SVGText'>/**
-</span> * @class zrender.svg.SVGText
+<span id='qrenderer-svg-SVGText'>/**
+</span> * @class qrenderer.svg.SVGText
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
@@ -344,7 +344,7 @@ var TEXT_ALIGN_TO_ANCHRO = {
   center: &#39;middle&#39;,
   middle: &#39;middle&#39;
 };
-<span id='zrender-svg-SVGText-method-svgTextDrawRectText'>/**
+<span id='qrenderer-svg-SVGText-method-svgTextDrawRectText'>/**
 </span> * @param {Element} el
  * @param {Object|boolean} [hostRect] {x, y, width, height}
  *        If set false, rect text is not used.
@@ -451,7 +451,7 @@ var svgTextDrawRectText = function svgTextDrawRectText(el, hostRect) {
         tspan = tspanList[_idx] = createElement(&#39;tspan&#39;);
         textSvgEl.appendChild(tspan);
         tspan.appendChild(document.createTextNode(singleLineText));
-      } else if (tspan.__zrText !== singleLineText) {
+      } else if (tspan.__qrText !== singleLineText) {
         tspan.innerHTML = &#39;&#39;;
         tspan.appendChild(document.createTextNode(singleLineText));
       }

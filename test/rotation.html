@@ -3,20 +3,20 @@
 <head>
     <meta charset="utf-8" />
     <title>Text Rotation</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
 </head>
 <body>
     <div id="main" style="width:1000px;height:600px;"></div>
     <script type="text/javascript">
-        // 初始化zrender
-        var zr = zrender.init(document.getElementById('main'));
-        var text1 = new zrender.Text({
+        // 初始化qrenderer
+        var qr = qrenderer.init(document.getElementById('main'));
+        var text1 = new qrenderer.Text({
             style: {
                 text: 'aaaaaa'
             },
             position: [100, 100]
         });
-        var text2 = new zrender.Text({
+        var text2 = new qrenderer.Text({
             style: {
                 text: 'aaaaaa'
             },
@@ -28,8 +28,8 @@
         text2.animateTo({
             rotation: -Math.PI
         }, 2000);
-        zr.add(text1);
-        zr.add(text2);
+        qr.add(text1);
+        qr.add(text2);
     </script>
 </body>
 </html>

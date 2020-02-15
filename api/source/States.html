@@ -23,8 +23,8 @@ var _vector = require(&quot;../core/utils/vector&quot;);
 
 var vec2Copy = _vector.copy;
 
-<span id='zrender-graphic-GraphicStates'>/**
-</span> * @class zrender.graphic.GraphicStates
+<span id='qrenderer-graphic-GraphicStates'>/**
+</span> * @class qrenderer.graphic.GraphicStates
  * 
  * States machine for managing graphic states
  * 
@@ -52,7 +52,7 @@ var TransitionObject = function TransitionObject(opts) {
 TransitionObject.prototype = {
   constructor: TransitionObject,
 
-<span id='zrender-graphic-GraphicStates-property-property'>  /**
+<span id='qrenderer-graphic-GraphicStates-property-property'>  /**
 </span>   * List of all transition properties. Splitted by comma. Must not have spaces in the string.
    * e.g. &#39;position,style.color&#39;. &#39;*&#39; will match all the valid properties.
    * @property {String}
@@ -60,19 +60,19 @@ TransitionObject.prototype = {
    */
   property: &#39;*&#39;,
 
-<span id='zrender-graphic-GraphicStates-property-easing'>  /**
+<span id='qrenderer-graphic-GraphicStates-property-easing'>  /**
 </span>   * @property {String}
    * @default &#39;Linear&#39;
    */
   easing: &#39;Linear&#39;,
 
-<span id='zrender-graphic-GraphicStates-property-duration'>  /**
+<span id='qrenderer-graphic-GraphicStates-property-duration'>  /**
 </span>   * @property {Number}
    * @default &#39;number&#39;
    */
   duration: 500,
 
-<span id='zrender-graphic-GraphicStates-property-delay'>  /**
+<span id='qrenderer-graphic-GraphicStates-property-delay'>  /**
 </span>   * @property {Number}
    */
   delay: 0,
@@ -84,9 +84,9 @@ TransitionObject.prototype = {
     this.easing = arr[3];
   }
 };
-<span id='zrender-graphic-GraphicStates-property-zlevel'>/**
+<span id='qrenderer-graphic-GraphicStates-property-qlevel'>/**
 </span> * @method constructor GraphicStates
- * @property {Number} [zlevel]
+ * @property {Number} [qlevel]
  * @property {Number} [z]
  * @property {Array&lt;Number&gt;} {position}
  * @property {Array&lt;Number&gt;|number} {rotation}
@@ -101,7 +101,7 @@ TransitionObject.prototype = {
 var GraphicStates = function GraphicStates(opts) {
   opts = opts || {};
   this._states = {};
-<span id='zrender-graphic-GraphicStates-property-_el'>  /**
+<span id='qrenderer-graphic-GraphicStates-property-_el'>  /**
 </span>   * @property _el
    */
 
@@ -131,14 +131,14 @@ var GraphicStates = function GraphicStates(opts) {
 GraphicStates.prototype = {
   constructor: GraphicStates,
 
-<span id='zrender-graphic-GraphicStates-property-_initialState'>  /**
+<span id='qrenderer-graphic-GraphicStates-property-_initialState'>  /**
 </span>   * All other state will be extended from initial state
    * @property {String}
    * @private
    */
   _initialState: &#39;normal&#39;,
 
-<span id='zrender-graphic-GraphicStates-property-_currentState'>  /**
+<span id='qrenderer-graphic-GraphicStates-property-_currentState'>  /**
 </span>   * Current state
    * @property {String}
    * @private
@@ -208,8 +208,8 @@ GraphicStates.prototype = {
       if (this._el) {
         var el = this._el; // Setting attributes
 
-        if (state.zlevel != null) {
-          el.zlevel = state.zlevel;
+        if (state.qlevel != null) {
+          el.qlevel = state.qlevel;
         }
 
         if (state.z != null) {
@@ -271,7 +271,7 @@ GraphicStates.prototype = {
 
       var el = self._el;
 
-      if (state.transition &amp;&amp; el &amp;&amp; el.__zr) {
+      if (state.transition &amp;&amp; el &amp;&amp; el.__qr) {
         // El can be animated
         var transitionCfg = state.transition;
         var property = transitionCfg.property;
@@ -345,7 +345,7 @@ GraphicStates.prototype = {
     }
   },
 
-<span id='zrender-graphic-GraphicStates-method-_animProp'>  /**
+<span id='qrenderer-graphic-GraphicStates-method-_animProp'>  /**
 </span>   * Do transition animation of particular property
    * @param {Object} state
    * @param {String} subPropKey

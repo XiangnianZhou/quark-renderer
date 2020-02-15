@@ -5,12 +5,12 @@ import Animatable from '../animation/Animatable';
 import * as dataUtil from '../core/utils/dataStructureUtil';
 import * as classUtil from '../core/utils/classUtil';
 /**
- * @class zrender.graphic.Element
+ * @class qrenderer.graphic.Element
  * 
- * Root class, everything in ZRender is an Element. 
+ * Root class, everything in QuarkRenderer is an Element. 
  * This is an abstract class, please don't creat an instance directly.
  * 
- * 根类，ZRender 中所有对象都是 Element 的子类。这是一个抽象类，请不要直接创建这个类的实例。
+ * 根类，QRenderer 中所有对象都是 Element 的子类。这是一个抽象类，请不要直接创建这个类的实例。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
@@ -42,13 +42,13 @@ class Element{
     
         /**
          * @private
-         * @property {ZRender} __zr
+         * @property {QuarkRenderer} __qr
          * 
-         * ZRender instance will be assigned when element is associated with zrender
+         * QuarkRenderer instance will be assigned when element is associated with qrenderer
          * 
-         * ZRender 实例对象，会在 element 添加到 zrender 实例中后自动赋值
+         * QuarkRenderer 实例对象，会在 element 添加到 qrenderer 实例中后自动赋值
          */
-        this.__zr=null;
+        this.__qr=null;
     
         /**
          * @private
@@ -201,7 +201,7 @@ class Element{
      */
     hide() {
         this.ignore = true;
-        this.__zr && this.__zr.refresh();
+        this.__qr && this.__qr.refresh();
     }
 
     /**
@@ -213,7 +213,7 @@ class Element{
      */
     show() {
         this.ignore = false;
-        this.__zr && this.__zr.refresh();
+        this.__qr && this.__qr.refresh();
     }
 
     /**
@@ -250,9 +250,9 @@ class Element{
      * @param {Path} clipPath
      */
     setClipPath(clipPath) {
-        let zr = this.__zr;
-        if (zr) {
-            clipPath.addSelfToZr(zr);
+        let qr = this.__qr;
+        if (qr) {
+            clipPath.addSelfToQr(qr);
         }
 
         // Remove previous clip path
@@ -261,7 +261,7 @@ class Element{
         }
 
         this.clipPath = clipPath;
-        clipPath.__zr = zr;
+        clipPath.__qr = qr;
         clipPath.__clipTarget = this;
 
         //TODO: FIX this，需要重写一下，考虑把 Element 类和 Displayable 类合并起来。
@@ -281,11 +281,11 @@ class Element{
     removeClipPath() {
         let clipPath = this.clipPath;
         if (clipPath) {
-            if (clipPath.__zr) {
-                clipPath.removeSelfFromZr(clipPath.__zr);
+            if (clipPath.__qr) {
+                clipPath.removeSelfFromQr(clipPath.__qr);
             }
 
-            clipPath.__zr = null;
+            clipPath.__qr = null;
             clipPath.__clipTarget = null;
             this.clipPath = null;
 
@@ -304,54 +304,54 @@ class Element{
     dirty() {
         this.__dirty = this.__dirtyText = true;
         this._rect = null;
-        this.__zr && this.__zr.refresh();
+        this.__qr && this.__qr.refresh();
     }
 
     /**
-     * @method addSelfToZr
-     * Add self to zrender instance.
+     * @method addSelfToQr
+     * Add self to qrenderer instance.
      * Not recursively because it will be invoked when element added to storage.
      * 
-     * 把当前对象添加到 zrender 实例中去。
+     * 把当前对象添加到 qrenderer 实例中去。
      * 不会递归添加，因为当元素被添加到 storage 中的时候会执行递归操作。
      * 
-     * @param {ZRender} zr
+     * @param {QuarkRenderer} qr
      */
-    addSelfToZr(zr) {
-        this.__zr = zr;
+    addSelfToQr(qr) {
+        this.__qr = qr;
         // 添加动画
         let animationProcessList = this.animationProcessList;
         if (animationProcessList) {
             for (let i = 0; i < animationProcessList.length; i++) {
-                zr.globalAnimationMgr.addAnimationProcess(animationProcessList[i]);
+                qr.globalAnimationMgr.addAnimationProcess(animationProcessList[i]);
             }
         }
 
         if (this.clipPath) {
-            this.clipPath.addSelfToZr(zr);
+            this.clipPath.addSelfToQr(qr);
         }
     }
 
     /**
-     * @method removeSelfFromZr
-     * Remove self from zrender instance.
+     * @method removeSelfFromQr
+     * Remove self from qrenderer instance.
      * 
-     * 把当前对象从 zrender 实例中删除。
+     * 把当前对象从 qrenderer 实例中删除。
      * 
-     * @param {ZRender} zr
+     * @param {QuarkRenderer} qr
      */
-    removeSelfFromZr(zr) {
-        this.__zr = null;
+    removeSelfFromQr(qr) {
+        this.__qr = null;
         // 移除动画
         let animationProcessList = this.animationProcessList;
         if (animationProcessList) {
             for (let i = 0; i < animationProcessList.length; i++) {
-                zr.globalAnimationMgr.removeAnimationProcess(animationProcessList[i]);
+                qr.globalAnimationMgr.removeAnimationProcess(animationProcessList[i]);
             }
         }
 
         if (this.clipPath) {
-            this.clipPath.removeSelfFromZr(zr);
+            this.clipPath.removeSelfFromQr(qr);
         }
     }
 }

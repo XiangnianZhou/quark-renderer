@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <title>Horizontal Line</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
 </head>
 <body>
     <div id="main" style="width:1000px;height:500px;"></div>
     <script type="text/javascript">
-        var zr = zrender.init(document.getElementById('main'));
-        var line = new zrender.Line({
+        var qr = qrenderer.init(document.getElementById('main'));
+        var line = new qrenderer.Line({
             shape: {
                 x1: 30,
                 y1: 50,
@@ -17,7 +17,7 @@
                 y2: 50
             }
         });
-        zr.add(line);
+        qr.add(line);
     </script>
 </body>
 </html>

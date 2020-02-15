@@ -3,7 +3,7 @@ import Style from './Style';
 import {copy as vec2Copy} from '../core/utils/vector';
 
 /**
- * @class zrender.graphic.GraphicStates
+ * @class qrenderer.graphic.GraphicStates
  * 
  * States machine for managing graphic states
  * 
@@ -71,7 +71,7 @@ TransitionObject.prototype = {
 
 /**
  * @method constructor GraphicStates
- * @property {Number} [zlevel]
+ * @property {Number} [qlevel]
  * @property {Number} [z]
  * @property {Array<Number>} {position}
  * @property {Array<Number>|number} {rotation}
@@ -196,8 +196,8 @@ GraphicStates.prototype = {
                 let el = this._el;
 
                 // Setting attributes
-                if (state.zlevel != null) {
-                    el.zlevel = state.zlevel;
+                if (state.qlevel != null) {
+                    el.qlevel = state.qlevel;
                 }
                 if (state.z != null) {
                     el.z = state.z;
@@ -264,7 +264,7 @@ GraphicStates.prototype = {
 
             let el = self._el;
 
-            if (state.transition && el && el.__zr) {// El can be animated
+            if (state.transition && el && el.__qr) {// El can be animated
                 let transitionCfg = state.transition;
                 let property = transitionCfg.property;
 

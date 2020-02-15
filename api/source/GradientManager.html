@@ -23,7 +23,7 @@ var classUtil = require(&quot;../../core/utils/classUtil&quot;);
 
 var colorTool = require(&quot;../../core/utils/colorUtil&quot;);
 
-function _typeof(obj) { if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
 
@@ -41,8 +41,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== &quot;funct
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-<span id='zrender-svg-helper-GradientManager'>/**
-</span> * @class zrender.svg.helper.GradientManager
+<span id='qrenderer-svg-helper-GradientManager'>/**
+</span> * @class qrenderer.svg.helper.GradientManager
  * 
  * Manages SVG gradient elements.
  * 
@@ -54,25 +54,25 @@ var GradientManager =
 function (_Definable) {
   _inherits(GradientManager, _Definable);
 
-<span id='zrender-svg-helper-GradientManager-method-constructor'>  /**
+<span id='qrenderer-svg-helper-GradientManager-method-constructor'>  /**
 </span>   * @method constructor GradientManager
    * Manages SVG gradient elements.
    *
-   * @param   {Number}     zrId    zrender instance id
+   * @param   {Number}     qrId    qrenderer instance id
    * @param   {SVGElement} svgRoot root of SVG document
    */
-  function GradientManager(zrId, svgRoot) {
+  function GradientManager(qrId, svgRoot) {
     _classCallCheck(this, GradientManager);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(GradientManager).call(this, zrId, svgRoot, [&#39;linearGradient&#39;, &#39;radialGradient&#39;], &#39;__gradient_in_use__&#39;));
+    return _possibleConstructorReturn(this, _getPrototypeOf(GradientManager).call(this, qrId, svgRoot, [&#39;linearGradient&#39;, &#39;radialGradient&#39;], &#39;__gradient_in_use__&#39;));
   }
-<span id='zrender-svg-helper-GradientManager-method-addWithoutUpdate'>  /**
+<span id='qrenderer-svg-helper-GradientManager-method-addWithoutUpdate'>  /**
 </span>   * @method addWithoutUpdate
    * Create new gradient DOM for fill or stroke if not exist,
    * but will not update gradient if exists.
    *
    * @param {SvgElement}  svgElement   SVG element to paint
-   * @param {Displayable} displayable  zrender displayable element
+   * @param {Displayable} displayable  qrenderer displayable element
    */
 
 
@@ -108,12 +108,12 @@ function (_Definable) {
         });
       }
     }
-<span id='zrender-svg-helper-GradientManager-method-add'>    /**
+<span id='qrenderer-svg-helper-GradientManager-method-add'>    /**
 </span>     * @method add
      * 
      * Add a new gradient tag in &lt;defs&gt;
      *
-     * @param   {Gradient} gradient zr gradient instance
+     * @param   {Gradient} gradient qr gradient instance
      * @return {SVGLinearGradientElement | SVGRadialGradientElement} created DOM
      */
 
@@ -137,17 +137,17 @@ function (_Definable) {
 
 
       gradient.id = gradient.id || this.nextId++;
-      dom.setAttribute(&#39;id&#39;, &quot;zr&quot;.concat(this._zrId, &quot;-gradient-&quot;).concat(gradient.id));
+      dom.setAttribute(&#39;id&#39;, &quot;qr&quot;.concat(this._qrId, &quot;-gradient-&quot;).concat(gradient.id));
       this.updateDom(gradient, dom);
       this.addDom(dom);
       return dom;
     }
-<span id='zrender-svg-helper-GradientManager-method-update'>    /**
+<span id='qrenderer-svg-helper-GradientManager-method-update'>    /**
 </span>     * @method update
      * 
      * Update gradient.
      *
-     * @param {Gradient} gradient zr gradient instance
+     * @param {Gradient} gradient qr gradient instance
      */
 
   }, {
@@ -168,12 +168,12 @@ function (_Definable) {
         }
       });
     }
-<span id='zrender-svg-helper-GradientManager-method-updateDom'>    /**
+<span id='qrenderer-svg-helper-GradientManager-method-updateDom'>    /**
 </span>     * @method updateDom
      * 
      * Update gradient dom
      *
-     * @param {Gradient} gradient zr gradient instance
+     * @param {Gradient} gradient qr gradient instance
      * @param {SVGLinearGradientElement | SVGRadialGradientElement} dom
      *                            DOM to update
      */
@@ -235,7 +235,7 @@ function (_Definable) {
 
       gradient._dom = dom;
     }
-<span id='zrender-svg-helper-GradientManager-method-markUsed'>    /**
+<span id='qrenderer-svg-helper-GradientManager-method-markUsed'>    /**
 </span>     * @method markUsed
      * 
      * Mark a single gradient to be used

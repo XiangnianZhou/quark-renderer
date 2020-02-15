@@ -25,14 +25,14 @@ var Style = require(&quot;./graphic/Style&quot;);
 
 var Pattern = require(&quot;./graphic/Pattern&quot;);
 
-<span id='zrender-canvas-Layer'>/**
-</span> * @class zrender.canvas.Layer
+<span id='qrenderer-canvas-Layer'>/**
+</span> * @class qrenderer.canvas.Layer
  * 用来创建 canvas 层，在 Painter 类中会引用此类。
  * @author pissang(https://www.github.com/pissang)
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 
-<span id='zrender-canvas-Layer-method-createDom'>/**
+<span id='qrenderer-canvas-Layer-method-createDom'>/**
 </span> * @private
  * @method
  * 创建dom
@@ -53,14 +53,14 @@ function createDom(id, painter, dpr) {
     newDomStyle.top = 0;
     newDomStyle.width = width + &#39;px&#39;;
     newDomStyle.height = height + &#39;px&#39;;
-    newDom.setAttribute(&#39;data-zr-dom-id&#39;, id);
+    newDom.setAttribute(&#39;data-qr-dom-id&#39;, id);
   }
 
   newDom.width = width * dpr;
   newDom.height = height * dpr;
   return newDom;
 }
-<span id='zrender-canvas-Layer-method-constructor'>/**
+<span id='qrenderer-canvas-Layer-method-constructor'>/**
 </span> * @method constructor Layer
  * @param {String} id
  * @param {Painter} painter
@@ -106,22 +106,22 @@ var Layer = function Layer(id, painter, dpr) {
   this.ctxBack = null;
   this.painter = painter;
   this.config = null;
-<span id='zrender-canvas-Layer-property-clearColor'>  /**
+<span id='qrenderer-canvas-Layer-property-clearColor'>  /**
 </span>   * @property {String} 每次清空画布的颜色
    */
 
   this.clearColor = 0;
-<span id='zrender-canvas-Layer-property-motionBlur'>  /**
+<span id='qrenderer-canvas-Layer-property-motionBlur'>  /**
 </span>   * @property {boolean} 是否开启动态模糊
    */
 
   this.motionBlur = false;
-<span id='zrender-canvas-Layer-property-lastFrameAlpha'>  /**
+<span id='qrenderer-canvas-Layer-property-lastFrameAlpha'>  /**
 </span>   * @property {Number} 在开启动态模糊的时候使用，与上一帧混合的alpha值，值越大尾迹越明显
    */
 
   this.lastFrameAlpha = 0.7;
-<span id='zrender-canvas-Layer-property-Layer'>  /**
+<span id='qrenderer-canvas-Layer-property-Layer'>  /**
 </span>   * @property {Number} Layer dpr
    */
 
@@ -137,14 +137,14 @@ Layer.prototype = {
   __endIndex: 0,
   incremental: false,
 
-<span id='zrender-canvas-Layer-method-getElementCount'>  /**
+<span id='qrenderer-canvas-Layer-method-getElementCount'>  /**
 </span>   * @method getElementCount
    */
   getElementCount: function getElementCount() {
     return this.__endIndex - this.__startIndex;
   },
 
-<span id='zrender-canvas-Layer-method-initContext'>  /**
+<span id='qrenderer-canvas-Layer-method-initContext'>  /**
 </span>   * @method initContext
    */
   initContext: function initContext() {
@@ -152,7 +152,7 @@ Layer.prototype = {
     this.ctx.dpr = this.dpr;
   },
 
-<span id='zrender-canvas-Layer-method-createBackBuffer'>  /**
+<span id='qrenderer-canvas-Layer-method-createBackBuffer'>  /**
 </span>   * @method createBackBuffer
    */
   createBackBuffer: function createBackBuffer() {
@@ -165,7 +165,7 @@ Layer.prototype = {
     }
   },
 
-<span id='zrender-canvas-Layer-method-resize'>  /**
+<span id='qrenderer-canvas-Layer-method-resize'>  /**
 </span>   * @method resize
    * @param  {Number} width
    * @param  {Number} height
@@ -194,7 +194,7 @@ Layer.prototype = {
     }
   },
 
-<span id='zrender-canvas-Layer-method-clear'>  /**
+<span id='qrenderer-canvas-Layer-method-clear'>  /**
 </span>   * @method clear
    * 清空该层画布
    * @param {boolean} [clearAll=false] Clear all with out motion blur

@@ -23,9 +23,9 @@ var dataUtil = require(&quot;../../core/utils/dataStructureUtil&quot;);
 
 var Path = require(&quot;../../graphic/Path&quot;);
 
-var ZImage = require(&quot;../../graphic/Image&quot;);
+var QImage = require(&quot;../../graphic/Image&quot;);
 
-var ZText = require(&quot;../../graphic/Text&quot;);
+var QText = require(&quot;../../graphic/Text&quot;);
 
 var _graphic = require(&quot;../graphic&quot;);
 
@@ -39,8 +39,8 @@ function _defineProperties(target, props) { for (var i = 0; i &lt; props.length;
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-<span id='zrender-svg-helper-Definable'>/**
-</span> * @class zrender.svg.helper.Definable
+<span id='qrenderer-svg-helper-Definable'>/**
+</span> * @class qrenderer.svg.helper.Definable
  * 
  * Manages elements that can be defined in &lt;defs&gt; in SVG,
  *       e.g., gradients, clip path, etc.
@@ -53,22 +53,22 @@ var MARK_USED = &#39;1&#39;;
 var Definable =
 /*#__PURE__*/
 function () {
-<span id='zrender-svg-helper-Definable-method-constructor'>  /**
+<span id='qrenderer-svg-helper-Definable-method-constructor'>  /**
 </span>   * @method constructor Definable
    * 
    * Manages elements that can be defined in &lt;defs&gt; in SVG,
    * e.g., gradients, clip path, etc.
    *
-   * @param {Number}          zrId      zrender instance id
+   * @param {Number}          qrId      qrenderer instance id
    * @param {SVGElement}      svgRoot   root of SVG document
    * @param {String|String[]} tagNames  possible tag names
    * @param {String}          markLabel label name to make if the element
    *                                    is used
    */
-  function Definable(zrId, svgRoot, tagNames, markLabel, domName) {
+  function Definable(qrId, svgRoot, tagNames, markLabel, domName) {
     _classCallCheck(this, Definable);
 
-    this._zrId = zrId;
+    this._qrId = qrId;
     this._svgRoot = svgRoot;
     this._tagNames = typeof tagNames === &#39;string&#39; ? [tagNames] : tagNames;
     this._markLabel = markLabel;
@@ -76,7 +76,7 @@ function () {
     this.nextId = 0;
     this.createElement = createElement;
   }
-<span id='zrender-svg-helper-Definable-method-getDefs'>  /**
+<span id='qrenderer-svg-helper-Definable-method-getDefs'>  /**
 </span>   * @method getDefs
    * 
    * Get the &lt;defs&gt; tag for svgRoot; optionally creates one if not exists.
@@ -127,7 +127,7 @@ function () {
         return defs[0];
       }
     }
-<span id='zrender-svg-helper-Definable-method-update'>    /**
+<span id='qrenderer-svg-helper-Definable-method-update'>    /**
 </span>     * @method update
      * 
      * Update DOM element if necessary.
@@ -159,7 +159,7 @@ function () {
         }
       }
     }
-<span id='zrender-svg-helper-Definable-method-addDom'>    /**
+<span id='qrenderer-svg-helper-Definable-method-addDom'>    /**
 </span>     * @method addDom
      * 
      * Add gradient dom to defs
@@ -173,7 +173,7 @@ function () {
       var defs = this.getDefs(true);
       defs.appendChild(dom);
     }
-<span id='zrender-svg-helper-Definable-method-removeDom'>    /**
+<span id='qrenderer-svg-helper-Definable-method-removeDom'>    /**
 </span>     * @method removeDom
      * 
      * Remove DOM of a given element.
@@ -191,7 +191,7 @@ function () {
         element[this._domName] = null;
       }
     }
-<span id='zrender-svg-helper-Definable-method-getDoms'>    /**
+<span id='qrenderer-svg-helper-Definable-method-getDoms'>    /**
 </span>     * @method getDoms
      * 
      * Get DOMs of this element.
@@ -219,7 +219,7 @@ function () {
       });
       return doms;
     }
-<span id='zrender-svg-helper-Definable-method-markAllUnused'>    /**
+<span id='qrenderer-svg-helper-Definable-method-markAllUnused'>    /**
 </span>     * @method markAllUnused
      * 
      * Mark DOMs to be unused before painting, and clear unused ones at the end
@@ -235,7 +235,7 @@ function () {
         dom[that._markLabel] = MARK_UNUSED;
       });
     }
-<span id='zrender-svg-helper-Definable-method-markUsed'>    /**
+<span id='qrenderer-svg-helper-Definable-method-markUsed'>    /**
 </span>     * @method markUsed
      * 
      * Mark a single DOM to be used.
@@ -250,7 +250,7 @@ function () {
         dom[this._markLabel] = MARK_USED;
       }
     }
-<span id='zrender-svg-helper-Definable-method-removeUnused'>    /**
+<span id='qrenderer-svg-helper-Definable-method-removeUnused'>    /**
 </span>     * @method removeUnused
      * 
      * Remove unused DOMs defined in &lt;defs&gt;
@@ -275,7 +275,7 @@ function () {
         }
       });
     }
-<span id='zrender-svg-helper-Definable-method-getSvgProxy'>    /**
+<span id='qrenderer-svg-helper-Definable-method-getSvgProxy'>    /**
 </span>     * @method getSvgProxy
      * 
      * Get SVG proxy.
@@ -289,15 +289,15 @@ function () {
     value: function getSvgProxy(displayable) {
       if (displayable instanceof Path) {
         return svgPath;
-      } else if (displayable instanceof ZImage) {
+      } else if (displayable instanceof QImage) {
         return svgImage;
-      } else if (displayable instanceof ZText) {
+      } else if (displayable instanceof QText) {
         return svgText;
       } else {
         return svgPath;
       }
     }
-<span id='zrender-svg-helper-Definable-method-getTextSvgElement'>    /**
+<span id='qrenderer-svg-helper-Definable-method-getTextSvgElement'>    /**
 </span>     * @method getTextSvgElement
      * 
      * Get text SVG element.
@@ -311,7 +311,7 @@ function () {
     value: function getTextSvgElement(displayable) {
       return displayable.__textSvgEl;
     }
-<span id='zrender-svg-helper-Definable-method-getSvgElement'>    /**
+<span id='qrenderer-svg-helper-Definable-method-getSvgElement'>    /**
 </span>     * @method getSvgElement
      * 
      * Get SVG element.

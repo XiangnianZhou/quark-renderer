@@ -3,20 +3,20 @@
 <head>
     <meta charset="utf-8" />
     <title>Clipping</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
 </head>
 <body>
     <div id="main" style="width:1000px;height:600px;"></div>
     <script type="text/javascript">
-        // 初始化zrender
-        var zr = zrender.init(document.getElementById('main'));
+        // 初始化qrenderer
+        var qr = qrenderer.init(document.getElementById('main'));
 
-        var g1 = new zrender.Group();
-        var g2 = new zrender.Group();
+        var g1 = new qrenderer.Group();
+        var g2 = new qrenderer.Group();
         g1.add(g2);
-        zr.add(g1);
+        qr.add(g1);
 
-        var circle = new zrender.Circle({
+        var circle = new qrenderer.Circle({
             shape: {
                 r: 0,
                 cx: 0,
@@ -27,7 +27,7 @@
 
         g2.setClipPath(circle);
 
-        var rect = new zrender.Rect({
+        var rect = new qrenderer.Rect({
             shape: {
                 width: 500,
                 height: 300,
@@ -40,7 +40,7 @@
 
         for (var i = 0; i < 50; i++) {
             for( var j = 0; j < 50; j++){
-                var image = new zrender.Image({
+                var image = new qrenderer.Image({
                     position: [i * 50, j * 50],
                     scale: [1, 1],
                     style: {

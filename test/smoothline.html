@@ -3,19 +3,19 @@
 <head>
     <meta charset="utf-8" />
     <title>Smoothline</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
 </head>
 <body>
     <div id="main" style="width:1000px;height:900px;"></div>
     <script type="text/javascript">
-        var zr = zrender.init(document.getElementById('main'));
+        var qr = qrenderer.init(document.getElementById('main'));
 
         var points = [];
         for (var i = 0; i < 10; i++) {
             points.push([Math.random() * 300 + 100, Math.random() * 300 + 100]);
         }
 
-        var smoothLine = new zrender.Polyline({
+        var smoothLine = new qrenderer.Polyline({
             position: [10, 10],
             style : {
                 lineDash: [5, 5, 10, 10],
@@ -28,7 +28,7 @@
             }
         });
 
-        var smoothPolygon = new zrender.Polygon({
+        var smoothPolygon = new qrenderer.Polygon({
             style: {
                 // smoothConstraint: [[-Infinity, -Infinity], [200, Infinity]],
                 fill: 'rgba(220, 20, 60, 0.4)',
@@ -52,8 +52,8 @@
                 }
             }
         });
-        zr.add(smoothPolygon);
-        zr.add(smoothLine);
+        qr.add(smoothPolygon);
+        qr.add(smoothLine);
     </script>
 </body>
 </html>

@@ -2,7 +2,7 @@ import fixShadow from './utils/fixShadow';
 import {ContextCachedBy} from './constants';
 
 /**
- * @class zrender.graphic.Style
+ * @class qrenderer.graphic.Style
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */

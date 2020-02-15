@@ -4,18 +4,18 @@
     <meta charset="utf-8" />
     <title>Image</title>
     <script src="./lib/config.js"></script>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
     <div id="main" style="width:1000px;height:800px;"></div>
     <script type="text/javascript">
-    // 初始化zrender
-    var zr = zrender.init(document.getElementById('main'), {
-        renderer: window.__ZRENDER__DEFAULT__RENDERER__ || 'svg'
+    // 初始化qrenderer
+    var qr = qrenderer.init(document.getElementById('main'), {
+        renderer: window.__QRENDER__DEFAULT__RENDERER__ || 'svg'
     });
 
-    var rect = new zrender.Rect({
+    var rect = new qrenderer.Rect({
         shape: {
             x: 60,
             y: 60,
@@ -30,7 +30,7 @@
             shadowOffsetY: 10
         }
     });
-    zr.add(rect);
+    qr.add(rect);
     </script>
 
 </body>

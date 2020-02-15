@@ -1,5 +1,5 @@
 /**
- * @class zrender.graphic.gradient.Gradient 
+ * @class qrenderer.graphic.gradient.Gradient 
  * 渐变
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */

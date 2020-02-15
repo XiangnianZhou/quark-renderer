@@ -15,9 +15,9 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='zrender-event-Eventful'>/**
+  <pre class="prettyprint lang-js"><span id='qrenderer-event-Eventful'>/**
 </span> * @abstract
- * @class zrender.event.Eventful
+ * @class qrenderer.event.Eventful
  * 
  * Provide event system for the classes that do not support events, the implementation here
  * is similar to DOM events, the classes which need event support should mixin the functions
@@ -29,7 +29,7 @@
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 var arrySlice = Array.prototype.slice;
-<span id='zrender-event-Eventful-method-constructor'>/**
+<span id='qrenderer-event-Eventful-method-constructor'>/**
 </span> * @method constructor Eventful
  * @param {Object} [eventProcessor] The object eventProcessor is the scope when
  *        `eventProcessor.xxx` called. 事件处理者，也就是当前事件处理函数执行时的作用域。
@@ -55,7 +55,7 @@ var Eventful = function Eventful(eventProcessor) {
 Eventful.prototype = {
   constructor: Eventful,
 
-<span id='zrender-event-Eventful-method-one'>  /**
+<span id='qrenderer-event-Eventful-method-one'>  /**
 </span>   * @method
    * The handler can only be triggered once, then removed.
    *
@@ -68,7 +68,7 @@ Eventful.prototype = {
     return _on(this, event, query, handler, context, true);
   },
 
-<span id='zrender-event-Eventful-method-on'>  /**
+<span id='qrenderer-event-Eventful-method-on'>  /**
 </span>   * @method
    * Bind a handler.
    *
@@ -81,7 +81,7 @@ Eventful.prototype = {
     return _on(this, event, query, handler, context, false);
   },
 
-<span id='zrender-event-Eventful-method-isSilent'>  /**
+<span id='qrenderer-event-Eventful-method-isSilent'>  /**
 </span>   * @method
    * Whether any handler has bound.
    *
@@ -93,7 +93,7 @@ Eventful.prototype = {
     return !_h[event] || !_h[event].length;
   },
 
-<span id='zrender-event-Eventful-method-off'>  /**
+<span id='qrenderer-event-Eventful-method-off'>  /**
 </span>   * @method
    * Unbind a event.
    *
@@ -134,7 +134,7 @@ Eventful.prototype = {
     return this;
   },
 
-<span id='zrender-event-Eventful-method-trigger'>  /**
+<span id='qrenderer-event-Eventful-method-trigger'>  /**
 </span>   * @method
    * Dispatch a event.
    *
@@ -196,7 +196,7 @@ Eventful.prototype = {
     return this;
   },
 
-<span id='zrender-event-Eventful-method-triggerWithContext'>  /**
+<span id='qrenderer-event-Eventful-method-triggerWithContext'>  /**
 </span>   * @method
    * Dispatch a event with context, which is specified at the last parameter.
    *
@@ -259,7 +259,7 @@ Eventful.prototype = {
     return this;
   }
 };
-<span id='zrender-event-Eventful-method-callListenerChanged'>/**
+<span id='qrenderer-event-Eventful-method-callListenerChanged'>/**
 </span> * @private
  * @method
  * @param {Element} eventful 
@@ -273,7 +273,7 @@ function callListenerChanged(eventful, eventType) {
     eventProcessor.afterListenerChanged(eventType);
   }
 }
-<span id='zrender-event-Eventful-method-normalizeQuery'>/**
+<span id='qrenderer-event-Eventful-method-normalizeQuery'>/**
 </span> * @private
  * @method
  * @param {*} host 
@@ -290,7 +290,7 @@ function normalizeQuery(host, query) {
 
   return query;
 }
-<span id='zrender-event-Eventful-method-_on'>/**
+<span id='qrenderer-event-Eventful-method-_on'>/**
 </span> * @private
  * @method
  * @param {Element} eventful 
@@ -334,7 +334,7 @@ function _on(eventful, event, query, handler, context, isOnce) {
     ctx: context || eventful,
     // FIXME
     // Do not publish this feature util it is proved that it makes sense.
-    callAtLast: handler.zrEventfulCallAtLast
+    callAtLast: handler.qrEventfulCallAtLast
   };
   var lastIndex = _h[event].length - 1;
   var lastWrap = _h[event][lastIndex];

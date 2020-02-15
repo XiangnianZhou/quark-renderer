@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <title>Group</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
 </head>
 <body>
     <div id="main" style="width:1000px;height:500px;"></div>
     <script type="text/javascript">
-        var zr = zrender.init(document.getElementById('main'));
-        var circle = new zrender.Circle({
+        var qr = qrenderer.init(document.getElementById('main'));
+        var circle = new qrenderer.Circle({
             scale: [1, 1],
             shape: {
                 cx: 0,
@@ -18,7 +18,7 @@
             },
             hoverable: false
         });
-        var circle2 = new zrender.Circle({
+        var circle2 = new qrenderer.Circle({
             scale: [1, 1],
             shape: {
                 cx: 10,
@@ -31,13 +31,13 @@
             hoverable: false
         });
 
-        var group = new zrender.Group({
+        var group = new qrenderer.Group({
             position: [100, 100]
         });
         group.add(circle);
         group.add(circle2);
 
-        zr.add(group);
+        qr.add(group);
 
         group.animate('', true)
             .when(1000, {
@@ -69,7 +69,7 @@
             })
             .start();
 
-        zr.configLayer(0, {
+        qr.configLayer(0, {
             // clearColor: 'rgba(255, 255, 255, 0.1)'
             motionBlur: true,
             lastFrameAlpha: 0.99

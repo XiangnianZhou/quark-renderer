@@ -23,7 +23,7 @@ var subPixelOptimizeLine = _subPixelOptimize.subPixelOptimizeLine;
 
 var dataUtil = require(&quot;../../core/utils/dataStructureUtil&quot;);
 
-function _typeof(obj) { if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
 
@@ -41,14 +41,14 @@ function _inherits(subClass, superClass) { if (typeof superClass !== &quot;funct
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-<span id='zrender-graphic-shape-Line'>/**
-</span> * @class zrender.graphic.shape.Line 
+<span id='qrenderer-graphic-shape-Line'>/**
+</span> * @class qrenderer.graphic.shape.Line 
  * 直线
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 //TODO:Avoid create repeatly.
 var defaultConfig = {
-<span id='zrender-graphic-shape-Line-property-type'>  /**
+<span id='qrenderer-graphic-shape-Line-property-type'>  /**
 </span>   * @property {String} type
    */
   type: &#39;line&#39;,
@@ -72,7 +72,7 @@ var Line =
 function (_Path) {
   _inherits(Line, _Path);
 
-<span id='zrender-graphic-shape-Line-method-constructor'>  /**
+<span id='qrenderer-graphic-shape-Line-method-constructor'>  /**
 </span>   * @method constructor Line
    * @param {Object} options 
    */
@@ -81,7 +81,7 @@ function (_Path) {
 
     return _possibleConstructorReturn(this, _getPrototypeOf(Line).call(this, dataUtil.merge(defaultConfig, options, true)));
   }
-<span id='zrender-graphic-shape-Line-method-buildPath'>  /**
+<span id='qrenderer-graphic-shape-Line-method-buildPath'>  /**
 </span>   * @method buildPath
    * 绘制元素路径
    * @param {Object} ctx 
@@ -126,7 +126,7 @@ function (_Path) {
 
       ctx.lineTo(x2, y2);
     }
-<span id='zrender-graphic-shape-Line-method-'>    /**
+<span id='qrenderer-graphic-shape-Line-method-'>    /**
 </span>     * Get point at percent
      * @param  {Number} percent
      * @return {Array&lt;Number&gt;}

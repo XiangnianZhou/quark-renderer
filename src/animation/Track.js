@@ -2,7 +2,7 @@ import Timeline from './Timeline';
 import * as colorUtil from '../core/utils/colorUtil';
 import * as dataUtil from '../core/utils/dataStructureUtil';
 /**
- * @class zrender.animation.Track
+ * @class qrenderer.animation.Track
  * 
  * Track, 轨道，与元素（Element）上可以用来进行动画的属性一一对应。
  * 元素上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，

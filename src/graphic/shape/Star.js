@@ -2,7 +2,7 @@ import Path from '../Path';
 import * as dataUtil from '../../core/utils/dataStructureUtil';
 
 /**
- * @class zrender.graphic.shape.Star 
+ * @class qrenderer.graphic.shape.Star 
  * n角星（n>3）
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */

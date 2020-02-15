@@ -4,7 +4,7 @@ import Style from './graphic/Style';
 import Pattern from './graphic/Pattern';
 
 /**
- * @class zrender.canvas.Layer
+ * @class qrenderer.canvas.Layer
  * 用来创建 canvas 层，在 Painter 类中会引用此类。
  * @author pissang(https://www.github.com/pissang)
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
@@ -30,7 +30,7 @@ function createDom(id, painter, dpr) {
         newDomStyle.top = 0;
         newDomStyle.width = width + 'px';
         newDomStyle.height = height + 'px';
-        newDom.setAttribute('data-zr-dom-id', id);
+        newDom.setAttribute('data-qr-dom-id', id);
     }
 
     newDom.width = width * dpr;

@@ -1,5 +1,4 @@
 // Simple LRU cache use doubly linked list
-// @module zrender/core/LRU
 
 /**
  * Simple double linked list. Compared with array, it has O(1) remove operation.

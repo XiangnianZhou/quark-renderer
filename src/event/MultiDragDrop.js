@@ -1,13 +1,14 @@
 /**
- * @class zrender.event.MultiDragDrop
+ * @class qrenderer.event.MultiDragDrop
  * 支持同时拖拽多个元素，按住 Ctrl 键可以多选。
  * 
+ * @author 大漠穷秋 <damoqiongqiu@126.com>
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 export default class MultiDragDrop{
     /**
      * @method constructor MultiDragDrop
-     * @param {ZRenderEventHandler} handler 
+     * @param {QRendererEventHandler} handler 
      */
     constructor(handler){
         this.selectionMap=new Map();

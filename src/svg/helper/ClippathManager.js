@@ -3,7 +3,7 @@ import * as dataUtil from '../../core/utils/dataStructureUtil';
 import * as classUtil from '../../core/utils/classUtil';
 import * as matrix from '../../core/utils/matrix';
 /**
- * @class zrender.svg.helper.ClippathManager
+ * @class qrenderer.svg.helper.ClippathManager
  * 
  * Manages SVG clipPath elements.
  * 
@@ -13,11 +13,11 @@ import * as matrix from '../../core/utils/matrix';
 class ClippathManager extends Definable{
     /**
      * @method constructor ClippathManager
-     * @param   {Number}     zrId    zrender instance id
+     * @param   {Number}     qrId    qrenderer instance id
      * @param   {SVGElement} svgRoot root of SVG document
      */
-    constructor(zrId, svgRoot){
-        super(zrId, svgRoot, 'clipPath', '__clippath_in_use__');
+    constructor(qrId, svgRoot){
+        super(qrId, svgRoot, 'clipPath', '__clippath_in_use__');
     }
 
     /**
@@ -75,7 +75,7 @@ class ClippathManager extends Definable{
             }
             else {
                 // New <clipPath>
-                id = 'zr' + this._zrId + '-clip-' + this.nextId;
+                id = 'qr' + this._qrId + '-clip-' + this.nextId;
                 ++this.nextId;
                 clipPathEl = this.createElement('clipPath');
                 clipPathEl.setAttribute('id', id);

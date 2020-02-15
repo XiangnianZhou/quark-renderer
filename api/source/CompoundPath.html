@@ -17,7 +17,7 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">var Path = require(&quot;./Path&quot;);
 
-function _typeof(obj) { if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
 
@@ -35,8 +35,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== &quot;funct
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-<span id='zrender-graphic-CompoundPath'>/**
-</span> * @class zrender.graphic.CompoundPath 
+<span id='qrenderer-graphic-CompoundPath'>/**
+</span> * @class qrenderer.graphic.CompoundPath 
  * 
  * CompoundPath to improve performance.
  * 
@@ -45,7 +45,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 var defaultConfig = {
-<span id='zrender-graphic-CompoundPath-property-type'>  /**
+<span id='qrenderer-graphic-CompoundPath-property-type'>  /**
 </span>   * @property {String} type
    */
   type: &#39;compound&#39;,
@@ -59,7 +59,7 @@ var CompoundPath =
 function (_Path) {
   _inherits(CompoundPath, _Path);
 
-<span id='zrender-graphic-CompoundPath-method-constructor'>  /**
+<span id='qrenderer-graphic-CompoundPath-method-constructor'>  /**
 </span>   * @method constructor CompoundPath
    * @param {Object} opts 
    */
@@ -68,7 +68,7 @@ function (_Path) {
 
     return _possibleConstructorReturn(this, _getPrototypeOf(CompoundPath).call(this, opts, defaultConfig));
   }
-<span id='zrender-graphic-CompoundPath-method-_updatePathDirty'>  /**
+<span id='qrenderer-graphic-CompoundPath-method-_updatePathDirty'>  /**
 </span>   * @private
    * @method _updatePathDirty
    */
@@ -88,7 +88,7 @@ function (_Path) {
       this.__dirtyPath = dirtyPath;
       this.__dirty = this.__dirty || dirtyPath;
     }
-<span id='zrender-graphic-CompoundPath-method-beforeBrush'>    /**
+<span id='qrenderer-graphic-CompoundPath-method-beforeBrush'>    /**
 </span>     * @private
      * @method beforeBrush
      */
@@ -109,7 +109,7 @@ function (_Path) {
         paths[i].path.setScale(scale[0], scale[1], paths[i].segmentIgnoreThreshold);
       }
     }
-<span id='zrender-graphic-CompoundPath-method-buildPath'>    /**
+<span id='qrenderer-graphic-CompoundPath-method-buildPath'>    /**
 </span>     * @method buildPath
      * 绘制元素路径
      * @param {Object} ctx 
@@ -125,7 +125,7 @@ function (_Path) {
         paths[i].buildPath(ctx, paths[i].shape, true);
       }
     }
-<span id='zrender-graphic-CompoundPath-method-afterBrush'>    /**
+<span id='qrenderer-graphic-CompoundPath-method-afterBrush'>    /**
 </span>     * @private
      * @method afterBrush
      */
@@ -139,7 +139,7 @@ function (_Path) {
         paths[i].__dirtyPath = false;
       }
     }
-<span id='zrender-graphic-CompoundPath-method-getBoundingRect'>    /**
+<span id='qrenderer-graphic-CompoundPath-method-getBoundingRect'>    /**
 </span>     * @private
      * @method getBoundingRect
      */

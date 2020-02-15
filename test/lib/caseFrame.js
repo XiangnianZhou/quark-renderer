@@ -44,7 +44,7 @@
         '        </div>',
         '        <div class="list-filter"></div>',
         '        <select class="dist-selector">',
-        '           <option value="dist"/>zrender/dist</option>',
+        '           <option value="dist"/>qrenderer/dist</option>',
         '        </select>',
         '    </div>',
         '    <ul></ul>',
@@ -323,7 +323,7 @@
     }
 
     function handlePageURLChange(contentWindow) {
-        var contentURLStorage = contentWindow.zrTestURLStorage;
+        var contentURLStorage = contentWindow.qrTestURLStorage;
         if (!contentURLStorage) {
             return;
         }

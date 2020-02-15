@@ -3,7 +3,7 @@ import * as polyHelper from '../utils/poly';
 import * as dataUtil from '../../core/utils/dataStructureUtil';
 
 /**
- * @class zrender.graphic.shape.Polygon 
+ * @class qrenderer.graphic.shape.Polygon 
  * 多边形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */

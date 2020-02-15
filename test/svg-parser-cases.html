@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>SVG Compare</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
     <script src="./lib/roamable.js"></script>
 
 
@@ -17,7 +17,7 @@
         );
 
         // <https://github.com/ecomfe/vis-data> is requried
-        // in the same directory as zrender.
+        // in the same directory as qrenderer.
         var baseURL = '../../vis-data/map/svg';
         [
             {name: 'geo-topo/Battle_of_Towton_-_Initial_deployment.svg', tag: 'pending', hint: 'tspan/text incorrect place'},
@@ -175,7 +175,7 @@
             transform-origin: left top;
             background: #ccc;
         }
-        #zr {
+        #qr {
             width: 100%;
             height: 100%;
         }
@@ -240,10 +240,10 @@
     </div>
 
     <div id="main">
-        <div class="left-title">zrender.parseSVG</div>
+        <div class="left-title">qrenderer.parseSVG</div>
         <div class="right-title">Orginal SVG</div>
-        <div id="zrContainer" class="left">
-            <div id="zr"></div>
+        <div id="qrContainer" class="left">
+            <div id="qr"></div>
         </div>
         <iframe id="original" class="right" src="about:blank;"></iframe>
         <div id="right-mask" style="display:none" class="right" src="about:blank;"></div>
@@ -272,7 +272,7 @@
 
 
         var elOrigianl = document.getElementById('original');
-        var zrContainer = document.getElementById('zrContainer');
+        var qrContainer = document.getElementById('qrContainer');
         var scaleEl = document.getElementById('scale');
         var rightMask = document.getElementById('right-mask');
         var mainGroup;
@@ -281,9 +281,9 @@
         var currentScale = 1;
         var svgPath;
 
-        var zr = zrender.init(document.getElementById('zr'));
+        var qr = qrenderer.init(document.getElementById('qr'));
         window.addEventListener('resize', function () {
-            zr.resize();
+            qr.resize();
         });
 
         window.addEventListener('hashchange', enterCase);
@@ -311,7 +311,7 @@
             xhr.responseType = 'text';
             xhr.onload = function (e) {
                 try {
-                    renderZrSVG(this.responseText);
+                    renderQrSVG(this.responseText);
                 }
                 catch (err) {
                     tipLoadError();
@@ -322,14 +322,14 @@
             xhr.send();
 
             function tipLoadError() {
-                alert('Load SVG fail. <https://github.com/ecomfe/vis-data> is required at the same level of zrender directory.');
+                alert('Load SVG fail. <https://github.com/ecomfe/vis-data> is required at the same level of qrenderer directory.');
             }
         };
 
-        function renderZrSVG(text) {
+        function renderQrSVG(text) {
             console && console.time && console.time('[ParseTime]');
             // console.profile('a');
-            var result = zrender.parseSVG(text, {
+            var result = qrenderer.parseSVG(text, {
                 width: svgEl.clientWidth,
                 height: svgEl.clientHeight
             });
@@ -337,13 +337,13 @@
             console && console.timeEnd && console.timeEnd('[ParseTime]');
 
             mainGroup = result.root;
-            zr.clear();
-            zr.add(mainGroup);
+            qr.clear();
+            qr.add(mainGroup);
             roamable(false);
-            roamable(zr, mainGroup, zrRoamHandler);
+            roamable(qr, mainGroup, qrRoamHandler);
         };
 
-        function zrRoamHandler() {
+        function qrRoamHandler() {
             if (svgEl) {
                 svgEl.style.transform = `translate(${mainGroup.position[0]}px, ${mainGroup.position[1]}px) scale(${mainGroup.scale[0]},${mainGroup.scale[1]})`;
                 svgEl.style.transformOrigin = '0 0';

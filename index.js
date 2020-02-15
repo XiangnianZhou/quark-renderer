@@ -1,9 +1,9 @@
-var _zrender = require("./lib/zrender");
+var _quarkRenderer = require("./lib/quark-renderer");
 
 (function () {
-  for (var key in _zrender) {
-    if (_zrender == null || !_zrender.hasOwnProperty(key) || key === 'default' || key === '__esModule') return;
-    exports[key] = _zrender[key];
+  for (var key in _quarkRenderer) {
+    if (_quarkRenderer == null || !_quarkRenderer.hasOwnProperty(key) || key === 'default' || key === '__esModule') return;
+    exports[key] = _quarkRenderer[key];
   }
 })();
 

@@ -2,7 +2,7 @@ import AnimationProcess from './AnimationProcess';
 import * as dataUtil from '../core/utils/dataStructureUtil';
 
 /**
- * @class zrender.animation.Animatable
+ * @class qrenderer.animation.Animatable
  * 
  * 动画接口类，在 Element 类中 mixin 此类提供的功能，为元素提供动画功能。
  * 
@@ -15,7 +15,7 @@ import * as dataUtil from '../core/utils/dataStructureUtil';
  */
 let Animatable = function () {
     /**
-     * @property {zrender.animation.AnimationProcess}
+     * @property {qrenderer.animation.AnimationProcess}
      * @readOnly
      */
     this.animationProcessList = [];
@@ -30,7 +30,7 @@ Animatable.prototype = {
      * 创建动画实例
      * @param {String} path The path to fetch value from object, like 'a.b.c'.
      * @param {Boolean} [loop=false] Whether to loop animation.
-     * @return {zrender.animation.AnimationProcess}
+     * @return {qrenderer.animation.AnimationProcess}
      * @example
      * el.animate('style', false)
      *   .when(1000, {x: 10} )
@@ -79,9 +79,9 @@ Animatable.prototype = {
         });
         animatable.animationProcessList.push(animationProcess);
 
-        // If animate after added to the zrender
-        if (this.__zr) {
-            this.__zr.globalAnimationMgr.addAnimationProcess(animationProcess);
+        // If animate after added to the qrenderer
+        if (this.__qr) {
+            this.__qr.globalAnimationMgr.addAnimationProcess(animationProcess);
         }
 
         return animationProcess;

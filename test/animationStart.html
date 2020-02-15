@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Animation</title>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
@@ -19,7 +19,7 @@
     <script type="text/javascript">
 
         refresh();
-        var zr;
+        var qr;
         var throttleRate;
         var count;
 
@@ -27,13 +27,13 @@
             count = +document.getElementById('count').value;
             throttleRate = +document.getElementById('throttle-rate').value;
 
-            zr && zr.dispose();
+            qr && qr.dispose();
 
             init();
         }
 
         function init() {
-            zr = zrender.init(document.getElementById('main'));
+            qr = qrenderer.init(document.getElementById('main'));
 
             var lastTrigger = +new Date();
             var timer;
@@ -41,7 +41,7 @@
             var recordLimit = 300;
             var lastTick = 0;
 
-            // zr.globalAnimationMgr.on('frame', function () {
+            // qr.globalAnimationMgr.on('frame', function () {
             //     if (record.length > recordLimit) {
             //         record.length = 0;
             //     }
@@ -51,19 +51,19 @@
             //     lastTick = now;
             // }, this);
 
-            var gradient = new zrender.LinearGradient();
+            var gradient = new qrenderer.LinearGradient();
             gradient.addColorStop(0, 'red');
             gradient.addColorStop(1, 'black');
 
-            var viewWidth = zr.getWidth();
-            var viewHeight = zr.getHeight();
+            var viewWidth = qr.getWidth();
+            var viewHeight = qr.getHeight();
             var center = [viewWidth / 2, viewHeight / 2];
             var baseRadius = Math.min(viewWidth, viewHeight) * 0.3;
             var els = [];
 
             for (var i = 0; i < count; i++) {
                 var theta = Math.random() * Math.PI * 2;
-                var circle = new zrender.Circle({
+                var circle = new qrenderer.Circle({
                     position: [
                         center[0] + (baseRadius + Math.random() * 60) * Math.cos(theta),
                         center[1] + (baseRadius + Math.random() * 60) * Math.sin(theta)
@@ -84,7 +84,7 @@
                 });
                 circle.___ii = i;
                 els.push(circle);
-                zr.add(circle);
+                qr.add(circle);
             }
 
             var update = throttle(function (point) {
@@ -124,7 +124,7 @@
                 }
             }, throttleRate);
 
-            zr.on('mousemove', function (e) {
+            qr.on('mousemove', function (e) {
                 update([e.offsetX, e.offsetY]);
             });
         }

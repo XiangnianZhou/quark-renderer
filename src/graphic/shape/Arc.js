@@ -3,7 +3,7 @@ import * as dataUtil from '../../core/utils/dataStructureUtil';
 import {PI2,mathSin,mathCos,mathMin,mathMax} from '../../graphic/constants';
 
 /**
- * @class zrender.graphic.shape.Arc 
+ * @class qrenderer.graphic.shape.Arc 
  * 圆弧
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */

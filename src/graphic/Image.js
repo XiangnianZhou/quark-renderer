@@ -4,7 +4,7 @@ import * as dataUtil from '../core/utils/dataStructureUtil';
 import * as imageHelper from './utils/image';
 
 /**
- * @class zrender.graphic.ZImage 
+ * @class qrenderer.graphic.ZImage 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 export default class ZImage extends Displayable{

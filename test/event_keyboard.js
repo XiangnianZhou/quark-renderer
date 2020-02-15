@@ -1,5 +1,5 @@
-var zr = zrender.init(document.getElementById('main'));
-var circle1 = new zrender.Circle({
+var qr = qrenderer.init(document.getElementById('main'));
+var circle1 = new qrenderer.Circle({
     shape: {
         cx: 20,
         cy: 20,
@@ -11,7 +11,7 @@ var circle1 = new zrender.Circle({
     draggable: true
 });
 
-var circle2 = new zrender.Circle({
+var circle2 = new qrenderer.Circle({
     shape: {
         cx: 60,
         cy: 60,
@@ -24,10 +24,10 @@ var circle2 = new zrender.Circle({
 });
 
 circle1.on('mouseover', function () {
-    zr.dom.style.cursor = 'move';
+    qr.dom.style.cursor = 'move';
 });
 circle1.on('mouseout', function () {
-    zr.dom.style.cursor = 'default';
+    qr.dom.style.cursor = 'default';
 });
 circle1.on('keydown', function (event) {
     console.log('keydown');
@@ -42,9 +42,9 @@ circle1.on('keypress', function (event) {
     console.log(event);
 });
 
-// zr.on("pagekeydown",function(event){
-//     console.log("zr pagekeydown...");
+// qr.on("pagekeydown",function(event){
+//     console.log("qr pagekeydown...");
 // });
 
-zr.add(circle1);
-zr.add(circle2);
+qr.add(circle1);
+qr.add(circle2);

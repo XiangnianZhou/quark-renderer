@@ -4,7 +4,7 @@ import {subPixelOptimizeRect} from '../utils/subPixelOptimize';
 import * as dataUtil from '../../core/utils/dataStructureUtil';
 
 /**
- * @class zrender.graphic.shape.Rect 
+ * @class qrenderer.graphic.shape.Rect 
  * 矩形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */

@@ -31,16 +31,16 @@ function _defineProperties(target, props) { for (var i = 0; i &lt; props.length;
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-<span id='zrender-animation-GlobalAnimationMgr'>/**
+<span id='qrenderer-animation-GlobalAnimationMgr'>/**
 </span> * @singleton
- * @class zrender.animation.GlobalAnimationMgr
+ * @class qrenderer.animation.GlobalAnimationMgr
  * 
  * Animation manager, global singleton, controls all the animation process.
- * Each ZRender instance has a GlobalAnimationMgr instance. GlobalAnimationMgr 
- * is designed to manage all the AnimationProcesses inside a zrender instance.
+ * Each QRenderer instance has a GlobalAnimationMgr instance. GlobalAnimationMgr 
+ * is designed to manage all the AnimationProcesses inside a qrenderer instance.
  * 
- * 动画管理器，全局单例，控制和调度所有动画过程。每个 zrender 实例中会持有一个 
- * GlobalAnimationMgr 实例。GlobalAnimationMgr 会管理 zrender 实例中的所有
+ * 动画管理器，全局单例，控制和调度所有动画过程。每个 qrenderer 实例中会持有一个 
+ * GlobalAnimationMgr 实例。GlobalAnimationMgr 会管理 qrenderer 实例中的所有
  * AnimationProcess。
  * 
  * @author pissang(https://github.com/pissang)
@@ -52,7 +52,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var GlobalAnimationMgr =
 /*#__PURE__*/
 function () {
-<span id='zrender-animation-GlobalAnimationMgr-method-constructor'>  /**
+<span id='qrenderer-animation-GlobalAnimationMgr-method-constructor'>  /**
 </span>   * @method constructor GlobalAnimationMgr
    * @param {Object} [options]
    */
@@ -69,10 +69,10 @@ function () {
     this._paused = false;
     Dispatcher.call(this);
   }
-<span id='zrender-animation-GlobalAnimationMgr-method-addAnimationProcess'>  /**
+<span id='qrenderer-animation-GlobalAnimationMgr-method-addAnimationProcess'>  /**
 </span>   * @method addAnimationProcess
    * 添加 animationProcess
-   * @param {zrender.animation.GlobalAnimationMgr} animationProcess
+   * @param {qrenderer.animation.GlobalAnimationMgr} animationProcess
    */
 
 
@@ -81,10 +81,10 @@ function () {
     value: function addAnimationProcess(animationProcess) {
       this._animationProcessList.push(animationProcess);
     }
-<span id='zrender-animation-GlobalAnimationMgr-method-removeAnimationProcess'>    /**
+<span id='qrenderer-animation-GlobalAnimationMgr-method-removeAnimationProcess'>    /**
 </span>     * @method removeAnimationProcess
      * 删除动画片段
-     * @param {zrender.animation.GlobalAnimationMgr} animationProcess
+     * @param {qrenderer.animation.GlobalAnimationMgr} animationProcess
      */
 
   }, {
@@ -96,7 +96,7 @@ function () {
         this._animationProcessList.splice(index, 1);
       }
     }
-<span id='zrender-animation-GlobalAnimationMgr-method-_update'>    /**
+<span id='qrenderer-animation-GlobalAnimationMgr-method-_update'>    /**
 </span>     * @private
      * @method _update
      */
@@ -119,7 +119,7 @@ function () {
 
       this.trigger(&#39;frame&#39;, delta);
     }
-<span id='zrender-animation-GlobalAnimationMgr-method-_startLoop'>    /**
+<span id='qrenderer-animation-GlobalAnimationMgr-method-_startLoop'>    /**
 </span>     * @private
      * @method _startLoop
      * TODO:需要确认在大量节点下的动画性能问题，比如 100 万个元素同时进行动画
@@ -144,7 +144,7 @@ function () {
 
       requestAnimationFrame(nextFrame);
     }
-<span id='zrender-animation-GlobalAnimationMgr-method-start'>    /**
+<span id='qrenderer-animation-GlobalAnimationMgr-method-start'>    /**
 </span>     * @method start
      * Start all the animations.
      */
@@ -157,7 +157,7 @@ function () {
 
       this._startLoop();
     }
-<span id='zrender-animation-GlobalAnimationMgr-method-stop'>    /**
+<span id='qrenderer-animation-GlobalAnimationMgr-method-stop'>    /**
 </span>     * @method stop
      * Stop all the animations.
      */
@@ -167,7 +167,7 @@ function () {
     value: function stop() {
       this._running = false;
     }
-<span id='zrender-animation-GlobalAnimationMgr-method-pause'>    /**
+<span id='qrenderer-animation-GlobalAnimationMgr-method-pause'>    /**
 </span>     * @method pause
      * Pause all the animations.
      */
@@ -180,7 +180,7 @@ function () {
         this._paused = true;
       }
     }
-<span id='zrender-animation-GlobalAnimationMgr-method-resume'>    /**
+<span id='qrenderer-animation-GlobalAnimationMgr-method-resume'>    /**
 </span>     * @method resume
      * Resume all the animations.
      */
@@ -193,7 +193,7 @@ function () {
         this._paused = false;
       }
     }
-<span id='zrender-animation-GlobalAnimationMgr-method-clear'>    /**
+<span id='qrenderer-animation-GlobalAnimationMgr-method-clear'>    /**
 </span>     * @method clear
      * Clear all the animations.
      */
@@ -203,7 +203,7 @@ function () {
     value: function clear() {
       this._animationProcessList.length = 0;
     }
-<span id='zrender-animation-GlobalAnimationMgr-method-isFinished'>    /**
+<span id='qrenderer-animation-GlobalAnimationMgr-method-isFinished'>    /**
 </span>     * @method isFinished
      * Whether all the animations have finished.
      */

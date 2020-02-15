@@ -25,7 +25,7 @@ var _dataStructureUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
 
 var extend = _dataStructureUtil.extend;
 
-function _typeof(obj) { if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
 
@@ -43,8 +43,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== &quot;funct
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-<span id='zrender-graphic-Group'>/**
-</span> * @class zrender.graphic.Group
+<span id='qrenderer-graphic-Group'>/**
+</span> * @class qrenderer.graphic.Group
  * 
  * - Group is a container, it&#39;s not visible.
  * - Group can have child nodes, not the other Element types.
@@ -55,8 +55,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  * - Group 上的变换也会被应用到子节点上。
  * 
  *      @example small frame
- *      let Group = require(&#39;zrender/Group&#39;);
- *      let Circle = require(&#39;zrender/graphic/shape/Circle&#39;);
+ *      let Group = require(&#39;qrenderer/Group&#39;);
+ *      let Circle = require(&#39;qrenderer/graphic/shape/Circle&#39;);
  *      let g = new Group();
  *      g.position[0] = 100;
  *      g.position[1] = 100;
@@ -67,14 +67,14 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  *              r: 20,
  *          }
  *      }));
- *      zr.add(g);
+ *      qr.add(g);
  */
 var Group =
 /*#__PURE__*/
 function (_Element) {
   _inherits(Group, _Element);
 
-<span id='zrender-graphic-Group-method-constructor'>  /**
+<span id='qrenderer-graphic-Group-method-constructor'>  /**
 </span>   * @method constructor Group
    */
   function Group() {
@@ -85,35 +85,35 @@ function (_Element) {
     _classCallCheck(this, Group);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Group).call(this, options));
-<span id='zrender-graphic-Group-property-_children'>    /**
+<span id='qrenderer-graphic-Group-property-_children'>    /**
 </span>     * @private
      * @property _children
      */
 
     _this._children = [];
-<span id='zrender-graphic-Group-property-__storage'>    /**
+<span id='qrenderer-graphic-Group-property-__storage'>    /**
 </span>     * @private
      * @property __storage
      */
 
     _this.__storage = null;
-<span id='zrender-graphic-Group-property-__dirty'>    /**
+<span id='qrenderer-graphic-Group-property-__dirty'>    /**
 </span>     * @private
      * @property __dirty
      */
 
     _this.__dirty = true;
-<span id='zrender-graphic-Group-property-isGroup'>    /**
+<span id='qrenderer-graphic-Group-property-isGroup'>    /**
 </span>     * @property isGroup
      */
 
     _this.isGroup = true;
-<span id='zrender-graphic-Group-property-type'>    /**
+<span id='qrenderer-graphic-Group-property-type'>    /**
 </span>     * @property {String}
      */
 
     _this.type = &#39;group&#39;;
-<span id='zrender-graphic-Group-property-silent'>    /**
+<span id='qrenderer-graphic-Group-property-silent'>    /**
 </span>     * @property {Boolean} 所有子孙元素是否响应鼠标事件
      */
 
@@ -121,7 +121,7 @@ function (_Element) {
     classUtil.copyOwnProperties(_assertThisInitialized(_this), options);
     return _this;
   }
-<span id='zrender-graphic-Group-method-children'>  /**
+<span id='qrenderer-graphic-Group-method-children'>  /**
 </span>   * @method children
    * @return {Array&lt;Element&gt;}
    */
@@ -132,7 +132,7 @@ function (_Element) {
     value: function children() {
       return this._children.slice();
     }
-<span id='zrender-graphic-Group-method-childAt'>    /**
+<span id='qrenderer-graphic-Group-method-childAt'>    /**
 </span>     * @method childAt
      * 获取指定 index 的儿子节点
      * @param  {Number} idx
@@ -144,7 +144,7 @@ function (_Element) {
     value: function childAt(idx) {
       return this._children[idx];
     }
-<span id='zrender-graphic-Group-method-childOfName'>    /**
+<span id='qrenderer-graphic-Group-method-childOfName'>    /**
 </span>     * @method childOfName
      * 获取指定名字的儿子节点
      * @param  {String} name
@@ -162,7 +162,7 @@ function (_Element) {
         }
       }
     }
-<span id='zrender-graphic-Group-method-childCount'>    /**
+<span id='qrenderer-graphic-Group-method-childCount'>    /**
 </span>     * @method childCount
      * @return {Number}
      */
@@ -172,7 +172,7 @@ function (_Element) {
     value: function childCount() {
       return this._children.length;
     }
-<span id='zrender-graphic-Group-method-add'>    /**
+<span id='qrenderer-graphic-Group-method-add'>    /**
 </span>     * @method add
      * 添加子节点到最后
      * @param {Element} child
@@ -189,7 +189,7 @@ function (_Element) {
 
       return this;
     }
-<span id='zrender-graphic-Group-method-addBefore'>    /**
+<span id='qrenderer-graphic-Group-method-addBefore'>    /**
 </span>     * @method addBefore
      * 添加子节点在 nextSibling 之前
      * @param {Element} child
@@ -212,7 +212,7 @@ function (_Element) {
 
       return this;
     }
-<span id='zrender-graphic-Group-method-_doAdd'>    /**
+<span id='qrenderer-graphic-Group-method-_doAdd'>    /**
 </span>     * @private
      * @method _doAdd
      * @param {*} child 
@@ -228,7 +228,7 @@ function (_Element) {
       child.parent = this; //把子节点的 parent 属性指向自己，在事件冒泡的时候会使用 parent 属性。
 
       var storage = this.__storage;
-      var zr = this.__zr;
+      var qr = this.__qr;
 
       if (storage &amp;&amp; storage !== child.__storage) {
         storage.addToStorage(child);
@@ -238,9 +238,9 @@ function (_Element) {
         }
       }
 
-      zr &amp;&amp; zr.refresh();
+      qr &amp;&amp; qr.refresh();
     }
-<span id='zrender-graphic-Group-method-remove'>    /**
+<span id='qrenderer-graphic-Group-method-remove'>    /**
 </span>     * @method remove
      * 移除子节点
      * @param {Element} child
@@ -249,7 +249,7 @@ function (_Element) {
   }, {
     key: &quot;remove&quot;,
     value: function remove(child) {
-      var zr = this.__zr;
+      var qr = this.__qr;
       var storage = this.__storage;
       var children = this._children;
       var idx = dataUtil.indexOf(children, child);
@@ -269,10 +269,10 @@ function (_Element) {
         }
       }
 
-      zr &amp;&amp; zr.refresh();
+      qr &amp;&amp; qr.refresh();
       return this;
     }
-<span id='zrender-graphic-Group-method-removeAll'>    /**
+<span id='qrenderer-graphic-Group-method-removeAll'>    /**
 </span>     * @method removeAll
      * 移除所有子节点
      */
@@ -302,7 +302,7 @@ function (_Element) {
       children.length = 0;
       return this;
     }
-<span id='zrender-graphic-Group-method-eachChild'>    /**
+<span id='qrenderer-graphic-Group-method-eachChild'>    /**
 </span>     * @method eachChild
      * 遍历所有子节点
      * @param  {Function} cb
@@ -321,7 +321,7 @@ function (_Element) {
 
       return this;
     }
-<span id='zrender-graphic-Group-method-traverse'>    /**
+<span id='qrenderer-graphic-Group-method-traverse'>    /**
 </span>     * @method traverse
      * 深度优先遍历所有子孙节点
      * @param  {Function} cb
@@ -342,7 +342,7 @@ function (_Element) {
 
       return this;
     }
-<span id='zrender-graphic-Group-method-addChildrenToStorage'>    /**
+<span id='qrenderer-graphic-Group-method-addChildrenToStorage'>    /**
 </span>     * @method addChildrenToStorage
      * @param {Storage} storage 
      */
@@ -359,7 +359,7 @@ function (_Element) {
         }
       }
     }
-<span id='zrender-graphic-Group-method-delChildrenFromStorage'>    /**
+<span id='qrenderer-graphic-Group-method-delChildrenFromStorage'>    /**
 </span>     * @method delChildrenFromStorage
      * @param {Storage} storage 
      */
@@ -376,7 +376,7 @@ function (_Element) {
         }
       }
     }
-<span id='zrender-graphic-Group-method-dirty'>    /**
+<span id='qrenderer-graphic-Group-method-dirty'>    /**
 </span>     * @method dirty
      * @return {Group}
      */
@@ -385,10 +385,10 @@ function (_Element) {
     key: &quot;dirty&quot;,
     value: function dirty() {
       this.__dirty = true;
-      this.__zr &amp;&amp; this.__zr.refresh();
+      this.__qr &amp;&amp; this.__qr.refresh();
       return this;
     }
-<span id='zrender-graphic-Group-method-getBoundingRect'>    /**
+<span id='qrenderer-graphic-Group-method-getBoundingRect'>    /**
 </span>     * @method getBoundingRect
      * @return {BoundingRect}
      */

@@ -1,7 +1,7 @@
 import States from './States';
 
 /**
- * @class zrender.graphic.Stateful
+ * @class qrenderer.graphic.Stateful
  * 
  * Stateful mixin for graphic object
  * 

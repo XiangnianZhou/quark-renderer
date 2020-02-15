@@ -7,7 +7,7 @@ import {devicePixelRatio as dpr} from '../config';
 // TODO: getTotalLength, getPointAtLength
 
 /**
- * @class zrender.core.PathProxy
+ * @class qrenderer.core.PathProxy
  * 
  * Path 代理，可以在`buildPath`中用于替代`ctx`, 会保存每个path操作的命令到pathCommands属性中
  * 可以用于 isInsidePath 判断以及获取boundingRect

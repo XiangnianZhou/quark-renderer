@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <title>Use SVG as image source</title>
     <script src="./lib/config.js"></script>
-    <script src="../dist/zrender.js"></script>
+    <script src="../dist/quark-renderer.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
         #img {
@@ -19,11 +19,11 @@
     <div id="main" style="width:1000px;height:800px;"></div>
     <img id="img">
     <script type="text/javascript">
-    var zr = zrender.init(document.getElementById('main'), {
-        renderer: window.__ZRENDER__DEFAULT__RENDERER__ || 'svg'
+    var qr = qrenderer.init(document.getElementById('main'), {
+        renderer: window.__QRENDER__DEFAULT__RENDERER__ || 'svg'
     });
 
-    var rect = new zrender.Rect({
+    var rect = new qrenderer.Rect({
         shape: {
             x: 60,
             y: 60,
@@ -38,9 +38,9 @@
             shadowOffsetY: 10
         }
     });
-    zr.add(rect);
+    qr.add(rect);
 
-    var svgPath = zr.painter.pathToDataUrl();
+    var svgPath = qr.painter.pathToDataUrl();
     console.log(svgPath);
 
     var img = document.getElementById('img');

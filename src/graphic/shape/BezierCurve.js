@@ -4,7 +4,7 @@ import * as curveUtil from '../../core/utils/curveUtil';
 import * as dataUtil from '../../core/utils/dataStructureUtil';
 
 /**
- * @class zrender.graphic.shape.BezierCurve 
+ * @class qrenderer.graphic.shape.BezierCurve 
  * 贝塞尔曲线
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
