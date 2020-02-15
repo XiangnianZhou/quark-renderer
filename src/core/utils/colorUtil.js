@@ -159,7 +159,6 @@ function putToCache(colorStr, rgbaArr) {
  * @param {String} colorStr
  * @param {Array<Number>} out
  * @return {Array<Number>}
- * @memberOf module:zrender/util/color
  */
 export function parse(colorStr, rgbaArr) {
     if (!colorStr) {
@@ -371,7 +370,6 @@ function rgba2hsla(rgba) {
  * @param {String} color
  * @param {Number} level
  * @return {String}
- * @memberOf module:zrender/util/color
  */
 export function lift(color, level) {
     var colorArr = parse(color);
@@ -397,7 +395,6 @@ export function lift(color, level) {
 /**
  * @param {String} color
  * @return {String}
- * @memberOf module:zrender/util/color
  */
 export function toHex(color) {
     var colorArr = parse(color);
@@ -447,7 +444,6 @@ export var fastMapToColor = fastLerp;
  * @param {boolean=} fullOutput Default false.
  * @return {(string|Object)} Result color. If fullOutput,
  *                           return {color: ..., leftIndex: ..., rightIndex: ..., value: ...},
- * @memberOf module:zrender/util/color
  */
 export function lerp(normalizedValue, colors, fullOutput) {
     if (!(colors && colors.length)
@@ -494,7 +490,6 @@ export var mapToColor = lerp;
  * @param {number=} s 0 ~ 1, ignore when null.
  * @param {number=} l 0 ~ 1, ignore when null.
  * @return {String} Color string in rgba format.
- * @memberOf module:zrender/util/color
  */
 export function modifyHSL(color, h, s, l) {
     color = parse(color);
@@ -513,7 +508,6 @@ export function modifyHSL(color, h, s, l) {
  * @param {String} color
  * @param {number=} alpha 0 ~ 1
  * @return {String} Color string in rgba format.
- * @memberOf module:zrender/util/color
  */
 export function modifyAlpha(color, alpha) {
     color = parse(color);

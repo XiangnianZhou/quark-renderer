@@ -18,7 +18,7 @@ import {
 
 /**
  * 贝塞尔平滑曲线
- * @alias module:zrender/shape/util/smoothBezier
+ * @alias smoothBezier
  * @param {Array} points 线段顶点数组
  * @param {Number} smooth 平滑等级, 0-1
  * @param {boolean} isLoop

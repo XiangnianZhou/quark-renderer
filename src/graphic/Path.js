@@ -44,7 +44,7 @@ class Path extends Displayable{
     
         /**
          * @property {Boolean} subPixelOptimize
-         * See `module:zrender/src/graphic/helper/subPixelOptimize`.
+         * See `subPixelOptimize`.
          */
         this.subPixelOptimize=false;
 

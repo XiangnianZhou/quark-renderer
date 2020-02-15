@@ -7,11 +7,10 @@ import * as classUtil from '../core/utils/classUtil';
 /**
  * @class zrender.graphic.Element
  * 
- * Root class, everything visable in ZRender is subclass of Element. 
+ * Root class, everything in ZRender is an Element. 
  * This is an abstract class, please don't creat an instance directly.
  * 
- * 根类，ZRender 中所有可见的对象都是 Element 的子类。这是一个抽象类，请不要
- * 直接 new 这个类的实例。
+ * 根类，ZRender 中所有对象都是 Element 的子类。这是一个抽象类，请不要直接创建这个类的实例。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
@@ -25,13 +24,9 @@ class Element{
          * @property options 配置项
          */
         this.options=options;
-
-        classUtil.inheritProperties(this,Transformable,this.options);
-        classUtil.inheritProperties(this,Eventful,this.options);
-        classUtil.inheritProperties(this,Animatable,this.options);
     
         /**
-         * @property {String}
+         * @property {String} id
          */
         this.id = this.options.id || guid();
 
@@ -73,15 +68,21 @@ class Element{
     
         /**
          * @property {Boolean} ignore
-         * If ignore drawing and events of the element object
-         * 图形是否忽略，为true时忽略图形的绘制以及事件触发
+         * 
+         * Whether ignore drawing and events of this object.
+         * 
+         * 为 true 时忽略图形的绘制以及事件触发
          */
         this.ignore=false;
     
         /**
          * @property {Path} clipPath
-         * 用于裁剪的路径(shape)，所有 Group 内的路径在绘制时都会被这个路径裁剪
-         * 该路径会继承被裁减对象的变换
+         * 
+         * This is used for clipping path, all the paths inside Group will be clipped by this path, 
+         * which will inherit the transformation of the clipped object.
+         * 
+         * 用于裁剪的路径，所有 Group 内的路径在绘制时都会被这个路径裁剪，该路径会继承被裁减对象的变换。
+         * 
          * @readOnly
          * @see http://www.w3.org/TR/2dcontext/#clipping-region
          */
@@ -89,17 +90,26 @@ class Element{
     
         /**
          * @property {Boolean} isGroup
+         * 
+         * Whether this object is a Group.
+         * 
          * 是否是 Group
          */
         this.isGroup=false;
 
+        classUtil.inheritProperties(this,Transformable,this.options);
+        classUtil.inheritProperties(this,Eventful,this.options);
+        classUtil.inheritProperties(this,Animatable,this.options);
         classUtil.copyOwnProperties(this,this.options);
     }
 
     /**
      * @method
+     * 
      * Drift element
-     * 移动图元
+     * 
+     * 移动元素
+     * 
      * @param  {Number} dx dx on the global space
      * @param  {Number} dy dy on the global space
      */
@@ -126,17 +136,19 @@ class Element{
 
     /**
      * @property {Function} beforeUpdate
-     * Hook before update
      * 
-     * 刷新之前回调
+     * Hook before update.
+     * 
+     * 刷新之前回调。
      */
     beforeUpdate() {}
 
     /**
      * @property {Function} update
-     * Update each frame
      * 
-     * 刷新每一帧回调
+     * Update each frame.
+     * 
+     * 刷新，每一帧回调。
      */
     update() {
         this.updateTransform();
@@ -144,9 +156,10 @@ class Element{
 
     /**
      * @property {Function} afterUpdate
-     * Hook after update
      * 
-     * 刷新之后回调
+     * Hook after update.
+     * 
+     * 刷新之后回调。
      */
     afterUpdate() {}
     
@@ -181,7 +194,10 @@ class Element{
 
     /**
      * @method hide
-     * Hide the element
+     * 
+     * Hide the element.
+     * 
+     * 隐藏元素。
      */
     hide() {
         this.ignore = true;
@@ -190,7 +206,10 @@ class Element{
 
     /**
      * @method show
-     * Show the element
+     * 
+     * Show the element.
+     * 
+     * 显示元素。
      */
     show() {
         this.ignore = false;
@@ -199,7 +218,11 @@ class Element{
 
     /**
      * @method attr
+     * 
+     * Modify attribute.
+     * 
      * 修改对象上的属性。
+     * 
      * @param {String|Object} key
      * @param {*} value
      */
@@ -219,6 +242,11 @@ class Element{
 
     /**
      * @method setClipPath
+     * 
+     * Set the clip path.
+     * 
+     * 设置剪裁路径。
+     * 
      * @param {Path} clipPath
      */
     setClipPath(clipPath) {
@@ -244,6 +272,11 @@ class Element{
 
     /**
      * @method removeClipPath
+     * 
+     * Remove the clip path.
+     * 
+     * 删除剪裁路径。
+     * 
      */
     removeClipPath() {
         let clipPath = this.clipPath;
@@ -263,7 +296,10 @@ class Element{
     /**
      * @protected
      * @method dirty
-     * Mark displayable element dirty and refresh next frame
+     * 
+     * Mark displayable element dirty and refresh next frame.
+     * 
+     * 把元素标记成脏的，在下一帧中刷新。
      */
     dirty() {
         this.__dirty = this.__dirtyText = true;
@@ -275,6 +311,10 @@ class Element{
      * @method addSelfToZr
      * Add self to zrender instance.
      * Not recursively because it will be invoked when element added to storage.
+     * 
+     * 把当前对象添加到 zrender 实例中去。
+     * 不会递归添加，因为当元素被添加到 storage 中的时候会执行递归操作。
+     * 
      * @param {ZRender} zr
      */
     addSelfToZr(zr) {
@@ -295,7 +335,9 @@ class Element{
     /**
      * @method removeSelfFromZr
      * Remove self from zrender instance.
-     * Not recursively because it will be invoked when element added to storage.
+     * 
+     * 把当前对象从 zrender 实例中删除。
+     * 
      * @param {ZRender} zr
      */
     removeSelfFromZr(zr) {

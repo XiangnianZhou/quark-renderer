@@ -14,7 +14,6 @@ export {default as Image} from './graphic/Image';
 export {default as CompoundPath} from './graphic/CompoundPath';
 export {default as Text} from './graphic/Text';
 export {default as IncrementalDisplayable} from './graphic/IncrementalDisplayable';
-
 export {default as Arc} from './graphic/shape/Arc';
 export {default as BezierCurve} from './graphic/shape/BezierCurve';
 export {default as Circle} from './graphic/shape/Circle';
@@ -31,16 +30,13 @@ export {default as Rose} from './graphic/shape/Rose';
 export {default as Sector} from './graphic/shape/Sector';
 export {default as Star} from './graphic/shape/Star';
 export {default as Trochoid} from './graphic/shape/Trochoid';
-
 export {default as LinearGradient} from './graphic/gradient/LinearGradient';
 export {default as RadialGradient} from './graphic/gradient/RadialGradient';
 export {default as Pattern} from './graphic/Pattern';
 export {default as BoundingRect} from './core/BoundingRect';
-
 export {matrix};
 export {vector};
 export {colorTool as color};
 export {pathTool as path};
 export {zrUtil as util};
-
 export {parseSVG};

@@ -8,12 +8,12 @@
 var LinkedList = function () {
 
     /**
-     * @property {module:zrender/core/LRU~Entry}
+     * @property {LRU~Entry}
      */
     this.head = null;
 
     /**
-     * @property {module:zrender/core/LRU~Entry}
+     * @property {LRU~Entry}
      */
     this.tail = null;
 
@@ -24,7 +24,7 @@ var linkedListProto = LinkedList.prototype;
 /**
  * Insert a new value at the tail
  * @param  {} val
- * @return {module:zrender/core/LRU~Entry}
+ * @return {LRU~Entry}
  */
 linkedListProto.insert = function (val) {
     var entry = new Entry(val);
@@ -34,7 +34,7 @@ linkedListProto.insert = function (val) {
 
 /**
  * Insert an entry at the tail
- * @param  {module:zrender/core/LRU~Entry} entry
+ * @param  {LRU~Entry} entry
  */
 linkedListProto.insertEntry = function (entry) {
     if (!this.head) {
@@ -51,7 +51,7 @@ linkedListProto.insertEntry = function (entry) {
 
 /**
  * Remove entry.
- * @param  {module:zrender/core/LRU~Entry} entry
+ * @param  {LRU~Entry} entry
  */
 linkedListProto.remove = function (entry) {
     var prev = entry.prev;
@@ -100,12 +100,12 @@ var Entry = function (val) {
     this.value = val;
 
     /**
-     * @property {module:zrender/core/LRU~Entry}
+     * @property {LRU~Entry}
      */
     this.next;
 
     /**
-     * @property {module:zrender/core/LRU~Entry}
+     * @property {LRU~Entry}
      */
     this.prev;
 };
@@ -113,7 +113,7 @@ var Entry = function (val) {
 /**
  * LRU Cache
  * @constructor
- * @alias module:zrender/core/LRU
+ * @alias LRU
  */
 var LRU = function (maxSize) {
 

@@ -23,7 +23,7 @@ export function findExistImage(newImageOrSrc) {
  *
  * @param {string|HTMLImageElement|HTMLCanvasElement|Canvas} newImageOrSrc
  * @param {HTMLImageElement|HTMLCanvasElement|Canvas} image Existent image.
- * @param {module:zrender/Element} [hostEl] For calling `dirty`.
+ * @param {Element} [hostEl] For calling `dirty`.
  * @param {Function} [cb] params: (image, cbPayload)
  * @param {Object} [cbPayload] Payload on cb calling.
  * @return {HTMLImageElement|HTMLCanvasElement|Canvas} image

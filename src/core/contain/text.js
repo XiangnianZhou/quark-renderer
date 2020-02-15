@@ -144,7 +144,7 @@ export function adjustTextY(y, height, textVerticalAlign) {
  * Follow same interface to `Displayable.prototype.calculateTextPosition`.
  * @public
  * @param {Obejct} [out] Prepared out object. If not input, auto created in the method.
- * @param {module:zrender/graphic/Style} style where `textPosition` and `textDistance` are visited.
+ * @param {Style} style where `textPosition` and `textDistance` are visited.
  * @param {Object} rect {x, y, width, height} Rect of the host elment, according to which the text positioned.
  * @return {Object} The input `out`. Set: {x, y, textAlign, textVerticalAlign}
  */

@@ -1,7 +1,6 @@
 /**
  * 构造类继承关系
  *
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Function} clazz 源类
  * @param {Function} baseClazz 基类
  */
@@ -22,7 +21,6 @@ export function inherits(clazz, baseClazz) {
 
 /**
  * 这里的 mixin 只拷贝 prototype 上的属性。
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Object|Function} target
  * @param {Object|Function} sorce
  * @param {boolean} overlay
@@ -58,7 +56,6 @@ export function inheritProperties(subInstance,SuperClass,opts){
  * @param {*} target
  * @param {*} source
  * @param {boolean} [overlay=false]
- * @memberOf module:zrender/core/dataStructureUtil
  */
 export function defaults(target, source, overlay) {
     for (var key in source) {

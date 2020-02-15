@@ -303,7 +303,6 @@ function clone(source) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} target
  * @param {*} source
  * @param {boolean} [overwrite=false]
@@ -361,7 +360,6 @@ function mergeAll(targetAndSources, overwrite) {
 /**
  * @param {*} target
  * @param {*} source
- * @memberOf module:zrender/core/dataStructureUtil
  */
 function extend(target, source) {
     for (var key in source) {
@@ -394,7 +392,6 @@ function getContext() {
 
 /**
  * 查询数组中元素的index
- * @memberOf module:zrender/core/dataStructureUtil
  */
 function indexOf(array, value) {
     if (array) {
@@ -426,7 +423,6 @@ function isArrayLike(data) {
 
 /**
  * 数组或对象遍历
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Object|Array} obj
  * @param {Function} cb
  * @param {*} [context]
@@ -454,7 +450,6 @@ function each(obj, cb, context) {
 
 /**
  * 数组映射
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Array} obj
  * @param {Function} cb
  * @param {*} [context]
@@ -477,7 +472,6 @@ function map(obj, cb, context) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Array} obj
  * @param {Function} cb
  * @param {Object} [memo]
@@ -501,7 +495,6 @@ function reduce(obj, cb, memo, context) {
 
 /**
  * 数组过滤
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Array} obj
  * @param {Function} cb
  * @param {*} [context]
@@ -527,7 +520,6 @@ function filter(obj, cb, context) {
 
 /**
  * 数组项查找
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Array} obj
  * @param {Function} cb
  * @param {*} [context]
@@ -545,7 +537,6 @@ function find(obj, cb, context) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Function} func
  * @param {*} context
  * @return {Function}
@@ -558,7 +549,6 @@ function bind(func, context) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Function} func
  * @return {Function}
  */
@@ -570,7 +560,6 @@ function curry(func) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -579,7 +568,6 @@ function isArray(value) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -588,7 +576,6 @@ function isFunction(value) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -601,7 +588,6 @@ function isNumeric(n) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -613,7 +599,6 @@ function isObject(value) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -622,7 +607,6 @@ function isBuiltInObject(value) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -631,7 +615,6 @@ function isTypedArray(value) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {*} value
  * @return {boolean}
  */
@@ -654,7 +637,6 @@ function eqNaN(value) {
 /**
  * If value1 is not null, then return value1, otherwise judget rest of values.
  * Low performance.
- * @memberOf module:zrender/core/dataStructureUtil
  * @return {*} Final value
  */
 function retrieve(values) {
@@ -680,7 +662,6 @@ function retrieve3(value0, value1, value2) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Array} arr
  * @param {Number} startIndex
  * @param {Number} endIndex
@@ -716,7 +697,6 @@ function normalizeCssArray(val) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {boolean} condition
  * @param {String} message
  */
@@ -727,7 +707,6 @@ function assert(condition, message) {
 }
 
 /**
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {String} str string to be trimed
  * @return {String} trimed string
  */
@@ -1088,7 +1067,6 @@ var dataStructureUtil = (Object.freeze || Object)({
 /**
  * 构造类继承关系
  *
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Function} clazz 源类
  * @param {Function} baseClazz 基类
  */
@@ -1109,7 +1087,6 @@ function inherits(clazz, baseClazz) {
 
 /**
  * 这里的 mixin 只拷贝 prototype 上的属性。
- * @memberOf module:zrender/core/dataStructureUtil
  * @param {Object|Function} target
  * @param {Object|Function} sorce
  * @param {boolean} overlay
@@ -1145,7 +1122,6 @@ function inheritProperties(subInstance,SuperClass,opts){
  * @param {*} target
  * @param {*} source
  * @param {boolean} [overlay=false]
- * @memberOf module:zrender/core/dataStructureUtil
  */
 function defaults(target, source, overlay) {
     for (var key in source) {
@@ -3898,12 +3874,12 @@ class Timeline{
 var LinkedList = function () {
 
     /**
-     * @property {module:zrender/core/LRU~Entry}
+     * @property {LRU~Entry}
      */
     this.head = null;
 
     /**
-     * @property {module:zrender/core/LRU~Entry}
+     * @property {LRU~Entry}
      */
     this.tail = null;
 
@@ -3914,7 +3890,7 @@ var linkedListProto = LinkedList.prototype;
 /**
  * Insert a new value at the tail
  * @param  {} val
- * @return {module:zrender/core/LRU~Entry}
+ * @return {LRU~Entry}
  */
 linkedListProto.insert = function (val) {
     var entry = new Entry(val);
@@ -3924,7 +3900,7 @@ linkedListProto.insert = function (val) {
 
 /**
  * Insert an entry at the tail
- * @param  {module:zrender/core/LRU~Entry} entry
+ * @param  {LRU~Entry} entry
  */
 linkedListProto.insertEntry = function (entry) {
     if (!this.head) {
@@ -3941,7 +3917,7 @@ linkedListProto.insertEntry = function (entry) {
 
 /**
  * Remove entry.
- * @param  {module:zrender/core/LRU~Entry} entry
+ * @param  {LRU~Entry} entry
  */
 linkedListProto.remove = function (entry) {
     var prev = entry.prev;
@@ -3990,12 +3966,12 @@ var Entry = function (val) {
     this.value = val;
 
     /**
-     * @property {module:zrender/core/LRU~Entry}
+     * @property {LRU~Entry}
      */
     this.next;
 
     /**
-     * @property {module:zrender/core/LRU~Entry}
+     * @property {LRU~Entry}
      */
     this.prev;
 };
@@ -4003,7 +3979,7 @@ var Entry = function (val) {
 /**
  * LRU Cache
  * @constructor
- * @alias module:zrender/core/LRU
+ * @alias LRU
  */
 var LRU = function (maxSize) {
 
@@ -4241,7 +4217,6 @@ function putToCache(colorStr, rgbaArr) {
  * @param {String} colorStr
  * @param {Array<Number>} out
  * @return {Array<Number>}
- * @memberOf module:zrender/util/color
  */
 function parse(colorStr, rgbaArr) {
     if (!colorStr) {
@@ -4453,7 +4428,6 @@ function rgba2hsla(rgba) {
  * @param {String} color
  * @param {Number} level
  * @return {String}
- * @memberOf module:zrender/util/color
  */
 function lift(color, level) {
     var colorArr = parse(color);
@@ -4479,7 +4453,6 @@ function lift(color, level) {
 /**
  * @param {String} color
  * @return {String}
- * @memberOf module:zrender/util/color
  */
 function toHex(color) {
     var colorArr = parse(color);
@@ -4529,7 +4502,6 @@ var fastMapToColor = fastLerp;
  * @param {boolean=} fullOutput Default false.
  * @return {(string|Object)} Result color. If fullOutput,
  *                           return {color: ..., leftIndex: ..., rightIndex: ..., value: ...},
- * @memberOf module:zrender/util/color
  */
 function lerp$1(normalizedValue, colors, fullOutput) {
     if (!(colors && colors.length)
@@ -4576,7 +4548,6 @@ var mapToColor = lerp$1;
  * @param {number=} s 0 ~ 1, ignore when null.
  * @param {number=} l 0 ~ 1, ignore when null.
  * @return {String} Color string in rgba format.
- * @memberOf module:zrender/util/color
  */
 function modifyHSL(color, h, s, l) {
     color = parse(color);
@@ -4595,7 +4566,6 @@ function modifyHSL(color, h, s, l) {
  * @param {String} color
  * @param {number=} alpha 0 ~ 1
  * @return {String} Color string in rgba format.
- * @memberOf module:zrender/util/color
  */
 function modifyAlpha(color, alpha) {
     color = parse(color);
@@ -5515,11 +5485,10 @@ function setAttrByPath(el, path, prop, value) {
 /**
  * @class zrender.graphic.Element
  * 
- * Root class, everything visable in ZRender is subclass of Element. 
+ * Root class, everything in ZRender is an Element. 
  * This is an abstract class, please don't creat an instance directly.
  * 
- * 根类，ZRender 中所有可见的对象都是 Element 的子类。这是一个抽象类，请不要
- * 直接 new 这个类的实例。
+ * 根类，ZRender 中所有对象都是 Element 的子类。这是一个抽象类，请不要直接创建这个类的实例。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
@@ -5533,13 +5502,9 @@ class Element{
          * @property options 配置项
          */
         this.options=options;
-
-        inheritProperties(this,Transformable,this.options);
-        inheritProperties(this,Eventful,this.options);
-        inheritProperties(this,Animatable,this.options);
     
         /**
-         * @property {String}
+         * @property {String} id
          */
         this.id = this.options.id || guid();
 
@@ -5581,15 +5546,21 @@ class Element{
     
         /**
          * @property {Boolean} ignore
-         * If ignore drawing and events of the element object
-         * 图形是否忽略，为true时忽略图形的绘制以及事件触发
+         * 
+         * Whether ignore drawing and events of this object.
+         * 
+         * 为 true 时忽略图形的绘制以及事件触发
          */
         this.ignore=false;
     
         /**
          * @property {Path} clipPath
-         * 用于裁剪的路径(shape)，所有 Group 内的路径在绘制时都会被这个路径裁剪
-         * 该路径会继承被裁减对象的变换
+         * 
+         * This is used for clipping path, all the paths inside Group will be clipped by this path, 
+         * which will inherit the transformation of the clipped object.
+         * 
+         * 用于裁剪的路径，所有 Group 内的路径在绘制时都会被这个路径裁剪，该路径会继承被裁减对象的变换。
+         * 
          * @readOnly
          * @see http://www.w3.org/TR/2dcontext/#clipping-region
          */
@@ -5597,17 +5568,26 @@ class Element{
     
         /**
          * @property {Boolean} isGroup
+         * 
+         * Whether this object is a Group.
+         * 
          * 是否是 Group
          */
         this.isGroup=false;
 
+        inheritProperties(this,Transformable,this.options);
+        inheritProperties(this,Eventful,this.options);
+        inheritProperties(this,Animatable,this.options);
         copyOwnProperties(this,this.options);
     }
 
     /**
      * @method
+     * 
      * Drift element
-     * 移动图元
+     * 
+     * 移动元素
+     * 
      * @param  {Number} dx dx on the global space
      * @param  {Number} dy dy on the global space
      */
@@ -5634,17 +5614,19 @@ class Element{
 
     /**
      * @property {Function} beforeUpdate
-     * Hook before update
      * 
-     * 刷新之前回调
+     * Hook before update.
+     * 
+     * 刷新之前回调。
      */
     beforeUpdate() {}
 
     /**
      * @property {Function} update
-     * Update each frame
      * 
-     * 刷新每一帧回调
+     * Update each frame.
+     * 
+     * 刷新，每一帧回调。
      */
     update() {
         this.updateTransform();
@@ -5652,9 +5634,10 @@ class Element{
 
     /**
      * @property {Function} afterUpdate
-     * Hook after update
      * 
-     * 刷新之后回调
+     * Hook after update.
+     * 
+     * 刷新之后回调。
      */
     afterUpdate() {}
     
@@ -5689,7 +5672,10 @@ class Element{
 
     /**
      * @method hide
-     * Hide the element
+     * 
+     * Hide the element.
+     * 
+     * 隐藏元素。
      */
     hide() {
         this.ignore = true;
@@ -5698,7 +5684,10 @@ class Element{
 
     /**
      * @method show
-     * Show the element
+     * 
+     * Show the element.
+     * 
+     * 显示元素。
      */
     show() {
         this.ignore = false;
@@ -5707,7 +5696,11 @@ class Element{
 
     /**
      * @method attr
+     * 
+     * Modify attribute.
+     * 
      * 修改对象上的属性。
+     * 
      * @param {String|Object} key
      * @param {*} value
      */
@@ -5727,6 +5720,11 @@ class Element{
 
     /**
      * @method setClipPath
+     * 
+     * Set the clip path.
+     * 
+     * 设置剪裁路径。
+     * 
      * @param {Path} clipPath
      */
     setClipPath(clipPath) {
@@ -5752,6 +5750,11 @@ class Element{
 
     /**
      * @method removeClipPath
+     * 
+     * Remove the clip path.
+     * 
+     * 删除剪裁路径。
+     * 
      */
     removeClipPath() {
         let clipPath = this.clipPath;
@@ -5771,7 +5774,10 @@ class Element{
     /**
      * @protected
      * @method dirty
-     * Mark displayable element dirty and refresh next frame
+     * 
+     * Mark displayable element dirty and refresh next frame.
+     * 
+     * 把元素标记成脏的，在下一帧中刷新。
      */
     dirty() {
         this.__dirty = this.__dirtyText = true;
@@ -5783,6 +5789,10 @@ class Element{
      * @method addSelfToZr
      * Add self to zrender instance.
      * Not recursively because it will be invoked when element added to storage.
+     * 
+     * 把当前对象添加到 zrender 实例中去。
+     * 不会递归添加，因为当元素被添加到 storage 中的时候会执行递归操作。
+     * 
      * @param {ZRender} zr
      */
     addSelfToZr(zr) {
@@ -5803,7 +5813,9 @@ class Element{
     /**
      * @method removeSelfFromZr
      * Remove self from zrender instance.
-     * Not recursively because it will be invoked when element added to storage.
+     * 
+     * 把当前对象从 zrender 实例中删除。
+     * 
      * @param {ZRender} zr
      */
     removeSelfFromZr(zr) {
@@ -8136,7 +8148,7 @@ function findExistImage(newImageOrSrc) {
  *
  * @param {string|HTMLImageElement|HTMLCanvasElement|Canvas} newImageOrSrc
  * @param {HTMLImageElement|HTMLCanvasElement|Canvas} image Existent image.
- * @param {module:zrender/Element} [hostEl] For calling `dirty`.
+ * @param {Element} [hostEl] For calling `dirty`.
  * @param {Function} [cb] params: (image, cbPayload)
  * @param {Object} [cbPayload] Payload on cb calling.
  * @return {HTMLImageElement|HTMLCanvasElement|Canvas} image
@@ -8338,7 +8350,7 @@ function adjustTextY(y, height, textVerticalAlign) {
  * Follow same interface to `Displayable.prototype.calculateTextPosition`.
  * @public
  * @param {Obejct} [out] Prepared out object. If not input, auto created in the method.
- * @param {module:zrender/graphic/Style} style where `textPosition` and `textDistance` are visited.
+ * @param {Style} style where `textPosition` and `textDistance` are visited.
  * @param {Object} rect {x, y, width, height} Rect of the host elment, according to which the text positioned.
  * @return {Object} The input `out`. Set: {x, y, textAlign, textVerticalAlign}
  */
@@ -9003,8 +9015,8 @@ var _tmpTextPositionResult = {};
 var _tmpBoxPositionResult = {};
 
 /**
- * @param {module:zrender/graphic/Style} style
- * @return {module:zrender/graphic/Style} The input style.
+ * @param {Style} style
+ * @return {Style} The input style.
  */
 function normalizeTextStyle(style) {
     normalizeStyle(style);
@@ -9040,10 +9052,10 @@ function normalizeStyle(style) {
 /**
  * @param {CanvasRenderingContext2D} ctx
  * @param {String} text
- * @param {module:zrender/graphic/Style} style
+ * @param {Style} style
  * @param {Object|boolean} [rect] {x, y, width, height}
  *                  If set false, rect text is not used.
- * @param {Element|module:zrender/graphic/helper/constant.WILL_BE_RESTORED} [prevEl] For ctx prop cache.
+ * @param {Element|helper/constant.WILL_BE_RESTORED} [prevEl] For ctx prop cache.
  */
 function renderText(hostEl, ctx, text, style, rect, prevEl) {
     style.rich
@@ -9555,7 +9567,7 @@ function getTextXForPadding(x, textAlign, textPadding) {
 
 /**
  * @param {String} text
- * @param {module:zrender/Style} style
+ * @param {Style} style
  * @return {boolean}
  */
 function needDrawText(text, style) {
@@ -11935,7 +11947,7 @@ function init(dom, opts) {
 /**
  * TODO: 不要export这个全局函数看起来也没有问题。
  * Dispose zrender instance
- * @param {module:zrender/ZRender} zr
+ * @param {ZRender} zr
  */
 function dispose(zr) {
     if (zr) {
@@ -11956,7 +11968,7 @@ function dispose(zr) {
 /**
  * Get zrender instance by id
  * @param {String} id zrender instance id
- * @return {module:zrender/ZRender}
+ * @return {ZRender}
  */
 function getInstance(id) {
     return instances[id];
@@ -11977,123 +11989,120 @@ function registerPainter(name, PainterClass) {
  * @param {Number} [opts.height] Can be 'auto' (the same as null/undefined)
  * @return {ZRender}
  */
-let ZRender = function (id, dom, opts) {
+class ZRender{
+    constructor(id, dom, opts){
+        opts = opts || {};
 
-    opts = opts || {};
-
-    /**
-     * @property {HTMLDomElement}
-     */
-    this.dom = dom;
-
-    /**
-     * @property {String}
-     */
-    this.id = id;
-
-    let self = this;
-
-    /**
-     * @property {Storage}
-     */
-    let storage = new Storage();
-
-    let rendererType = opts.renderer;
-    // TODO WebGL
-    // TODO: remove vml
-    if (useVML) {
-        if (!painterMap.vml) {
-            throw new Error('You need to require \'zrender/vml/vml\' to support IE8');
+        /**
+         * @property {HTMLDomElement}
+         */
+        this.dom = dom;
+    
+        /**
+         * @property {String}
+         */
+        this.id = id;
+    
+        let self = this;
+    
+        /**
+         * @property {Storage}
+         */
+        let storage = new Storage();
+    
+        let rendererType = opts.renderer;
+        // TODO WebGL
+        // TODO: remove vml
+        if (useVML) {
+            if (!painterMap.vml) {
+                throw new Error('You need to require \'zrender/vml/vml\' to support IE8');
+            }
+            rendererType = 'vml';
+        }else if (!rendererType || !painterMap[rendererType]) {
+            rendererType = 'canvas';
         }
-        rendererType = 'vml';
-    }else if (!rendererType || !painterMap[rendererType]) {
-        rendererType = 'canvas';
+        let painter = new painterMap[rendererType](dom, storage, opts, id);
+    
+        this.storage = storage;
+        this.painter = painter;
+    
+        //把DOM事件代理出来
+        let handerProxy = (!env$1.node && !env$1.worker) ? new DomEventProxy(painter.getViewportRoot()) : null;
+        //ZRender 自己封装的事件机制
+        this.eventHandler = new ZRenderEventHandler(storage, painter, handerProxy, painter.root);
+    
+        /**
+         * @property {GlobalAnimationMgr}
+         * 利用 GlobalAnimationMgr 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
+         * FROM MDN：
+         * The window.requestAnimationFrame() method tells the browser that you wish 
+         * to perform an animation and requests that the browser calls a specified 
+         * function to update an animation before the next repaint. The method takes 
+         * a callback as an argument to be invoked before the repaint.
+         * 
+         * https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
+         * 
+         * NOTE: 这里有潜在的性能限制，由于 requestAnimationFrame 方法每秒回调60次，每次执行时间约 16ms
+         * 如果在 16ms 的时间内无法渲染完一帧画面，会出现卡顿。也就是说，ZRender 引擎在同一张 canvas 上
+         * 能够渲染的图形元素数量有上限。本机在 Chrome 浏览器中 Benchmark 的结果大约为 100 万个矩形会出现
+         * 明显的卡顿。
+         */
+        this.globalAnimationMgr = new GlobalAnimationMgr();
+        this.globalAnimationMgr.on("frame",function(){
+            self.flush();
+        });
+        this.globalAnimationMgr.start();
+    
+        /**
+         * @property {boolean}
+         * @private
+         */
+        this._needsRefresh;
+    
+        // 修改 storage.delFromStorage, 每次删除元素之前删除动画
+        // FIXME 有点ugly
+        let oldDelFromStorage = storage.delFromStorage;
+        let oldAddToStorage = storage.addToStorage;
+    
+        storage.delFromStorage = function (el) {
+            oldDelFromStorage.call(storage, el);
+            el && el.removeSelfFromZr(self);
+        };
+    
+        storage.addToStorage = function (el) {
+            oldAddToStorage.call(storage, el);
+            el.addSelfToZr(self);
+        };    
     }
-    let painter = new painterMap[rendererType](dom, storage, opts, id);
 
-    this.storage = storage;
-    this.painter = painter;
-
-    //把DOM事件代理出来
-    let handerProxy = (!env$1.node && !env$1.worker) ? new DomEventProxy(painter.getViewportRoot()) : null;
-    //ZRender 自己封装的事件机制
-    this.eventHandler = new ZRenderEventHandler(storage, painter, handerProxy, painter.root);
-
-    /**
-     * @property {GlobalAnimationMgr}
-     * 利用 GlobalAnimationMgr 动画的 frame 事件渲染下一张画面，ZRender 依赖此机制来刷新 canvas 画布。
-     * FROM MDN：
-     * The window.requestAnimationFrame() method tells the browser that you wish 
-     * to perform an animation and requests that the browser calls a specified 
-     * function to update an animation before the next repaint. The method takes 
-     * a callback as an argument to be invoked before the repaint.
-     * 
-     * https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
-     * 
-     * NOTE: 这里有潜在的性能限制，由于 requestAnimationFrame 方法每秒回调60次，每次执行时间约 16ms
-     * 如果在 16ms 的时间内无法渲染完一帧画面，会出现卡顿。也就是说，ZRender 引擎在同一张 canvas 上
-     * 能够渲染的图形元素数量有上限。本机在 Chrome 浏览器中 Benchmark 的结果大约为 100 万个矩形会出现
-     * 明显的卡顿。
-     */
-    this.globalAnimationMgr = new GlobalAnimationMgr();
-    this.globalAnimationMgr.on("frame",function(){
-        self.flush();
-    });
-    this.globalAnimationMgr.start();
-
-    /**
-     * @property {boolean}
-     * @private
-     */
-    this._needsRefresh;
-
-    // 修改 storage.delFromStorage, 每次删除元素之前删除动画
-    // FIXME 有点ugly
-    let oldDelFromStorage = storage.delFromStorage;
-    let oldAddToStorage = storage.addToStorage;
-
-    storage.delFromStorage = function (el) {
-        oldDelFromStorage.call(storage, el);
-        el && el.removeSelfFromZr(self);
-    };
-
-    storage.addToStorage = function (el) {
-        oldAddToStorage.call(storage, el);
-        el.addSelfToZr(self);
-    };
-};
-
-ZRender.prototype = {
-
-    constructor: ZRender,
     /**
      * @method
      * 获取实例唯一标识
      * @return {String}
      */
-    getId: function () {
+    getId() {
         return this.id;
-    },
+    }
 
     /**
      * @method
      * 添加元素
      * @param  {zrender/Element} el
      */
-    add: function (el) {
+    add(el) {
         this.storage.addRoot(el);
         this._needsRefresh = true;
-    },
+    }
 
     /**
      * @method
      * 删除元素
      * @param  {zrender/Element} el
      */
-    remove: function (el) {
+    remove(el) {
         this.storage.delRoot(el);
         this._needsRefresh = true;
-    },
+    }
 
     /**
      * @private
@@ -12105,31 +12114,31 @@ ZRender.prototype = {
      * @param {String} [config.motionBlur=false] If enable motion blur
      * @param {Number} [config.lastFrameAlpha=0.7] Motion blur factor. Larger value cause longer trailer
     */
-    configLayer: function (zLevel, config) {
+    configLayer(zLevel, config) {
         if (this.painter.configLayer) {
             this.painter.configLayer(zLevel, config);
         }
         this._needsRefresh = true;
-    },
+    }
 
     /**
      * @method
      * Set background color
      * @param {String} backgroundColor
      */
-    setBackgroundColor: function (backgroundColor) {
+    setBackgroundColor(backgroundColor) {
         if (this.painter.setBackgroundColor) {
             this.painter.setBackgroundColor(backgroundColor);
         }
         this._needsRefresh = true;
-    },
+    }
 
     /**
      * @private
      * @method
      * Repaint the canvas immediately
      */
-    refreshImmediately: function () {
+    refreshImmediately() {
         // let start = new Date();
         // Clear needsRefresh ahead to avoid something wrong happens in refresh
         // Or it will cause zrender refreshes again and again.
@@ -12143,15 +12152,15 @@ ZRender.prototype = {
         // if (log) {
         //     log.innerHTML = log.innerHTML + '<br>' + (end - start);
         // }
-    },
+    }
 
     /**
      * @method
      * Mark and repaint the canvas in the next frame of browser
      */
-    refresh: function () {
+    refresh() {
         this._needsRefresh = true;
-    },
+    }
 
     /**
      * @private
@@ -12159,7 +12168,7 @@ ZRender.prototype = {
      * Perform all refresh
      * 刷新 canvas 画面，此方法会在 window.requestAnimationFrame 方法中被不断调用。
      */
-    flush: function () {
+    flush() {
         let triggerRendered;
 
         if (this._needsRefresh) {      //是否需要全部重绘
@@ -12172,7 +12181,7 @@ ZRender.prototype = {
         }
 
         triggerRendered && this.trigger('rendered');
-    },
+    }
 
     /**
      * @private
@@ -12183,29 +12192,29 @@ ZRender.prototype = {
      * 把这里的 API 单词重构成 Mask。
      * 
      * Add element to hover layer
-     * @param  {module:zrender/Element} el
+     * @param  {Element} el
      * @param {Object} style
      */
-    addHover: function (el, style) {
+    addHover(el, style) {
         if (this.painter.addHover) {
             let elMirror = this.painter.addHover(el, style);
             this.refreshHover();
             return elMirror;
         }
-    },
+    }
 
     /**
      * @private
      * @method
      * Remove element from hover layer
-     * @param  {module:zrender/Element} el
+     * @param  {Element} el
      */
-    removeHover: function (el) {
+    removeHover(el) {
         if (this.painter.removeHover) {
             this.painter.removeHover(el);
             this.refreshHover();
         }
-    },
+    }
 
     /**
      * @private
@@ -12215,41 +12224,41 @@ ZRender.prototype = {
      * @param {Number} y
      * @return {Object} {target, topTarget}
      */
-    findHover: function (x, y) {
+    findHover(x, y) {
         return this.eventHandler.findHover(x, y);
-    },
+    }
 
     /**
      * @private
      * @method
      * Clear all hover elements in hover layer
-     * @param  {module:zrender/Element} el
+     * @param  {Element} el
      */
-    clearHover: function () {
+    clearHover() {
         if (this.painter.clearHover) {
             this.painter.clearHover();
             this.refreshHover();
         }
-    },
+    }
 
     /**
      * @private
      * @method
      * Refresh hover in next frame
      */
-    refreshHover: function () {
+    refreshHover() {
         this._needsRefreshHover = true;
-    },
+    }
 
     /**
      * @private
      * @method
      * Refresh hover immediately
      */
-    refreshHoverImmediately: function () {
+    refreshHoverImmediately() {
         this._needsRefreshHover = false;
         this.painter.refreshHover && this.painter.refreshHover();
-    },
+    }
 
     /**
      * @method
@@ -12259,56 +12268,56 @@ ZRender.prototype = {
      * @param {Number|String} [opts.width] Can be 'auto' (the same as null/undefined)
      * @param {Number|String} [opts.height] Can be 'auto' (the same as null/undefined)
      */
-    resize: function (opts) {
+    resize(opts) {
         opts = opts || {};
         this.painter.resize(opts.width, opts.height);
         this.eventHandler.resize();
-    },
+    }
 
     /**
      * @method
      * Stop and clear all animation immediately
      */
-    clearAnimation: function () {
+    clearAnimation() {
         this.globalAnimationMgr.clear();
-    },
+    }
 
     /**
      * @method
      * Get container width
      */
-    getWidth: function () {
+    getWidth() {
         return this.painter.getWidth();
-    },
+    }
 
     /**
      * @method
      * Get container height
      */
-    getHeight: function () {
+    getHeight() {
         return this.painter.getHeight();
-    },
+    }
 
     /**
      * @method
      * Converting a path to image.
      * It has much better performance of drawing image rather than drawing a vector path.
-     * @param {module:zrender/graphic/Path} e
+     * @param {graphic/Path} e
      * @param {Number} width
      * @param {Number} height
      */
-    pathToImage: function (e, dpr) {
+    pathToImage(e, dpr) {
         return this.painter.pathToImage(e, dpr);
-    },
+    }
 
     /**
      * @method
      * Set default cursor
      * @param {String} [cursorStyle='default'] 例如 crosshair
      */
-    setCursorStyle: function (cursorStyle) {
+    setCursorStyle(cursorStyle) {
         this.eventHandler.setCursorStyle(cursorStyle);
-    },
+    }
 
     /**
      * @method
@@ -12318,9 +12327,9 @@ ZRender.prototype = {
      * @param {Function} eventHandler Handler function
      * @param {Object} [context] Context object
      */
-    on: function (eventName, eventHandler, context) {
+    on(eventName, eventHandler, context) {
         this.eventHandler.on(eventName, eventHandler, context);
-    },
+    }
 
     /**
      * @method
@@ -12328,9 +12337,9 @@ ZRender.prototype = {
      * @param {String} eventName Event name
      * @param {Function} [eventHandler] Handler function
      */
-    off: function (eventName, eventHandler) {
+    off(eventName, eventHandler) {
         this.eventHandler.off(eventName, eventHandler);
-    },
+    }
 
     /**
      * @method
@@ -12339,24 +12348,24 @@ ZRender.prototype = {
      * @param {String} eventName Event name
      * @param {event=} event Event object
      */
-    trigger: function (eventName, event) {
+    trigger(eventName, event) {
         this.eventHandler.trigger(eventName, event);
-    },
+    }
 
     /**
      * @method
      * Clear all objects and the canvas.
      */
-    clear: function () {
+    clear() {
         this.storage.delRoot();
         this.painter.clear();
-    },
+    }
 
     /**
      * @method
      * Dispose self.
      */
-    dispose: function () {
+    dispose() {
         this.globalAnimationMgr.stop();
 
         this.clear();
@@ -12371,7 +12380,7 @@ ZRender.prototype = {
 
         delete instances[this.id];
     }
-};
+}
 
 // ---------------------------
 // Events of zrender instance.
@@ -12469,7 +12478,6 @@ function isNotAroundZero$1(val) {
 }
 /**
  * 计算三次贝塞尔值
- * @memberOf module:zrender/core/curveUtil
  * @param  {Number} p0
  * @param  {Number} p1
  * @param  {Number} p2
@@ -12485,7 +12493,6 @@ function cubicAt(p0, p1, p2, p3, t) {
 
 /**
  * 计算三次贝塞尔导数值
- * @memberOf module:zrender/core/curveUtil
  * @param  {Number} p0
  * @param  {Number} p1
  * @param  {Number} p2
@@ -12503,7 +12510,6 @@ function cubicDerivativeAt(p0, p1, p2, p3, t) {
 
 /**
  * 计算三次贝塞尔方程根，使用盛金公式
- * @memberOf module:zrender/core/curveUtil
  * @param  {Number} p0
  * @param  {Number} p1
  * @param  {Number} p2
@@ -12596,7 +12602,6 @@ function cubicRootAt(p0, p1, p2, p3, val, roots) {
 
 /**
  * 计算三次贝塞尔方程极限值的位置
- * @memberOf module:zrender/core/curveUtil
  * @param  {Number} p0
  * @param  {Number} p1
  * @param  {Number} p2
@@ -12640,7 +12645,6 @@ function cubicExtrema(p0, p1, p2, p3, extrema) {
 
 /**
  * 细分三次贝塞尔曲线
- * @memberOf module:zrender/core/curveUtil
  * @param  {Number} p0
  * @param  {Number} p1
  * @param  {Number} p2
@@ -12828,7 +12832,6 @@ function quadraticRootAt(p0, p1, p2, val, roots) {
 
 /**
  * 计算二次贝塞尔方程极限值
- * @memberOf module:zrender/core/curveUtil
  * @param  {Number} p0
  * @param  {Number} p1
  * @param  {Number} p2
@@ -12847,7 +12850,6 @@ function quadraticExtremum(p0, p1, p2) {
 
 /**
  * 细分二次贝塞尔曲线
- * @memberOf module:zrender/core/curveUtil
  * @param  {Number} p0
  * @param  {Number} p1
  * @param  {Number} p2
@@ -12973,7 +12975,6 @@ var extremity = create();
 
 
 /**
- * @memberOf module:zrender/core/bboxUtil
  * @param {Number} x0
  * @param {Number} y0
  * @param {Number} x1
@@ -12992,7 +12993,6 @@ var xDim = [];
 var yDim = [];
 /**
  * 从三阶贝塞尔曲线(p0, p1, p2, p3)中计算出最小包围盒，写入`min`和`max`中
- * @memberOf module:zrender/core/bboxUtil
  * @param {Number} x0
  * @param {Number} y0
  * @param {Number} x1
@@ -13041,7 +13041,6 @@ function fromCubic(
 
 /**
  * 从二阶贝塞尔曲线(p0, p1, p2)中计算出最小包围盒，写入`min`和`max`中
- * @memberOf module:zrender/core/bboxUtil
  * @param {Number} x0
  * @param {Number} y0
  * @param {Number} x1
@@ -13076,7 +13075,6 @@ function fromQuadratic(x0, y0, x1, y1, x2, y2, min$$1, max$$1) {
 /**
  * 从圆弧中计算出最小包围盒，写入`min`和`max`中
  * @method
- * @memberOf module:zrender/core/bboxUtil
  * @param {Number} x
  * @param {Number} y
  * @param {Number} rx
@@ -14564,7 +14562,7 @@ class Path extends Displayable{
     
         /**
          * @property {Boolean} subPixelOptimize
-         * See `module:zrender/src/graphic/helper/subPixelOptimize`.
+         * See `subPixelOptimize`.
          */
         this.subPixelOptimize=false;
 
@@ -15885,7 +15883,7 @@ function interpolate(p0, p1, p2, p3, t, t2, t3) {
 }
 
 /**
- * @alias module:zrender/shape/util/smoothSpline
+ * @alias smoothSpline
  * @param {Array} points 线段顶点数组
  * @param {boolean} isLoop
  * @return {Array}
@@ -15943,7 +15941,7 @@ var smoothSpline = function (points, isLoop) {
 
 /**
  * 贝塞尔平滑曲线
- * @alias module:zrender/shape/util/smoothBezier
+ * @alias smoothBezier
  * @param {Array} points 线段顶点数组
  * @param {Number} smooth 平滑等级, 0-1
  * @param {boolean} isLoop
@@ -18226,7 +18224,7 @@ let TEXT_ALIGN_TO_ANCHRO = {
 };
 
 /**
- * @param {module:zrender/Element} el
+ * @param {Element} el
  * @param {Object|boolean} [hostRect] {x, y, width, height}
  *        If set false, rect text is not used.
  */

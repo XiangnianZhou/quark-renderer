@@ -48,7 +48,6 @@ export function fromPoints(points, min, max) {
 }
 
 /**
- * @memberOf module:zrender/core/bboxUtil
  * @param {Number} x0
  * @param {Number} y0
  * @param {Number} x1
@@ -67,7 +66,6 @@ var xDim = [];
 var yDim = [];
 /**
  * 从三阶贝塞尔曲线(p0, p1, p2, p3)中计算出最小包围盒，写入`min`和`max`中
- * @memberOf module:zrender/core/bboxUtil
  * @param {Number} x0
  * @param {Number} y0
  * @param {Number} x1
@@ -116,7 +114,6 @@ export function fromCubic(
 
 /**
  * 从二阶贝塞尔曲线(p0, p1, p2)中计算出最小包围盒，写入`min`和`max`中
- * @memberOf module:zrender/core/bboxUtil
  * @param {Number} x0
  * @param {Number} y0
  * @param {Number} x1
@@ -151,7 +148,6 @@ export function fromQuadratic(x0, y0, x1, y1, x2, y2, min, max) {
 /**
  * 从圆弧中计算出最小包围盒，写入`min`和`max`中
  * @method
- * @memberOf module:zrender/core/bboxUtil
  * @param {Number} x
  * @param {Number} y
  * @param {Number} rx
