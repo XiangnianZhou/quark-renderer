@@ -1,10 +1,10 @@
 <h1 align="center">Quark Renderer</h1>
 
-A lightweight yet powerful canvas (&svg) renderer engine improved from [ZRender](https://github.com/ecomfe/zrender)
+A lightweight yet powerful canvas (&svg) render engine improved from [ZRender](https://github.com/ecomfe/zrender)
 
 ## Background
 
-**Important: Quark Renderer is not built from scratch, but improved from ZRender, which is the renderer engine behind ECharts.**
+**Important: Quark Renderer is not built from scratch, but improved from ZRender, which is the render engine behind ECharts.**
 
 I have used ECharts and ZRender for many years, both of them are extremly powerful tools for making some charting stuff.
 
