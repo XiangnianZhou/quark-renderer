@@ -33,7 +33,7 @@ export {default as Trochoid} from './graphic/shape/Trochoid';
 export {default as LinearGradient} from './graphic/gradient/LinearGradient';
 export {default as RadialGradient} from './graphic/gradient/RadialGradient';
 export {default as Pattern} from './graphic/Pattern';
-export {default as BoundingRect} from './core/BoundingRect';
+export {default as BoundingRect} from './graphic/BoundingRect';
 export {matrix};
 export {vector};
 export {colorTool as color};

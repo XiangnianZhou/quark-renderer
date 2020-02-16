@@ -1,5 +1,5 @@
-import * as vec2 from './utils/vector';
-import * as matrix from './utils/matrix';
+import * as vec2 from '../core/utils/vector';
+import * as matrix from '../core/utils/matrix';
 
 /**
  * @class qrenderer.core.BoundingRect

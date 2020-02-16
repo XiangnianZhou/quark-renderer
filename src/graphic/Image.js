@@ -1,5 +1,5 @@
 import Displayable from './Displayable';
-import BoundingRect from '../core/BoundingRect';
+import BoundingRect from '../graphic/BoundingRect';
 import * as dataUtil from '../core/utils/dataStructureUtil';
 import * as imageHelper from './utils/image';
 
