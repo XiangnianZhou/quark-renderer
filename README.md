@@ -28,7 +28,77 @@ Here are the key improvements compare to the original ZRender:
 
 ## Usage
 
-Pull this repo to your local device, check the examples inside /test directory.
+**Pull this repo to your local device, check the examples inside /test directory.**
+
+Example:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Animation</title>
+    <script src="../dist/quark-renderer.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        html, body, #main {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="main"></div>
+    <script type="text/javascript">
+        let main = document.getElementById('main');
+        let qr = qrenderer.init(main);
+        let gradient = new qrenderer.LinearGradient();
+        gradient.addColorStop(0, 'red');
+        gradient.addColorStop(1, 'black');
+
+        let circle = new qrenderer.Circle({
+            position: [0, 0],
+            scale: [1, 1],
+            shape: {
+                cx: 50,
+                cy: 50,
+                r: 50
+            },
+            style: {
+                fill: gradient,
+                lineWidth: 5,
+                text:'circle',
+                textPosition:'inside'
+            }
+        });
+        qr.add(circle);
+        
+        let ap=circle.animate('', true)
+            .when(1000, {
+                position: [200, 0],
+                scale: [2, 2]
+            })
+            .when(2000, {
+                position: [200, 200],
+                scale: [1, 1]
+            })
+            .when(3000, {
+                position: [0, 200],
+                scale: [1, 1]
+            })
+            .when(4000, {
+                position: [0, 0],
+                scale: [1, 1]
+            })
+            .start();
+
+        setTimeout(()=>{
+            ap.stop();
+        },5000);
+    </script>
+</body>
+</html>
+```
 
 ## Document
 
