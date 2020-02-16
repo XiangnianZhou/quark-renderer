@@ -1,7 +1,7 @@
 import * as curve from '../core/utils/curveUtil';
 import * as vec2 from '../core/utils/vector';
 import * as bbox from '../core/utils/bboxUtil';
-import BoundingRect from '../core/BoundingRect';
+import BoundingRect from '../graphic/BoundingRect';
 import {devicePixelRatio as dpr} from '../config';
 
 // TODO: getTotalLength, getPointAtLength

@@ -1,6 +1,6 @@
 import env from '../core/env';
 import {applyTransform} from '../core/utils/vector';
-import BoundingRect from '../core/BoundingRect';
+import BoundingRect from '../graphic/BoundingRect';
 import * as colorTool from '../core/utils/colorUtil';
 import * as textContain from '../core/contain/text';
 import * as textUtil from '../graphic/utils/textUtil';

@@ -1,4 +1,4 @@
-import BoundingRect from '../BoundingRect';
+import BoundingRect from '../../graphic/BoundingRect';
 import * as imageHelper from '../../graphic/utils/image';
 import {
     getContext,

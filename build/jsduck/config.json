@@ -22,7 +22,7 @@
     "../../lib/Storage.js",
     "../../lib/CanvasPainter.js",
     "../../lib/CanvasLayer.js",
-    "../../lib/core/BoundingRect.js",
+    "../../lib/graphic/BoundingRect.js",
     "../../lib/graphic/CompoundPath.js",
     "../../lib/graphic/Displayable.js",
     "../../lib/graphic/Element.js",
