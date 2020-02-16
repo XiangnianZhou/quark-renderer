@@ -1,5 +1,5 @@
 import Definable from './Definable';
-import * as classUtil from '../../core/utils/classUtil';
+import * as classUtil from '../../core/utils/class_util';
 
 /**
  * @class qrenderer.svg.helper.ShadowManager

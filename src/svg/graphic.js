@@ -3,21 +3,20 @@ import PathProxy from '../graphic/PathProxy';
 import BoundingRect from '../graphic/BoundingRect';
 import * as matrix from '../core/utils/matrix';
 import * as textContain from '../core/contain/text';
-import * as textUtil from '../graphic/utils/textUtil';
+import * as textUtil from '../graphic/utils/text_util';
 import Text from '../graphic/Text';
+import {PI,PI2,mathRound,mathAbs,mathCos,mathSin} from '../graphic/constants';
 
 // TODO
 // 1. shadow
 // 2. Image: sx, sy, sw, sh
 let CMD = PathProxy.CMD;
 let NONE = 'none';
-let PI = Math.PI;
-let PI2 = Math.PI * 2;
 let degree = 180 / PI;
 let EPSILON = 1e-4;
 
 function round4(val) {
-    return Math.round(val * 1e4) / 1e4;
+    return mathRound(val * 1e4) / 1e4;
 }
 
 function isAroundZero(val) {
@@ -78,7 +77,7 @@ function bindStyle(svgEl, style, isText, el) {
         let lineDash = style.lineDash;
         if (lineDash) {
             attr(svgEl, 'stroke-dasharray', style.lineDash.join(','));
-            attr(svgEl, 'stroke-dashoffset', Math.round(style.lineDashOffset || 0));
+            attr(svgEl, 'stroke-dashoffset', mathRound(style.lineDashOffset || 0));
         }else {
             attr(svgEl, 'stroke-dasharray', '');
         }
@@ -132,7 +131,7 @@ function pathDataToString(path) {
                 var psi = data[i++];
                 var clockwise = data[i++];
 
-                var dThetaPositive = Math.abs(dTheta);
+                var dThetaPositive = mathAbs(dTheta);
                 var isCircle = isAroundZero(dThetaPositive - PI2)
                     || (clockwise ? dTheta >= PI2 : -dTheta >= PI2);
 
@@ -150,8 +149,8 @@ function pathDataToString(path) {
                     large = (unifiedTheta >= PI) === !!clockwise;
                 }
 
-                var x0 = round4(cx + rx * Math.cos(theta));
-                var y0 = round4(cy + ry * Math.sin(theta));
+                var x0 = round4(cx + rx * mathCos(theta));
+                var y0 = round4(cy + ry * mathSin(theta));
 
                 // It will not draw if start point and end point are exactly the same
                 // We need to shift the end point with a small value
@@ -176,12 +175,12 @@ function pathDataToString(path) {
                     }
                 }
 
-                var x = round4(cx + rx * Math.cos(theta + dTheta));
-                var y = round4(cy + ry * Math.sin(theta + dTheta));
+                var x = round4(cx + rx * mathCos(theta + dTheta));
+                var y = round4(cy + ry * mathSin(theta + dTheta));
 
                 // FIXME Ellipse
                 str.push('A', round4(rx), round4(ry),
-                    Math.round(psi * degree), +large, +clockwise, x, y);
+                    mathRound(psi * degree), +large, +clockwise, x, y);
                 break;
             case CMD.Z:
                 cmdStr = 'Z';

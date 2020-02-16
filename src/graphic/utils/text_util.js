@@ -1,8 +1,8 @@
-import * as dataUtil from '../../core/utils/dataStructureUtil';
+import * as dataUtil from '../../core/utils/data_structure_util';
 import * as textContain from '../../core/contain/text';
-import * as roundRectHelper from './roundRect';
+import * as roundRectHelper from './round_rect';
 import * as imageHelper from './image';
-import fixShadow from './fixShadow';
+import fixShadow from './fix_shadow';
 import {ContextCachedBy, WILL_BE_RESTORED} from '../constants';
 
 var DEFAULT_FONT = textContain.DEFAULT_FONT;

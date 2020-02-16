@@ -1,7 +1,7 @@
 import Path from '../Path';
 import * as vec2 from '../../core/utils/vector';
-import * as curveUtil from '../../core/utils/curveUtil';
-import * as dataUtil from '../../core/utils/dataStructureUtil';
+import * as curveUtil from '../../core/utils/curve_util';
+import * as dataUtil from '../../core/utils/data_structure_util';
 
 /**
  * @class qrenderer.graphic.shape.BezierCurve 

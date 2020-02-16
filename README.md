@@ -1,6 +1,6 @@
 <h1 align="center">Quark Renderer</h1>
 
-A lightweight yet powerful canvas renderer engine improved from [ZRender](https://github.com/ecomfe/zrender)
+A lightweight yet powerful canvas (&svg) renderer engine improved from [ZRender](https://github.com/ecomfe/zrender)
 
 ## Background
 

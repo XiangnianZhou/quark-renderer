@@ -1,9 +1,10 @@
 import Displayable from './Displayable';
-import * as dataUtil from '../core/utils/dataStructureUtil';
-import * as classUtil from '../core/utils/classUtil';
+import * as dataUtil from '../core/utils/data_structure_util';
+import * as classUtil from '../core/utils/class_util';
 import PathProxy from './PathProxy';
 import * as pathContain from '../core/contain/path';
 import Pattern from './Pattern';
+import {mathMax,mathAbs,mathSqrt} from '../graphic/constants';
 
 /**
  * @class qrenderer.graphic.Path 
@@ -230,7 +231,7 @@ class Path extends Displayable{
 
                 // Only add extra hover lineWidth when there are no fill
                 if (!style.hasFill()) {
-                    w = Math.max(w, this.strokeContainThreshold || 4);
+                    w = mathMax(w, this.strokeContainThreshold || 4);
                 }
                 // Consider line width
                 // Line scale can't be 0;
@@ -270,7 +271,7 @@ class Path extends Displayable{
                 if (lineScale > 1e-10) {
                     // Only add extra hover lineWidth when there are no fill
                     if (!style.hasFill()) {
-                        lineWidth = Math.max(lineWidth, this.strokeContainThreshold);
+                        lineWidth = mathMax(lineWidth, this.strokeContainThreshold);
                     }
                     if (pathContain.containStroke(
                         pathData, lineWidth / lineScale, x, y
@@ -365,8 +366,8 @@ class Path extends Displayable{
         // Determinant of `m` means how much the area is enlarged by the
         // transformation. So its square root can be used as a scale factor
         // for width.
-        return m && Math.abs(m[0] - 1) > 1e-10 && Math.abs(m[3] - 1) > 1e-10
-            ? Math.sqrt(Math.abs(m[0] * m[3] - m[2] * m[1]))
+        return m && mathAbs(m[0] - 1) > 1e-10 && mathAbs(m[3] - 1) > 1e-10
+            ? mathSqrt(mathAbs(m[0] * m[3] - m[2] * m[1]))
             : 1;
     }
 }

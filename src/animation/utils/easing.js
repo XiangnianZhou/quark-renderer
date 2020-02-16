@@ -1,3 +1,5 @@
+import {mathAsin,mathCos,mathSin,mathPow,mathSqrt,PI,mathMin} from '../../graphic/constants';
+
 /**
  * 缓动代码来自 https://github.com/sole/tween.js/blob/master/src/Tween.js
  * 这里的缓动主要是一些数学计算公式，这些公式可以用来计算对象的坐标。
@@ -122,21 +124,21 @@ let easing = {
     * @return {Number}
     */
     sinusoidalIn: function (k) {
-        return 1 - Math.cos(k * Math.PI / 2);
+        return 1 - mathCos(k * PI / 2);
     },
     /**
     * @param {Number} k
     * @return {Number}
     */
     sinusoidalOut: function (k) {
-        return Math.sin(k * Math.PI / 2);
+        return mathSin(k * PI / 2);
     },
     /**
     * @param {Number} k
     * @return {Number}
     */
     sinusoidalInOut: function (k) {
-        return 0.5 * (1 - Math.cos(Math.PI * k));
+        return 0.5 * (1 - mathCos(PI * k));
     },
 
     // 指数曲线的缓动（2^t）
@@ -145,14 +147,14 @@ let easing = {
     * @return {Number}
     */
     exponentialIn: function (k) {
-        return k === 0 ? 0 : Math.pow(1024, k - 1);
+        return k === 0 ? 0 : mathPow(1024, k - 1);
     },
     /**
     * @param {Number} k
     * @return {Number}
     */
     exponentialOut: function (k) {
-        return k === 1 ? 1 : 1 - Math.pow(2, -10 * k);
+        return k === 1 ? 1 : 1 - mathPow(2, -10 * k);
     },
     /**
     * @param {Number} k
@@ -166,9 +168,9 @@ let easing = {
             return 1;
         }
         if ((k *= 2) < 1) {
-            return 0.5 * Math.pow(1024, k - 1);
+            return 0.5 * mathPow(1024, k - 1);
         }
-        return 0.5 * (-Math.pow(2, -10 * (k - 1)) + 2);
+        return 0.5 * (-mathPow(2, -10 * (k - 1)) + 2);
     },
 
     // 圆形曲线的缓动（sqrt(1-t^2)）
@@ -177,14 +179,14 @@ let easing = {
     * @return {Number}
     */
     circularIn: function (k) {
-        return 1 - Math.sqrt(1 - k * k);
+        return 1 - mathSqrt(1 - k * k);
     },
     /**
     * @param {Number} k
     * @return {Number}
     */
     circularOut: function (k) {
-        return Math.sqrt(1 - (--k * k));
+        return mathSqrt(1 - (--k * k));
     },
     /**
     * @param {Number} k
@@ -192,9 +194,9 @@ let easing = {
     */
     circularInOut: function (k) {
         if ((k *= 2) < 1) {
-            return -0.5 * (Math.sqrt(1 - k * k) - 1);
+            return -0.5 * (mathSqrt(1 - k * k) - 1);
         }
-        return 0.5 * (Math.sqrt(1 - (k -= 2) * k) + 1);
+        return 0.5 * (mathSqrt(1 - (k -= 2) * k) + 1);
     },
 
     // 创建类似于弹簧在停止前来回振荡的动画
@@ -217,10 +219,10 @@ let easing = {
             s = p / 4;
         }
         else {
-            s = p * Math.asin(1 / a) / (2 * Math.PI);
+            s = p * mathAsin(1 / a) / (2 * PI);
         }
-        return -(a * Math.pow(2, 10 * (k -= 1))
-                    * Math.sin((k - s) * (2 * Math.PI) / p));
+        return -(a * mathPow(2, 10 * (k -= 1))
+                    * mathSin((k - s) * (2 * PI) / p));
     },
     /**
     * @param {Number} k
@@ -241,10 +243,10 @@ let easing = {
             s = p / 4;
         }
         else {
-            s = p * Math.asin(1 / a) / (2 * Math.PI);
+            s = p * mathAsin(1 / a) / (2 * PI);
         }
-        return (a * Math.pow(2, -10 * k)
-                    * Math.sin((k - s) * (2 * Math.PI) / p) + 1);
+        return (a * mathPow(2, -10 * k)
+                    * mathSin((k - s) * (2 * PI) / p) + 1);
     },
     /**
     * @param {Number} k
@@ -265,14 +267,14 @@ let easing = {
             s = p / 4;
         }
         else {
-            s = p * Math.asin(1 / a) / (2 * Math.PI);
+            s = p * mathAsin(1 / a) / (2 * PI);
         }
         if ((k *= 2) < 1) {
-            return -0.5 * (a * Math.pow(2, 10 * (k -= 1))
-                * Math.sin((k - s) * (2 * Math.PI) / p));
+            return -0.5 * (a * mathPow(2, 10 * (k -= 1))
+                * mathSin((k - s) * (2 * PI) / p));
         }
-        return a * Math.pow(2, -10 * (k -= 1))
-                * Math.sin((k - s) * (2 * Math.PI) / p) * 0.5 + 1;
+        return a * mathPow(2, -10 * (k -= 1))
+                * mathSin((k - s) * (2 * PI) / p) * 0.5 + 1;
 
     },
 

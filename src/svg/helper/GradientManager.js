@@ -1,7 +1,7 @@
 import Definable from './Definable';
-import * as dataUtil from '../../core/utils/dataStructureUtil';
-import * as classUtil from '../../core/utils/classUtil';
-import * as colorTool from '../../core/utils/colorUtil';
+import * as dataUtil from '../../core/utils/data_structure_util';
+import * as classUtil from '../../core/utils/class_util';
+import * as colorTool from '../../core/utils/color_util';
 
 /**
  * @class qrenderer.svg.helper.GradientManager

@@ -1,15 +1,12 @@
 import Path from '../Path';
-import * as dataUtil from '../../core/utils/dataStructureUtil';
+import * as dataUtil from '../../core/utils/data_structure_util';
+import {PI,mathSin,mathCos} from '../../graphic/constants';
 
 /**
  * @class qrenderer.graphic.shape.Isogon 
  * 正多边形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let PI = Math.PI;
-let sin = Math.sin;
-let cos = Math.cos;
-
 let defaultConfig={
     /**
      * @property {String} type
@@ -49,10 +46,10 @@ export default class Isogon extends Path{
         let dStep = 2 * PI / n;
         let deg = -PI / 2;
 
-        ctx.moveTo(x + r * cos(deg), y + r * sin(deg));
+        ctx.moveTo(x + r * mathCos(deg), y + r * mathSin(deg));
         for (let i = 0, end = n - 1; i < end; i++) {
             deg += dStep;
-            ctx.lineTo(x + r * cos(deg), y + r * sin(deg));
+            ctx.lineTo(x + r * mathCos(deg), y + r * mathSin(deg));
         }
 
         ctx.closePath();

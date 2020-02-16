@@ -1,11 +1,9 @@
 import PathProxy from '../../graphic/PathProxy';
 import {applyTransform as v2ApplyTransform} from './vector';
+import {mathSqrt,mathAtan2} from '../../graphic/constants';
 
 var CMD = PathProxy.CMD;
-
 var points = [[], [], []];
-var mathSqrt = Math.sqrt;
-var mathAtan2 = Math.atan2;
 
 export default function (path, m) {
     var data = path.data;

@@ -1,13 +1,12 @@
 import Path from '../Path';
-import * as dataUtil from '../../core/utils/dataStructureUtil';
+import * as dataUtil from '../../core/utils/data_structure_util';
+import {mathSin,mathCos} from '../../graphic/constants';
 
 /**
  * @class qrenderer.graphic.shape.Trochold 
  * 内外旋轮曲线
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let cos = Math.cos;
-let sin = Math.sin;
 let defaultConfig={
     /**
      * @property {String} type
@@ -62,10 +61,10 @@ export default class Trochold extends Path{
         let i = 1;
         let theta;
 
-        x1 = (R + delta * r) * cos(0)
-            - delta * d * cos(0) + offsetX;
-        y1 = (R + delta * r) * sin(0)
-            - d * sin(0) + offsetY;
+        x1 = (R + delta * r) * mathCos(0)
+            - delta * d * mathCos(0) + offsetX;
+        y1 = (R + delta * r) * mathSin(0)
+            - d * mathSin(0) + offsetY;
 
         ctx.moveTo(x1, y1);
 
@@ -77,11 +76,11 @@ export default class Trochold extends Path{
 
         do {
             theta = Math.PI / 180 * i;
-            x2 = (R + delta * r) * cos(theta)
-                    - delta * d * cos((R / r + delta) * theta)
+            x2 = (R + delta * r) * mathCos(theta)
+                    - delta * d * mathCos((R / r + delta) * theta)
                     + offsetX;
-            y2 = (R + delta * r) * sin(theta)
-                    - d * sin((R / r + delta) * theta)
+            y2 = (R + delta * r) * mathSin(theta)
+                    - d * mathSin((R / r + delta) * theta)
                     + offsetY;
             ctx.lineTo(x2, y2);
             i++;

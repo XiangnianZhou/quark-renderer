@@ -564,7 +564,7 @@ function buildRequireStatements(types, source, metadata) {
 
         if (!localImportDefaultName) {
             // src:
-            //      import {someInQrUtil1 as someInQrUtil1Alias, zz} from 'qrenderer/core/dataStructureUtil';
+            //      import {someInQrUtil1 as someInQrUtil1Alias, zz} from 'qrenderer/core/data_structure_util';
             // metadata.imports:
             //      Map { 'someInQrUtil1Alias' => 'someInQrUtil1', 'zz' => 'zz' }
             for (const importEntry of metadata.imports) {

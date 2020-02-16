@@ -1,5 +1,5 @@
 import Path from '../Path';
-import * as dataUtil from '../../core/utils/dataStructureUtil';
+import * as dataUtil from '../../core/utils/data_structure_util';
 
 /**
  * @class qrenderer.graphic.shape.Ellipse 

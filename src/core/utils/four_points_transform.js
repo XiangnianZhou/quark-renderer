@@ -1,3 +1,5 @@
+import {mathLog,mathRound} from '../../graphic/constants';
+
 /**
  * The algoritm is learnt from
  * https://franklinta.com/2014/09/08/computing-css-matrix3d-transforms/
@@ -6,7 +8,7 @@
  * "cv::getPerspectiveTransform", "Direct Linear Transformation".
  */
 
-var LN2 = Math.log(2);
+var LN2 = mathLog(2);
 
 function determinant(rows, rank, rowStart, rowMask, colMask, detCache) {
     var cacheKey = rowMask + '-' + colMask;
@@ -18,7 +20,7 @@ function determinant(rows, rank, rowStart, rowMask, colMask, detCache) {
 
     if (rank === 1) {
         // In this case the colMask must be like: `11101111`. We can find the place of `0`.
-        var colStart = Math.round(Math.log(((1 << fullRank) - 1) & ~colMask) / LN2);
+        var colStart = mathRound(mathLog(((1 << fullRank) - 1) & ~colMask) / LN2);
         return rows[rowStart][colStart];
     }
 

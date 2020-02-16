@@ -1,6 +1,6 @@
 
-import smoothSpline from './smoothSpline';
-import smoothBezier from './smoothBezier';
+import smoothSpline from './smooth_spline';
+import smoothBezier from './smooth_bezier';
 
 export function buildPath(ctx, shape, closePath) {
     var points = shape.points;

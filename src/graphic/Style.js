@@ -1,5 +1,6 @@
-import fixShadow from './utils/fixShadow';
+import fixShadow from './utils/fix_shadow';
 import {ContextCachedBy} from './constants';
+import {mathMin} from '../graphic/constants';
 
 /**
  * @class qrenderer.graphic.Style
@@ -39,7 +40,7 @@ function createLinearGradient(ctx, obj, rect) {
 function createRadialGradient(ctx, obj, rect) {
     let width = rect.width;
     let height = rect.height;
-    let min = Math.min(width, height);
+    let min = mathMin(width, height);
 
     let x = obj.x == null ? 0.5 : obj.x;
     let y = obj.y == null ? 0.5 : obj.y;

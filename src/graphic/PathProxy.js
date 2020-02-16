@@ -1,8 +1,9 @@
-import * as curve from '../core/utils/curveUtil';
+import * as curve from '../core/utils/curve_util';
 import * as vec2 from '../core/utils/vector';
-import * as bbox from '../core/utils/bboxUtil';
+import * as bbox from '../core/utils/bbox_util';
 import BoundingRect from '../graphic/BoundingRect';
 import {devicePixelRatio as dpr} from '../config';
+import {mathMin,mathMax,mathCos,mathSin,mathSqrt,mathAbs} from '../graphic/constants';
 
 // TODO: getTotalLength, getPointAtLength
 
@@ -29,12 +30,6 @@ var min = [];
 var max = [];
 var min2 = [];
 var max2 = [];
-var mathMin = Math.min;
-var mathMax = Math.max;
-var mathCos = Math.cos;
-var mathSin = Math.sin;
-var mathSqrt = Math.sqrt;
-var mathAbs = Math.abs;
 
 var hasTypedArray = typeof Float32Array !== 'undefined';
 
@@ -753,7 +748,7 @@ PathProxy.prototype = {
                     var r = (rx > ry) ? rx : ry;
                     var scaleX = (rx > ry) ? 1 : rx / ry;
                     var scaleY = (rx > ry) ? ry / rx : 1;
-                    var isEllipse = Math.abs(rx - ry) > 1e-3;
+                    var isEllipse = mathAbs(rx - ry) > 1e-3;
                     var endAngle = theta + dTheta;
                     if (isEllipse) {
                         ctx.translate(cx, cy);

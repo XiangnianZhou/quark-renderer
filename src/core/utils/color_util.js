@@ -1,4 +1,5 @@
 import LRU from '../LRU';
+import {mathMin,mathMax,mathRound,mathFloor,mathCeil} from '../../graphic/constants';
 
 var kCSSColorTable = {
     'transparent': [0, 0, 0, 0], 'aliceblue': [240, 248, 255, 1],
@@ -78,12 +79,12 @@ var kCSSColorTable = {
 };
 
 function clampCssByte(i) {  // Clamp to integer 0 .. 255.
-    i = Math.round(i);  // Seems to be what Chrome does (vs truncation).
+    i = mathRound(i);  // Seems to be what Chrome does (vs truncation).
     return i < 0 ? 0 : i > 255 ? 255 : i;
 }
 
 function clampCssAngle(i) {  // Clamp to integer 0 .. 360.
-    i = Math.round(i);  // Seems to be what Chrome does (vs truncation).
+    i = mathRound(i);  // Seems to be what Chrome does (vs truncation).
     return i < 0 ? 0 : i > 360 ? 360 : i;
 }
 
@@ -314,8 +315,8 @@ function rgba2hsla(rgba) {
     var G = rgba[1] / 255;
     var B = rgba[2] / 255;
 
-    var vMin = Math.min(R, G, B); // Min. value of RGB
-    var vMax = Math.max(R, G, B); // Max. value of RGB
+    var vMin = mathMin(R, G, B); // Min. value of RGB
+    var vMax = mathMax(R, G, B); // Max. value of RGB
     var delta = vMax - vMin; // Delta RGB value
 
     var L = (vMax + vMin) / 2;
@@ -420,8 +421,8 @@ export function fastLerp(normalizedValue, colors, out) {
     out = out || [];
 
     var value = normalizedValue * (colors.length - 1);
-    var leftIndex = Math.floor(value);
-    var rightIndex = Math.ceil(value);
+    var leftIndex = mathFloor(value);
+    var rightIndex = mathCeil(value);
     var leftColor = colors[leftIndex];
     var rightColor = colors[rightIndex];
     var dv = value - leftIndex;
@@ -453,8 +454,8 @@ export function lerp(normalizedValue, colors, fullOutput) {
     }
 
     var value = normalizedValue * (colors.length - 1);
-    var leftIndex = Math.floor(value);
-    var rightIndex = Math.ceil(value);
+    var leftIndex = mathFloor(value);
+    var rightIndex = mathCeil(value);
     var leftColor = parse(colors[leftIndex]);
     var rightColor = parse(colors[rightIndex]);
     var dv = value - leftIndex;

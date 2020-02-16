@@ -11,7 +11,7 @@
     /**
      * Usage:
      * var testCase = helper.prepare([
-     *     'qrenderer/core/dataStructureUtil'
+     *     'qrenderer/core/data_structure_util'
      *     'qrenderer/core/colorUtil'
      * ])
      *

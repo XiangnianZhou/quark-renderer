@@ -1,6 +1,8 @@
 import Timeline from './Timeline';
-import * as colorUtil from '../core/utils/colorUtil';
-import * as dataUtil from '../core/utils/dataStructureUtil';
+import * as colorUtil from '../core/utils/color_util';
+import * as dataUtil from '../core/utils/data_structure_util';
+import {mathMin} from '../graphic/constants';
+
 /**
  * @class qrenderer.animation.Track
  * 
@@ -220,21 +222,21 @@ export default class Track{
             }else if (percent < lastFramePercent) {
                 // Start from next key
                 // PENDING start from lastFrame ?
-                start = Math.min(lastFrame + 1, kfLength - 1);
+                start = mathMin(lastFrame + 1, kfLength - 1);
                 for (frame = start; frame >= 0; frame--) {
                     if (kfPercents[frame] <= percent) {
                         break;
                     }
                 }
                 // PENDING really need to do this ?
-                frame = Math.min(frame, kfLength - 2);
+                frame = mathMin(frame, kfLength - 2);
             }else {
                 for (frame = lastFrame; frame < kfLength; frame++) {
                     if (kfPercents[frame] > percent) {
                         break;
                     }
                 }
-                frame = Math.min(frame - 1, kfLength - 2);
+                frame = mathMin(frame - 1, kfLength - 2);
             }
             lastFrame = frame;
             lastFramePercent = percent;

@@ -1,5 +1,6 @@
 import Path from '../Path';
-import * as dataUtil from '../../core/utils/dataStructureUtil';
+import * as dataUtil from '../../core/utils/data_structure_util';
+import {PI2} from '../../graphic/constants';
 
 /**
  * @class qrenderer.graphic.shape.Circle 
@@ -46,6 +47,6 @@ export default class Circle extends Path{
         // }
         // Better stroking in ShapeBundle
         // ctx.moveTo(shape.cx + shape.r, shape.cy);
-        ctx.arc(shape.cx, shape.cy, shape.r, 0, Math.PI * 2, true);
+        ctx.arc(shape.cx, shape.cy, shape.r, 0, PI2, true);
     }
 }

@@ -1,3 +1,5 @@
+import {mathFloor} from '../../graphic/constants';
+
 /**
  * 用来操作数据的一些工具函数。
  */
@@ -801,9 +803,9 @@ export function cloneValue(value) {
 }
 
 export function rgba2String(rgba) {
-    rgba[0] = Math.floor(rgba[0]);
-    rgba[1] = Math.floor(rgba[1]);
-    rgba[2] = Math.floor(rgba[2]);
+    rgba[0] = mathFloor(rgba[0]);
+    rgba[1] = mathFloor(rgba[1]);
+    rgba[2] = mathFloor(rgba[2]);
 
     return 'rgba(' + rgba.join(',') + ')';
 }

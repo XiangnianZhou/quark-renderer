@@ -41,20 +41,20 @@ var Style = require(&quot;../graphic/Style&quot;);
 
 var matrix = require(&quot;../core/utils/matrix&quot;);
 
-var _pathUtil = require(&quot;../core/utils/pathUtil&quot;);
+var _path_util = require(&quot;../core/utils/path_util&quot;);
 
-var createFromString = _pathUtil.createFromString;
+var createFromString = _path_util.createFromString;
 
-var _dataStructureUtil = require(&quot;../core/utils/dataStructureUtil&quot;);
+var _data_structure_util = require(&quot;../core/utils/data_structure_util&quot;);
 
-var isString = _dataStructureUtil.isString;
-var extend = _dataStructureUtil.extend;
-var trim = _dataStructureUtil.trim;
-var each = _dataStructureUtil.each;
+var isString = _data_structure_util.isString;
+var extend = _data_structure_util.extend;
+var trim = _data_structure_util.trim;
+var each = _data_structure_util.each;
 
-var _classUtil = require(&quot;../core/utils/classUtil&quot;);
+var _class_util = require(&quot;../core/utils/class_util&quot;);
 
-var defaults = _classUtil.defaults;
+var defaults = _class_util.defaults;
 // Most of the values can be separated by comma and/or white space.
 var DILIMITER_REG = /[\s,]+/;
 <span id='global-method-parseXML'>/**

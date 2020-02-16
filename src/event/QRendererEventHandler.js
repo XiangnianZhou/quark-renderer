@@ -1,10 +1,10 @@
-import * as dataUtil from '../core/utils/dataStructureUtil';
-import * as classUtil from '../core/utils/classUtil';
+import * as dataUtil from '../core/utils/data_structure_util';
+import * as classUtil from '../core/utils/class_util';
 import * as vec2 from '../core/utils/vector';
-import * as eventTool from '../core/utils/eventUtil';
+import * as eventTool from '../core/utils/event_util';
 import MultiDragDrop from './MultiDragDrop';
 import Eventful from './Eventful';
-import GestureMgr from '../core/GestureMgr';
+import GestureMgr from './GestureMgr';
 
 /**
  * @class qrenderer.event.QRendererEventHandler

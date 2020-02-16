@@ -1,6 +1,6 @@
 import Displayable from './Displayable';
 import BoundingRect from '../graphic/BoundingRect';
-import * as dataUtil from '../core/utils/dataStructureUtil';
+import * as dataUtil from '../core/utils/data_structure_util';
 import * as imageHelper from './utils/image';
 
 /**

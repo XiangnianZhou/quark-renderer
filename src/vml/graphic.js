@@ -1,9 +1,9 @@
 import env from '../core/env';
 import {applyTransform} from '../core/utils/vector';
 import BoundingRect from '../graphic/BoundingRect';
-import * as colorTool from '../core/utils/colorUtil';
+import * as colorTool from '../core/utils/color_util';
 import * as textContain from '../core/contain/text';
-import * as textUtil from '../graphic/utils/textUtil';
+import * as textUtil from '../graphic/utils/text_util';
 import RectText from '../graphic/RectText';
 import Displayable from '../graphic/Displayable';
 import QImage from '../graphic/Image';
@@ -12,17 +12,12 @@ import Path from '../graphic/Path';
 import PathProxy from '../graphic/PathProxy';
 import Gradient from '../graphic/gradient/Gradient';
 import * as vmlCore from './core';
+import {mathRound,mathSqrt,mathAbs,mathCos,mathSin,mathMax,mathAtan2} from '../graphic/constants';
 
 // http://www.w3.org/TR/NOTE-VML
 // TODO:Use proxy like svg instead of overwrite brush methods
 
 let CMD = PathProxy.CMD;
-let round = Math.round;
-let sqrt = Math.sqrt;
-let abs = Math.abs;
-let cos = Math.cos;
-let sin = Math.sin;
-let mathMax = Math.max;
 
 if (!env.canvasSupported) {
 
@@ -116,7 +111,7 @@ if (!env.canvasSupported) {
                     }
                     let dx = p1[0] - p0[0];
                     let dy = p1[1] - p0[1];
-                    angle = Math.atan2(dx, dy) * 180 / Math.PI;
+                    angle = mathAtan2(dx, dy) * 180 / PI;
                     // The angle should be a non-negative number.
                     if (angle < 0) {
                         angle += 360;
@@ -337,9 +332,9 @@ if (!env.canvasSupported) {
                         // Extract SRT from matrix
                         x = m[4];
                         y = m[5];
-                        sx = sqrt(m[0] * m[0] + m[1] * m[1]);
-                        sy = sqrt(m[2] * m[2] + m[3] * m[3]);
-                        angle = Math.atan2(-m[1] / sy, m[0] / sx);
+                        sx = mathSqrt(m[0] * m[0] + m[1] * m[1]);
+                        sy = mathSqrt(m[2] * m[2] + m[3] * m[3]);
+                        angle = mathAtan2(-m[1] / sy, m[0] / sx);
                     }
 
                     cx = data[i++];
@@ -353,16 +348,16 @@ if (!env.canvasSupported) {
                     i++;
                     let clockwise = data[i++];
 
-                    x0 = cx + cos(startAngle) * rx;
-                    y0 = cy + sin(startAngle) * ry;
+                    x0 = cx + mathCos(startAngle) * rx;
+                    y0 = cy + mathSin(startAngle) * ry;
 
-                    x1 = cx + cos(endAngle) * rx;
-                    y1 = cy + sin(endAngle) * ry;
+                    x1 = cx + mathCos(endAngle) * rx;
+                    y1 = cy + mathSin(endAngle) * ry;
 
                     let type = clockwise ? ' wa ' : ' at ';
-                    if (Math.abs(x0 - x1) < 1e-4) {
+                    if (mathAbs(x0 - x1) < 1e-4) {
                         // IE won't render arches drawn counter clockwise if x0 == x1.
-                        if (Math.abs(endAngle - startAngle) > 1e-2) {
+                        if (mathAbs(endAngle - startAngle) > 1e-2) {
                             // Offset x0 by 1/80 of a pixel. Use something
                             // that can be represented in binary
                             if (clockwise) {
@@ -371,7 +366,7 @@ if (!env.canvasSupported) {
                         }
                         else {
                             // Avoid case draw full circle
-                            if (Math.abs(y0 - cy) < 1e-4) {
+                            if (mathAbs(y0 - cy) < 1e-4) {
                                 if ((clockwise && x0 < cx) || (!clockwise && x0 > cx)) {
                                     y1 -= 270 / Z;
                                 }else {
@@ -386,14 +381,14 @@ if (!env.canvasSupported) {
                     }
                     str.push(
                         type,
-                        round(((cx - rx) * sx + x) * Z - Z2), comma,
-                        round(((cy - ry) * sy + y) * Z - Z2), comma,
-                        round(((cx + rx) * sx + x) * Z - Z2), comma,
-                        round(((cy + ry) * sy + y) * Z - Z2), comma,
-                        round((x0 * sx + x) * Z - Z2), comma,
-                        round((y0 * sy + y) * Z - Z2), comma,
-                        round((x1 * sx + x) * Z - Z2), comma,
-                        round((y1 * sy + y) * Z - Z2)
+                        mathRound(((cx - rx) * sx + x) * Z - Z2), comma,
+                        mathRound(((cy - ry) * sy + y) * Z - Z2), comma,
+                        mathRound(((cx + rx) * sx + x) * Z - Z2), comma,
+                        mathRound(((cy + ry) * sy + y) * Z - Z2), comma,
+                        mathRound((x0 * sx + x) * Z - Z2), comma,
+                        mathRound((y0 * sy + y) * Z - Z2), comma,
+                        mathRound((x1 * sx + x) * Z - Z2), comma,
+                        mathRound((y1 * sy + y) * Z - Z2)
                     );
 
                     xi = x1;
@@ -414,10 +409,10 @@ if (!env.canvasSupported) {
                         applyTransform(p1, p1, m);
                     }
 
-                    p0[0] = round(p0[0] * Z - Z2);
-                    p1[0] = round(p1[0] * Z - Z2);
-                    p0[1] = round(p0[1] * Z - Z2);
-                    p1[1] = round(p1[1] * Z - Z2);
+                    p0[0] = mathRound(p0[0] * Z - Z2);
+                    p1[0] = mathRound(p1[0] * Z - Z2);
+                    p0[1] = mathRound(p0[1] * Z - Z2);
+                    p1[1] = mathRound(p1[1] * Z - Z2);
                     str.push(
                         // x0, y0
                         ' m ', p0[0], comma, p0[1],
@@ -439,9 +434,9 @@ if (!env.canvasSupported) {
                 for (let k = 0; k < nPoint; k++) {
                     let p = points[k];
                     m && applyTransform(p, p, m);
-                    // 不 round 会非常慢
+                    // 不 mathRound 会非常慢
                     str.push(
-                        round(p[0] * Z - Z2), comma, round(p[1] * Z - Z2),
+                        mathRound(p[0] * Z - Z2), comma, mathRound(p[1] * Z - Z2),
                         k < nPoint - 1 ? comma : ''
                     );
                 }
@@ -486,7 +481,7 @@ if (!env.canvasSupported) {
             // for width.
             if (needTransform && !style.strokeNoScale) {
                 let det = m[0] * m[3] - m[1] * m[2];
-                lineWidth *= sqrt(abs(det));
+                lineWidth *= mathSqrt(mathAbs(det));
             }
             strokeEl.weight = lineWidth + 'px';
         }
@@ -615,8 +610,8 @@ if (!env.canvasSupported) {
         let scaleY = 1;
         if (this.transform) {
             m = this.transform;
-            scaleX = sqrt(m[0] * m[0] + m[1] * m[1]);
-            scaleY = sqrt(m[2] * m[2] + m[3] * m[3]);
+            scaleX = mathSqrt(m[0] * m[0] + m[1] * m[1]);
+            scaleY = mathSqrt(m[2] * m[2] + m[3] * m[3]);
 
             hasRotation = m[1] || m[2];
         }
@@ -643,10 +638,10 @@ if (!env.canvasSupported) {
                         'M12=', m[2] / scaleY, comma,
                         'M21=', m[1] / scaleX, comma,
                         'M22=', m[3] / scaleY, comma,
-                        'Dx=', round(x * scaleX + m[4]), comma,
-                        'Dy=', round(y * scaleY + m[5]));
+                        'Dx=', mathRound(x * scaleX + m[4]), comma,
+                        'Dy=', mathRound(y * scaleY + m[5]));
 
-            vmlElStyle.padding = '0 ' + round(maxX) + 'px ' + round(maxY) + 'px 0';
+            vmlElStyle.padding = '0 ' + mathRound(maxX) + 'px ' + mathRound(maxY) + 'px 0';
             // FIXME DXImageTransform 在 IE11 的兼容模式下不起作用
             vmlElStyle.filter = imageTransformPrefix + '.Matrix('
                 + transformFilter.join('') + ', SizingMethod=clip)';
@@ -658,8 +653,8 @@ if (!env.canvasSupported) {
                 y = y * scaleY + m[5];
             }
             vmlElStyle.filter = '';
-            vmlElStyle.left = round(x) + 'px';
-            vmlElStyle.top = round(y) + 'px';
+            vmlElStyle.left = mathRound(x) + 'px';
+            vmlElStyle.top = mathRound(y) + 'px';
         }
 
         let imageEl = this._imageEl;
@@ -680,8 +675,8 @@ if (!env.canvasSupported) {
                     ow = tmpImage.width;
                     oh = tmpImage.height;
                     // Adjust image width and height to fit the ratio destinationSize / sourceSize
-                    imageELStyle.width = round(scaleX * ow * dw / sw) + 'px';
-                    imageELStyle.height = round(scaleY * oh * dh / sh) + 'px';
+                    imageELStyle.width = mathRound(scaleX * ow * dw / sw) + 'px';
+                    imageELStyle.height = mathRound(scaleY * oh * dh / sh) + 'px';
 
                     // Caching image original width, height and src
                     self._imageWidth = ow;
@@ -691,8 +686,8 @@ if (!env.canvasSupported) {
                 tmpImage.src = image;
             }
             else {
-                imageELStyle.width = round(scaleX * ow * dw / sw) + 'px';
-                imageELStyle.height = round(scaleY * oh * dh / sh) + 'px';
+                imageELStyle.width = mathRound(scaleX * ow * dw / sw) + 'px';
+                imageELStyle.height = mathRound(scaleY * oh * dh / sh) + 'px';
             }
 
             if (!cropEl) {
@@ -701,8 +696,8 @@ if (!env.canvasSupported) {
                 this._cropEl = cropEl;
             }
             let cropElStyle = cropEl.style;
-            cropElStyle.width = round((dw + sx * dw / sw) * scaleX);
-            cropElStyle.height = round((dh + sy * dh / sh) * scaleY);
+            cropElStyle.width = mathRound((dw + sx * dw / sw) * scaleX);
+            cropElStyle.height = mathRound((dh + sy * dh / sh) * scaleY);
             cropElStyle.filter = imageTransformPrefix + '.Matrix(Dx='
                     + (-sx * dw / sw * scaleX) + ',Dy=' + (-sy * dh / sh * scaleY) + ')';
 
@@ -714,8 +709,8 @@ if (!env.canvasSupported) {
             }
         }
         else {
-            imageELStyle.width = round(scaleX * dw) + 'px';
-            imageELStyle.height = round(scaleY * dh) + 'px';
+            imageELStyle.width = mathRound(scaleX * dw) + 'px';
+            imageELStyle.height = mathRound(scaleY * dh) + 'px';
 
             vmlEl.appendChild(imageEl);
 
@@ -728,7 +723,7 @@ if (!env.canvasSupported) {
         let filterStr = '';
         let alpha = style.opacity;
         if (alpha < 1) {
-            filterStr += '.Alpha(opacity=' + round(alpha * 100) + ') ';
+            filterStr += '.Alpha(opacity=' + mathRound(alpha * 100) + ') ';
         }
         filterStr += imageTransformPrefix + '.AlphaImageLoader(src=' + image + ', SizingMethod=scale)';
 
@@ -998,7 +993,7 @@ if (!env.canvasSupported) {
                             + m[1].toFixed(3) + comma + m[3].toFixed(3) + ',0,0';
 
             // Text position
-            skewEl.offset = (round(coords[0]) || 0) + ',' + (round(coords[1]) || 0);
+            skewEl.offset = (mathRound(coords[0]) || 0) + ',' + (mathRound(coords[1]) || 0);
             // Left top point as origin
             skewEl.origin = '0 0';
 
@@ -1007,8 +1002,8 @@ if (!env.canvasSupported) {
         }
         else {
             skewEl.on = false;
-            textVmlElStyle.left = round(x) + 'px';
-            textVmlElStyle.top = round(y) + 'px';
+            textVmlElStyle.left = mathRound(x) + 'px';
+            textVmlElStyle.top = mathRound(y) + 'px';
         }
 
         textPathEl.string = encodeHtmlAttribute(text);

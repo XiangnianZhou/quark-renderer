@@ -1,5 +1,5 @@
 import AnimationProcess from './AnimationProcess';
-import * as dataUtil from '../core/utils/dataStructureUtil';
+import * as dataUtil from '../core/utils/data_structure_util';
 
 /**
  * @class qrenderer.animation.Animatable

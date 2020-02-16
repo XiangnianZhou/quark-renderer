@@ -1,9 +1,9 @@
+import {mathRound,mathMax} from '../../graphic/constants';
+
 /**
  * Sub-pixel optimize for canvas rendering, prevent from blur
  * when rendering a thin vertical/horizontal line.
  */
-
-var round = Math.round;
 
 /**
  * Sub pixel optimize line for canvas
@@ -32,14 +32,14 @@ export function subPixelOptimizeLine(outputShape, inputShape, style) {
     var y1 = inputShape.y1;
     var y2 = inputShape.y2;
 
-    if (round(x1 * 2) === round(x2 * 2)) {
+    if (mathRound(x1 * 2) === mathRound(x2 * 2)) {
         outputShape.x1 = outputShape.x2 = subPixelOptimize(x1, lineWidth, true);
     }
     else {
         outputShape.x1 = x1;
         outputShape.x2 = x2;
     }
-    if (round(y1 * 2) === round(y2 * 2)) {
+    if (mathRound(y1 * 2) === mathRound(y2 * 2)) {
         outputShape.y1 = outputShape.y2 = subPixelOptimize(y1, lineWidth, true);
     }
     else {
@@ -77,11 +77,11 @@ export function subPixelOptimizeRect(outputShape, inputShape, style) {
 
     outputShape.x = subPixelOptimize(originX, lineWidth, true);
     outputShape.y = subPixelOptimize(originY, lineWidth, true);
-    outputShape.width = Math.max(
+    outputShape.width = mathMax(
         subPixelOptimize(originX + originWidth, lineWidth, false) - outputShape.x,
         originWidth === 0 ? 0 : 1
     );
-    outputShape.height = Math.max(
+    outputShape.height = mathMax(
         subPixelOptimize(originY + originHeight, lineWidth, false) - outputShape.y,
         originHeight === 0 ? 0 : 1
     );
@@ -98,8 +98,8 @@ export function subPixelOptimizeRect(outputShape, inputShape, style) {
 export function subPixelOptimize(position, lineWidth, positiveOrNegative) {
     // Assure that (position + lineWidth / 2) is near integer edge,
     // otherwise line will be fuzzy in canvas.
-    var doubledPosition = round(position * 2);
-    return (doubledPosition + round(lineWidth)) % 2 === 0
+    var doubledPosition = mathRound(position * 2);
+    return (doubledPosition + mathRound(lineWidth)) % 2 === 0
         ? doubledPosition / 2
         : (doubledPosition + (positiveOrNegative ? 1 : -1)) / 2;
 }

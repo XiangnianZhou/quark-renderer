@@ -1,4 +1,4 @@
-import * as util from './core/utils/dataStructureUtil';
+import * as util from './core/utils/data_structure_util';
 import {devicePixelRatio} from './config';
 import Style from './graphic/Style';
 import Pattern from './graphic/Pattern';
