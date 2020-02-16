@@ -15,15 +15,13 @@
 <body>
     <div id="main"></div>
     <script type="text/javascript">
-        var main = document.getElementById('main');
-        // 初始化qrenderer
-        var qr = qrenderer.init(main);
-
-        var gradient = new qrenderer.LinearGradient();
+        let main = document.getElementById('main');
+        let qr = qrenderer.init(main);
+        let gradient = new qrenderer.LinearGradient();
         gradient.addColorStop(0, 'red');
         gradient.addColorStop(1, 'black');
 
-        var circle = new qrenderer.Circle({
+        let circle = new qrenderer.Circle({
             position: [0, 0],
             scale: [1, 1],
             shape: {
