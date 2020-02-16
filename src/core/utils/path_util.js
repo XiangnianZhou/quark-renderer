@@ -1,6 +1,6 @@
 import Path from '../../graphic/Path';
 import PathProxy from '../../graphic/PathProxy';
-import transformPath from './transformPath';
+import transformPath from './transform_path';
 
 // command chars
 // var cc = [

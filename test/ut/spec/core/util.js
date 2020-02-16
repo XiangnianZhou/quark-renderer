@@ -2,7 +2,7 @@ describe('qrUtil', function() {
 
     var utHelper = window.utHelper;
 
-    var testCase = utHelper.prepare(['qrenderer/src/core/dataStructureUtil']);
+    var testCase = utHelper.prepare(['qrenderer/src/core/data_structure_util']);
 
     describe('merge', function () {
 

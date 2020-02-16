@@ -3,9 +3,9 @@ import * as line from './line';
 import * as cubic from './cubic';
 import * as quadratic from './quadratic';
 import * as arc from './arc';
-import {normalizeRadian} from './radianUtil';
-import * as curve from '../utils/curveUtil';
-import windingLine from './windingLine';
+import {normalizeRadian} from './radian_util';
+import * as curve from '../utils/curve_util';
+import windingLine from './winding_line';
 import {PI2} from '../../graphic/constants';
 
 let CMD = PathProxy.CMD;

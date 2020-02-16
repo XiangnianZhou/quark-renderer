@@ -1,11 +1,11 @@
 /**
  * Do not mount those modules on 'src/qrenderer' for better tree shaking.
  */
-import * as qrUtil from './core/utils/dataStructureUtil';
+import * as qrUtil from './core/utils/data_structure_util';
 import * as matrix from './core/utils/matrix';
 import * as vector from './core/utils/vector';
-import * as colorTool from './core/utils/colorUtil';
-import * as pathTool from './core/utils/pathUtil';
+import * as colorTool from './core/utils/color_util';
+import * as pathTool from './core/utils/path_util';
 import {parseSVG} from './svg/SVGParser';
 
 export {default as Group} from './graphic/Group';

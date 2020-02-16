@@ -3,7 +3,7 @@
  */
 
 import * as vec2 from './vector';
-import * as curve from './curveUtil';
+import * as curve from './curve_util';
 
 var mathMin = Math.min;
 var mathMax = Math.max;

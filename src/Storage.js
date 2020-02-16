@@ -1,4 +1,4 @@
-import * as util from './core/utils/dataStructureUtil';
+import * as util from './core/utils/data_structure_util';
 import env from './core/env';
 import Group from './graphic/Group';
 // Use timsort because in most case elements are partially sorted

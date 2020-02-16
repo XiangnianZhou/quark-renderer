@@ -1,5 +1,5 @@
 import {createElement} from '../core';
-import * as dataUtil from '../../core/utils/dataStructureUtil';
+import * as dataUtil from '../../core/utils/data_structure_util';
 import Path from '../../graphic/Path';
 import QImage from '../../graphic/Image';
 import QText from '../../graphic/Text';

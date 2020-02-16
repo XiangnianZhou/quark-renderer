@@ -1,5 +1,5 @@
 
-import {normalizeRadian} from './radianUtil';
+import {normalizeRadian} from './radian_util';
 
 let PI2 = Math.PI * 2;
 

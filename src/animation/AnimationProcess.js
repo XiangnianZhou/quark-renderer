@@ -1,4 +1,4 @@
-import * as dataUtil from '../core/utils/dataStructureUtil';
+import * as dataUtil from '../core/utils/data_structure_util';
 import Track from './Track';
 /**
  * @class qrenderer.animation.AnimationProcess

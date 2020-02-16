@@ -1,4 +1,4 @@
-import * as classUtil from '../../core/utils/classUtil';
+import * as classUtil from '../../core/utils/class_util';
 import Gradient from './Gradient';
 /**
  * @class qrenderer.graphic.gradient.RadialGradient 

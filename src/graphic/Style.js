@@ -1,4 +1,4 @@
-import fixShadow from './utils/fixShadow';
+import fixShadow from './utils/fix_shadow';
 import {ContextCachedBy} from './constants';
 
 /**

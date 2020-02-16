@@ -1,6 +1,5 @@
 import * as vmlCore from './core';
-import * as dataUtil from '../core/utils/dataStructureUtil';
-import {each} from '../core/utils/dataStructureUtil';
+import * as dataUtil from '../core/utils/data_structure_util';
 
 /**
  * @class qrenderer.svg.VMLPainter

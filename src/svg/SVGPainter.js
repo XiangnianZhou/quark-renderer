@@ -1,9 +1,9 @@
 import {createElement} from './core';
-import * as dataUtil from '../core/utils/dataStructureUtil';
+import * as dataUtil from '../core/utils/data_structure_util';
 import Path from '../graphic/Path';
 import QImage from '../graphic/Image';
 import QText from '../graphic/Text';
-import arrayDiff from '../core/utils/arrayDiff2';
+import arrayDiff from '../core/utils/array_diff2';
 import GradientManager from './helper/GradientManager';
 import ClippathManager from './helper/ClippathManager';
 import ShadowManager from './helper/ShadowManager';

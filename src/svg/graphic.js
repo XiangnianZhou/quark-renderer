@@ -3,7 +3,7 @@ import PathProxy from '../graphic/PathProxy';
 import BoundingRect from '../graphic/BoundingRect';
 import * as matrix from '../core/utils/matrix';
 import * as textContain from '../core/contain/text';
-import * as textUtil from '../graphic/utils/textUtil';
+import * as textUtil from '../graphic/utils/text_util';
 import Text from '../graphic/Text';
 
 // TODO

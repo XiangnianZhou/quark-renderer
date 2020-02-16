@@ -1,7 +1,7 @@
 import Eventful from './Eventful';
-import * as eventUtil from '../core/utils/eventUtil';
-import * as dataUtil from '../core/utils/dataStructureUtil';
-import * as classUtil from '../core/utils/classUtil';
+import * as eventUtil from '../core/utils/event_util';
+import * as dataUtil from '../core/utils/data_structure_util';
+import * as classUtil from '../core/utils/class_util';
 import env from '../core/env';
 
 /**

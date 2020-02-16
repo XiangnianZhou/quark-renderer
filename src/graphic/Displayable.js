@@ -1,4 +1,4 @@
-import * as classUtil from '../core/utils/classUtil';
+import * as classUtil from '../core/utils/class_util';
 import Style from './Style';
 import Element from './Element';
 import RectText from './RectText';

@@ -1,6 +1,6 @@
 import Path from '../Path';
-import fixClipWithShadow from '../utils/fixClipWithShadow';
-import * as dataUtil from '../../core/utils/dataStructureUtil';
+import fixClipWithShadow from '../utils/fix_clip_with_shadow';
+import * as dataUtil from '../../core/utils/data_structure_util';
 
 /**
  * @class qrenderer.graphic.shape.Sector 

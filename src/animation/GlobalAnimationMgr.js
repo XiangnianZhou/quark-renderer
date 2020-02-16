@@ -1,7 +1,8 @@
-import * as dataUtil from '../core/utils/dataStructureUtil';
-import * as classUtil from '../core/utils/classUtil';
-import {Dispatcher} from '../core/utils/eventUtil';
-import requestAnimationFrame from './utils/requestAnimationFrame';
+import * as dataUtil from '../core/utils/data_structure_util';
+import * as classUtil from '../core/utils/class_util';
+import {Dispatcher} from '../core/utils/event_util';
+import requestAnimationFrame from './utils/request_animation_frame';
+
 /**
  * @singleton
  * @class qrenderer.animation.GlobalAnimationMgr

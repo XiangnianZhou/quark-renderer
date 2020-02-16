@@ -1,7 +1,7 @@
 import Path from '../Path';
-import * as roundRectHelper from '../utils/roundRect';
-import {subPixelOptimizeRect} from '../utils/subPixelOptimize';
-import * as dataUtil from '../../core/utils/dataStructureUtil';
+import * as roundRectHelper from '../utils/round_rect';
+import {subPixelOptimizeRect} from '../utils/sub_pixel_optimize';
+import * as dataUtil from '../../core/utils/data_structure_util';
 
 /**
  * @class qrenderer.graphic.shape.Rect 

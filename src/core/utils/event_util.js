@@ -4,7 +4,7 @@
 
 import Eventful from '../../event/Eventful';
 import env from '../env';
-import {buildTransformer} from './fourPointsTransform';
+import {buildTransformer} from './four_points_transform';
 
 var isDomLevel2 = (typeof window !== 'undefined') && !!window.addEventListener;
 

@@ -1,4 +1,4 @@
-import * as eventUtil from '../core/utils/eventUtil';
+import * as eventUtil from '../core/utils/event_util';
 
 /**
  * @class qrenderer.event.GestureMgr
