@@ -1,7 +1,7 @@
-import * as eventUtil from './utils/eventUtil';
+import * as eventUtil from '../core/utils/eventUtil';
 
 /**
- * @class qrenderer.core.GestureMgr
+ * @class qrenderer.event.GestureMgr
  * 
  * Implement necessary gestures for mobile platform.
  * 

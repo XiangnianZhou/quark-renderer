@@ -4,7 +4,7 @@ import * as vec2 from '../core/utils/vector';
 import * as eventTool from '../core/utils/eventUtil';
 import MultiDragDrop from './MultiDragDrop';
 import Eventful from './Eventful';
-import GestureMgr from '../core/GestureMgr';
+import GestureMgr from './GestureMgr';
 
 /**
  * @class qrenderer.event.QRendererEventHandler
