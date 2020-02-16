@@ -1,3 +1,4 @@
+import {mathAbs,mathMin} from '../../graphic/constants';
 // Hirschberg's algorithm
 // http://en.wikipedia.org/wiki/Hirschberg%27s_algorithm
 
@@ -36,14 +37,13 @@ function append(out, cmd, idx, idx1) {
     out.push(createItem(cmd, idx, idx1));
 }
 
-var abs = Math.abs;
 // Needleman-Wunsch score
 function score(arr0, arr1, i0, i1, j0, j1, equal, memo) {
     var last;
     var invM = i0 > i1;
     var invN = j0 > j1;
-    var m = abs(i1 - i0);
-    var n = abs(j1 - j0);
+    var m = mathAbs(i1 - i0);
+    var n = mathAbs(j1 - j0);
     var i;
     var j;
     for (i = 0; i <= m; i++) {
@@ -75,7 +75,7 @@ function score(arr0, arr1, i0, i1, j0, j1, equal, memo) {
                 memo[j] = score0 < score1 ? score0 : score1;
                 score2 < memo[j] && (memo[j] = score2);
                 // Math min of three parameters seems slow
-                // memo[j] = Math.min(score0, score1, score2);
+                // memo[j] = mathMin(score0, score1, score2);
             }
         }
     }
@@ -177,7 +177,7 @@ function arrayDiff(arr0, arr1, equal) {
     var j;
     var len0 = arr0.length;
     var len1 = arr1.length;
-    var lenMin = Math.min(len0, len1);
+    var lenMin = mathMin(len0, len1);
     var head = [];
     for (i = 0; i < lenMin; i++) {
         if (!equal(arr0[i], arr1[i])) {

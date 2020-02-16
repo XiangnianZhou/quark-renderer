@@ -1,13 +1,12 @@
 import Path from '../Path';
 import * as dataUtil from '../../core/utils/data_structure_util';
+import {mathSin,mathCos} from '../../graphic/constants';
 
 /**
  * @class qrenderer.graphic.shape.Rose 
  * 玫瑰线
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let sin = Math.sin;
-let cos = Math.cos;
 let radian = Math.PI / 180;
 
 let defaultConfig={
@@ -61,12 +60,12 @@ export default class Rose extends Path{
 
             for (let j = 0; j <= 360 * n; j++) {
                 x = r
-                        * sin(k / n * j % 360 * radian)
-                        * cos(j * radian)
+                        * mathSin(k / n * j % 360 * radian)
+                        * mathCos(j * radian)
                         + x0;
                 y = r
-                        * sin(k / n * j % 360 * radian)
-                        * sin(j * radian)
+                        * mathSin(k / n * j % 360 * radian)
+                        * mathSin(j * radian)
                         + y0;
                 ctx.lineTo(x, y);
             }

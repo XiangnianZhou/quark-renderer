@@ -14,6 +14,7 @@ import * as matrix from '../core/utils/matrix';
 import { createFromString } from '../core/utils/path_util';
 import { isString, extend, trim, each } from '../core/utils/data_structure_util';
 import { defaults } from '../core/utils/class_util';
+import {mathMin} from '../graphic/constants';
 
 // Most of the values can be separated by comma and/or white space.
 let DILIMITER_REG = /[\s,]+/;
@@ -649,7 +650,7 @@ function parseStyleAttribute(xmlNode) {
 export function makeViewBoxTransform(viewBoxRect, width, height) {
     let scaleX = width / viewBoxRect.width;
     let scaleY = height / viewBoxRect.height;
-    let scale = Math.min(scaleX, scaleY);
+    let scale = mathMin(scaleX, scaleY);
     // preserveAspectRatio 'xMidYMid'
     let viewBoxScale = [scale, scale];
     let viewBoxPosition = [

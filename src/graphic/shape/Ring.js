@@ -1,5 +1,6 @@
 import Path from '../Path';
 import * as dataUtil from '../../core/utils/data_structure_util';
+import {PI2} from '../../graphic/constants';
 
 /**
  * @class qrenderer.graphic.shape.Ring 
@@ -37,7 +38,6 @@ export default class Ring extends Path{
     buildPath(ctx, shape) {
         let x = shape.cx;
         let y = shape.cy;
-        let PI2 = Math.PI * 2;
         ctx.moveTo(x + shape.r, y);
         ctx.arc(x, y, shape.r, 0, PI2, false);
         ctx.moveTo(x + shape.r0, y);

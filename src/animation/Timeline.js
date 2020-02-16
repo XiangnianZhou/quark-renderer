@@ -1,4 +1,6 @@
 import easingFuncs from './utils/easing';
+import {mathMin} from '../graphic/constants';
+
 /**
  * @class qrenderer.animation.Timeline
  * Timeline，时间线，用来计算元素上的某个属性在指定时间点的数值。
@@ -60,7 +62,7 @@ export default class Timeline{
         if (percent < 0) {
             return;
         }
-        percent = Math.min(percent, 1);
+        percent = mathMin(percent, 1);
 
         let easing = this.easing;
         let easingFunc = typeof easing === 'string' ? easingFuncs[easing] : easing;

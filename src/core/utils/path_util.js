@@ -1,27 +1,22 @@
 import Path from '../../graphic/Path';
 import PathProxy from '../../graphic/PathProxy';
 import transformPath from './transform_path';
+import {mathSqrt,mathSin,mathCos,PI,mathAcos} from '../../graphic/constants';
 
 // command chars
 // var cc = [
 //     'm', 'M', 'l', 'L', 'v', 'V', 'h', 'H', 'z', 'Z',
 //     'c', 'C', 'q', 'Q', 't', 'T', 's', 'S', 'a', 'A'
 // ];
-
-var mathSqrt = Math.sqrt;
-var mathSin = Math.sin;
-var mathCos = Math.cos;
-var PI = Math.PI;
-
 var vMag = function (v) {
-    return Math.sqrt(v[0] * v[0] + v[1] * v[1]);
+    return mathSqrt(v[0] * v[0] + v[1] * v[1]);
 };
 var vRatio = function (u, v) {
     return (u[0] * v[0] + u[1] * v[1]) / (vMag(u) * vMag(v));
 };
 var vAngle = function (u, v) {
     return (u[0] * v[1] < u[1] * v[0] ? -1 : 1)
-            * Math.acos(vRatio(u, v));
+            * mathAcos(vRatio(u, v));
 };
 
 function processArc(x1, y1, x2, y2, fa, fs, rx, ry, psiDeg, cmd, path) {

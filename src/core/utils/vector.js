@@ -1,4 +1,5 @@
 /* global Float32Array */
+import {mathSqrt,mathMin,mathMax} from '../../graphic/constants';
 
 var ArrayCtor = typeof Float32Array === 'undefined'
     ? Array
@@ -103,7 +104,7 @@ export function sub(out, v1, v2) {
  * @return {Number}
  */
 export function len(v) {
-    return Math.sqrt(lenSquare(v));
+    return mathSqrt(lenSquare(v));
 }
 export var length = len; // jshint ignore:line
 
@@ -188,7 +189,7 @@ export function normalize(out, v) {
  * @return {Number}
  */
 export function distance(v1, v2) {
-    return Math.sqrt(
+    return mathSqrt(
         (v1[0] - v2[0]) * (v1[0] - v2[0])
         + (v1[1] - v2[1]) * (v1[1] - v2[1])
     );
@@ -252,8 +253,8 @@ export function applyTransform(out, v, m) {
  * @param  {Vector2} v2
  */
 export function min(out, v1, v2) {
-    out[0] = Math.min(v1[0], v2[0]);
-    out[1] = Math.min(v1[1], v2[1]);
+    out[0] = mathMin(v1[0], v2[0]);
+    out[1] = mathMin(v1[1], v2[1]);
     return out;
 }
 
@@ -264,7 +265,7 @@ export function min(out, v1, v2) {
  * @param  {Vector2} v2
  */
 export function max(out, v1, v2) {
-    out[0] = Math.max(v1[0], v2[0]);
-    out[1] = Math.max(v1[1], v2[1]);
+    out[0] = mathMax(v1[0], v2[0]);
+    out[1] = mathMax(v1[1], v2[1]);
     return out;
 }

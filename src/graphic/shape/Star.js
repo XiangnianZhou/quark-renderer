@@ -1,14 +1,12 @@
 import Path from '../Path';
 import * as dataUtil from '../../core/utils/data_structure_util';
+import {mathSin,mathCos,PI2,PI} from '../../graphic/constants';
 
 /**
  * @class qrenderer.graphic.shape.Star 
  * n角星（n>3）
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let PI = Math.PI;
-let cos = Math.cos;
-let sin = Math.sin;
 let defaultConfig={
     /**
      * @property {String} type
@@ -54,22 +52,22 @@ export default class Star extends Path{
             r0 = n > 4
                 // 相隔的外部顶点的连线的交点，
                 // 被取为内部交点，以此计算r0
-                ? r * cos(2 * PI / n) / cos(PI / n)
+                ? r * mathCos(2 * PI / n) / mathCos(PI / n)
                 // 二三四角星的特殊处理
                 : r / 3;
         }
 
         let dStep = PI / n;
         let deg = -PI / 2;
-        let xStart = x + r * cos(deg);
-        let yStart = y + r * sin(deg);
+        let xStart = x + r * mathCos(deg);
+        let yStart = y + r * mathSin(deg);
         deg += dStep;
 
         // 记录边界点，用于判断inside
         ctx.moveTo(xStart, yStart);
         for (let i = 0, end = n * 2 - 1, ri; i < end; i++) {
             ri = i % 2 === 0 ? r0 : r;
-            ctx.lineTo(x + ri * cos(deg), y + ri * sin(deg));
+            ctx.lineTo(x + ri * mathCos(deg), y + ri * mathSin(deg));
             deg += dStep;
         }
 

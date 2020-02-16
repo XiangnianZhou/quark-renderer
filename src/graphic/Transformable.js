@@ -1,5 +1,6 @@
 import * as matrix from '../core/utils/matrix';
 import * as vector from '../core/utils/vector';
+import {mathSqrt,mathAtan2} from '../graphic/constants';
 
 /**
  * @abstract
@@ -156,10 +157,10 @@ transformableProto.setLocalTransform = function (m) {
     let position = this.position;
     let scale = this.scale;
     if (isNotAroundZero(sx - 1)) {
-        sx = Math.sqrt(sx);
+        sx = mathSqrt(sx);
     }
     if (isNotAroundZero(sy - 1)) {
-        sy = Math.sqrt(sy);
+        sy = mathSqrt(sy);
     }
     if (m[0] < 0) {
         sx = -sx;
@@ -172,7 +173,7 @@ transformableProto.setLocalTransform = function (m) {
     position[1] = m[5];
     scale[0] = sx;
     scale[1] = sy;
-    this.rotation = Math.atan2(-m[1] / sy, m[0] / sx);
+    this.rotation = mathAtan2(-m[1] / sy, m[0] / sx);
 };
 /**
  * 分解`transform`矩阵到`position`, `rotation`, `scale`
@@ -214,8 +215,8 @@ transformableProto.getGlobalScale = function (out) {
         out[1] = 1;
         return out;
     }
-    out[0] = Math.sqrt(m[0] * m[0] + m[1] * m[1]);
-    out[1] = Math.sqrt(m[2] * m[2] + m[3] * m[3]);
+    out[0] = mathSqrt(m[0] * m[0] + m[1] * m[1]);
+    out[1] = mathSqrt(m[2] * m[2] + m[3] * m[3]);
     if (m[0] < 0) {
         out[0] = -out[0];
     }

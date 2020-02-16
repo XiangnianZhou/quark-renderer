@@ -6,6 +6,7 @@ import timsort from './core/utils/timsort';
 import Layer from './CanvasLayer';
 import Image from './graphic/Image';
 import env from './core/env';
+import {mathRandom,mathMax} from './graphic/constants';
 
 /**
  * @class qrenderer.canvas.CanvasPainter
@@ -301,7 +302,7 @@ CanvasPainter.prototype = {
     refresh: function (paintAll) {
         let list = this.storage.getDisplayList(true);
         let qlevelList = this._qlevelList;
-        this._redrawId = Math.random();
+        this._redrawId = mathRandom();
         this._paintList(list, paintAll, this._redrawId);
 
         // Paint custum layers
@@ -1148,10 +1149,10 @@ CanvasPainter.prototype = {
         let shadowOffsetY = style.shadowOffsetY * dpr;
         let lineWidth = style.hasStroke() ? style.lineWidth : 0;
 
-        let leftMargin = Math.max(lineWidth / 2, -shadowOffsetX + shadowBlurSize);
-        let rightMargin = Math.max(lineWidth / 2, shadowOffsetX + shadowBlurSize);
-        let topMargin = Math.max(lineWidth / 2, -shadowOffsetY + shadowBlurSize);
-        let bottomMargin = Math.max(lineWidth / 2, shadowOffsetY + shadowBlurSize);
+        let leftMargin = mathMax(lineWidth / 2, -shadowOffsetX + shadowBlurSize);
+        let rightMargin = mathMax(lineWidth / 2, shadowOffsetX + shadowBlurSize);
+        let topMargin = mathMax(lineWidth / 2, -shadowOffsetY + shadowBlurSize);
+        let bottomMargin = mathMax(lineWidth / 2, shadowOffsetY + shadowBlurSize);
         let width = rect.width + leftMargin + rightMargin;
         let height = rect.height + topMargin + bottomMargin;
 

@@ -7,9 +7,7 @@ import {
     create as v2Create,
     distSquare as v2DistSquare
 } from './vector';
-
-var mathPow = Math.pow;
-var mathSqrt = Math.sqrt;
+import {mathPow,mathSqrt,mathAcos,mathCos,mathSin} from '../../graphic/constants';
 
 var EPSILON = 1e-8;
 var EPSILON_NUMERIC = 1e-4;
@@ -131,13 +129,13 @@ export function cubicRootAt(p0, p1, p2, p3, val, roots) {
         }
         else {
             var T = (2 * A * b - 3 * a * B) / (2 * mathSqrt(A * A * A));
-            var theta = Math.acos(T) / 3;
+            var theta = mathAcos(T) / 3;
             var ASqrt = mathSqrt(A);
-            var tmp = Math.cos(theta);
+            var tmp = mathCos(theta);
 
             var t1 = (-b - 2 * ASqrt * tmp) / (3 * a);
-            var t2 = (-b + ASqrt * (tmp + THREE_SQRT * Math.sin(theta))) / (3 * a);
-            var t3 = (-b + ASqrt * (tmp - THREE_SQRT * Math.sin(theta))) / (3 * a);
+            var t2 = (-b + ASqrt * (tmp + THREE_SQRT * mathSin(theta))) / (3 * a);
+            var t3 = (-b + ASqrt * (tmp - THREE_SQRT * mathSin(theta))) / (3 * a);
             if (t1 >= 0 && t1 <= 1) {
                 roots[n++] = t1;
             }

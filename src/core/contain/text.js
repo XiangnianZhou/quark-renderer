@@ -7,6 +7,7 @@ import {
     retrieve3,
     trim
 } from '../utils/data_structure_util';
+import { mathMax, mathFloor } from '../../graphic/constants';
 
 let textWidthCache = {};
 let textWidthCacheCounter = 0;
@@ -40,7 +41,7 @@ export function getWidth(text, font) {
 
     for (let i = 0, l = textLines.length; i < l; i++) {
         // textContain.measureText may be overrided in SVG or VML
-        width = Math.max(measureText(textLines[i], font).width, width);
+        width = mathMax(measureText(textLines[i], font).width, width);
     }
 
     if (textWidthCacheCounter > TEXT_CACHE_MAX) {
@@ -309,7 +310,7 @@ function prepareTruncateOptions(containerWidth, font, ellipsis, options) {
 
     // Example 1: minChar: 3, text: 'asdfzxcv', truncate result: 'asdf', but not: 'a...'.
     // Example 2: minChar: 3, text: '维度', truncate result: '维', but not: '...'.
-    let contentWidth = containerWidth = Math.max(0, containerWidth - 1); // Reserve some gap.
+    let contentWidth = containerWidth = mathMax(0, containerWidth - 1); // Reserve some gap.
     for (let i = 0; i < minChar && contentWidth >= ascCharWidth; i++) {
         contentWidth -= ascCharWidth;
     }
@@ -354,7 +355,7 @@ function truncateSingleLine(textLine, options) {
         let subLength = j === 0
             ? estimateLength(textLine, contentWidth, options.ascCharWidth, options.cnCharWidth)
             : lineWidth > 0
-            ? Math.floor(textLine.length * contentWidth / lineWidth)
+            ? mathFloor(textLine.length * contentWidth / lineWidth)
             : 0;
 
         textLine = textLine.substr(0, subLength);
@@ -600,7 +601,7 @@ export function parseRichText(text, style) {
                     if (bgImg) {
                         bgImg = imageHelper.findExistImage(bgImg);
                         if (imageHelper.isImageReady(bgImg)) {
-                            tokenWidth = Math.max(tokenWidth, bgImg.width * tokenHeight / bgImg.height);
+                            tokenWidth = mathMax(tokenWidth, bgImg.width * tokenHeight / bgImg.height);
                         }
                     }
                 }
@@ -627,13 +628,13 @@ export function parseRichText(text, style) {
             }
 
             lineWidth += (token.width = tokenWidth);
-            tokenStyle && (lineHeight = Math.max(lineHeight, token.lineHeight));
+            tokenStyle && (lineHeight = mathMax(lineHeight, token.lineHeight));
         }
 
         line.width = lineWidth;
         line.lineHeight = lineHeight;
         contentHeight += lineHeight;
-        contentWidth = Math.max(contentWidth, lineWidth);
+        contentWidth = mathMax(contentWidth, lineWidth);
     }
 
     contentBlock.outerWidth = contentBlock.width = retrieve2(style.textWidth, contentWidth);

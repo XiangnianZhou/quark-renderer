@@ -1,15 +1,9 @@
 /**
  * @author Yi Shen(https://github.com/pissang)
  */
-
 import * as vec2 from './vector';
 import * as curve from './curve_util';
-
-var mathMin = Math.min;
-var mathMax = Math.max;
-var mathSin = Math.sin;
-var mathCos = Math.cos;
-var PI2 = Math.PI * 2;
+import {PI2,mathAsin,mathCos,mathSin,mathPow,mathSqrt,PI,mathMin,mathMax,mathAbs} from '../../graphic/constants';
 
 var start = vec2.create();
 var end = vec2.create();
@@ -163,7 +157,7 @@ export function fromArc(
     var vec2Min = vec2.min;
     var vec2Max = vec2.max;
 
-    var diff = Math.abs(startAngle - endAngle);
+    var diff = mathAbs(startAngle - endAngle);
 
 
     if (diff % PI2 < 1e-4 && diff > 1e-4) {
@@ -184,7 +178,7 @@ export function fromArc(
     vec2Min(min, start, end);
     vec2Max(max, start, end);
 
-    // Thresh to [0, Math.PI * 2]
+    // Thresh to [0, PI * 2]
     startAngle = startAngle % (PI2);
     if (startAngle < 0) {
         startAngle = startAngle + PI2;
@@ -207,8 +201,8 @@ export function fromArc(
     }
 
     // var number = 0;
-    // var step = (anticlockwise ? -Math.PI : Math.PI) / 2;
-    for (var angle = 0; angle < endAngle; angle += Math.PI / 2) {
+    // var step = (anticlockwise ? -PI : PI) / 2;
+    for (var angle = 0; angle < endAngle; angle += PI / 2) {
         if (angle > startAngle) {
             extremity[0] = mathCos(angle) * rx + x;
             extremity[1] = mathSin(angle) * ry + y;

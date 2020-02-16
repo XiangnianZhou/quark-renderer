@@ -1,6 +1,7 @@
 import Path from '../Path';
 import fixClipWithShadow from '../utils/fix_clip_with_shadow';
 import * as dataUtil from '../../core/utils/data_structure_util';
+import {mathSin,mathCos,mathMax,PI2} from '../../graphic/constants';
 
 /**
  * @class qrenderer.graphic.shape.Sector 
@@ -18,7 +19,7 @@ let defaultConfig={
         r0: 0,
         r: 0,
         startAngle: 0,
-        endAngle: Math.PI * 2,
+        endAngle: PI2,
         clockwise: true
     }
 };
@@ -42,21 +43,21 @@ export default class Sector extends Path{
     buildPath(ctx, shape) {
         let x = shape.cx;
         let y = shape.cy;
-        let r0 = Math.max(shape.r0 || 0, 0);
-        let r = Math.max(shape.r, 0);
+        let r0 = mathMax(shape.r0 || 0, 0);
+        let r = mathMax(shape.r, 0);
         let startAngle = shape.startAngle;
         let endAngle = shape.endAngle;
         let clockwise = shape.clockwise;
 
-        let unitX = Math.cos(startAngle);
-        let unitY = Math.sin(startAngle);
+        let unitX = mathCos(startAngle);
+        let unitY = mathSin(startAngle);
 
         ctx.moveTo(unitX * r0 + x, unitY * r0 + y);
         ctx.lineTo(unitX * r + x, unitY * r + y);
         ctx.arc(x, y, r, startAngle, endAngle, !clockwise);
         ctx.lineTo(
-            Math.cos(endAngle) * r0 + x,
-            Math.sin(endAngle) * r0 + y
+            mathCos(endAngle) * r0 + x,
+            mathSin(endAngle) * r0 + y
         );
 
         if (r0 !== 0) {

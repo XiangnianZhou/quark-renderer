@@ -1,13 +1,12 @@
 import * as vec2 from '../core/utils/vector';
 import * as matrix from '../core/utils/matrix';
+import {mathMin,mathMax} from '../graphic/constants';
 
 /**
  * @class qrenderer.core.BoundingRect
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 let v2ApplyTransform = vec2.applyTransform;
-let mathMin = Math.min;
-let mathMax = Math.max;
 let lt = [];
 let rb = [];
 let lb = [];

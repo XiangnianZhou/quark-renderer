@@ -6,6 +6,7 @@
  */
 
 import {distance as v2Distance} from '../../core/utils/vector';
+import {mathFloor} from '../../graphic/constants';
 
 /**
  * @inner
@@ -37,7 +38,7 @@ export default function (points, isLoop) {
     segs = segs < len ? len : segs;
     for (var i = 0; i < segs; i++) {
         var pos = i / (segs - 1) * (isLoop ? len : len - 1);
-        var idx = Math.floor(pos);
+        var idx = mathFloor(pos);
 
         var w = pos - idx;
 

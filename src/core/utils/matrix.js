@@ -1,3 +1,5 @@
+import {mathSin,mathCos} from '../../graphic/constants';
+
 /**
  * 3x2矩阵操作类
  * @exports qrenderer/core/matrix
@@ -103,8 +105,8 @@ export function rotate(out, a, rad) {
     var ab = a[1];
     var ad = a[3];
     var aty = a[5];
-    var st = Math.sin(rad);
-    var ct = Math.cos(rad);
+    var st = mathSin(rad);
+    var ct = mathCos(rad);
 
     out[0] = aa * ct + ab * st;
     out[1] = -aa * st + ab * ct;
