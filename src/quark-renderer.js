@@ -79,8 +79,10 @@ export function dispose(qr) {
 }
 
 /**
- * Get qrenderer instance by id
- * @param {String} id qrenderer instance id
+ * @static
+ * @method getInstance
+ * Get qrenderer instance by id.
+ * @param {String} id
  * @return {QuarkRenderer}
  */
 export function getInstance(id) {
