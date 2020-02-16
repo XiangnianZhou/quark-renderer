@@ -1,7 +1,7 @@
 {
   "name": "quark-renderer",
   "version": "1.0.0",
-  "description": "A lightweight canvas library.",
+  "description": "A lightweight yet powerful canvas renderer engine improved from ZRender.",
   "keywords": [
     "canvas",
     "2d"
