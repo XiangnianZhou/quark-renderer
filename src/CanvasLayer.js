@@ -19,105 +19,104 @@ import Pattern from './graphic/Pattern';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
-/**
- * @method constructor CanvasLayer
- * @param {String|Object} id
- * @param {Number} width
- * @param {Number} height
- * @param {Number} [dpr]
- */
-let CanvasLayer = function (id,width,height,dpr) {
+export default class CanvasLayer{
     /**
-     * @property {String|Object} CanvasLayer id
+     * @method constructor CanvasLayer
+     * @param {String|Object} id
+     * @param {Number} width
+     * @param {Number} height
+     * @param {Number} [dpr]
      */
-    this.id = id;
-    /**
-     * @property {Number} CanvasLayer width
-     */
-    this.width=width;
-    /**
-     * @property {Number} CanvasLayer height
-     */
-    this.height=height;
-    /**
-     * @property {Number} CanvasLayer dpr
-     */
-    this.dpr = dpr;
+    constructor(id,width,height,dpr){
+        /**
+         * @property {String|Object} CanvasLayer id
+         */
+        this.id = id;
+        /**
+         * @property {Number} CanvasLayer width
+         */
+        this.width=width;
+        /**
+         * @property {Number} CanvasLayer height
+         */
+        this.height=height;
+        /**
+         * @property {Number} CanvasLayer dpr
+         */
+        this.dpr = dpr;
 
-    // Create or set canvas instance.
-    let canvasInstance;
-    if (dataUtil.isObject(id)) {// Don't use isDom because in node it will return false
-        canvasInstance = id;
-        id = canvasInstance.id;
-    }else if(typeof id === 'string'){
-        canvasInstance = canvasUtil.createCanvas(id,this.width,this.height,this.dpr);
+        // Create or set canvas instance.
+        let canvasInstance;
+        if (dataUtil.isObject(id)) {// Don't use isDom because in node it will return false
+            canvasInstance = id;
+            id = canvasInstance.id;
+        }else if(typeof id === 'string'){
+            canvasInstance = canvasUtil.createCanvas(id,this.width,this.height,this.dpr);
+        }
+        this.canvasInstance = canvasInstance;
+
+        // There is no style attribute of canvasInstance in nodejs.
+        if (canvasInstance.style) {
+            canvasInstance.onselectstart = ()=>{return false;}; // 避免页面选中的尴尬
+            canvasInstance.style['-webkit-user-select'] = 'none';
+            canvasInstance.style['user-select'] = 'none';
+            canvasInstance.style['-webkit-touch-callout'] = 'none';
+            canvasInstance.style['-webkit-tap-highlight-color'] = 'rgba(0,0,0,0)';
+            canvasInstance.style['padding'] = 0; // eslint-disable-line dot-notation
+            canvasInstance.style['margin'] = 0; // eslint-disable-line dot-notation
+            canvasInstance.style['border-width'] = 0;
+        }
+
+        /**
+         * @property {Canvas} hiddenCanvas 隐藏的画布实例
+         */
+        this.hiddenCanvas = null;
+        /**
+         * @property {Context} hiddenContext 隐藏的画布上下文
+         */
+        this.hiddenContext = null;
+        this.config = null;
+
+        /**
+         * @property {String} 每次清空画布的颜色
+         */
+        this.clearColor = 0;
+        /**
+         * @property {boolean} 是否开启动态模糊
+         */
+        this.motionBlur = false;
+        /**
+         * @property {Number} 在开启动态模糊的时候使用，与上一帧混合的alpha值，值越大尾迹越明显
+         */
+        this.lastFrameAlpha = 0.7;
+
+        this.__dirty=true;
+        this.__used=false;
+        this.__drawIndex=0;
+        this.__startIndex=0;
+        this.__endIndex=0;
+        this.incremental=false;
     }
-    this.canvasInstance = canvasInstance;
-
-    // There is no style attribute of canvasInstance in nodejs.
-    if (canvasInstance.style) {
-        canvasInstance.onselectstart = ()=>{return false;}; // 避免页面选中的尴尬
-        canvasInstance.style['-webkit-user-select'] = 'none';
-        canvasInstance.style['user-select'] = 'none';
-        canvasInstance.style['-webkit-touch-callout'] = 'none';
-        canvasInstance.style['-webkit-tap-highlight-color'] = 'rgba(0,0,0,0)';
-        canvasInstance.style['padding'] = 0; // eslint-disable-line dot-notation
-        canvasInstance.style['margin'] = 0; // eslint-disable-line dot-notation
-        canvasInstance.style['border-width'] = 0;
-    }
-
-    /**
-     * @property {Canvas} hiddenCanvas 隐藏的画布实例
-     */
-    this.hiddenCanvas = null;
-    /**
-     * @property {Context} hiddenContext 隐藏的画布上下文
-     */
-    this.hiddenContext = null;
-    this.config = null;
-
-    /**
-     * @property {String} 每次清空画布的颜色
-     */
-    this.clearColor = 0;
-    /**
-     * @property {boolean} 是否开启动态模糊
-     */
-    this.motionBlur = false;
-    /**
-     * @property {Number} 在开启动态模糊的时候使用，与上一帧混合的alpha值，值越大尾迹越明显
-     */
-    this.lastFrameAlpha = 0.7;
-};
-
-CanvasLayer.prototype = {
-    constructor: CanvasLayer,
-    __dirty: true,
-    __used: false,
-    __drawIndex: 0,
-    __startIndex: 0,
-    __endIndex: 0,
-    incremental: false,
-
+    
     /**
      * @method getElementCount
      */
-    getElementCount: function () {
+    getElementCount() {
         return this.__endIndex - this.__startIndex;
-    },
+    }
 
     /**
      * @method initContext
      */
-    initContext: function () {
+    initContext() {
         this.ctx = this.canvasInstance.getContext('2d');
         this.ctx.dpr = this.dpr;
-    },
+    }
 
     /**
      * @method createBackBuffer
      */
-    createBackBuffer: function () {
+    createBackBuffer() {
         let dpr = this.dpr;
         
         this.hiddenCanvas = canvasUtil.createCanvas('back-' + this.id, this.width,this.height, dpr);
@@ -126,14 +125,14 @@ CanvasLayer.prototype = {
         if (dpr !== 1) {
             this.hiddenContext.scale(dpr, dpr);
         }
-    },
+    }
 
     /**
      * @method resize
      * @param  {Number} width
      * @param  {Number} height
      */
-    resize: function (width, height) {
+    resize(width, height) {
         let dpr = this.dpr;
         let canvasInstance = this.canvasInstance;
         let domStyle = canvasInstance.style;
@@ -155,7 +154,7 @@ CanvasLayer.prototype = {
                 this.hiddenContext.scale(dpr, dpr);
             }
         }
-    },
+    }
 
     /**
      * @method clear
@@ -163,7 +162,7 @@ CanvasLayer.prototype = {
      * @param {boolean} [clearAll=false] Clear all with out motion blur
      * @param {Color} [clearColor]
      */
-    clear: function (clearAll, clearColor) {
+    clear(clearAll, clearColor) {
         clearColor = clearColor || this.clearColor;
         let canvasInstance = this.canvasInstance;
         let ctx = this.ctx;
@@ -219,6 +218,4 @@ CanvasLayer.prototype = {
             ctx.restore();
         }
     }
-};
-
-export default CanvasLayer;
+}
