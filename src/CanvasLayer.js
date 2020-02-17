@@ -1,6 +1,5 @@
 import * as dataUtil from './core/utils/data_structure_util';
 import * as canvasUtil from './core/utils/canvas_util';
-import {devicePixelRatio} from './config';
 import Style from './graphic/Style';
 import Pattern from './graphic/Pattern';
 
@@ -27,7 +26,7 @@ import Pattern from './graphic/Pattern';
  * @param {Number} height
  * @param {Number} [dpr]
  */
-let CanvasLayer = function (id,width,height,dpr=devicePixelRatio) {
+let CanvasLayer = function (id,width,height,dpr) {
     /**
      * @property {String|Object} CanvasLayer id
      */
@@ -45,6 +44,7 @@ let CanvasLayer = function (id,width,height,dpr=devicePixelRatio) {
      */
     this.dpr = dpr;
 
+    // Create or set canvas instance.
     let canvasInstance;
     if (dataUtil.isObject(id)) {// Don't use isDom because in node it will return false
         canvasInstance = id;
@@ -66,8 +66,14 @@ let CanvasLayer = function (id,width,height,dpr=devicePixelRatio) {
         canvasInstance.style['border-width'] = 0;
     }
 
-    this.domBack = null;
-    this.ctxBack = null;
+    /**
+     * @property {Canvas} hiddenCanvas 隐藏的画布实例
+     */
+    this.hiddenCanvas = null;
+    /**
+     * @property {Context} hiddenContext 隐藏的画布上下文
+     */
+    this.hiddenContext = null;
     this.config = null;
 
     /**
@@ -114,11 +120,11 @@ CanvasLayer.prototype = {
     createBackBuffer: function () {
         let dpr = this.dpr;
         
-        this.domBack = canvasUtil.createCanvas('back-' + this.id, this.width,this.height, dpr);
-        this.ctxBack = this.domBack.getContext('2d');
+        this.hiddenCanvas = canvasUtil.createCanvas('back-' + this.id, this.width,this.height, dpr);
+        this.hiddenContext = this.hiddenCanvas.getContext('2d');
 
         if (dpr !== 1) {
-            this.ctxBack.scale(dpr, dpr);
+            this.hiddenContext.scale(dpr, dpr);
         }
     },
 
@@ -131,7 +137,7 @@ CanvasLayer.prototype = {
         let dpr = this.dpr;
         let canvasInstance = this.canvasInstance;
         let domStyle = canvasInstance.style;
-        let domBack = this.domBack;
+        let hiddenCanvas = this.hiddenCanvas;
 
         if (domStyle) {
             domStyle.width = width + 'px';
@@ -141,12 +147,12 @@ CanvasLayer.prototype = {
         canvasInstance.width = width * dpr;
         canvasInstance.height = height * dpr;
 
-        if (domBack) {
-            domBack.width = width * dpr;
-            domBack.height = height * dpr;
+        if (hiddenCanvas) {
+            hiddenCanvas.width = width * dpr;
+            hiddenCanvas.height = height * dpr;
 
             if (dpr !== 1) {
-                this.ctxBack.scale(dpr, dpr);
+                this.hiddenContext.scale(dpr, dpr);
             }
         }
     },
@@ -168,12 +174,12 @@ CanvasLayer.prototype = {
         let dpr = this.dpr;
 
         if (haveMotionBLur) {
-            if (!this.domBack) {
+            if (!this.hiddenCanvas) {
                 this.createBackBuffer();
             }
 
-            this.ctxBack.globalCompositeOperation = 'copy';
-            this.ctxBack.drawImage(
+            this.hiddenContext.globalCompositeOperation = 'copy';
+            this.hiddenContext.drawImage(
                 canvasInstance, 0, 0,
                 width / dpr,
                 height / dpr
@@ -206,10 +212,10 @@ CanvasLayer.prototype = {
         }
 
         if (haveMotionBLur) {
-            let domBack = this.domBack;
+            let hiddenCanvas = this.hiddenCanvas;
             ctx.save();
             ctx.globalAlpha = lastFrameAlpha;
-            ctx.drawImage(domBack, 0, 0, width, height);
+            ctx.drawImage(hiddenCanvas, 0, 0, width, height);
             ctx.restore();
         }
     }
