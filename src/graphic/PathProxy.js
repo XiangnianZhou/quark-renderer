@@ -1,7 +1,7 @@
 import * as curve from '../core/utils/curve_util';
 import * as vec2 from '../core/utils/vector';
 import * as bbox from '../core/utils/bbox_util';
-import BoundingRect from '../graphic/BoundingRect';
+import BoundingRect from './transform/BoundingRect';
 import {devicePixelRatio as dpr} from '../config';
 import {mathMin,mathMax,mathCos,mathSin,mathSqrt,mathAbs} from '../graphic/constants';
 

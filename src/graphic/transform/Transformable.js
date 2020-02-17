@@ -1,6 +1,6 @@
-import * as matrix from '../core/utils/matrix';
-import * as vector from '../core/utils/vector';
-import {mathSqrt,mathAtan2} from '../graphic/constants';
+import * as matrix from '../../core/utils/matrix';
+import * as vector from '../../core/utils/vector';
+import {mathSqrt,mathAtan2} from '../constants';
 
 /**
  * @abstract

@@ -1,6 +1,6 @@
 import guid from '../core/utils/guid';
 import Eventful from '../event/Eventful';
-import Transformable from './Transformable';
+import Transformable from './transform/Transformable';
 import Animatable from '../animation/Animatable';
 import * as dataUtil from '../core/utils/data_structure_util';
 import * as classUtil from '../core/utils/class_util';
