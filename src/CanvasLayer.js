@@ -1,4 +1,5 @@
-import * as util from './core/utils/data_structure_util';
+import * as dataUtil from './core/utils/data_structure_util';
+import * as canvasUtil from './core/utils/canvas_util';
 import {devicePixelRatio} from './config';
 import Style from './graphic/Style';
 import Pattern from './graphic/Pattern';
@@ -17,25 +18,26 @@ import Pattern from './graphic/Pattern';
  * @param {String} id dom id 待用
  * @param {Painter} painter painter instance
  * @param {Number} number
+ * @return {Canvas}
  */
-function createDom(id, painter, dpr) {
-    let newDom = util.createCanvas();
+function createCanvas(id, painter, dpr) {
+    let canvas = canvasUtil.createCanvas();
     let width = painter.getWidth();
     let height = painter.getHeight();
-    let newDomStyle = newDom.style;
+    let newStyle = canvas.style;
 
-    if (newDomStyle) {  // In node or some other non-browser environment
-        newDomStyle.position = 'absolute';
-        newDomStyle.left = 0;
-        newDomStyle.top = 0;
-        newDomStyle.width = width + 'px';
-        newDomStyle.height = height + 'px';
-        newDom.setAttribute('data-qr-dom-id', id);
+    if (newStyle) {  // In node or some other non-browser environment
+        newStyle.position = 'absolute';
+        newStyle.left = 0;
+        newStyle.top = 0;
+        newStyle.width = width + 'px';
+        newStyle.height = height + 'px';
+        canvas.setAttribute('data-qr-dom-id', id);
     }
 
-    newDom.width = width * dpr;
-    newDom.height = height * dpr;
-    return newDom;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    return canvas;
 }
 
 /**
@@ -45,29 +47,27 @@ function createDom(id, painter, dpr) {
  * @param {Number} [dpr]
  */
 let Layer = function (id, painter, dpr) {
-    let dom;
+    let canvas;
     dpr = dpr || devicePixelRatio;
     if (typeof id === 'string') {
-        dom = createDom(id, painter, dpr);
-    }
-    // Not using isDom because in node it will return false
-    else if (util.isObject(id)) {
-        dom = id;
-        id = dom.id;
+        canvas = createCanvas(id, painter, dpr);
+    }else if (dataUtil.isObject(id)) {// Not using isDom because in node it will return false
+        canvas = id;
+        id = canvas.id;
     }
     this.id = id;
-    this.dom = dom;
+    this.dom = canvas;
 
-    let domStyle = dom.style;
-    if (domStyle) { // Not in node
-        dom.onselectstart = ()=>{return false;}; // 避免页面选中的尴尬
-        domStyle['-webkit-user-select'] = 'none';
-        domStyle['user-select'] = 'none';
-        domStyle['-webkit-touch-callout'] = 'none';
-        domStyle['-webkit-tap-highlight-color'] = 'rgba(0,0,0,0)';
-        domStyle['padding'] = 0; // eslint-disable-line dot-notation
-        domStyle['margin'] = 0; // eslint-disable-line dot-notation
-        domStyle['border-width'] = 0;
+    let canvasStyle = canvas.style;
+    if (canvasStyle) { // Not in node
+        canvas.onselectstart = ()=>{return false;}; // 避免页面选中的尴尬
+        canvasStyle['-webkit-user-select'] = 'none';
+        canvasStyle['user-select'] = 'none';
+        canvasStyle['-webkit-touch-callout'] = 'none';
+        canvasStyle['-webkit-tap-highlight-color'] = 'rgba(0,0,0,0)';
+        canvasStyle['padding'] = 0; // eslint-disable-line dot-notation
+        canvasStyle['margin'] = 0; // eslint-disable-line dot-notation
+        canvasStyle['border-width'] = 0;
     }
 
     this.domBack = null;
@@ -123,7 +123,7 @@ Layer.prototype = {
     createBackBuffer: function () {
         let dpr = this.dpr;
 
-        this.domBack = createDom('back-' + this.id, this.painter, dpr);
+        this.domBack = createCanvas('back-' + this.id, this.painter, dpr);
         this.ctxBack = this.domBack.getContext('2d');
 
         if (dpr !== 1) {
