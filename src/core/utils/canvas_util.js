@@ -1,4 +1,4 @@
-let _ctx;
+import guid from './guid';
 
 /**
  * 创建 canvas 实例
@@ -10,6 +10,11 @@ let _ctx;
  */
 export function createCanvas(id, width, height, dpr) {
     let canvas = document.createElement('canvas');
+
+    if(id==null||id==undefined){
+        id=guid();
+    }
+    canvas.setAttribute('data-qr-dom-id', id);
     
     if(width==null
         ||width==undefined
@@ -25,7 +30,6 @@ export function createCanvas(id, width, height, dpr) {
         canvas.style.top = 0;
         canvas.style.width = width + 'px';
         canvas.style.height = height + 'px';
-        canvas.setAttribute('data-qr-dom-id', id);
     }
 
     if(dpr==null||dpr==undefined){
@@ -37,11 +41,9 @@ export function createCanvas(id, width, height, dpr) {
     return canvas;
 }
 
-export function getContext(param) {
-    if (!_ctx) {
-        // Use util.createCanvas instead of createCanvas
-        // because createCanvas may be overwritten in different environment
-        _ctx = createCanvas().getContext('2d');
+export function getContext(canvasInstance){
+    if(!canvasInstance){
+        canvasInstance=createCanvas();
     }
-    return _ctx;
+    return canvasInstance.getContext('2d');
 }

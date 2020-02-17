@@ -7,7 +7,8 @@ import CanvasLayer from './CanvasLayer';
 import Image from './graphic/Image';
 import env from './core/env';
 import {mathRandom,mathMax} from './graphic/constants';
-
+import * as canvasUtil from './core/utils/canvas_util';
+import guid from './core/utils/guid';
 /**
  * @class qrenderer.canvas.CanvasPainter
  * 这是基于 canvas 接口的 CanvasPainter 类
@@ -1139,8 +1140,8 @@ CanvasPainter.prototype = {
     pathToImage: function (path, dpr) {
         dpr = dpr || this.dpr;
 
-        let canvas = document.createElement('canvas');
-        let ctx = canvas.getContext('2d');
+        let canvas = canvasUtil.createCanvas();
+        let ctx = canvasUtil.getContext(canvas);
         let rect = path.getBoundingRect();
         let style = path.style;
         let shadowBlurSize = style.shadowBlur * dpr;

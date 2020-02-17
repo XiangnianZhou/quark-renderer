@@ -6,53 +6,6 @@
  * @desc thanks zepto.
  */
 
-/* global wx */
-
-var env = {};
-
-if (typeof wx === 'object' && typeof wx.getSystemInfoSync === 'function') {
-    // In Weixin Application
-    env = {
-        browser: {},
-        os: {},
-        node: false,
-        wxa: true, // Weixin Application
-        canvasSupported: true,
-        svgSupported: false,
-        touchEventsSupported: true,
-        domSupported: false
-    };
-}
-else if (typeof document === 'undefined' && typeof self !== 'undefined') {
-    // In worker
-    env = {
-        browser: {},
-        os: {},
-        node: false,
-        worker: true,
-        canvasSupported: true,
-        domSupported: false
-    };
-}
-else if (typeof navigator === 'undefined') {
-    // In node
-    env = {
-        browser: {},
-        os: {},
-        node: true,
-        worker: false,
-        // Assume canvas is supported
-        canvasSupported: true,
-        svgSupported: true,
-        domSupported: false
-    };
-}
-else {
-    env = detect(navigator.userAgent);
-}
-
-export default env;
-
 // Zepto.js
 // (c) 2010-2013 Thomas Fuchs
 // Zepto.js may be freely distributed under the MIT license.
@@ -159,18 +112,45 @@ function detect(ua) {
     };
 }
 
-// See https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md#feature-detection
-// function detectPassiveSupport() {
-//     // Test via a getter in the options object to see if the passive property is accessed
-//     var supportsPassive = false;
-//     try {
-//         var opts = Object.defineProperty({}, 'passive', {
-//             get: function() {
-//                 supportsPassive = true;
-//             }
-//         });
-//         window.addEventListener('testPassive', function() {}, opts);
-//     } catch (e) {
-//     }
-//     return supportsPassive;
-// }
+var env = {};
+
+if (typeof wx === 'object' && typeof wx.getSystemInfoSync === 'function') {
+    // In Weixin Application
+    env = {
+        browser: {},
+        os: {},
+        node: false,
+        wxa: true, // Weixin Application
+        canvasSupported: true,
+        svgSupported: false,
+        touchEventsSupported: true,
+        domSupported: false
+    };
+}else if (typeof document === 'undefined' && typeof self !== 'undefined') {
+    // In worker
+    env = {
+        browser: {},
+        os: {},
+        node: false,
+        worker: true,
+        canvasSupported: true,
+        domSupported: false
+    };
+}else if (typeof navigator === 'undefined') {
+    // In node
+    env = {
+        browser: {},
+        os: {},
+        node: true,
+        worker: false,
+        // Assume canvas is supported
+        canvasSupported: true,
+        svgSupported: true,
+        domSupported: false
+    };
+}else {
+    env = detect(navigator.userAgent);
+}
+
+export default env;
+

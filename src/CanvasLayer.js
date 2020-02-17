@@ -55,6 +55,11 @@ export default class CanvasLayer{
         }
         this.canvasInstance = canvasInstance;
 
+        /**
+         * @property {Context} ctx Canvas context, this property will be initialized after calling initContext() method.
+         */
+        this.ctx;
+
         // There is no style attribute of canvasInstance in nodejs.
         if (canvasInstance.style) {
             canvasInstance.onselectstart = ()=>{return false;}; // 避免页面选中的尴尬
@@ -109,7 +114,7 @@ export default class CanvasLayer{
      * @method initContext
      */
     initContext() {
-        this.ctx = this.canvasInstance.getContext('2d');
+        this.ctx = canvasUtil.getContext(this.canvasInstance);
         this.ctx.dpr = this.dpr;
     }
 
@@ -117,13 +122,10 @@ export default class CanvasLayer{
      * @method createBackBuffer
      */
     createBackBuffer() {
-        let dpr = this.dpr;
-        
-        this.hiddenCanvas = canvasUtil.createCanvas('back-' + this.id, this.width,this.height, dpr);
-        this.hiddenContext = this.hiddenCanvas.getContext('2d');
-
-        if (dpr !== 1) {
-            this.hiddenContext.scale(dpr, dpr);
+        this.hiddenCanvas = canvasUtil.createCanvas('back-' + this.id, this.width,this.height, this.dpr);
+        this.hiddenContext = canvasUtil.getContext(this.hiddenCanvas);
+        if (this.dpr !== 1) {
+            this.hiddenContext.scale(this.dpr, this.dpr);
         }
     }
 
