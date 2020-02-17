@@ -54,16 +54,16 @@ let CanvasLayer = function (id,width,height,dpr=devicePixelRatio) {
     }
     this.dom = canvas;
 
-    let canvasStyle = canvas.style;
-    if (canvasStyle) { // Not in node
+    // There is no style attribute of canvas in nodejs.
+    if (canvas.style) {
         canvas.onselectstart = ()=>{return false;}; // 避免页面选中的尴尬
-        canvasStyle['-webkit-user-select'] = 'none';
-        canvasStyle['user-select'] = 'none';
-        canvasStyle['-webkit-touch-callout'] = 'none';
-        canvasStyle['-webkit-tap-highlight-color'] = 'rgba(0,0,0,0)';
-        canvasStyle['padding'] = 0; // eslint-disable-line dot-notation
-        canvasStyle['margin'] = 0; // eslint-disable-line dot-notation
-        canvasStyle['border-width'] = 0;
+        canvas.style['-webkit-user-select'] = 'none';
+        canvas.style['user-select'] = 'none';
+        canvas.style['-webkit-touch-callout'] = 'none';
+        canvas.style['-webkit-tap-highlight-color'] = 'rgba(0,0,0,0)';
+        canvas.style['padding'] = 0; // eslint-disable-line dot-notation
+        canvas.style['margin'] = 0; // eslint-disable-line dot-notation
+        canvas.style['border-width'] = 0;
     }
 
     this.domBack = null;
