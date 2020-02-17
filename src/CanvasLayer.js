@@ -1,164 +1,162 @@
-import * as util from './core/utils/data_structure_util';
-import {devicePixelRatio} from './config';
+import * as dataUtil from './core/utils/data_structure_util';
+import * as canvasUtil from './core/utils/canvas_util';
 import Style from './graphic/Style';
 import Pattern from './graphic/Pattern';
 
 /**
- * @class qrenderer.canvas.Layer
- * 用来创建 canvas 层，在 Painter 类中会引用此类。
+ * @class qrenderer.canvas.CanvasLayer
+ * 
+ * CanvasLayer is designed to create canvas layers, it will be used in CanvasPainter.
+ * CanvasPainter will create several canvas instances during the paint process, some 
+ * of them are invisiable, such as the one used for export a image.
+ * 
+ * 
+ * 该类被设计用来创建 canvas 层，在 CanvasPainter 类中会引用此类。
+ * 在绘图过程中， CanvasPainter 会创建多个 canvas 实例来辅助操作，
+ * 某些 canvas 实例是隐藏的，比如用来导出图片的 canvas。
+ * 
  * @author pissang(https://www.github.com/pissang)
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
-/**
- * @private
- * @method
- * 创建dom
- * @param {String} id dom id 待用
- * @param {Painter} painter painter instance
- * @param {Number} number
- */
-function createDom(id, painter, dpr) {
-    let newDom = util.createCanvas();
-    let width = painter.getWidth();
-    let height = painter.getHeight();
-    let newDomStyle = newDom.style;
-
-    if (newDomStyle) {  // In node or some other non-browser environment
-        newDomStyle.position = 'absolute';
-        newDomStyle.left = 0;
-        newDomStyle.top = 0;
-        newDomStyle.width = width + 'px';
-        newDomStyle.height = height + 'px';
-        newDom.setAttribute('data-qr-dom-id', id);
-    }
-
-    newDom.width = width * dpr;
-    newDom.height = height * dpr;
-    return newDom;
-}
-
-/**
- * @method constructor Layer
- * @param {String} id
- * @param {Painter} painter
- * @param {Number} [dpr]
- */
-let Layer = function (id, painter, dpr) {
-    let dom;
-    dpr = dpr || devicePixelRatio;
-    if (typeof id === 'string') {
-        dom = createDom(id, painter, dpr);
-    }
-    // Not using isDom because in node it will return false
-    else if (util.isObject(id)) {
-        dom = id;
-        id = dom.id;
-    }
-    this.id = id;
-    this.dom = dom;
-
-    let domStyle = dom.style;
-    if (domStyle) { // Not in node
-        dom.onselectstart = ()=>{return false;}; // 避免页面选中的尴尬
-        domStyle['-webkit-user-select'] = 'none';
-        domStyle['user-select'] = 'none';
-        domStyle['-webkit-touch-callout'] = 'none';
-        domStyle['-webkit-tap-highlight-color'] = 'rgba(0,0,0,0)';
-        domStyle['padding'] = 0; // eslint-disable-line dot-notation
-        domStyle['margin'] = 0; // eslint-disable-line dot-notation
-        domStyle['border-width'] = 0;
-    }
-
-    this.domBack = null;
-    this.ctxBack = null;
-    this.painter = painter;
-    this.config = null;
-
+export default class CanvasLayer{
     /**
-     * @property {String} 每次清空画布的颜色
+     * @method constructor CanvasLayer
+     * @param {String|Object} id
+     * @param {Number} width
+     * @param {Number} height
+     * @param {Number} [dpr]
      */
-    this.clearColor = 0;
-    /**
-     * @property {boolean} 是否开启动态模糊
-     */
-    this.motionBlur = false;
-    /**
-     * @property {Number} 在开启动态模糊的时候使用，与上一帧混合的alpha值，值越大尾迹越明显
-     */
-    this.lastFrameAlpha = 0.7;
-    /**
-     * @property {Number} Layer dpr
-     */
-    this.dpr = dpr;
-};
+    constructor(id,width,height,dpr){
+        /**
+         * @property {String|Object} CanvasLayer id
+         */
+        this.id = id;
+        /**
+         * @property {Number} CanvasLayer width
+         */
+        this.width=width;
+        /**
+         * @property {Number} CanvasLayer height
+         */
+        this.height=height;
+        /**
+         * @property {Number} CanvasLayer dpr
+         */
+        this.dpr = dpr;
 
-Layer.prototype = {
-    constructor: Layer,
-    __dirty: true,
-    __used: false,
-    __drawIndex: 0,
-    __startIndex: 0,
-    __endIndex: 0,
-    incremental: false,
+        // Create or set canvas instance.
+        let canvasInstance;
+        if (dataUtil.isObject(id)) {// Don't use isDom because in node it will return false
+            canvasInstance = id;
+            id = canvasInstance.id;
+        }else if(typeof id === 'string'){
+            canvasInstance = canvasUtil.createCanvas(id,this.width,this.height,this.dpr);
+        }
+        this.canvasInstance = canvasInstance;
 
+        /**
+         * @property {Context} ctx Canvas context, this property will be initialized after calling initContext() method.
+         */
+        this.ctx;
+
+        // There is no style attribute of canvasInstance in nodejs.
+        if (canvasInstance.style) {
+            canvasInstance.onselectstart = ()=>{return false;}; // 避免页面选中的尴尬
+            canvasInstance.style['-webkit-user-select'] = 'none';
+            canvasInstance.style['user-select'] = 'none';
+            canvasInstance.style['-webkit-touch-callout'] = 'none';
+            canvasInstance.style['-webkit-tap-highlight-color'] = 'rgba(0,0,0,0)';
+            canvasInstance.style['padding'] = 0; // eslint-disable-line dot-notation
+            canvasInstance.style['margin'] = 0; // eslint-disable-line dot-notation
+            canvasInstance.style['border-width'] = 0;
+        }
+
+        /**
+         * @property {Canvas} hiddenCanvas 隐藏的画布实例
+         */
+        this.hiddenCanvas = null;
+        /**
+         * @property {Context} hiddenContext 隐藏的画布上下文
+         */
+        this.hiddenContext = null;
+        this.config = null;
+
+        /**
+         * @property {String} 每次清空画布的颜色
+         */
+        this.clearColor = 0;
+        /**
+         * @property {boolean} 是否开启动态模糊
+         */
+        this.motionBlur = false;
+        /**
+         * @property {Number} 在开启动态模糊的时候使用，与上一帧混合的alpha值，值越大尾迹越明显
+         */
+        this.lastFrameAlpha = 0.7;
+
+        this.__dirty=true;
+        this.__used=false;
+        this.__drawIndex=0;
+        this.__startIndex=0;
+        this.__endIndex=0;
+        this.incremental=false;
+    }
+    
     /**
      * @method getElementCount
      */
-    getElementCount: function () {
+    getElementCount() {
         return this.__endIndex - this.__startIndex;
-    },
+    }
 
     /**
      * @method initContext
      */
-    initContext: function () {
-        this.ctx = this.dom.getContext('2d');
+    initContext() {
+        this.ctx = canvasUtil.getContext(this.canvasInstance);
         this.ctx.dpr = this.dpr;
-    },
+    }
 
     /**
      * @method createBackBuffer
      */
-    createBackBuffer: function () {
-        let dpr = this.dpr;
-
-        this.domBack = createDom('back-' + this.id, this.painter, dpr);
-        this.ctxBack = this.domBack.getContext('2d');
-
-        if (dpr !== 1) {
-            this.ctxBack.scale(dpr, dpr);
+    createBackBuffer() {
+        this.hiddenCanvas = canvasUtil.createCanvas('back-' + this.id, this.width,this.height, this.dpr);
+        this.hiddenContext = canvasUtil.getContext(this.hiddenCanvas);
+        if (this.dpr !== 1) {
+            this.hiddenContext.scale(this.dpr, this.dpr);
         }
-    },
+    }
 
     /**
      * @method resize
      * @param  {Number} width
      * @param  {Number} height
      */
-    resize: function (width, height) {
+    resize(width, height) {
         let dpr = this.dpr;
-        let dom = this.dom;
-        let domStyle = dom.style;
-        let domBack = this.domBack;
+        let canvasInstance = this.canvasInstance;
+        let domStyle = canvasInstance.style;
+        let hiddenCanvas = this.hiddenCanvas;
 
         if (domStyle) {
             domStyle.width = width + 'px';
             domStyle.height = height + 'px';
         }
 
-        dom.width = width * dpr;
-        dom.height = height * dpr;
+        canvasInstance.width = width * dpr;
+        canvasInstance.height = height * dpr;
 
-        if (domBack) {
-            domBack.width = width * dpr;
-            domBack.height = height * dpr;
+        if (hiddenCanvas) {
+            hiddenCanvas.width = width * dpr;
+            hiddenCanvas.height = height * dpr;
 
             if (dpr !== 1) {
-                this.ctxBack.scale(dpr, dpr);
+                this.hiddenContext.scale(dpr, dpr);
             }
         }
-    },
+    }
 
     /**
      * @method clear
@@ -166,24 +164,24 @@ Layer.prototype = {
      * @param {boolean} [clearAll=false] Clear all with out motion blur
      * @param {Color} [clearColor]
      */
-    clear: function (clearAll, clearColor) {
+    clear(clearAll, clearColor) {
         clearColor = clearColor || this.clearColor;
-        let dom = this.dom;
+        let canvasInstance = this.canvasInstance;
         let ctx = this.ctx;
-        let width = dom.width;
-        let height = dom.height;
+        let width = canvasInstance.width;
+        let height = canvasInstance.height;
         let haveMotionBLur = this.motionBlur && !clearAll;
         let lastFrameAlpha = this.lastFrameAlpha;
         let dpr = this.dpr;
 
         if (haveMotionBLur) {
-            if (!this.domBack) {
+            if (!this.hiddenCanvas) {
                 this.createBackBuffer();
             }
 
-            this.ctxBack.globalCompositeOperation = 'copy';
-            this.ctxBack.drawImage(
-                dom, 0, 0,
+            this.hiddenContext.globalCompositeOperation = 'copy';
+            this.hiddenContext.drawImage(
+                canvasInstance, 0, 0,
                 width / dpr,
                 height / dpr
             );
@@ -194,7 +192,7 @@ Layer.prototype = {
             let clearColorGradientOrPattern;
             // Gradient
             if (clearColor.colorStops) {
-                // Cache canvas gradient
+                // Cache canvasInstance gradient
                 clearColorGradientOrPattern = clearColor.__canvasGradient || Style.getGradient(ctx, clearColor, {
                     x: 0,
                     y: 0,
@@ -215,13 +213,11 @@ Layer.prototype = {
         }
 
         if (haveMotionBLur) {
-            let domBack = this.domBack;
+            let hiddenCanvas = this.hiddenCanvas;
             ctx.save();
             ctx.globalAlpha = lastFrameAlpha;
-            ctx.drawImage(domBack, 0, 0, width, height);
+            ctx.drawImage(hiddenCanvas, 0, 0, width, height);
             ctx.restore();
         }
     }
-};
-
-export default Layer;
+}

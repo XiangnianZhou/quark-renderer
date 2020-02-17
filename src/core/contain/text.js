@@ -1,12 +1,12 @@
 import BoundingRect from '../../graphic/transform/BoundingRect';
 import * as imageHelper from '../../graphic/utils/image';
 import {
-    getContext,
     extend,
     retrieve2,
     retrieve3,
     trim
 } from '../utils/data_structure_util';
+import { getContext } from '../utils/canvas_util';
 import { mathMax, mathFloor } from '../../graphic/constants';
 
 let textWidthCache = {};

@@ -3,11 +3,12 @@ import {devicePixelRatio} from './config';
 import * as dataUtil from './core/utils/data_structure_util';
 import BoundingRect from './graphic/transform/BoundingRect';
 import timsort from './core/utils/timsort';
-import Layer from './CanvasLayer';
+import CanvasLayer from './CanvasLayer';
 import Image from './graphic/Image';
 import env from './core/env';
 import {mathRandom,mathMax} from './graphic/constants';
-
+import * as canvasUtil from './core/utils/canvas_util';
+import guid from './core/utils/guid';
 /**
  * @class qrenderer.canvas.CanvasPainter
  * 这是基于 canvas 接口的 CanvasPainter 类
@@ -103,13 +104,13 @@ function doClip(clipPaths, ctx) {
 
 /**
  * @private
- * @method createRoot
+ * @method createDomRoot
  * 不会直接在传入的 dom 节点内部创建 canvas 标签，而是再套一层div
  * 目的是加上一些必须的 CSS 样式，方便实现特定的功能。
  * @param {Number} width 
  * @param {Number} height 
  */
-function createRoot(width, height) {
+function createDomRoot(width, height) {
     let domRoot = document.createElement('div');
     // domRoot.onselectstart = returnFalse; // Avoid page selected
     domRoot.style.cssText = [
@@ -180,7 +181,7 @@ let CanvasPainter = function (root, storage, opts) {
 
     /**
      * @private
-     * @property {Object<String, Layer>} layers
+     * @property {Object<String, CanvasLayer>} layers
      */
     let layers = this._layers = {};
 
@@ -201,7 +202,7 @@ let CanvasPainter = function (root, storage, opts) {
         this._width = this._getSize(0);
         this._height = this._getSize(1);
 
-        let domRoot = this._domRoot = createRoot(
+        let domRoot = this._domRoot = createDomRoot(
             this._width, this._height
         );
         root.appendChild(domRoot);
@@ -226,7 +227,7 @@ let CanvasPainter = function (root, storage, opts) {
 
         // Create layer if only one given canvas
         // Device can be specified to create a high dpi image.
-        let mainLayer = new Layer(root, this, this.dpr);
+        let mainLayer = new CanvasLayer(root,this._width,this._height,this.dpr);
         mainLayer.__builtin__ = true;
         mainLayer.initContext();
         // FIXME Use canvas width and height
@@ -241,7 +242,7 @@ let CanvasPainter = function (root, storage, opts) {
 
     /**
      * @private
-     * @property {Layer} _hoverlayer
+     * @property {CanvasLayer} _hoverlayer
      */
     this._hoverlayer = null;
     /**
@@ -471,7 +472,7 @@ CanvasPainter.prototype = {
         // PENDING, If only builtin layer?
         this.eachBuiltinLayer(function (layer) {
             if (layer.virtual) {
-                ctx.drawImage(layer.dom, 0, 0, width, height);
+                ctx.drawImage(layer.canvasInstance, 0, 0, width, height);
             }
         });
     },
@@ -629,7 +630,7 @@ CanvasPainter.prototype = {
      * 获取 qlevel 所在层，如果不存在则会创建一个新的层
      * @param {Number} qlevel
      * @param {Boolean} virtual Virtual layer will not be inserted into dom.
-     * @return {Layer}
+     * @return {CanvasLayer}
      */
     getLayer: function (qlevel, virtual) {
         if (this._singleCanvas && !this._needsManuallyCompositing) {
@@ -638,7 +639,7 @@ CanvasPainter.prototype = {
         let layer = this._layers[qlevel];
         if (!layer) {
             // Create a new layer
-            layer = new Layer('qr_' + qlevel, this, this.dpr);
+            layer = new CanvasLayer('qr_' + qlevel,this._width,this._height,this.dpr);
             layer.qlevel = qlevel;
             layer.__builtin__ = true;
 
@@ -679,7 +680,7 @@ CanvasPainter.prototype = {
         }
         // Check if is a valid layer
         if (!isLayerValid(layer)) {
-            console.log('Layer of qlevel ' + qlevel + ' is not valid');
+            console.log('CanvasLayer of qlevel ' + qlevel + ' is not valid');
             return;
         }
 
@@ -706,20 +707,19 @@ CanvasPainter.prototype = {
                 let prevDom = prevLayer.dom;
                 if (prevDom.nextSibling) {
                     domRoot.insertBefore(
-                        layer.dom,
+                        layer.canvasInstance,
                         prevDom.nextSibling
                     );
                 }
                 else {
-                    domRoot.appendChild(layer.dom);
+                    domRoot.appendChild(layer.canvasInstance);
                 }
-            }
-            else {
+            }else {
                 if (domRoot.firstChild) {
-                    domRoot.insertBefore(layer.dom, domRoot.firstChild);
+                    domRoot.insertBefore(layer.canvasInstance, domRoot.firstChild);
                 }
                 else {
-                    domRoot.appendChild(layer.dom);
+                    domRoot.appendChild(layer.canvasInstance);
                 }
             }
         }
@@ -787,7 +787,7 @@ CanvasPainter.prototype = {
     /**
      * @method getLayers
      * 获取所有已创建的层
-     * @param {Array<Layer>} [prevLayer]
+     * @param {Array<CanvasLayer>} [prevLayer]
      */
     getLayers: function () {
         return this._layers;
@@ -954,7 +954,7 @@ CanvasPainter.prototype = {
         if (!layer) {
             return;
         }
-        layer.dom.parentNode.removeChild(layer.dom);
+        layer.canvasInstance.parentNode.removeChild(layer.canvasInstance);
         delete layers[qlevel];
 
         qlevelList.splice(dataUtil.indexOf(qlevelList, qlevel), 1);
@@ -1054,7 +1054,7 @@ CanvasPainter.prototype = {
             return this._layers[CANVAS_QLEVEL].dom;
         }
 
-        let imageLayer = new Layer('image', this, opts.pixelRatio || this.dpr);
+        let imageLayer = new CanvasLayer('image',this._width,this._height,opts.pixelRatio || this.dpr);
         imageLayer.initContext();
         imageLayer.clear(false, opts.backgroundColor || this._backgroundColor);
 
@@ -1066,7 +1066,7 @@ CanvasPainter.prototype = {
             let ctx = imageLayer.ctx;
             this.eachLayer(function (layer) {
                 if (layer.__builtin__) {
-                    ctx.drawImage(layer.dom, 0, 0, width, height);
+                    ctx.drawImage(layer.canvasInstance, 0, 0, width, height);
                 }
                 else if (layer.renderToCanvas) {
                     imageLayer.ctx.save();
@@ -1140,8 +1140,8 @@ CanvasPainter.prototype = {
     pathToImage: function (path, dpr) {
         dpr = dpr || this.dpr;
 
-        let canvas = document.createElement('canvas');
-        let ctx = canvas.getContext('2d');
+        let canvas = canvasUtil.createCanvas();
+        let ctx = canvasUtil.getContext(canvas);
         let rect = path.getBoundingRect();
         let style = path.style;
         let shadowBlurSize = style.shadowBlur * dpr;

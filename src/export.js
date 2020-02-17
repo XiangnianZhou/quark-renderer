@@ -1,11 +1,12 @@
 /**
  * Do not mount those modules on 'src/qrenderer' for better tree shaking.
  */
-import * as qrUtil from './core/utils/data_structure_util';
+import * as dataUtil from './core/utils/data_structure_util';
+import * as colorUtil from './core/utils/color_util';
+import * as pathUtil from './core/utils/path_util';
+import * as canvasUtil from './core/utils/canvas_util';
 import * as matrix from './core/utils/matrix';
 import * as vector from './core/utils/vector';
-import * as colorTool from './core/utils/color_util';
-import * as pathTool from './core/utils/path_util';
 import {parseSVG} from './svg/SVGParser';
 
 export {default as Group} from './graphic/Group';
@@ -34,9 +35,10 @@ export {default as LinearGradient} from './graphic/gradient/LinearGradient';
 export {default as RadialGradient} from './graphic/gradient/RadialGradient';
 export {default as Pattern} from './graphic/Pattern';
 export {default as BoundingRect} from './graphic/transform/BoundingRect';
+export {colorUtil as color};
+export {pathUtil as path};
+export {dataUtil as dataUtil};
+export {canvasUtil as canvasUtil};
 export {matrix};
 export {vector};
-export {colorTool as color};
-export {pathTool as path};
-export {qrUtil as util};
 export {parseSVG};
