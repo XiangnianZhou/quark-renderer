@@ -3,7 +3,7 @@ import {devicePixelRatio} from './config';
 import * as dataUtil from './core/utils/data_structure_util';
 import BoundingRect from './graphic/transform/BoundingRect';
 import timsort from './core/utils/timsort';
-import Layer from './CanvasLayer';
+import CanvasLayer from './CanvasLayer';
 import Image from './graphic/Image';
 import env from './core/env';
 import {mathRandom,mathMax} from './graphic/constants';
@@ -180,7 +180,7 @@ let CanvasPainter = function (root, storage, opts) {
 
     /**
      * @private
-     * @property {Object<String, Layer>} layers
+     * @property {Object<String, CanvasLayer>} layers
      */
     let layers = this._layers = {};
 
@@ -226,7 +226,7 @@ let CanvasPainter = function (root, storage, opts) {
 
         // Create layer if only one given canvas
         // Device can be specified to create a high dpi image.
-        let mainLayer = new Layer(root, this, this.dpr);
+        let mainLayer = new CanvasLayer(root,this._width,this._height,this.dpr);
         mainLayer.__builtin__ = true;
         mainLayer.initContext();
         // FIXME Use canvas width and height
@@ -241,7 +241,7 @@ let CanvasPainter = function (root, storage, opts) {
 
     /**
      * @private
-     * @property {Layer} _hoverlayer
+     * @property {CanvasLayer} _hoverlayer
      */
     this._hoverlayer = null;
     /**
@@ -629,7 +629,7 @@ CanvasPainter.prototype = {
      * 获取 qlevel 所在层，如果不存在则会创建一个新的层
      * @param {Number} qlevel
      * @param {Boolean} virtual Virtual layer will not be inserted into dom.
-     * @return {Layer}
+     * @return {CanvasLayer}
      */
     getLayer: function (qlevel, virtual) {
         if (this._singleCanvas && !this._needsManuallyCompositing) {
@@ -638,7 +638,7 @@ CanvasPainter.prototype = {
         let layer = this._layers[qlevel];
         if (!layer) {
             // Create a new layer
-            layer = new Layer('qr_' + qlevel, this, this.dpr);
+            layer = new CanvasLayer('qr_' + qlevel,this._width,this._height,this.dpr);
             layer.qlevel = qlevel;
             layer.__builtin__ = true;
 
@@ -679,7 +679,7 @@ CanvasPainter.prototype = {
         }
         // Check if is a valid layer
         if (!isLayerValid(layer)) {
-            console.log('Layer of qlevel ' + qlevel + ' is not valid');
+            console.log('CanvasLayer of qlevel ' + qlevel + ' is not valid');
             return;
         }
 
@@ -787,7 +787,7 @@ CanvasPainter.prototype = {
     /**
      * @method getLayers
      * 获取所有已创建的层
-     * @param {Array<Layer>} [prevLayer]
+     * @param {Array<CanvasLayer>} [prevLayer]
      */
     getLayers: function () {
         return this._layers;
@@ -1054,7 +1054,7 @@ CanvasPainter.prototype = {
             return this._layers[CANVAS_QLEVEL].dom;
         }
 
-        let imageLayer = new Layer('image', this, opts.pixelRatio || this.dpr);
+        let imageLayer = new CanvasLayer('image',this._width,this._height,opts.pixelRatio || this.dpr);
         imageLayer.initContext();
         imageLayer.clear(false, opts.backgroundColor || this._backgroundColor);
 

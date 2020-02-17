@@ -6,56 +6,52 @@ import Pattern from './graphic/Pattern';
 
 /**
  * @class qrenderer.canvas.CanvasLayer
- * 用来创建 canvas 层，在 CanvasPainter 类中会引用此类。
+ * 
+ * CanvasLayer is designed to create canvas layers, it will be used in CanvasPainter.
+ * CanvasPainter will create several canvas instances during the paint process, some 
+ * of them are invisiable, such as the one used for export a image.
+ * 
+ * 
+ * 该类被设计用来创建 canvas 层，在 CanvasPainter 类中会引用此类。
+ * 在绘图过程中， CanvasPainter 会创建多个 canvas 实例来辅助操作，
+ * 某些 canvas 实例是隐藏的，比如用来导出图片的 canvas。
+ * 
  * @author pissang(https://www.github.com/pissang)
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
 /**
- * @private
- * @method
- * 创建dom
- * @param {String} id dom id 待用
- * @param {CanvasPainter} painter painter instance
- * @param {Number} number
- * @return {Canvas}
- */
-function createCanvas(id, painter, dpr) {
-    let canvas = canvasUtil.createCanvas();
-    let width = painter.getWidth();
-    let height = painter.getHeight();
-
-    // Canvas instance has no style attribute in nodejs.
-    if (canvas.style) {
-        canvas.style.position = 'absolute';
-        canvas.style.left = 0;
-        canvas.style.top = 0;
-        canvas.style.width = width + 'px';
-        canvas.style.height = height + 'px';
-        canvas.setAttribute('data-qr-dom-id', id);
-    }
-
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
-    return canvas;
-}
-
-/**
  * @method constructor CanvasLayer
- * @param {String} id
- * @param {CanvasPainter} painter
+ * @param {String|Object} id
+ * @param {Number} width
+ * @param {Number} height
  * @param {Number} [dpr]
  */
-let CanvasLayer = function (id, painter, dpr) {
+let CanvasLayer = function (id,width,height,dpr=devicePixelRatio) {
+    /**
+     * @property {String|Object} CanvasLayer id
+     */
+    this.id = id;
+    /**
+     * @property {Number} CanvasLayer width
+     */
+    this.width=width;
+    /**
+     * @property {Number} CanvasLayer height
+     */
+    this.height=height;
+    /**
+     * @property {Number} CanvasLayer dpr
+     */
+    this.dpr = dpr;
+
     let canvas;
-    dpr = dpr || devicePixelRatio;
     if (typeof id === 'string') {
-        canvas = createCanvas(id, painter, dpr);
+        canvas = canvasUtil.createCanvas(id,this.width,this.height,this.dpr);
     }else if (dataUtil.isObject(id)) {// Not using isDom because in node it will return false
         canvas = id;
         id = canvas.id;
     }
-    this.id = id;
     this.dom = canvas;
 
     let canvasStyle = canvas.style;
@@ -72,7 +68,6 @@ let CanvasLayer = function (id, painter, dpr) {
 
     this.domBack = null;
     this.ctxBack = null;
-    this.painter = painter;
     this.config = null;
 
     /**
@@ -87,10 +82,6 @@ let CanvasLayer = function (id, painter, dpr) {
      * @property {Number} 在开启动态模糊的时候使用，与上一帧混合的alpha值，值越大尾迹越明显
      */
     this.lastFrameAlpha = 0.7;
-    /**
-     * @property {Number} CanvasLayer dpr
-     */
-    this.dpr = dpr;
 };
 
 CanvasLayer.prototype = {
@@ -122,8 +113,8 @@ CanvasLayer.prototype = {
      */
     createBackBuffer: function () {
         let dpr = this.dpr;
-
-        this.domBack = createCanvas('back-' + this.id, this.painter, dpr);
+        
+        this.domBack = canvasUtil.createCanvas('back-' + this.id, this.width,this.height, dpr);
         this.ctxBack = this.domBack.getContext('2d');
 
         if (dpr !== 1) {
