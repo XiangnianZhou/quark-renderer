@@ -90,4 +90,5 @@ export function copyOwnProperties(target,source,excludes=[]){
             target[key] = source[key];
         }
     }
+    return target;
 }

@@ -1,6 +1,6 @@
 import * as classUtil from '../core/utils/class_util';
 import Displayble from './Displayable';
-import BoundingRect from '../graphic/BoundingRect';
+import BoundingRect from './transform/BoundingRect';
 
 /**
  * @class qrenderer.graphic.IncrementalDisplayble 

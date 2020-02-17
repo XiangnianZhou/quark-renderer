@@ -1,6 +1,6 @@
 import * as classUtil from '../core/utils/class_util';
 import Element from './Element';
-import BoundingRect from '../graphic/BoundingRect';
+import BoundingRect from './transform/BoundingRect';
 import { extend } from '../core/utils/data_structure_util';
 
 /**

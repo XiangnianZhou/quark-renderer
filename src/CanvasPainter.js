@@ -1,7 +1,7 @@
 import requestAnimationFrame from './animation/utils/request_animation_frame';
 import {devicePixelRatio} from './config';
 import * as dataUtil from './core/utils/data_structure_util';
-import BoundingRect from './graphic/BoundingRect';
+import BoundingRect from './graphic/transform/BoundingRect';
 import timsort from './core/utils/timsort';
 import Layer from './CanvasLayer';
 import Image from './graphic/Image';

@@ -13,7 +13,7 @@ To better understand the core ideas behind ZRender, I spent some days (2020-01) 
 - I want a very customized version to implement some cool stuff in the future.
 - I want a cleaner repo to teach my students how to understand and design a canvas engine for modern web and Wechat mini-programs.
 - I want to make the code easier to read.
-- ZRender exported a global variable 'zrender', so I have to rename my repo to a different name to avoid potential naming conflicts. 
+- There are two reasons why I have to pick up a new name for this project. Firstly, ZRender exported a global variable 'zrender', therefore a new name can avoid potential conflicts. Secondly, duplicated names are not allowed in npm.
 
 Here are the key improvements compare to the original ZRender:
 
