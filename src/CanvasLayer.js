@@ -6,7 +6,7 @@ import Pattern from './graphic/Pattern';
 
 /**
  * @class qrenderer.canvas.CanvasLayer
- * 用来创建 canvas 层，在 Painter 类中会引用此类。
+ * 用来创建 canvas 层，在 CanvasPainter 类中会引用此类。
  * @author pissang(https://www.github.com/pissang)
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
@@ -16,7 +16,7 @@ import Pattern from './graphic/Pattern';
  * @method
  * 创建dom
  * @param {String} id dom id 待用
- * @param {Painter} painter painter instance
+ * @param {CanvasPainter} painter painter instance
  * @param {Number} number
  * @return {Canvas}
  */
@@ -24,14 +24,14 @@ function createCanvas(id, painter, dpr) {
     let canvas = canvasUtil.createCanvas();
     let width = painter.getWidth();
     let height = painter.getHeight();
-    let newStyle = canvas.style;
 
-    if (newStyle) {  // In node or some other non-browser environment
-        newStyle.position = 'absolute';
-        newStyle.left = 0;
-        newStyle.top = 0;
-        newStyle.width = width + 'px';
-        newStyle.height = height + 'px';
+    // Canvas instance has no style attribute in nodejs.
+    if (canvas.style) {
+        canvas.style.position = 'absolute';
+        canvas.style.left = 0;
+        canvas.style.top = 0;
+        canvas.style.width = width + 'px';
+        canvas.style.height = height + 'px';
         canvas.setAttribute('data-qr-dom-id', id);
     }
 
@@ -43,7 +43,7 @@ function createCanvas(id, painter, dpr) {
 /**
  * @method constructor CanvasLayer
  * @param {String} id
- * @param {Painter} painter
+ * @param {CanvasPainter} painter
  * @param {Number} [dpr]
  */
 let CanvasLayer = function (id, painter, dpr) {
