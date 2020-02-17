@@ -103,13 +103,13 @@ function doClip(clipPaths, ctx) {
 
 /**
  * @private
- * @method createRoot
+ * @method createDomRoot
  * 不会直接在传入的 dom 节点内部创建 canvas 标签，而是再套一层div
  * 目的是加上一些必须的 CSS 样式，方便实现特定的功能。
  * @param {Number} width 
  * @param {Number} height 
  */
-function createRoot(width, height) {
+function createDomRoot(width, height) {
     let domRoot = document.createElement('div');
     // domRoot.onselectstart = returnFalse; // Avoid page selected
     domRoot.style.cssText = [
@@ -201,7 +201,7 @@ let CanvasPainter = function (root, storage, opts) {
         this._width = this._getSize(0);
         this._height = this._getSize(1);
 
-        let domRoot = this._domRoot = createRoot(
+        let domRoot = this._domRoot = createDomRoot(
             this._width, this._height
         );
         root.appendChild(domRoot);
@@ -471,7 +471,7 @@ CanvasPainter.prototype = {
         // PENDING, If only builtin layer?
         this.eachBuiltinLayer(function (layer) {
             if (layer.virtual) {
-                ctx.drawImage(layer.dom, 0, 0, width, height);
+                ctx.drawImage(layer.canvasInstance, 0, 0, width, height);
             }
         });
     },
@@ -706,20 +706,19 @@ CanvasPainter.prototype = {
                 let prevDom = prevLayer.dom;
                 if (prevDom.nextSibling) {
                     domRoot.insertBefore(
-                        layer.dom,
+                        layer.canvasInstance,
                         prevDom.nextSibling
                     );
                 }
                 else {
-                    domRoot.appendChild(layer.dom);
+                    domRoot.appendChild(layer.canvasInstance);
                 }
-            }
-            else {
+            }else {
                 if (domRoot.firstChild) {
-                    domRoot.insertBefore(layer.dom, domRoot.firstChild);
+                    domRoot.insertBefore(layer.canvasInstance, domRoot.firstChild);
                 }
                 else {
-                    domRoot.appendChild(layer.dom);
+                    domRoot.appendChild(layer.canvasInstance);
                 }
             }
         }
@@ -954,7 +953,7 @@ CanvasPainter.prototype = {
         if (!layer) {
             return;
         }
-        layer.dom.parentNode.removeChild(layer.dom);
+        layer.canvasInstance.parentNode.removeChild(layer.canvasInstance);
         delete layers[qlevel];
 
         qlevelList.splice(dataUtil.indexOf(qlevelList, qlevel), 1);
@@ -1066,7 +1065,7 @@ CanvasPainter.prototype = {
             let ctx = imageLayer.ctx;
             this.eachLayer(function (layer) {
                 if (layer.__builtin__) {
-                    ctx.drawImage(layer.dom, 0, 0, width, height);
+                    ctx.drawImage(layer.canvasInstance, 0, 0, width, height);
                 }
                 else if (layer.renderToCanvas) {
                     imageLayer.ctx.save();

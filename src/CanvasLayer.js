@@ -45,25 +45,25 @@ let CanvasLayer = function (id,width,height,dpr=devicePixelRatio) {
      */
     this.dpr = dpr;
 
-    let canvas;
-    if (typeof id === 'string') {
-        canvas = canvasUtil.createCanvas(id,this.width,this.height,this.dpr);
-    }else if (dataUtil.isObject(id)) {// Not using isDom because in node it will return false
-        canvas = id;
-        id = canvas.id;
+    let canvasInstance;
+    if (dataUtil.isObject(id)) {// Don't use isDom because in node it will return false
+        canvasInstance = id;
+        id = canvasInstance.id;
+    }else if(typeof id === 'string'){
+        canvasInstance = canvasUtil.createCanvas(id,this.width,this.height,this.dpr);
     }
-    this.dom = canvas;
+    this.canvasInstance = canvasInstance;
 
-    // There is no style attribute of canvas in nodejs.
-    if (canvas.style) {
-        canvas.onselectstart = ()=>{return false;}; // 避免页面选中的尴尬
-        canvas.style['-webkit-user-select'] = 'none';
-        canvas.style['user-select'] = 'none';
-        canvas.style['-webkit-touch-callout'] = 'none';
-        canvas.style['-webkit-tap-highlight-color'] = 'rgba(0,0,0,0)';
-        canvas.style['padding'] = 0; // eslint-disable-line dot-notation
-        canvas.style['margin'] = 0; // eslint-disable-line dot-notation
-        canvas.style['border-width'] = 0;
+    // There is no style attribute of canvasInstance in nodejs.
+    if (canvasInstance.style) {
+        canvasInstance.onselectstart = ()=>{return false;}; // 避免页面选中的尴尬
+        canvasInstance.style['-webkit-user-select'] = 'none';
+        canvasInstance.style['user-select'] = 'none';
+        canvasInstance.style['-webkit-touch-callout'] = 'none';
+        canvasInstance.style['-webkit-tap-highlight-color'] = 'rgba(0,0,0,0)';
+        canvasInstance.style['padding'] = 0; // eslint-disable-line dot-notation
+        canvasInstance.style['margin'] = 0; // eslint-disable-line dot-notation
+        canvasInstance.style['border-width'] = 0;
     }
 
     this.domBack = null;
@@ -104,7 +104,7 @@ CanvasLayer.prototype = {
      * @method initContext
      */
     initContext: function () {
-        this.ctx = this.dom.getContext('2d');
+        this.ctx = this.canvasInstance.getContext('2d');
         this.ctx.dpr = this.dpr;
     },
 
@@ -129,8 +129,8 @@ CanvasLayer.prototype = {
      */
     resize: function (width, height) {
         let dpr = this.dpr;
-        let dom = this.dom;
-        let domStyle = dom.style;
+        let canvasInstance = this.canvasInstance;
+        let domStyle = canvasInstance.style;
         let domBack = this.domBack;
 
         if (domStyle) {
@@ -138,8 +138,8 @@ CanvasLayer.prototype = {
             domStyle.height = height + 'px';
         }
 
-        dom.width = width * dpr;
-        dom.height = height * dpr;
+        canvasInstance.width = width * dpr;
+        canvasInstance.height = height * dpr;
 
         if (domBack) {
             domBack.width = width * dpr;
@@ -159,10 +159,10 @@ CanvasLayer.prototype = {
      */
     clear: function (clearAll, clearColor) {
         clearColor = clearColor || this.clearColor;
-        let dom = this.dom;
+        let canvasInstance = this.canvasInstance;
         let ctx = this.ctx;
-        let width = dom.width;
-        let height = dom.height;
+        let width = canvasInstance.width;
+        let height = canvasInstance.height;
         let haveMotionBLur = this.motionBlur && !clearAll;
         let lastFrameAlpha = this.lastFrameAlpha;
         let dpr = this.dpr;
@@ -174,7 +174,7 @@ CanvasLayer.prototype = {
 
             this.ctxBack.globalCompositeOperation = 'copy';
             this.ctxBack.drawImage(
-                dom, 0, 0,
+                canvasInstance, 0, 0,
                 width / dpr,
                 height / dpr
             );
@@ -185,7 +185,7 @@ CanvasLayer.prototype = {
             let clearColorGradientOrPattern;
             // Gradient
             if (clearColor.colorStops) {
-                // Cache canvas gradient
+                // Cache canvasInstance gradient
                 clearColorGradientOrPattern = clearColor.__canvasGradient || Style.getGradient(ctx, clearColor, {
                     x: 0,
                     y: 0,
