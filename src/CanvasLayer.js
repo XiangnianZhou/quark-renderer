@@ -5,7 +5,7 @@ import Style from './graphic/Style';
 import Pattern from './graphic/Pattern';
 
 /**
- * @class qrenderer.canvas.Layer
+ * @class qrenderer.canvas.CanvasLayer
  * 用来创建 canvas 层，在 Painter 类中会引用此类。
  * @author pissang(https://www.github.com/pissang)
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
@@ -41,12 +41,12 @@ function createCanvas(id, painter, dpr) {
 }
 
 /**
- * @method constructor Layer
+ * @method constructor CanvasLayer
  * @param {String} id
  * @param {Painter} painter
  * @param {Number} [dpr]
  */
-let Layer = function (id, painter, dpr) {
+let CanvasLayer = function (id, painter, dpr) {
     let canvas;
     dpr = dpr || devicePixelRatio;
     if (typeof id === 'string') {
@@ -88,13 +88,13 @@ let Layer = function (id, painter, dpr) {
      */
     this.lastFrameAlpha = 0.7;
     /**
-     * @property {Number} Layer dpr
+     * @property {Number} CanvasLayer dpr
      */
     this.dpr = dpr;
 };
 
-Layer.prototype = {
-    constructor: Layer,
+CanvasLayer.prototype = {
+    constructor: CanvasLayer,
     __dirty: true,
     __used: false,
     __drawIndex: 0,
@@ -224,4 +224,4 @@ Layer.prototype = {
     }
 };
 
-export default Layer;
+export default CanvasLayer;
