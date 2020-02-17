@@ -44,15 +44,15 @@ export let version = '4.1.2';
  * 全局总入口，创建 QuarkRenderer 的实例。
  * 
  * @param {HTMLElement} dom
- * @param {Object} [opts]
- * @param {String} [opts.renderer='canvas'] 'canvas' or 'svg'
- * @param {Number} [opts.devicePixelRatio]
- * @param {Number|String} [opts.width] Can be 'auto' (the same as null/undefined)
- * @param {Number|String} [opts.height] Can be 'auto' (the same as null/undefined)
+ * @param {Object} [options]
+ * @param {String} [options.renderer='canvas'] 'canvas' or 'svg'
+ * @param {Number} [options.devicePixelRatio]
+ * @param {Number|String} [options.width] Can be 'auto' (the same as null/undefined)
+ * @param {Number|String} [options.height] Can be 'auto' (the same as null/undefined)
  * @return {QuarkRenderer}
  */
-export function init(dom, opts) {
-    let qr = new QuarkRenderer(guid(), dom, opts);
+export function init(dom, options) {
+    let qr = new QuarkRenderer(guid(), dom, options);
     instances[qr.id] = qr;
     return qr;
 }
@@ -97,16 +97,16 @@ export function registerPainter(name, PainterClass) {
  * @method constructor QuarkRenderer
  * @param {String} id
  * @param {HTMLElement} dom
- * @param {Object} [opts]
- * @param {String} [opts.renderer='canvas'] 'canvas' or 'svg'
- * @param {Number} [opts.devicePixelRatio]
- * @param {Number} [opts.width] Can be 'auto' (the same as null/undefined)
- * @param {Number} [opts.height] Can be 'auto' (the same as null/undefined)
+ * @param {Object} [options]
+ * @param {String} [options.renderer='canvas'] 'canvas' or 'svg'
+ * @param {Number} [options.devicePixelRatio]
+ * @param {Number} [options.width] Can be 'auto' (the same as null/undefined)
+ * @param {Number} [options.height] Can be 'auto' (the same as null/undefined)
  * @return {QuarkRenderer}
  */
 class QuarkRenderer{
-    constructor(id, dom, opts){
-        opts = opts || {};
+    constructor(id, dom, options){
+        options = options || {};
 
         /**
          * @property {HTMLDomElement}
@@ -125,7 +125,7 @@ class QuarkRenderer{
          */
         let storage = new Storage();
     
-        let rendererType = opts.renderer;
+        let rendererType = options.renderer;
         // TODO WebGL
         // TODO: remove vml
         if (useVML) {
@@ -136,7 +136,7 @@ class QuarkRenderer{
         }else if (!rendererType || !painterMap[rendererType]) {
             rendererType = 'canvas';
         }
-        let painter = new painterMap[rendererType](dom, storage, opts, id);
+        let painter = new painterMap[rendererType](dom, storage, options, id);
     
         this.storage = storage;
         this.painter = painter;
@@ -379,13 +379,13 @@ class QuarkRenderer{
      * @method
      * Resize the canvas.
      * Should be invoked when container size is changed
-     * @param {Object} [opts]
-     * @param {Number|String} [opts.width] Can be 'auto' (the same as null/undefined)
-     * @param {Number|String} [opts.height] Can be 'auto' (the same as null/undefined)
+     * @param {Object} [options]
+     * @param {Number|String} [options.width] Can be 'auto' (the same as null/undefined)
+     * @param {Number|String} [options.height] Can be 'auto' (the same as null/undefined)
      */
-    resize(opts) {
-        opts = opts || {};
-        this.painter.resize(opts.width, opts.height);
+    resize(options) {
+        options = options || {};
+        this.painter.resize(options.width, options.height);
         this.eventHandler.resize();
     }
 
