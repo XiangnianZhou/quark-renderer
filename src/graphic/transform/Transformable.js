@@ -1,6 +1,7 @@
 import * as matrix from '../../core/utils/matrix';
 import * as vector from '../../core/utils/vector';
 import {mathSqrt,mathAtan2} from '../constants';
+import * as classUtil from '../../core/utils/class_util';
 
 /**
  * @abstract
@@ -11,8 +12,10 @@ import {mathSqrt,mathAtan2} from '../constants';
  */
 
 let mIdentity = matrix.identity;
-
 let EPSILON = 5e-5;
+let scaleTmp = [];
+let tmpTransform = [];
+let originTransform = matrix.create();
 
 function isNotAroundZero(val) {
     return val > EPSILON || val < -EPSILON;
@@ -21,46 +24,54 @@ function isNotAroundZero(val) {
 /**
  * @method constructor Transformable
  */
-let Transformable = function (opts) {
-    opts = opts || {};
-    // If there are no given position, rotation, scale
-    if (!opts.position) {
-        /**
-         * @property {Array<Number>}
-         * 平移
-         */
-        this.position = [0, 0];
-    }
-    if (opts.rotation == null) {
-        /**
-         * @property {Array<Number>}
-         * 旋转
-         */
-        this.rotation = 0;
-    }
-    if (!opts.scale) {
-        /**
-         * @property {Array<Number>}
-         * 缩放
-         */
-        this.scale = [1, 1];
-    }
+let Transformable = function (opts={}) {
     /**
      * @property {Array<Number>}
-     * 旋转和缩放的原点
+     * 旋转角度
      */
-    this.origin = this.origin || null;
+    this.rotation = 0;
+
+    /**
+     * @property {Array<Number>}
+     * 平移
+     */
+    this.position = [0, 0];
+    
+    /**
+     * @property {Array<Number>}
+     * 缩放
+     */
+    this.scale = [1, 1];
+
+    /**
+     * @property {Array<Number>}
+     * 扭曲
+     */
+    this.skew = [1,1];
+
+    /**
+     * @property {Array<Number>}
+     * 翻转
+     */
+    this.flip = [1,1];
+
+    /**
+     * @property {Array<Number>}
+     * 变换的原点，默认为最左上角的(0,0)点
+     */
+    this.origin = [0,0];
+
+    classUtil.copyOwnProperties(this,opts);
 };
 
-let transformableProto = Transformable.prototype;
-transformableProto.transform = null;
+Transformable.prototype.transform = null;
 
 /**
  * @method needLocalTransform
  * 判断是否需要有坐标变换
  * 如果有坐标变换, 则从position, rotation, scale以及父节点的transform计算出自身的transform矩阵
  */
-transformableProto.needLocalTransform = function () {
+Transformable.prototype.needLocalTransform = function () {
     return isNotAroundZero(this.rotation)
         || isNotAroundZero(this.position[0])
         || isNotAroundZero(this.position[1])
@@ -68,8 +79,7 @@ transformableProto.needLocalTransform = function () {
         || isNotAroundZero(this.scale[1] - 1);
 };
 
-let scaleTmp = [];
-transformableProto.updateTransform = function () {
+Transformable.prototype.updateTransform = function () {
     let parent = this.parent;
     let parentHasTransform = parent && parent.transform;
     let needLocalTransform = this.needLocalTransform();
@@ -119,7 +129,7 @@ transformableProto.updateTransform = function () {
     matrix.invert(this.invTransform, m);
 };
 
-transformableProto.getLocalTransform = function (m) {
+Transformable.prototype.getLocalTransform = function (m) {
     return Transformable.getLocalTransform(this, m);
 };
 
@@ -128,7 +138,7 @@ transformableProto.getLocalTransform = function (m) {
  * 将自己的transform应用到context上
  * @param {CanvasRenderingContext2D} ctx
  */
-transformableProto.setTransform = function (ctx) {
+Transformable.prototype.setTransform = function (ctx) {
     let m = this.transform;
     let dpr = ctx.dpr || 1;
     if (m) {
@@ -139,15 +149,12 @@ transformableProto.setTransform = function (ctx) {
     }
 };
 
-transformableProto.restoreTransform = function (ctx) {
+Transformable.prototype.restoreTransform = function (ctx) {
     let dpr = ctx.dpr || 1;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 };
 
-let tmpTransform = [];
-let originTransform = matrix.create();
-
-transformableProto.setLocalTransform = function (m) {
+Transformable.prototype.setLocalTransform = function (m) {
     if (!m) {
         // TODO return or set identity?
         return;
@@ -175,10 +182,11 @@ transformableProto.setLocalTransform = function (m) {
     scale[1] = sy;
     this.rotation = mathAtan2(-m[1] / sy, m[0] / sx);
 };
+
 /**
  * 分解`transform`矩阵到`position`, `rotation`, `scale`
  */
-transformableProto.decomposeTransform = function () {
+Transformable.prototype.decomposeTransform = function () {
     if (!this.transform) {
         return;
     }
@@ -207,7 +215,7 @@ transformableProto.decomposeTransform = function () {
  * Get global scale
  * @return {Array<Number>}
  */
-transformableProto.getGlobalScale = function (out) {
+Transformable.prototype.getGlobalScale = function (out) {
     let m = this.transform;
     out = out || [];
     if (!m) {
@@ -225,6 +233,7 @@ transformableProto.getGlobalScale = function (out) {
     }
     return out;
 };
+
 /**
  * @method transformCoordToLocal
  * 变换坐标位置到 shape 的局部坐标空间
@@ -232,7 +241,7 @@ transformableProto.getGlobalScale = function (out) {
  * @param {Number} y
  * @return {Array<Number>}
  */
-transformableProto.transformCoordToLocal = function (x, y) {
+Transformable.prototype.transformCoordToLocal = function (x, y) {
     let v2 = [x, y];
     let invTransform = this.invTransform;
     if (invTransform) {
@@ -248,7 +257,7 @@ transformableProto.transformCoordToLocal = function (x, y) {
  * @param {Number} y
  * @return {Array<Number>}
  */
-transformableProto.transformCoordToGlobal = function (x, y) {
+Transformable.prototype.transformCoordToGlobal = function (x, y) {
     let v2 = [x, y];
     let transform = this.transform;
     if (transform) {
