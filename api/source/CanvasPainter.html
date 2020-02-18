@@ -169,21 +169,21 @@ function createDomRoot(width, height) {
 </span> * @method constructor
  * @param {HTMLElement} root 绘图容器
  * @param {Storage} storage
- * @param {Object} opts
+ * @param {Object} options
  */
 
 
-var CanvasPainter = function CanvasPainter(root, storage, opts) {
+var CanvasPainter = function CanvasPainter(root, storage, options) {
   this.type = &#39;canvas&#39;; // In node environment using node-canvas
 
   var singleCanvas = !root.nodeName // In node ?
   || root.nodeName.toUpperCase() === &#39;CANVAS&#39;;
-  this._opts = opts = dataUtil.extend({}, opts || {});
+  this._opts = options = dataUtil.extend({}, options || {});
 <span id='qrenderer-canvas-CanvasPainter-property-dpr'>  /**
 </span>   * @property {Number} dpr
    */
 
-  this.dpr = opts.devicePixelRatio || devicePixelRatio;
+  this.dpr = options.devicePixelRatio || devicePixelRatio;
 <span id='qrenderer-canvas-CanvasPainter-property-_singleCanvas'>  /**
 </span>   * @property {Boolean} _singleCanvas
    * @private
@@ -194,18 +194,23 @@ var CanvasPainter = function CanvasPainter(root, storage, opts) {
 </span>   * @property {HTMLElement} root 绘图容器
    */
 
-  this.root = root;
-  var rootStyle = root.style;
+  this.root = root; // There is no style attribute on element in nodejs.
 
-  if (rootStyle) {
-    rootStyle[&#39;-webkit-tap-highlight-color&#39;] = &#39;transparent&#39;;
-    rootStyle[&#39;-webkit-user-select&#39;] = rootStyle[&#39;user-select&#39;] = rootStyle[&#39;-webkit-touch-callout&#39;] = &#39;none&#39;;
+  if (this.root.style) {
+    this.root.style[&#39;-webkit-tap-highlight-color&#39;] = &#39;transparent&#39;;
+    this.root.style[&#39;-webkit-user-select&#39;] = this.root.style[&#39;user-select&#39;] = this.root.style[&#39;-webkit-touch-callout&#39;] = &#39;none&#39;;
     root.innerHTML = &#39;&#39;;
   }
+<span id='qrenderer-canvas-CanvasPainter-property-_domRoot'>  /**
+</span>   * @private
+   * @property {HTMLElement} _domRoot 绘图容器，或者 Canvas 实例
+   */
+
+
+  this._domRoot = null;
 <span id='qrenderer-canvas-CanvasPainter-property-storage'>  /**
 </span>   * @property {Storage} storage
    */
-
 
   this.storage = storage;
 <span id='qrenderer-canvas-CanvasPainter-property-qlevelList'>  /**
@@ -237,21 +242,24 @@ var CanvasPainter = function CanvasPainter(root, storage, opts) {
   if (!singleCanvas) {
     this._width = this._getSize(0);
     this._height = this._getSize(1);
-    var domRoot = this._domRoot = createDomRoot(this._width, this._height);
+    var domRoot = createDomRoot( // Craete a new div inside the root element.
+    this._width, this._height);
+    this._domRoot = domRoot; // In this case, this._domRoot is different from this.root.
+
     root.appendChild(domRoot);
   } else {
     var width = root.width;
     var height = root.height;
 
-    if (opts.width != null) {
-      width = opts.width;
+    if (options.width != null) {
+      width = options.width;
     }
 
-    if (opts.height != null) {
-      height = opts.height;
+    if (options.height != null) {
+      height = options.height;
     }
 
-    this.dpr = opts.devicePixelRatio || 1; // Use canvas width and height directly
+    this.dpr = options.devicePixelRatio || 1; // Use canvas width and height directly
 
     root.width = width * this.dpr;
     root.height = height * this.dpr;
@@ -268,7 +276,7 @@ var CanvasPainter = function CanvasPainter(root, storage, opts) {
     mainLayer.qlevel = CANVAS_QLEVEL; // Not use common qlevel.
 
     qlevelList.push(CANVAS_QLEVEL);
-    this._domRoot = root;
+    this._domRoot = root; // Here, this._domRoot equals this.root.
   }
 <span id='qrenderer-canvas-CanvasPainter-property-_hoverlayer'>  /**
 </span>   * @private
@@ -755,6 +763,25 @@ CanvasPainter.prototype = {
     }
   },
 
+<span id='qrenderer-canvas-CanvasPainter-method-delLayer'>  /**
+</span>   * @method delLayer
+   * 删除指定层
+   * @param {Number} qlevel 层所在的zlevel
+   */
+  delLayer: function delLayer(qlevel) {
+    var layers = this._layers;
+    var qlevelList = this._qlevelList;
+    var layer = layers[qlevel];
+
+    if (!layer) {
+      return;
+    }
+
+    layer.canvasInstance.parentNode.removeChild(layer.canvasInstance);
+    delete layers[qlevel];
+    qlevelList.splice(dataUtil.indexOf(qlevelList, qlevel), 1);
+  },
+
 <span id='qrenderer-canvas-CanvasPainter-method-eachLayer'>  /**
 </span>   * @private
    * @method eachLayer
@@ -981,25 +1008,6 @@ CanvasPainter.prototype = {
     }
   },
 
-<span id='qrenderer-canvas-CanvasPainter-method-delLayer'>  /**
-</span>   * @method delLayer
-   * 删除指定层
-   * @param {Number} qlevel 层所在的zlevel
-   */
-  delLayer: function delLayer(qlevel) {
-    var layers = this._layers;
-    var qlevelList = this._qlevelList;
-    var layer = layers[qlevel];
-
-    if (!layer) {
-      return;
-    }
-
-    layer.canvasInstance.parentNode.removeChild(layer.canvasInstance);
-    delete layers[qlevel];
-    qlevelList.splice(dataUtil.indexOf(qlevelList, qlevel), 1);
-  },
-
 <span id='qrenderer-canvas-CanvasPainter-method-resize'>  /**
 </span>   * @method resize
    * 区域大小变化后重绘
@@ -1021,9 +1029,9 @@ CanvasPainter.prototype = {
 
       domRoot.style.display = &#39;none&#39;; // Save input w/h
 
-      var opts = this._opts;
-      width != null &amp;&amp; (opts.width = width);
-      height != null &amp;&amp; (opts.height = height);
+      var options = this._opts;
+      width != null &amp;&amp; (options.width = width);
+      height != null &amp;&amp; (options.height = height);
       width = this._getSize(0);
       height = this._getSize(1);
       domRoot.style.display = &#39;&#39;; // 优化没有实际改变的resize
@@ -1076,22 +1084,22 @@ CanvasPainter.prototype = {
 <span id='qrenderer-canvas-CanvasPainter-method-getRenderedCanvas'>  /**
 </span>   * @method getRenderedCanvas
    * Get canvas which has all thing rendered
-   * @param {Object} [opts]
-   * @param {String} [opts.backgroundColor]
-   * @param {Number} [opts.pixelRatio]
+   * @param {Object} [options]
+   * @param {String} [options.backgroundColor]
+   * @param {Number} [options.pixelRatio]
    */
-  getRenderedCanvas: function getRenderedCanvas(opts) {
-    opts = opts || {};
+  getRenderedCanvas: function getRenderedCanvas(options) {
+    options = options || {};
 
     if (this._singleCanvas &amp;&amp; !this._compositeManually) {
       return this._layers[CANVAS_QLEVEL].dom;
     }
 
-    var imageLayer = new CanvasLayer(&#39;image&#39;, this._width, this._height, opts.pixelRatio || this.dpr);
+    var imageLayer = new CanvasLayer(&#39;image&#39;, this._width, this._height, options.pixelRatio || this.dpr);
     imageLayer.initContext();
-    imageLayer.clear(false, opts.backgroundColor || this._backgroundColor);
+    imageLayer.clear(false, options.backgroundColor || this._backgroundColor);
 
-    if (opts.pixelRatio &lt;= this.dpr) {
+    if (options.pixelRatio &lt;= this.dpr) {
       this.refresh();
       var width = imageLayer.dom.width;
       var height = imageLayer.dom.height;
@@ -1143,14 +1151,14 @@ CanvasPainter.prototype = {
    * @param {*} whIdx 
    */
   _getSize: function _getSize(whIdx) {
-    var opts = this._opts;
+    var options = this._opts;
     var wh = [&#39;width&#39;, &#39;height&#39;][whIdx];
     var cwh = [&#39;clientWidth&#39;, &#39;clientHeight&#39;][whIdx];
     var plt = [&#39;paddingLeft&#39;, &#39;paddingTop&#39;][whIdx];
     var prb = [&#39;paddingRight&#39;, &#39;paddingBottom&#39;][whIdx];
 
-    if (opts[wh] != null &amp;&amp; opts[wh] !== &#39;auto&#39;) {
-      return parseFloat(opts[wh]);
+    if (options[wh] != null &amp;&amp; options[wh] !== &#39;auto&#39;) {
+      return parseFloat(options[wh]);
     }
 
     var root = this.root; // IE8 does not support getComputedStyle, but it use VML.

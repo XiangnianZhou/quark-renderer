@@ -7,9 +7,9 @@
 <body>
     <div id="main" style="width:1000px;height:500px;"></div>
     <script type="text/javascript">
-        var qr = qrenderer.init(document.getElementById('main'));
+        var qr = QuarkRenderer.init(document.getElementById('main'));
 
-        var curve = new qrenderer.Sector({
+        var curve = new QuarkRenderer.Sector({
             position: [0, 0],
             scale: [1, 1],
             shape: {

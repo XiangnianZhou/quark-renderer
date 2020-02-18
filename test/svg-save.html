@@ -19,11 +19,11 @@
     <div id="main" style="width:1000px;height:800px;"></div>
     <img id="img">
     <script type="text/javascript">
-    var qr = qrenderer.init(document.getElementById('main'), {
+    var qr = QuarkRenderer.init(document.getElementById('main'), {
         renderer: window.__QRENDER__DEFAULT__RENDERER__ || 'svg'
     });
 
-    var rect = new qrenderer.Rect({
+    var rect = new QuarkRenderer.Rect({
         shape: {
             x: 60,
             y: 60,

@@ -34,7 +34,7 @@ exports.create = function (min) {
         input: getPath(`./quark-renderer.all.js`),
         legacy: true, // Support IE8-
         output: {
-            name: 'qrenderer', //global name
+            name: 'QuarkRenderer', //global name
             format: 'umd',
             legacy: true,      // Must be declared both in inputOptions and outputOptions.
             sourcemap: !min,

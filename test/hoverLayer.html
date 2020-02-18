@@ -16,7 +16,7 @@
     <div id="main"></div>
     <script type="text/javascript">
         // 初始化qrenderer
-        var qr = qrenderer.init(document.getElementById('main'));
+        var qr = QuarkRenderer.init(document.getElementById('main'));
 
         var x1 = Math.random() * 2;
         var y1 = Math.random() * qr.getHeight();
@@ -34,7 +34,7 @@
             var checkpoint = !(i % 2000);
             var checkpointIdx = Math.round(i / 2000);
             var el;
-            qr.add(el = new qrenderer.BezierCurve({
+            qr.add(el = new QuarkRenderer.BezierCurve({
                 shape: {
                     x1: x1,
                     y1: y1,

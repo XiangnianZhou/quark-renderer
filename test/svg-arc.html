@@ -11,7 +11,7 @@
     <div id="main" style="width:1000px;height:900px;"></div>
 
     <script type="text/javascript">
-        let qr = qrenderer.init(document.getElementById('main'), {
+        let qr = QuarkRenderer.init(document.getElementById('main'), {
             renderer: 'svg'
         });
 
@@ -19,7 +19,7 @@
             let s = 0 + Math.PI / 4 * i;
             for (let j = 0; j < 16; ++j) {
                 let e = Math.PI / 4 * j;
-                let arc = new qrenderer.Arc({
+                let arc = new QuarkRenderer.Arc({
                     shape: {
                         cx: 50 + 50 * i,
                         cy: 50 + 50 * j,
@@ -31,7 +31,7 @@
                 });
                 qr.add(arc);
                 
-                arc = new qrenderer.Arc({
+                arc = new QuarkRenderer.Arc({
                     shape: {
                         cx: 50 + 50 * i,
                         cy: 50 + 50 * j,
@@ -47,7 +47,7 @@
                 });
                 qr.add(arc);
 
-                let text = new qrenderer.Text({
+                let text = new QuarkRenderer.Text({
                     style: {
                         text: i + ',' + j,
                         fontSize: 12

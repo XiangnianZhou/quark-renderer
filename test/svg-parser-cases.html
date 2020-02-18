@@ -281,7 +281,7 @@
         var currentScale = 1;
         var svgPath;
 
-        var qr = qrenderer.init(document.getElementById('qr'));
+        var qr = QuarkRenderer.init(document.getElementById('qr'));
         window.addEventListener('resize', function () {
             qr.resize();
         });

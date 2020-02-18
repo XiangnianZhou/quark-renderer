@@ -48,7 +48,7 @@
         var withText = hasParam('with-text');
         var renderMode = hasParam('svg') ? 'svg' : 'canvas';
 
-        var qr = qrenderer.init(document.getElementById('main'), {
+        var qr = QuarkRenderer.init(document.getElementById('main'), {
             renderer: renderMode
         });
 
@@ -283,7 +283,7 @@
         qr.clear();
         
         var rects = points.map(function(pt) {
-            var rect = new qrenderer.Rect({
+            var rect = new QuarkRenderer.Rect({
                 shape: {
                     width: pointWidth,
                     height: pointWidth

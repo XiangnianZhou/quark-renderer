@@ -24,7 +24,7 @@
         'quark-renderer/src/vml/vml'
     ], function(qrenderer, Text, Line, Rect){
 
-        var qr = qrenderer.init(document.getElementById('main'));
+        var qr = QuarkRenderer.init(document.getElementById('main'));
 
         qr.add(new Text({
             style: {

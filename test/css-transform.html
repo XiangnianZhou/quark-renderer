@@ -479,13 +479,13 @@ under the License.
                     var caseMode = $getCaseMode();
 
                     if (caseMode === CASE_MODE.CASE_QREVT) {
-                        var qr = qrenderer.init(tryBox, {
+                        var qr = QuarkRenderer.init(tryBox, {
                             renderer: 'canvas'
                         });
                         var drawing = false;
                         qr.on('click', function (e) {
                             var size = 10;
-                            qr.add(new qrenderer.Rect({
+                            qr.add(new QuarkRenderer.Rect({
                                 shape: {
                                     x: e.offsetX - size / 2,
                                     y: e.offsetY - size / 2,
@@ -498,7 +498,7 @@ under the License.
                             }));
                         });
                         qr.on('mousedown', function (e) {
-                            drawing = new qrenderer.Polyline({
+                            drawing = new QuarkRenderer.Polyline({
                                 shape: {
                                     points: [[e.offsetX, e.offsetY]]
                                 },

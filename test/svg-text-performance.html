@@ -61,13 +61,13 @@
         return txts.join('');
     }
 
-    var qr = qrenderer.init(document.getElementById('main'));
+    var qr = QuarkRenderer.init(document.getElementById('main'));
 
     var result = qrenderer.parseSVG(svg);
 
     var qrEl = document.getElementById('main');
     mainGroup = result.root;
-    qr = qrenderer.init(qrEl);
+    qr = QuarkRenderer.init(qrEl);
     qr.add(mainGroup);
 
     roamable(qr, mainGroup);

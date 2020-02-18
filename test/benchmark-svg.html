@@ -11,7 +11,7 @@
 <body style="margin:0px;">
     <div id="main" style="position: absolute; left: 0; right: 0; top: 0; bottom: 0"></div>
     <script type="text/javascript">
-        var qr = qrenderer.init(document.getElementById('main'), {
+        var qr = QuarkRenderer.init(document.getElementById('main'), {
             renderer: 'svg'
         });
 
@@ -27,7 +27,7 @@
         for (var i = cnt - 1; i >= 0; --i) {
             var x = qr.getWidth() / cnt * i;
             var y = qr.getHeight() / cnt * i;
-            var rect = new qrenderer.Rect({
+            var rect = new QuarkRenderer.Rect({
                 shape: {
                     width: 10,
                     height: 10,

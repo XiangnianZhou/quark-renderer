@@ -17,13 +17,13 @@
             div.style.height = height + 'px';
             document.body.appendChild(div);
             // 初始化qrenderer
-            var qr = qrenderer.init(div, {
+            var qr = QuarkRenderer.init(div, {
                 renderer: 'canvas'
             });
 
             for (var i = 0; i < N; i++) {
                 var h = height * Math.random();
-                var barShape = new qrenderer.Rect({
+                var barShape = new QuarkRenderer.Rect({
                     shape: {
                         x: i * width / N,
                         y: height,

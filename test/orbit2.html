@@ -8,12 +8,12 @@
 <body style="background-color:black; margin:0px;">
     <div id="main" style="width:1000px;height:600px;"></div>
     <script type="text/javascript">
-        var qr = qrenderer.init(document.getElementById('main'));
+        var qr = QuarkRenderer.init(document.getElementById('main'));
 
         var NUMBER = 5000;
 
         for (var i = 0; i < NUMBER; i++) {
-            var circleShape = new qrenderer.Circle({
+            var circleShape = new QuarkRenderer.Circle({
                 shape: {
                     cx: 10,
                     cy: 10,

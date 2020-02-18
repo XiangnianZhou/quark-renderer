@@ -78,7 +78,7 @@ var version = &#39;4.1.2&#39;;
  */
 
 function init(dom, options) {
-  var qr = new QuarkRenderer(guid(), dom, options);
+  var qr = new QuarkRenderer(dom, options);
   instances[qr.id] = qr;
   return qr;
 }
@@ -136,27 +136,29 @@ function registerPainter(name, PainterClass) {
 var QuarkRenderer =
 /*#__PURE__*/
 function () {
-  function QuarkRenderer(id, dom, options) {
+  function QuarkRenderer(dom) {
+    var options = arguments.length &gt; 1 &amp;&amp; arguments[1] !== undefined ? arguments[1] : {};
+
     _classCallCheck(this, QuarkRenderer);
 
-    options = options || {};
-<span id='qrenderer-core-QuarkRenderer-property-dom'>    /**
-</span>     * @property {HTMLDomElement}
-     */
-
-    this.dom = dom;
 <span id='qrenderer-core-QuarkRenderer-property-id'>    /**
 </span>     * @property {String}
      */
+    this.id = guid();
+<span id='qrenderer-core-QuarkRenderer-property-dom'>    /**
+</span>     * @property {HTMLDomElement|Canvas|Context} dom 
+     * This can be a HTMLDomElement like DIV, or a Canvas isntance, 
+     * or Context for Wechat mini-program.
+     */
 
-    this.id = id;
+    this.dom = dom;
     var self = this;
 <span id='qrenderer-core-QuarkRenderer-property-storage'>    /**
 </span>     * @property {Storage}
      */
 
     var storage = new Storage();
-    var rendererType = options.renderer; // TODO WebGL
+    var rendererType = options.renderer; // TODO:WebGL
     // TODO: remove vml
 
     if (useVML) {
@@ -169,7 +171,7 @@ function () {
       rendererType = &#39;canvas&#39;;
     }
 
-    var painter = new painterMap[rendererType](dom, storage, options, id);
+    var painter = new painterMap[rendererType](dom, storage, options, this.id);
     this.storage = storage;
     this.painter = painter; //把DOM事件代理出来
 
