@@ -25,7 +25,7 @@ const INCREMENTAL_INC = 0.001;
 export default class CanvasPainter{
     /**
      * @method constructor
-     * @param {HTMLDomElement|Canvas|Context} root 
+     * @param {HTMLDomElement|Canvas|Context} host 
      * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
      * or Context for Wechat mini-program.
      * 
@@ -34,56 +34,50 @@ export default class CanvasPainter{
      * @param {Storage} storage
      * @param {Object} options
      */
-    constructor(root, storage, options={}){
-        options = dataUtil.extend({},options);
-        this.options = options;
+    constructor(host, storage, options={}){
+        this.options = dataUtil.extend({},options);
+
+        /**
+         * @property {String} type
+         */
         this.type = 'canvas';
 
-        // In node environment using node-canvas
-        let singleCanvas = !root.nodeName || root.nodeName.toUpperCase() === 'CANVAS';
-    
         /**
          * @property {Number} dpr
          */
-        this.dpr = options.devicePixelRatio || devicePixelRatio;
-    
+        this.dpr = this.options.devicePixelRatio || devicePixelRatio;
+
         /**
-         * @property {Boolean} _singleCanvas
-         * @private
-         */
-        this._singleCanvas = singleCanvas;
-    
-        /**
-         * @property {HTMLDomElement|Canvas|Context} root 
+         * @property {HTMLDomElement|Canvas|Context} host 
          * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
          * or Context for Wechat mini-program.
          * 
          * 此属性可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
          * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。
          */
-        this.root = root;
+        this.host = host;
         // There is no style attribute on element in nodejs.
-        if (this.root.style) {
-            this.root.style['-webkit-tap-highlight-color'] = 'transparent';
-            this.root.style['-webkit-user-select'] =
-            this.root.style['user-select'] =
-            this.root.style['-webkit-touch-callout'] = 'none';
-            root.innerHTML = '';
+        if (this.host.style) {
+            this.host.style['-webkit-tap-highlight-color'] = 'transparent';
+            this.host.style['-webkit-user-select'] =
+            this.host.style['user-select'] =
+            this.host.style['-webkit-touch-callout'] = 'none';
+            host.innerHTML = '';
         }
 
         /**
          * @private
-         * @property {HTMLDomElement|Canvas|Context} _domRoot 
+         * @property {HTMLDomElement|Canvas|Context} _host 
          * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
-         * or Context for Wechat mini-program. In browser environment, this._domRoot is 
+         * or Context for Wechat mini-program. In browser environment, this._host is 
          * a div which is created by QuarkRenderer automaticly, 
-         * in other environments, this._domRoot equals this.root.
+         * in other environments, this._host equals this.host.
          * 
          * 此属性可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
-         * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。在浏览器环境中，this._domRoot 是 QuarkRenderer
-         * 自己自动创建的 div 层，在其它环境中，this._domRoot 等于 this.root。
+         * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。在浏览器环境中，this._host 是 QuarkRenderer
+         * 自己自动创建的 div 层，在其它环境中，this._host 等于 this.root。
          */
-        this._domRoot=null;
+        this._host=null;
     
         /**
          * @property {Storage} storage
@@ -111,41 +105,55 @@ export default class CanvasPainter{
         /**
          * @private
          * @property _needsManuallyCompositing
-         * qrenderer will do compositing when root is a canvas and have multiple zlevels.
+         * qrenderer will do compositing when host is a canvas and have multiple zlevels.
          */
         this._needsManuallyCompositing = false;
+
+        /**
+         * @private
+         * @property {CanvasLayer} _hoverlayer
+         */
+        this._hoverlayer = null;
+
+        /**
+         * @private
+         * @property {Array} _hoverElements
+         */
+        this._hoverElements = [];
     
-        if (!singleCanvas) {
-            this._width = this._getSize(0);
-            this._height = this._getSize(1);
+        this._tmpRect = new BoundingRect(0, 0, 0, 0);
+        this._viewRect = new BoundingRect(0, 0, 0, 0);
+
+        /**
+         * @property {Boolean} _singleCanvas
+         * In node environment using node-canvas
+         * @private
+         */
+        this._singleCanvas = !host.nodeName || host.nodeName.toUpperCase() === 'CANVAS';
     
-            let domRoot = this.createDomRoot(// Craete a new div inside the root element.
-                this._width, this._height
-            );
-            this._domRoot =domRoot;// In this case, this._domRoot is different from this.root.
-            root.appendChild(domRoot);
-        }else {
-            let width = root.width;
-            let height = root.height;
+        //The code below is used to compatible with various runtime environments like browser, node-canvas, and Wechat mini-program.
+        if (this._singleCanvas) {
+            let width = host.width;
+            let height = host.height;
     
-            if (options.width != null) {
-                width = options.width;
+            if (this.options.width != null) {
+                width = this.options.width;
             }
-            if (options.height != null) {
-                height = options.height;
+            if (this.options.height != null) {
+                height = this.options.height;
             }
-            this.dpr = options.devicePixelRatio || 1;
+            this.dpr = this.options.devicePixelRatio || 1;
     
             // Use canvas width and height directly
-            root.width = width * this.dpr;
-            root.height = height * this.dpr;
+            host.width = width * this.dpr;
+            host.height = height * this.dpr;
     
             this._width = width;
             this._height = height;
     
             // Create layer if only one given canvas
             // Device can be specified to create a high dpi image.
-            let mainLayer = new CanvasLayer(root,this._width,this._height,this.dpr);
+            let mainLayer = new CanvasLayer(host,this._width,this._height,this.dpr);
             mainLayer.__builtin__ = true;
             mainLayer.initContext();
             // FIXME Use canvas width and height
@@ -155,22 +163,17 @@ export default class CanvasPainter{
             // Not use common qlevel.
             qlevelList.push(CANVAS_QLEVEL);
     
-            this._domRoot = root; // Here, this._domRoot equals this.root.
+            this._host = host; // Here, this._host equals this.host.
+        }else {
+            this._width = this._getSize(0);
+            this._height = this._getSize(1);
+    
+            let domRoot = this.createDomRoot(// Craete a new div inside the host element.
+                this._width, this._height
+            );
+            this._host =domRoot;// In this case, this._host is different from this.host.
+            host.appendChild(domRoot);
         }
-    
-        /**
-         * @private
-         * @property {CanvasLayer} _hoverlayer
-         */
-        this._hoverlayer = null;
-        /**
-         * @private
-         * @property {Array} _hoverElements
-         */
-        this._hoverElements = [];
-    
-        this._tmpRect = new BoundingRect(0, 0, 0, 0);
-        this._viewRect = new BoundingRect(0, 0, 0, 0);
     }
 
     /**
@@ -195,7 +198,7 @@ export default class CanvasPainter{
      * @return {HTMLDivElement}
      */
     getViewportRoot() {
-        return this._domRoot;
+        return this._host;
     }
 
     /**
@@ -383,8 +386,8 @@ export default class CanvasPainter{
      */
     _compositeManually() {
         let ctx = this.getLayer(CANVAS_QLEVEL).ctx;
-        let width = this._domRoot.width;
-        let height = this._domRoot.height;
+        let width = this._host.width;
+        let height = this._host.height;
         ctx.clearRect(0, 0, width, height);
         // PENDING, If only builtin layer?
         this.eachBuiltinLayer(function (layer) {
@@ -589,7 +592,7 @@ export default class CanvasPainter{
         let len = qlevelList.length;
         let prevLayer = null;
         let i = -1;
-        let domRoot = this._domRoot;
+        let domRoot = this._host;
 
         if (layersMap[qlevel]) {
             console.log('ZLevel ' + qlevel + ' has been used already');
@@ -621,7 +624,7 @@ export default class CanvasPainter{
         // But it still under management of qrenderer.
         if (!layer.virtual) {
             if (prevLayer) {
-                let prevDom = prevLayer.dom;
+                let prevDom = prevLayer.canvasInstance;
                 if (prevDom.nextSibling) {
                     domRoot.insertBefore(
                         layer.canvasInstance,
@@ -884,7 +887,7 @@ export default class CanvasPainter{
      * @param {Number} height
      */
     resize(width, height) {
-        if (!this._domRoot.style) { // Maybe in node or worker
+        if (!this._host.style) { // Maybe in node or worker
             if (width == null || height == null) {
                 return;
             }
@@ -894,7 +897,7 @@ export default class CanvasPainter{
             this.getLayer(CANVAS_QLEVEL).resize(width, height);
         }
         else {
-            let domRoot = this._domRoot;
+            let domRoot = this._host;
             // FIXME Why ?
             domRoot.style.display = 'none';
 
@@ -949,12 +952,12 @@ export default class CanvasPainter{
      * 释放
      */
     dispose() {
-        this.root.innerHTML = '';
+        this.host.innerHTML = '';
 
-        this.root =
+        this.host =
         this.storage =
 
-        this._domRoot =
+        this._host =
         this._layers = null;
     }
 
@@ -968,7 +971,7 @@ export default class CanvasPainter{
     getRenderedCanvas(options) {
         options = options || {};
         if (this._singleCanvas && !this._compositeManually) {
-            return this._layers[CANVAS_QLEVEL].dom;
+            return this._layers[CANVAS_QLEVEL].canvasInstance;
         }
 
         let imageLayer = new CanvasLayer('image',this._width,this._height,options.pixelRatio || this.dpr);
@@ -978,8 +981,8 @@ export default class CanvasPainter{
         if (options.pixelRatio <= this.dpr) {
             this.refresh();
 
-            let width = imageLayer.dom.width;
-            let height = imageLayer.dom.height;
+            let width = imageLayer.canvasInstance.width;
+            let height = imageLayer.canvasInstance.height;
             let ctx = imageLayer.ctx;
             this.eachLayer(function (layer) {
                 if (layer.__builtin__) {
@@ -1002,7 +1005,7 @@ export default class CanvasPainter{
             }
         }
 
-        return imageLayer.dom;
+        return imageLayer.canvasInstance;
     }
 
     /**
@@ -1038,12 +1041,12 @@ export default class CanvasPainter{
             return parseFloat(options[wh]);
         }
 
-        let root = this.root;
+        let host = this.host;
         // IE8 does not support getComputedStyle, but it use VML.
-        let stl = document.defaultView.getComputedStyle(root);
+        let stl = document.defaultView.getComputedStyle(host);
 
         return (
-            (root[cwh] || dataUtil.parseInt10(stl[wh]) || dataUtil.parseInt10(root.style[wh]))
+            (host[cwh] || dataUtil.parseInt10(stl[wh]) || dataUtil.parseInt10(host.style[wh]))
             - (dataUtil.parseInt10(stl[plt]) || 0)
             - (dataUtil.parseInt10(stl[prb]) || 0)
         ) | 0;
