@@ -720,19 +720,35 @@ CanvasPainter.prototype = {
                         layer.canvasInstance,
                         prevDom.nextSibling
                     );
-                }
-                else {
+                }else {
                     domRoot.appendChild(layer.canvasInstance);
                 }
             }else {
                 if (domRoot.firstChild) {
                     domRoot.insertBefore(layer.canvasInstance, domRoot.firstChild);
-                }
-                else {
+                }else {
                     domRoot.appendChild(layer.canvasInstance);
                 }
             }
         }
+    },
+
+    /**
+     * @method delLayer
+     * 删除指定层
+     * @param {Number} qlevel 层所在的zlevel
+     */
+    delLayer: function (qlevel) {
+        let layers = this._layers;
+        let qlevelList = this._qlevelList;
+        let layer = layers[qlevel];
+        if (!layer) {
+            return;
+        }
+        layer.canvasInstance.parentNode.removeChild(layer.canvasInstance);
+        delete layers[qlevel];
+
+        qlevelList.splice(dataUtil.indexOf(qlevelList, qlevel), 1);
     },
 
     /**
@@ -950,24 +966,6 @@ CanvasPainter.prototype = {
                 }
             }
         }
-    },
-
-    /**
-     * @method delLayer
-     * 删除指定层
-     * @param {Number} qlevel 层所在的zlevel
-     */
-    delLayer: function (qlevel) {
-        let layers = this._layers;
-        let qlevelList = this._qlevelList;
-        let layer = layers[qlevel];
-        if (!layer) {
-            return;
-        }
-        layer.canvasInstance.parentNode.removeChild(layer.canvasInstance);
-        delete layers[qlevel];
-
-        qlevelList.splice(dataUtil.indexOf(qlevelList, qlevel), 1);
     },
 
     /**
