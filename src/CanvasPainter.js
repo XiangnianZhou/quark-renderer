@@ -652,7 +652,9 @@ export default class CanvasPainter{
         if (!layer) {
             return;
         }
-        layer.canvasInstance.parentNode.removeChild(layer.canvasInstance);
+        if(layer.canvasInstance){
+            layer.canvasInstance.parentNode.removeChild(layer.canvasInstance);
+        }
         delete layers[qlevel];
 
         qlevelList.splice(dataUtil.indexOf(qlevelList, qlevel), 1);
