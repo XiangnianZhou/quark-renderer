@@ -150,7 +150,7 @@ class QuarkRenderer{
 
         //代理DOM事件。
         let handerProxy =null;
-        if(!(typeof ctx.moveTo==='function')){ // host is Context instance.
+        if(!(typeof this.host.moveTo==='function')){ // host is Context instance.
             if(!env.node && !env.worker && !env.wxa){
                 handerProxy=new DomEventProxy(this.painter.getViewportRoot());
             }
