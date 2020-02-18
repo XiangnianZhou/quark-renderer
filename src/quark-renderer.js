@@ -157,8 +157,8 @@ class QuarkRenderer{
             }
         }else{
             // host is Context instance, override function.
-            textContain.$override('measureText', function (text, textFont) {
-                self.font = font || DEFAULT_FONT;
+            textContain.$override('measureText', function (text, font){
+                self.font = font || textContain.DEFAULT_FONT;
                 return self.measureText(text);
             });
         }
