@@ -18,49 +18,56 @@
         let main = document.getElementById('main');
         let ctx=main.getContext("2d");
         let qr = QuarkRenderer.init(ctx,{width:800,height:600});
-        let gradient = new QuarkRenderer.LinearGradient();
-        gradient.addColorStop(0, 'red');
-        gradient.addColorStop(1, 'black');
-
-        let circle = new QuarkRenderer.Circle({
-            position: [0, 0],
-            scale: [1, 1],
+        
+        let circle1 = new QuarkRenderer.Circle({
             shape: {
-                cx: 50,
-                cy: 50,
-                r: 50
+                cx: 20,
+                cy: 20,
+                r: 30
             },
             style: {
-                fill: gradient,
-                lineWidth: 5,
-                text:'circle',
-                textPosition:'inside'
-            }
+                fill: 'blue'
+            },
+            draggable: true
         });
-        qr.add(circle);
-        
-        let ap=circle.animate('', true)
-            .when(1000, {
-                position: [200, 0],
-                scale: [2, 2]
-            })
-            .when(2000, {
-                position: [200, 200],
-                scale: [1, 1]
-            })
-            .when(3000, {
-                position: [0, 200],
-                scale: [1, 1]
-            })
-            .when(4000, {
-                position: [0, 0],
-                scale: [1, 1]
-            })
-            .start();
 
-        setTimeout(()=>{
-            ap.stop();
-        },5000);
+        let circle2 = new QuarkRenderer.Circle({
+            shape: {
+                cx: 60,
+                cy: 60,
+                r: 30
+            },
+            style: {
+                fill: 'blue'
+            },
+            draggable: true
+        });
+
+        circle1.on('mouseover', function () {
+            qr.host.style.cursor = 'move';
+        });
+        circle1.on('mouseout', function () {
+            qr.host.style.cursor = 'default';
+        });
+        circle1.on('keydown', function (event) {
+            console.log('keydown');
+            console.log(event);
+        });
+        circle1.on('keyup', function (event) {
+            console.log('keyup');
+            console.log(event);
+        });
+        circle1.on('keypress', function (event) {
+            console.log('keypress');
+            console.log(event);
+        });
+
+        // qr.on("pagekeydown",function(event){
+        //     console.log("qr pagekeydown...");
+        // });
+
+        qr.add(circle1);
+        qr.add(circle2);
     </script>
 </body>
 </html>
