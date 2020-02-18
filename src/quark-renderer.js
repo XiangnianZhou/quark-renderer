@@ -52,7 +52,7 @@ export let version = '4.1.2';
  * @return {QuarkRenderer}
  */
 export function init(dom, options) {
-    let qr = new QuarkRenderer(guid(), dom, options);
+    let qr = new QuarkRenderer(dom, options);
     instances[qr.id] = qr;
     return qr;
 }
@@ -105,16 +105,18 @@ export function registerPainter(name, PainterClass) {
  * @return {QuarkRenderer}
  */
 class QuarkRenderer{
-    constructor(id, dom, options={}){
-        /**
-         * @property {HTMLDomElement}
-         */
-        this.dom = dom;
-    
+    constructor(dom, options={}){
         /**
          * @property {String}
          */
-        this.id = id;
+        this.id = guid();
+
+        /**
+         * @property {HTMLDomElement|Canvas|Context} dom 
+         * This can be a HTMLDomElement like DIV, or a Canvas isntance, 
+         * or Context for Wechat mini-program.
+         */
+        this.dom = dom;
     
         let self = this;
     
@@ -124,7 +126,7 @@ class QuarkRenderer{
         let storage = new Storage();
     
         let rendererType = options.renderer;
-        // TODO WebGL
+        // TODO:WebGL
         // TODO: remove vml
         if (useVML) {
             if (!painterMap.vml) {
@@ -134,7 +136,7 @@ class QuarkRenderer{
         }else if (!rendererType || !painterMap[rendererType]) {
             rendererType = 'canvas';
         }
-        let painter = new painterMap[rendererType](dom, storage, options, id);
+        let painter = new painterMap[rendererType](dom, storage, options, this.id);
     
         this.storage = storage;
         this.painter = painter;

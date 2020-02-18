@@ -9,6 +9,7 @@ import env from './core/env';
 import {mathRandom,mathMax} from './graphic/constants';
 import * as canvasUtil from './core/utils/canvas_util';
 import guid from './core/utils/guid';
+
 /**
  * @class qrenderer.canvas.CanvasPainter
  * 这是基于 canvas 接口的 CanvasPainter 类

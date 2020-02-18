@@ -9,11 +9,13 @@ import Pattern from './graphic/Pattern';
  * CanvasLayer is designed to create canvas layers, it will be used in CanvasPainter.
  * CanvasPainter will create several canvas instances during the paint process, some 
  * of them are invisiable, such as the one used for export a image.
- * 
+ * Attention: we can NOT create canvas dynamicly in Wechat mini-program, because Wechat
+ * does not allow us to manipulate DOM.
  * 
  * 该类被设计用来创建 canvas 层，在 CanvasPainter 类中会引用此类。
  * 在绘图过程中， CanvasPainter 会创建多个 canvas 实例来辅助操作，
  * 某些 canvas 实例是隐藏的，比如用来导出图片的 canvas。
+ * 注意：在微信小程序中不能动态创建 canvas 标签，因为微信小程序不允许 DOM 操作。
  * 
  * @author pissang(https://www.github.com/pissang)
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
