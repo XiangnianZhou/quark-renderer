@@ -8,9 +8,9 @@
 <body style="margin:0px;">
     <canvas id="main" width="1000px" height="600px" style="width:1000px;height:600px;"></canvas>
     <script type="text/javascript">
-        var qr = qrenderer.init(document.getElementById('main'));
+        var qr = QuarkRenderer.init(document.getElementById('main'));
 
-        qr.add(new qrenderer.Rect({
+        qr.add(new QuarkRenderer.Rect({
             shape: {
                 x: 0,
                 y: 0,
@@ -22,7 +22,7 @@
             }
         }));
 
-        var countText = new qrenderer.Text({
+        var countText = new QuarkRenderer.Text({
             zlevel: 1,
             style: {
                 text: 10000,
@@ -36,10 +36,10 @@
         });
         qr.add(countText);
 
-        var group = new qrenderer.Group();
+        var group = new QuarkRenderer.Group();
         qr.add(group);
         for (var i = 0; i < 10000; i++) {
-            var circleShape = new qrenderer.Circle({
+            var circleShape = new QuarkRenderer.Circle({
                 shape: {
                     r: 5 + Math.random() * 5
                 },

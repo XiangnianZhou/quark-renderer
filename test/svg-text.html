@@ -18,7 +18,7 @@
 
     var showBoundingRect;
 
-    var qr = qrenderer.init(document.getElementById('main'), {
+    var qr = QuarkRenderer.init(document.getElementById('main'), {
         renderer: window.__QRENDER__DEFAULT__RENDERER__ || 'svg'
     });
 
@@ -26,7 +26,7 @@
         qr.storage.traverse(function (el) {
             if (el.type === 'text') {
                 var rect = el.getBoundingRect();
-                qr.add(new qrenderer.Rect({
+                qr.add(new QuarkRenderer.Rect({
                     shape: {
                         x: rect.x, y: rect.y, width: rect.width, height: rect.height
                     },
@@ -49,7 +49,7 @@
     var unit = 100;
 
     for (var i = 0; i < 100 && i * unit < qrWidth; i++) {
-        qr.add(new qrenderer.Line({
+        qr.add(new QuarkRenderer.Line({
             shape: {
                 x1: i * unit,
                 y1: 0,
@@ -65,7 +65,7 @@
     }
 
     for (var i = 0; i < 100 && i * unit < qrHeight; i++) {
-        qr.add(new qrenderer.Line({
+        qr.add(new QuarkRenderer.Line({
             shape: {
                 x1: 0,
                 y1: i * unit,
@@ -80,7 +80,7 @@
         }));
     }
 
-    qr.add(new qrenderer.Text({
+    qr.add(new QuarkRenderer.Text({
         style: {
             x: 0,
             y: 0,
@@ -93,7 +93,7 @@
         draggable: true
     }));
 
-    qr.add(new qrenderer.Text({
+    qr.add(new QuarkRenderer.Text({
         position : [100, 100],
         style: {
             x: 0,
@@ -109,7 +109,7 @@
         draggable: true
     }));
 
-    qr.add(new qrenderer.Text({
+    qr.add(new QuarkRenderer.Text({
         position : [200, 100],
         rotation: 2,
         scale: [.5, .5],
@@ -125,7 +125,7 @@
         draggable: true
     }));
 
-    qr.add(new qrenderer.Rect({
+    qr.add(new QuarkRenderer.Rect({
         position : [300, 100],
         shape: {
             x: 0, y: 0, width: 200, height: 16
@@ -134,7 +134,7 @@
             fill: '#333'
         }
     }));
-    qr.add(new qrenderer.Text({
+    qr.add(new QuarkRenderer.Text({
         position : [300, 100],
         style: {
             x: 0,
@@ -145,7 +145,7 @@
         }
     }));
 
-    qr.add(new qrenderer.Text({
+    qr.add(new QuarkRenderer.Text({
         position : [400, 50],
         style: {
             x: 0,
@@ -157,7 +157,7 @@
         }
     }));
 
-    qr.add(new qrenderer.Text({
+    qr.add(new QuarkRenderer.Text({
         position : [500, 50],
         style: {
             x: 0,
@@ -169,7 +169,7 @@
         }
     }));
 
-    qr.add(new qrenderer.Text({
+    qr.add(new QuarkRenderer.Text({
         position : [600, 0],
         style: {
             x: 0,
@@ -184,7 +184,7 @@
         }
     }));
 
-    qr.add(new qrenderer.Text({
+    qr.add(new QuarkRenderer.Text({
         position : [700, 0],
         style: {
             x: 0,
@@ -201,7 +201,7 @@
         }
     }));
 
-    qr.add(new qrenderer.Text({
+    qr.add(new QuarkRenderer.Text({
         position : [600, 100],
         rotation: -Math.PI / 16,
         style: {
@@ -231,7 +231,7 @@
         }
     }));
 
-    // qr.add(new qrenderer.Text({
+    // qr.add(new QuarkRenderer.Text({
     //     style: {
     //         x: 200,
     //         y: 300,
@@ -327,7 +327,7 @@
     //     draggable: true
     // }));
 
-    // qr.add(new qrenderer.Text({
+    // qr.add(new QuarkRenderer.Text({
     //     rotation: -0.1,
     //     position: [500, 800],
     //     style: {
@@ -386,7 +386,7 @@
     // }));
 
 
-    // qr.add(new qrenderer.Text({
+    // qr.add(new QuarkRenderer.Text({
     //     rotation: -0.1,
     //     position: [500, 1200],
     //     style: {

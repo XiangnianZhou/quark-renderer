@@ -15,7 +15,7 @@
     </style>
     <div id="main"></div>
     <script type="text/javascript">
-        var qr = qrenderer.init(document.getElementById('main'));
+        var qr = QuarkRenderer.init(document.getElementById('main'));
 
         fetch('./data/svg/Tehran_topo.svg')
             .then(response => response.text())

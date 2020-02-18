@@ -28,7 +28,9 @@ Here are the key improvements compare to the original ZRender:
 
 ## Usage
 
-**Pull this repo to your local device, check the examples inside /test directory.**
+- Pull this repo to your local device.
+- Run npm build.
+- Check the examples inside /test directory.
 
 Example:
 
@@ -51,12 +53,12 @@ Example:
     <div id="main"></div>
     <script type="text/javascript">
         let main = document.getElementById('main');
-        let qr = qrenderer.init(main);
-        let gradient = new qrenderer.LinearGradient();
+        let qr = QuarkRenderer.init(main);
+        let gradient = new QuarkRenderer.LinearGradient();
         gradient.addColorStop(0, 'red');
         gradient.addColorStop(1, 'black');
 
-        let circle = new qrenderer.Circle({
+        let circle = new QuarkRenderer.Circle({
             position: [0, 0],
             scale: [1, 1],
             shape: {

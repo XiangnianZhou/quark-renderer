@@ -9,9 +9,9 @@
     <div id="main" style="width:600px;height:400px;"></div>
     <script type="text/javascript">
         // 初始化qrenderer
-        let qr = qrenderer.init(document.getElementById('main'));
+        let qr = QuarkRenderer.init(document.getElementById('main'));
 
-        let polygon = new qrenderer.Polygon({
+        let polygon = new QuarkRenderer.Polygon({
             position: [100, 100],
             scale: [1, 1],
             style: {

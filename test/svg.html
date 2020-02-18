@@ -11,16 +11,16 @@
     <div id="main" style="width:1000px;height:800px;"></div>
     <script type="text/javascript">
         // 初始化qrenderer
-        var qr = qrenderer.init(document.getElementById('main'), {
+        var qr = QuarkRenderer.init(document.getElementById('main'), {
             renderer: window.__QRENDER__DEFAULT__RENDERER__ || 'svg'
         });
 
-        var gradient1 = new qrenderer.LinearGradient();
+        var gradient1 = new QuarkRenderer.LinearGradient();
         gradient1.addColorStop(0, 'red');
         gradient1.addColorStop(0.7, 'rgb(255, 255, 0)');
         gradient1.addColorStop(1, '#0f0');
 
-        var rect = new qrenderer.Rect({
+        var rect = new QuarkRenderer.Rect({
             shape: {
                 x: 10,
                 y: 10,
@@ -64,13 +64,13 @@
             qr.add(rect);
         }, 5000);
 
-        var gradient2 = new qrenderer.LinearGradient();
+        var gradient2 = new QuarkRenderer.LinearGradient();
         gradient2.addColorStop(0, 'blue');
         gradient2.addColorStop(1, 'yellow');
         gradient2.x2 = 0;
         gradient2.y2 = 1;
 
-        var circle = new qrenderer.Circle({
+        var circle = new QuarkRenderer.Circle({
             shape: {
                 cx: 150,
                 cy: 50,
@@ -90,7 +90,7 @@
             qr.add(circle);
         }, 4000);
 
-        var ring = new qrenderer.Ring({
+        var ring = new QuarkRenderer.Ring({
             shape: {
                 cx: 250,
                 cy: 50,
@@ -111,7 +111,7 @@
             qr.add(ring);
         }, 6000);
 
-        var sector = new qrenderer.Sector({
+        var sector = new QuarkRenderer.Sector({
             shape: {
                 cx: 350,
                 cy: 50,
@@ -123,11 +123,11 @@
         });
         qr.add(sector);
 
-        var gradient3 = new qrenderer.RadialGradient();
+        var gradient3 = new QuarkRenderer.RadialGradient();
         gradient3.addColorStop(0, 'red');
         gradient3.addColorStop(1, 'green');
 
-        var drop = new qrenderer.Droplet({
+        var drop = new QuarkRenderer.Droplet({
             shape: {
                 cx: 350,
                 cy: 50,
@@ -140,7 +140,7 @@
         });
         qr.add(drop);
 
-        var curve = new qrenderer.BezierCurve({
+        var curve = new QuarkRenderer.BezierCurve({
             shape: {
                 x1: 400,
                 y1: 0,
@@ -154,7 +154,7 @@
         });
         qr.add(curve);
 
-        var ellipse = new qrenderer.Ellipse({
+        var ellipse = new QuarkRenderer.Ellipse({
             shape: {
                 cx: 550,
                 cy: 50,
@@ -164,7 +164,7 @@
         });
         qr.add(ellipse);
 
-        var heart = new qrenderer.Heart({
+        var heart = new QuarkRenderer.Heart({
             shape: {
                 cx: 650,
                 cy: 25,
@@ -174,7 +174,7 @@
         });
         qr.add(heart);
 
-        var rose = new qrenderer.Rose({
+        var rose = new QuarkRenderer.Rose({
             shape: {
                 cx: 750,
                 cy: 50,
@@ -185,7 +185,7 @@
         });
         qr.add(rose);
 
-        var trochoid = new qrenderer.Trochoid({
+        var trochoid = new QuarkRenderer.Trochoid({
             shape: {
                 cx: 850,
                 cy: 50,
@@ -196,7 +196,7 @@
         });
         qr.add(trochoid);
 
-        var isogon = new qrenderer.Isogon({
+        var isogon = new QuarkRenderer.Isogon({
             shape: {
                 x: 50,
                 y: 150,
@@ -206,7 +206,7 @@
         });
         qr.add(isogon);
 
-        var line = new qrenderer.Line({
+        var line = new QuarkRenderer.Line({
             shape: {
                 x1: 100,
                 y1: 100,
@@ -216,7 +216,7 @@
         });
         qr.add(line);
 
-        var polygon = new qrenderer.Polygon({
+        var polygon = new QuarkRenderer.Polygon({
             shape: {
                 points: [
                     [200, 100],
@@ -229,7 +229,7 @@
         });
         qr.add(polygon);
 
-        var polyline = new qrenderer.Polyline({
+        var polyline = new QuarkRenderer.Polyline({
             shape: {
                 points: [
                     [300, 100],
@@ -242,7 +242,7 @@
         });
         qr.add(polyline);
 
-        var star = new qrenderer.Star({
+        var star = new QuarkRenderer.Star({
             shape: {
                 cx: 450,
                 cy: 150,

@@ -14,11 +14,11 @@
     </style>
     <div id="main"></div>
     <script type="text/javascript">
-        var qr = qrenderer.init(document.getElementById('main'));
+        var qr = QuarkRenderer.init(document.getElementById('main'));
 
         for (var i = 0; i < 200; i++) {
             for (var j = 0; j < 200; j++) {
-                var image = new qrenderer.Image({
+                var image = new QuarkRenderer.Image({
                     position: [i * 20, j * 20],
                     scale: [1, 1],
                     style: {

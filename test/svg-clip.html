@@ -12,11 +12,11 @@
 
     <script type="text/javascript">
     // 初始化qrenderer
-    var qr = qrenderer.init(document.getElementById('main'), {
+    var qr = QuarkRenderer.init(document.getElementById('main'), {
         renderer: window.__QRENDER__DEFAULT__RENDERER__ || 'svg'
     });
 
-    var rect = new qrenderer.Rect({
+    var rect = new QuarkRenderer.Rect({
         shape: {
             x: 10,
             y: 10,
@@ -25,7 +25,7 @@
         }
     });
 
-    var circle = new qrenderer.Circle({
+    var circle = new QuarkRenderer.Circle({
         shape: {
             cx: 80,
             cy: 30,
@@ -43,7 +43,7 @@
         rect.setClipPath(circle);
     }, 12000);
 
-    var rect2 = new qrenderer.Rect({
+    var rect2 = new QuarkRenderer.Rect({
         shape: {
             x: 100,
             y: 10,
@@ -62,7 +62,7 @@
         heart.removeClipPath();
     }, 3000);
 
-    var ring = new qrenderer.Ring({
+    var ring = new QuarkRenderer.Ring({
         shape: {
             cx: 250,
             cy: 50,
@@ -71,7 +71,7 @@
         }
     });
 
-    var heart = new qrenderer.Heart({
+    var heart = new QuarkRenderer.Heart({
         shape: {
             cx: 250,
             cy: 25,
@@ -87,7 +87,7 @@
     }, 3000);
 
 
-    var image = new qrenderer.Image({
+    var image = new QuarkRenderer.Image({
         style: {
             x: 310,
             y: 10,
@@ -97,7 +97,7 @@
         }
     });
 
-    var imgClip = new qrenderer.Circle({
+    var imgClip = new QuarkRenderer.Circle({
         shape: {
             cx: 380,
             cy: 30,
@@ -109,7 +109,7 @@
     qr.add(image);
 
 
-    var text = new qrenderer.Text({
+    var text = new QuarkRenderer.Text({
         style: {
             x: 400,
             y: 10,
@@ -118,7 +118,7 @@
         }
     });
 
-    var textClip = new qrenderer.Rect({
+    var textClip = new QuarkRenderer.Rect({
         shape: {
             x: 420,
             y: 20,
@@ -131,7 +131,7 @@
     qr.add(text);
 
 
-    var text2 = new qrenderer.Rect({
+    var text2 = new QuarkRenderer.Rect({
         shape: {
             x: 20,
             y: 20,
@@ -146,7 +146,7 @@
         },
         position: [400, 20]
     });
-    var text2Clip1 = new qrenderer.Rect({
+    var text2Clip1 = new QuarkRenderer.Rect({
         shape: {
             x: 20,
             y: 20,
@@ -154,7 +154,7 @@
             height: 80
         }
     });
-    var text2Clip2 = new qrenderer.Rect({
+    var text2Clip2 = new QuarkRenderer.Rect({
         shape: {
             x: 140,
             y: 20,
@@ -163,7 +163,7 @@
         }
     });
 
-    var bound = new qrenderer.Circle({
+    var bound = new QuarkRenderer.Circle({
         shape: {
             cx: 120,
             cy: 70,
@@ -174,7 +174,7 @@
         }
     });
 
-    var group = new qrenderer.CompoundPath({
+    var group = new QuarkRenderer.CompoundPath({
         shape: {
             paths: [text2Clip1, text2Clip2]
         },
@@ -189,7 +189,7 @@
 
     qr.add(text2);
 
-    var parent = new qrenderer.Rect({
+    var parent = new QuarkRenderer.Rect({
         shape: {
             x: 10,
             y: 10,
@@ -204,7 +204,7 @@
     });
     qr.add(parent);
 
-    var child = new qrenderer.Circle({
+    var child = new QuarkRenderer.Circle({
         shape: {
             cx: 110,
             cy: 110,

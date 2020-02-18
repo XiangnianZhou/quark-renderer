@@ -352,16 +352,16 @@
         }
 
         function initBase() {
-            var qr1 = qrenderer.init(document.getElementById('main1'), {
+            var qr1 = QuarkRenderer.init(document.getElementById('main1'), {
                 renderer: window.__QRENDER__DEFAULT__RENDERER__
             });
 
             var text = 'ThisIsText中文';
-            var group = new qrenderer.Group({
+            var group = new QuarkRenderer.Group({
                 position: [200, 50]
             });
             qr1.add(group);
-            group.add(new qrenderer.Rect({
+            group.add(new QuarkRenderer.Rect({
                 style: {
                     fill: 'green'
                 },
@@ -369,7 +369,7 @@
                     x: 0, y: 0, width: 300, height: 100
                 }
             }));
-            var textEl = new qrenderer.Text({
+            var textEl = new QuarkRenderer.Text({
                 __qr_test_text: text,
                 style: {
                     text: text
@@ -378,11 +378,11 @@
             group.add(textEl);
             _elList1.push(textEl);
 
-            var group2 = new qrenderer.Group({
+            var group2 = new QuarkRenderer.Group({
                 position: [200, 350]
             });
             qr1.add(group2);
-            group2.add(new qrenderer.Rect({
+            group2.add(new QuarkRenderer.Rect({
                 shape: {
                     x: 0, y: 0, width: 300, height: 100
                 },
@@ -390,7 +390,7 @@
                     fill: 'rgba(22, 55, 99)'
                 }
             }));
-            var textEl2 = new qrenderer.Text({
+            var textEl2 = new QuarkRenderer.Text({
                 style: {
                     fill: '#eeaaff',
                     text: [

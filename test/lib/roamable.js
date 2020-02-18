@@ -1,17 +1,16 @@
-/* global qrenderer */
 (function () {
 
     var roots = [];
 
-    var rawTransformable = new qrenderer.Group();
-    var roamTransformable = new qrenderer.Group();
+    var rawTransformable = new QuarkRenderer.Group();
+    var roamTransformable = new QuarkRenderer.Group();
     roamTransformable.add(rawTransformable);
 
     var moving;
 
     /**
-     * @param {module:qrenderer|boolean} qr Clear if `false`
-     * @param {module:qrenderer/Element|boolean} root Target root to be roamed. Clear if `false`.
+     * @param {boolean} qr Clear if `false`
+     * @param {Element|boolean} root Target root to be roamed. Clear if `false`.
      * @param {Function|boolean} handler Roam event handler or disable roam if `false`.
      */
     window.roamable = function (qr, root, handler) {
@@ -113,9 +112,9 @@
         roamTransformable.updateTransform();
         rawTransformable.updateTransform();
 
-        qrenderer.matrix.copy(
+        QuarkRenderer.matrix.copy(
             root.transform || (root.transform = []),
-            rawTransformable.transform || qrenderer.matrix.create()
+            rawTransformable.transform || QuarkRenderer.matrix.create()
         );
 
         root.decomposeTransform();

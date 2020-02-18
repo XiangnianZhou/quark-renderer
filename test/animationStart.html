@@ -33,7 +33,7 @@
         }
 
         function init() {
-            qr = qrenderer.init(document.getElementById('main'));
+            qr = QuarkRenderer.init(document.getElementById('main'));
 
             var lastTrigger = +new Date();
             var timer;
@@ -51,7 +51,7 @@
             //     lastTick = now;
             // }, this);
 
-            var gradient = new qrenderer.LinearGradient();
+            var gradient = new QuarkRenderer.LinearGradient();
             gradient.addColorStop(0, 'red');
             gradient.addColorStop(1, 'black');
 
@@ -63,7 +63,7 @@
 
             for (var i = 0; i < count; i++) {
                 var theta = Math.random() * Math.PI * 2;
-                var circle = new qrenderer.Circle({
+                var circle = new QuarkRenderer.Circle({
                     position: [
                         center[0] + (baseRadius + Math.random() * 60) * Math.cos(theta),
                         center[1] + (baseRadius + Math.random() * 60) * Math.sin(theta)

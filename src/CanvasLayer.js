@@ -9,11 +9,13 @@ import Pattern from './graphic/Pattern';
  * CanvasLayer is designed to create canvas layers, it will be used in CanvasPainter.
  * CanvasPainter will create several canvas instances during the paint process, some 
  * of them are invisiable, such as the one used for export a image.
- * 
+ * Attention: we can NOT create canvas dynamicly in Wechat mini-program, because Wechat
+ * does not allow us to manipulate DOM.
  * 
  * 该类被设计用来创建 canvas 层，在 CanvasPainter 类中会引用此类。
  * 在绘图过程中， CanvasPainter 会创建多个 canvas 实例来辅助操作，
  * 某些 canvas 实例是隐藏的，比如用来导出图片的 canvas。
+ * 注意：在微信小程序中不能动态创建 canvas 标签，因为微信小程序不允许 DOM 操作。
  * 
  * @author pissang(https://www.github.com/pissang)
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
@@ -49,17 +51,10 @@ export default class CanvasLayer{
         let canvasInstance;
         if (dataUtil.isObject(id)) {// Don't use isDom because in node it will return false
             canvasInstance = id;
-            id = canvasInstance.id;
+            this.id = canvasInstance.id;
         }else if(typeof id === 'string'){
             canvasInstance = canvasUtil.createCanvas(id,this.width,this.height,this.dpr);
         }
-        this.canvasInstance = canvasInstance;
-
-        /**
-         * @property {Context} ctx Canvas context, this property will be initialized after calling initContext() method.
-         */
-        this.ctx;
-
         // There is no style attribute of canvasInstance in nodejs.
         if (canvasInstance.style) {
             canvasInstance.onselectstart = ()=>{return false;}; // 避免页面选中的尴尬
@@ -71,6 +66,17 @@ export default class CanvasLayer{
             canvasInstance.style['margin'] = 0; // eslint-disable-line dot-notation
             canvasInstance.style['border-width'] = 0;
         }
+
+        /**
+         * @property {Canvas} canvasInstance
+         * 注意：在微信小程序中，获取不到 canvas 实例，只能获取到 Context 对象。
+         */
+        this.canvasInstance = canvasInstance;
+
+        /**
+         * @property {Context} ctx Canvas context, this property will be initialized after calling initContext() method.
+         */
+        this.ctx;
 
         /**
          * @property {Canvas} hiddenCanvas 隐藏的画布实例
@@ -151,7 +157,6 @@ export default class CanvasLayer{
         if (hiddenCanvas) {
             hiddenCanvas.width = width * dpr;
             hiddenCanvas.height = height * dpr;
-
             if (dpr !== 1) {
                 this.hiddenContext.scale(dpr, dpr);
             }
@@ -178,7 +183,6 @@ export default class CanvasLayer{
             if (!this.hiddenCanvas) {
                 this.createBackBuffer();
             }
-
             this.hiddenContext.globalCompositeOperation = 'copy';
             this.hiddenContext.drawImage(
                 canvasInstance, 0, 0,
@@ -199,11 +203,8 @@ export default class CanvasLayer{
                     width: width,
                     height: height
                 });
-
                 clearColor.__canvasGradient = clearColorGradientOrPattern;
-            }
-            // Pattern
-            else if (clearColor.image) {
+            }else if (clearColor.image) {// Pattern
                 clearColorGradientOrPattern = Pattern.prototype.getCanvasPattern.call(clearColor, ctx);
             }
             ctx.save();

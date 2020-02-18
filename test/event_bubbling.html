@@ -8,8 +8,8 @@
 <body>
     <div id="main" style="width:1000px;height:500px;"></div>
     <script type="text/javascript">
-        var qr = qrenderer.init(document.getElementById('main'));
-        var circle = new qrenderer.Circle({
+        var qr = QuarkRenderer.init(document.getElementById('main'));
+        var circle = new QuarkRenderer.Circle({
             scale : [1, 1],
             shape : {
                 cx : 0,
@@ -18,18 +18,18 @@
             }
         });
 
-        var g1 = new qrenderer.Group({
+        var g1 = new QuarkRenderer.Group({
             position: [100, 100]
         });
         g1.add(circle);
 
-        var g2 = new qrenderer.Group();
+        var g2 = new QuarkRenderer.Group();
         g2.add(g1);
 
-        var g3 = new qrenderer.Group();
+        var g3 = new QuarkRenderer.Group();
         g3.add(g2);
 
-        var g4 = new qrenderer.Group();
+        var g4 = new QuarkRenderer.Group();
         g4.add(g3);
 
         circle.on('click', function(e) {

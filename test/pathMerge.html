@@ -9,11 +9,11 @@
     <div id="main" style="width:1000px;height:500px;"></div>
     <script>
         // 初始化qrenderer
-        var qr = qrenderer.init(document.getElementById('main'));
+        var qr = QuarkRenderer.init(document.getElementById('main'));
 
         var lineList = [];
         for (var i = 0; i < 300; i ++) {
-            var line = new qrenderer.Line({
+            var line = new QuarkRenderer.Line({
                 shape: {
                     x1: 0,
                     y1: i * 3,

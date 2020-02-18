@@ -1,5 +1,5 @@
-var qr = qrenderer.init(document.getElementById('main'));
-var circle1 = new qrenderer.Circle({
+var qr = QuarkRenderer.init(document.getElementById('main'));
+var circle1 = new QuarkRenderer.Circle({
     shape: {
         cx: 20,
         cy: 20,
@@ -11,7 +11,7 @@ var circle1 = new qrenderer.Circle({
     draggable: true
 });
 
-var circle3 = new qrenderer.Circle({
+var circle3 = new QuarkRenderer.Circle({
     shape: {
         cx: 70,
         cy: 70,
@@ -23,7 +23,7 @@ var circle3 = new qrenderer.Circle({
     draggable: true
 });
 
-var circle2 = new qrenderer.Circle({
+var circle2 = new QuarkRenderer.Circle({
     shape: {
         cx: 300,
         cy: 300,

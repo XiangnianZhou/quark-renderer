@@ -15,7 +15,7 @@
         'quark-renderer/src/vml/vml'
     ], function(qrenderer, SectorShape){
         // 初始化qrenderer
-        var qr = qrenderer.init(document.getElementById('main'));
+        var qr = QuarkRenderer.init(document.getElementById('main'));
 
         qr.add(new SectorShape({
             position: [100, 100],

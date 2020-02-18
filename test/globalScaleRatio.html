@@ -24,13 +24,13 @@
     <script type="text/javascript">
         var main = document.getElementById('main');
         // 初始化qrenderer
-        var qr = qrenderer.init(main);
+        var qr = QuarkRenderer.init(main);
 
-        var gradient = new qrenderer.LinearGradient();
+        var gradient = new QuarkRenderer.LinearGradient();
         gradient.addColorStop(0, 'red');
         gradient.addColorStop(1, 'black');
 
-        var circle = new qrenderer.Circle({
+        var circle = new QuarkRenderer.Circle({
             position: [300, 300],
             scale: [1, 1],
             shape: {

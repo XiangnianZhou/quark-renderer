@@ -9,6 +9,7 @@ import env from './core/env';
 import {mathRandom,mathMax} from './graphic/constants';
 import * as canvasUtil from './core/utils/canvas_util';
 import guid from './core/utils/guid';
+
 /**
  * @class qrenderer.canvas.CanvasPainter
  * 这是基于 canvas 接口的 CanvasPainter 类
@@ -16,276 +17,192 @@ import guid from './core/utils/guid';
  * @see 基于 VML 接口的 CanvasPainter 类在 vml 目录下
  */
 
-let HOVER_LAYER_QLEVEL = 1e5;
-let CANVAS_QLEVEL = 314159;
-let EL_AFTER_INCREMENTAL_INC = 0.01;
-let INCREMENTAL_INC = 0.001;
+const HOVER_LAYER_QLEVEL = 1e5;
+const CANVAS_QLEVEL = 314159;
+const EL_AFTER_INCREMENTAL_INC = 0.01;
+const INCREMENTAL_INC = 0.001;
 
-/**
- * @private
- * @method isLayerValid
- * @param {*} layer 
- */
-function isLayerValid(layer) {
-    if (!layer){
-        return false;
-    }
+export default class CanvasPainter{
+    /**
+     * @method constructor
+     * @param {HTMLDomElement|Canvas|Context} root 
+     * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
+     * or Context for Wechat mini-program.
+     * 
+     * 此属性可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
+     * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。
+     * @param {Storage} storage
+     * @param {Object} options
+     */
+    constructor(root, storage, options={}){
+        options = dataUtil.extend({},options);
+        this.options = options;
+        this.type = 'canvas';
 
-    if (layer.__builtin__){
-        return true;
-    }
-
-    if (typeof (layer.resize) !== 'function'
-        || typeof (layer.refresh) !== 'function'){
-        return false;
-    }
-    return true;
-}
-
-let tmpRect = new BoundingRect(0, 0, 0, 0);
-let viewRect = new BoundingRect(0, 0, 0, 0);
-/**
- * @private
- * @method isDisplayableCulled
- * @param {*} el 
- * @param {*} width 
- * @param {*} height 
- */
-function isDisplayableCulled(el, width, height) {
-    tmpRect.copy(el.getBoundingRect());
-    if (el.transform) {
-        tmpRect.applyTransform(el.transform);
-    }
-    viewRect.width = width;
-    viewRect.height = height;
-    return !tmpRect.intersect(viewRect);
-}
-
-/**
- * @private
- * @method isClipPathChanged
- * @param {*} clipPaths 
- * @param {*} prevClipPaths 
- */
-function isClipPathChanged(clipPaths, prevClipPaths) {
-    // displayable.__clipPaths can only be `null`/`undefined` or an non-empty array.
-    if (clipPaths === prevClipPaths) {
-        return false;
-    }
-    if (!clipPaths || !prevClipPaths || (clipPaths.length !== prevClipPaths.length)) {
-        return true;
-    }
-    for (let i = 0; i < clipPaths.length; i++) {
-        if (clipPaths[i] !== prevClipPaths[i]) {
-            return true;
+        // In node environment using node-canvas
+        let singleCanvas = !root.nodeName || root.nodeName.toUpperCase() === 'CANVAS';
+    
+        /**
+         * @property {Number} dpr
+         */
+        this.dpr = options.devicePixelRatio || devicePixelRatio;
+    
+        /**
+         * @property {Boolean} _singleCanvas
+         * @private
+         */
+        this._singleCanvas = singleCanvas;
+    
+        /**
+         * @property {HTMLDomElement|Canvas|Context} root 
+         * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
+         * or Context for Wechat mini-program.
+         * 
+         * 此属性可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
+         * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。
+         */
+        this.root = root;
+        // There is no style attribute on element in nodejs.
+        if (this.root.style) {
+            this.root.style['-webkit-tap-highlight-color'] = 'transparent';
+            this.root.style['-webkit-user-select'] =
+            this.root.style['user-select'] =
+            this.root.style['-webkit-touch-callout'] = 'none';
+            root.innerHTML = '';
         }
-    }
-    return false;
-}
 
-/**
- * @private
- * @method doClip
- * @param {*} clipPaths 
- * @param {*} ctx 
- */
-function doClip(clipPaths, ctx) {
-    for (let i = 0; i < clipPaths.length; i++) {
-        let clipPath = clipPaths[i];
-
-        clipPath.setTransform(ctx);
-        ctx.beginPath();
-        clipPath.buildPath(ctx, clipPath.shape);
-        ctx.clip();
-        // Transform back
-        clipPath.restoreTransform(ctx);
-    }
-}
-
-/**
- * @private
- * @method createDomRoot
- * 不会直接在传入的 dom 节点内部创建 canvas 标签，而是再套一层div
- * 目的是加上一些必须的 CSS 样式，方便实现特定的功能。
- * @param {Number} width 
- * @param {Number} height 
- */
-function createDomRoot(width, height) {
-    let domRoot = document.createElement('div');
-    // domRoot.onselectstart = returnFalse; // Avoid page selected
-    domRoot.style.cssText = [
-        'position:relative',
-        // IOS13 safari probably has a compositing bug (z order of the canvas and the consequent
-        // dom does not act as expected) when some of the parent dom has
-        // `-webkit-overflow-scrolling: touch;` and the webpage is longer than one screen and
-        // the canvas is not at the top part of the page.
-        // Check `https://bugs.webkit.org/show_bug.cgi?id=203681` for more details. We remove
-        // this `overflow:hidden` to avoid the bug.
-        // 'overflow:hidden',
-        'width:' + width + 'px',
-        'height:' + height + 'px',
-        'padding:0',
-        'margin:0',
-        'border-width:0'
-    ].join(';') + ';';
-
-    //为了让div能够响应键盘事件，这个属性是必须的
-    // domRoot.setAttribute("tabindex","0");
-    return domRoot;
-}
-
-/**
- * @method constructor
- * @param {HTMLElement} root 绘图容器
- * @param {Storage} storage
- * @param {Object} opts
- */
-let CanvasPainter = function (root, storage, opts) {
-    this.type = 'canvas';
-    // In node environment using node-canvas
-    let singleCanvas = !root.nodeName // In node ?
-        || root.nodeName.toUpperCase() === 'CANVAS';
-    this._opts = opts = dataUtil.extend({}, opts || {});
-    /**
-     * @property {Number} dpr
-     */
-    this.dpr = opts.devicePixelRatio || devicePixelRatio;
-    /**
-     * @property {Boolean} _singleCanvas
-     * @private
-     */
-    this._singleCanvas = singleCanvas;
-    /**
-     * @property {HTMLElement} root 绘图容器
-     */
-    this.root = root;
-    let rootStyle = root.style;
-    if (rootStyle) {
-        rootStyle['-webkit-tap-highlight-color'] = 'transparent';
-        rootStyle['-webkit-user-select'] =
-        rootStyle['user-select'] =
-        rootStyle['-webkit-touch-callout'] = 'none';
-        root.innerHTML = '';
-    }
-
-    /**
-     * @property {Storage} storage
-     */
-    this.storage = storage;
-
-    /**
-     * @property {Array<Number>}
-     * @private
-     */
-    let qlevelList = this._qlevelList = [];
-
-    /**
-     * @private
-     * @property {Object<String, CanvasLayer>} layers
-     */
-    let layers = this._layers = {};
-
-    /**
-     * @private
-     * @property {Object<String, Object>} _layerConfig
-     */
-    this._layerConfig = {};
-
-    /**
-     * @private
-     * @property _needsManuallyCompositing
-     * qrenderer will do compositing when root is a canvas and have multiple zlevels.
-     */
-    this._needsManuallyCompositing = false;
-
-    if (!singleCanvas) {
-        this._width = this._getSize(0);
-        this._height = this._getSize(1);
-
-        let domRoot = this._domRoot = createDomRoot(
-            this._width, this._height
-        );
-        root.appendChild(domRoot);
-    }else {
-        let width = root.width;
-        let height = root.height;
-
-        if (opts.width != null) {
-            width = opts.width;
+        /**
+         * @private
+         * @property {HTMLDomElement|Canvas|Context} _domRoot 
+         * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
+         * or Context for Wechat mini-program. In browser environment, this._domRoot is 
+         * a div which is created by QuarkRenderer automaticly, 
+         * in other environments, this._domRoot equals this.root.
+         * 
+         * 此属性可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
+         * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。在浏览器环境中，this._domRoot 是 QuarkRenderer
+         * 自己自动创建的 div 层，在其它环境中，this._domRoot 等于 this.root。
+         */
+        this._domRoot=null;
+    
+        /**
+         * @property {Storage} storage
+         */
+        this.storage = storage;
+    
+        /**
+         * @property {Array<Number>}
+         * @private
+         */
+        let qlevelList = this._qlevelList = [];
+    
+        /**
+         * @private
+         * @property {Object<String, CanvasLayer>} layers
+         */
+        let layers = this._layers = {};
+    
+        /**
+         * @private
+         * @property {Object<String, Object>} _layerConfig
+         */
+        this._layerConfig = {};
+    
+        /**
+         * @private
+         * @property _needsManuallyCompositing
+         * qrenderer will do compositing when root is a canvas and have multiple zlevels.
+         */
+        this._needsManuallyCompositing = false;
+    
+        if (!singleCanvas) {
+            this._width = this._getSize(0);
+            this._height = this._getSize(1);
+    
+            let domRoot = this.createDomRoot(// Craete a new div inside the root element.
+                this._width, this._height
+            );
+            this._domRoot =domRoot;// In this case, this._domRoot is different from this.root.
+            root.appendChild(domRoot);
+        }else {
+            let width = root.width;
+            let height = root.height;
+    
+            if (options.width != null) {
+                width = options.width;
+            }
+            if (options.height != null) {
+                height = options.height;
+            }
+            this.dpr = options.devicePixelRatio || 1;
+    
+            // Use canvas width and height directly
+            root.width = width * this.dpr;
+            root.height = height * this.dpr;
+    
+            this._width = width;
+            this._height = height;
+    
+            // Create layer if only one given canvas
+            // Device can be specified to create a high dpi image.
+            let mainLayer = new CanvasLayer(root,this._width,this._height,this.dpr);
+            mainLayer.__builtin__ = true;
+            mainLayer.initContext();
+            // FIXME Use canvas width and height
+            // mainLayer.resize(width, height);
+            layers[CANVAS_QLEVEL] = mainLayer;
+            mainLayer.qlevel = CANVAS_QLEVEL;
+            // Not use common qlevel.
+            qlevelList.push(CANVAS_QLEVEL);
+    
+            this._domRoot = root; // Here, this._domRoot equals this.root.
         }
-        if (opts.height != null) {
-            height = opts.height;
-        }
-        this.dpr = opts.devicePixelRatio || 1;
-
-        // Use canvas width and height directly
-        root.width = width * this.dpr;
-        root.height = height * this.dpr;
-
-        this._width = width;
-        this._height = height;
-
-        // Create layer if only one given canvas
-        // Device can be specified to create a high dpi image.
-        let mainLayer = new CanvasLayer(root,this._width,this._height,this.dpr);
-        mainLayer.__builtin__ = true;
-        mainLayer.initContext();
-        // FIXME Use canvas width and height
-        // mainLayer.resize(width, height);
-        layers[CANVAS_QLEVEL] = mainLayer;
-        mainLayer.qlevel = CANVAS_QLEVEL;
-        // Not use common qlevel.
-        qlevelList.push(CANVAS_QLEVEL);
-
-        this._domRoot = root;
+    
+        /**
+         * @private
+         * @property {CanvasLayer} _hoverlayer
+         */
+        this._hoverlayer = null;
+        /**
+         * @private
+         * @property {Array} _hoverElements
+         */
+        this._hoverElements = [];
+    
+        this._tmpRect = new BoundingRect(0, 0, 0, 0);
+        this._viewRect = new BoundingRect(0, 0, 0, 0);
     }
-
-    /**
-     * @private
-     * @property {CanvasLayer} _hoverlayer
-     */
-    this._hoverlayer = null;
-    /**
-     * @private
-     * @property {Array} _hoverElements
-     */
-    this._hoverElements = [];
-};
-
-CanvasPainter.prototype = {
-
-    constructor: CanvasPainter,
 
     /**
      * @method getType
      * @return {String}
      */
-    getType: function () {
+    getType() {
         return 'canvas';
-    },
+    }
 
     /**
      * @method isSingleCanvas
      * If painter use a single canvas
      * @return {Boolean}
      */
-    isSingleCanvas: function () {
+    isSingleCanvas() {
         return this._singleCanvas;
-    },
+    }
 
     /**
      * @method getViewportRoot
      * @return {HTMLDivElement}
      */
-    getViewportRoot: function () {
+    getViewportRoot() {
         return this._domRoot;
-    },
+    }
 
     /**
      * @method getViewportRootOffset
      * @return {Object}
      */
-    getViewportRootOffset: function () {
+    getViewportRootOffset() {
         let viewportRoot = this.getViewportRoot();
         if (viewportRoot) {
             return {
@@ -293,14 +210,14 @@ CanvasPainter.prototype = {
                 offsetTop: viewportRoot.offsetTop || 0
             };
         }
-    },
+    }
 
     /**
      * @method
      * 刷新
      * @param {Boolean} [paintAll=false] 是否强制绘制所有displayable
      */
-    refresh: function (paintAll) {
+    refresh(paintAll) {
         let list = this.storage.getDisplayList(true);
         let qlevelList = this._qlevelList;
         this._redrawId = mathRandom();
@@ -318,7 +235,7 @@ CanvasPainter.prototype = {
 
         this.refreshHover();
         return this;
-    },
+    }
 
     /**
      * @method addHover
@@ -326,7 +243,7 @@ CanvasPainter.prototype = {
      * @param {*} el 
      * @param {*} hoverStyle 
      */
-    addHover: function (el, hoverStyle) {
+    addHover(el, hoverStyle) {
         if (el.__hoverMir) {
             return;
         }
@@ -342,13 +259,13 @@ CanvasPainter.prototype = {
         hoverStyle && elMirror.setStyle(hoverStyle);
         this._hoverElements.push(elMirror);
         return elMirror;
-    },
+    }
 
     /**
      * @method removeHover
      * @param {*} el 
      */
-    removeHover: function (el) {
+    removeHover(el) {
         let elMirror = el.__hoverMir;
         let hoverElements = this._hoverElements;
         let idx = dataUtil.indexOf(hoverElements, elMirror);
@@ -356,13 +273,13 @@ CanvasPainter.prototype = {
             hoverElements.splice(idx, 1);
         }
         el.__hoverMir = null;
-    },
+    }
 
     /**
      * @method clearHover
      * @param {*} el 
      */
-    clearHover: function (el) {
+    clearHover(el) {
         let hoverElements = this._hoverElements;
         for (let i = 0; i < hoverElements.length; i++) {
             let from = hoverElements[i].__from;
@@ -371,12 +288,12 @@ CanvasPainter.prototype = {
             }
         }
         hoverElements.length = 0;
-    },
+    }
 
     /**
      * @method refreshHover
      */
-    refreshHover: function () {
+    refreshHover() {
         let hoverElements = this._hoverElements;
         let len = hoverElements.length;
         let hoverLayer = this._hoverlayer;
@@ -420,14 +337,14 @@ CanvasPainter.prototype = {
         }
 
         hoverLayer.ctx.restore();
-    },
+    }
 
     /**
      * @method getHoverLayer
      */
-    getHoverLayer: function () {
+    getHoverLayer() {
         return this.getLayer(HOVER_LAYER_QLEVEL);
-    },
+    }
 
     /**
      * @method _paintList
@@ -435,7 +352,7 @@ CanvasPainter.prototype = {
      * @param {*} paintAll 
      * @param {*} redrawId 
      */
-    _paintList: function (list, paintAll, redrawId) {
+    _paintList(list, paintAll, redrawId) {
         //如果 redrawId 不一致，说明下一个动画帧已经到来，这里就会直接跳过去，相当于跳过了一帧
         if (this._redrawId !== redrawId) {
             return;
@@ -459,12 +376,12 @@ CanvasPainter.prototype = {
                 self._paintList(list, paintAll, redrawId);
             });
         }
-    },
+    }
 
     /**
      * @method _compositeManually
      */
-    _compositeManually: function () {
+    _compositeManually() {
         let ctx = this.getLayer(CANVAS_QLEVEL).ctx;
         let width = this._domRoot.width;
         let height = this._domRoot.height;
@@ -475,12 +392,12 @@ CanvasPainter.prototype = {
                 ctx.drawImage(layer.canvasInstance, 0, 0, width, height);
             }
         });
-    },
+    }
 
     /**
      * @method _doPaintList
      */
-    _doPaintList: function (list, paintAll) {
+    _doPaintList(list, paintAll) {
         let layerList = [];
         for (let zi = 0; zi < this._qlevelList.length; zi++) {
             let qlevel = this._qlevelList[zi];
@@ -567,7 +484,7 @@ CanvasPainter.prototype = {
         }
 
         return finished;
-    },
+    }
 
     /**
      * @method _doPaintEl
@@ -577,7 +494,7 @@ CanvasPainter.prototype = {
      * @param {*} forcePaint 
      * @param {*} scope 
      */
-    _doPaintEl: function (el, currentLayer, forcePaint, scope) {
+    _doPaintEl(el, currentLayer, forcePaint, scope) {
         let ctx = currentLayer.ctx;
         let m = el.transform;
         if (
@@ -591,14 +508,14 @@ CanvasPainter.prototype = {
             // And setTransform with scale 0 will cause set back transform failed.
             && !(m && !m[0] && !m[3])
             // Ignore culled element
-            && !(el.culling && isDisplayableCulled(el, this._width, this._height))
+            && !(el.culling && this.isDisplayableCulled(el, this._width, this._height))
         ) {
 
             let clipPaths = el.__clipPaths;
             let prevElClipPaths = scope.prevElClipPaths;
 
             // Optimize when clipping on group with several elements
-            if (!prevElClipPaths || isClipPathChanged(clipPaths, prevElClipPaths)) {
+            if (!prevElClipPaths || this.isClipPathChanged(clipPaths, prevElClipPaths)) {
                 // If has previous clipping state, restore from it
                 if (prevElClipPaths) {
                     ctx.restore();
@@ -609,7 +526,7 @@ CanvasPainter.prototype = {
                 // New clipping state
                 if (clipPaths) {
                     ctx.save();
-                    doClip(clipPaths, ctx);
+                    this.doClip(clipPaths, ctx);
                     scope.prevElClipPaths = clipPaths;
                 }
             }
@@ -623,7 +540,7 @@ CanvasPainter.prototype = {
 
             el.afterBrush && el.afterBrush(ctx);
         }
-    },
+    }
 
     /**
      * @method getLayer
@@ -632,7 +549,7 @@ CanvasPainter.prototype = {
      * @param {Boolean} virtual Virtual layer will not be inserted into dom.
      * @return {CanvasLayer}
      */
-    getLayer: function (qlevel, virtual) {
+    getLayer(qlevel, virtual) {
         if (this._singleCanvas && !this._needsManuallyCompositing) {
             qlevel = CANVAS_QLEVEL;
         }
@@ -659,14 +576,14 @@ CanvasPainter.prototype = {
         }
 
         return layer;
-    },
+    }
 
     /**
      * @method insertLayer
      * @param {*} qlevel 
      * @param {*} layer 
      */
-    insertLayer: function (qlevel, layer) {
+    insertLayer(qlevel, layer) {
         let layersMap = this._layers;
         let qlevelList = this._qlevelList;
         let len = qlevelList.length;
@@ -679,7 +596,7 @@ CanvasPainter.prototype = {
             return;
         }
         // Check if is a valid layer
-        if (!isLayerValid(layer)) {
+        if (!this.isLayerValid(layer)) {
             console.log('CanvasLayer of qlevel ' + qlevel + ' is not valid');
             return;
         }
@@ -710,20 +627,38 @@ CanvasPainter.prototype = {
                         layer.canvasInstance,
                         prevDom.nextSibling
                     );
-                }
-                else {
+                }else {
                     domRoot.appendChild(layer.canvasInstance);
                 }
             }else {
                 if (domRoot.firstChild) {
                     domRoot.insertBefore(layer.canvasInstance, domRoot.firstChild);
-                }
-                else {
+                }else {
                     domRoot.appendChild(layer.canvasInstance);
                 }
             }
         }
-    },
+    }
+
+    /**
+     * @method delLayer
+     * 删除指定层
+     * @param {Number} qlevel 层所在的zlevel
+     */
+    delLayer(qlevel) {
+        let layers = this._layers;
+        let qlevelList = this._qlevelList;
+        let layer = layers[qlevel];
+        if (!layer) {
+            return;
+        }
+        if(layer.canvasInstance){
+            layer.canvasInstance.parentNode.removeChild(layer.canvasInstance);
+        }
+        delete layers[qlevel];
+
+        qlevelList.splice(dataUtil.indexOf(qlevelList, qlevel), 1);
+    }
 
     /**
      * @private
@@ -732,7 +667,7 @@ CanvasPainter.prototype = {
      * @param {Function} cb 
      * @param {Object} context 
      */
-    eachLayer: function (cb, context) {
+    eachLayer(cb, context) {
         let qlevelList = this._qlevelList;
         let z;
         let i;
@@ -740,7 +675,7 @@ CanvasPainter.prototype = {
             z = qlevelList[i];
             cb.call(context, this._layers[z], z);
         }
-    },
+    }
 
     /**
      * @private
@@ -749,7 +684,7 @@ CanvasPainter.prototype = {
      * @param {Function} cb 
      * @param {Object} context 
      */
-    eachBuiltinLayer: function (cb, context) {
+    eachBuiltinLayer(cb, context) {
         let qlevelList = this._qlevelList;
         let layer;
         let z;
@@ -761,7 +696,7 @@ CanvasPainter.prototype = {
                 cb.call(context, layer, z);
             }
         }
-    },
+    }
 
     /**
      * @private
@@ -770,7 +705,7 @@ CanvasPainter.prototype = {
      * @param {Function} cb 
      * @param {Object} context 
      */
-    eachOtherLayer: function (cb, context) {
+    eachOtherLayer(cb, context) {
         let qlevelList = this._qlevelList;
         let layer;
         let z;
@@ -782,23 +717,23 @@ CanvasPainter.prototype = {
                 cb.call(context, layer, z);
             }
         }
-    },
+    }
 
     /**
      * @method getLayers
      * 获取所有已创建的层
      * @param {Array<CanvasLayer>} [prevLayer]
      */
-    getLayers: function () {
+    getLayers() {
         return this._layers;
-    },
+    }
 
     /**
      * @private
      * @method _updateLayerStatus
      * @param {*} list 
      */
-    _updateLayerStatus: function (list) {
+    _updateLayerStatus(list) {
 
         this.eachBuiltinLayer(function (layer, z) {
             layer.__dirty = layer.__used = false;
@@ -886,31 +821,31 @@ CanvasPainter.prototype = {
                 layer.__drawIndex = layer.__startIndex;
             }
         });
-    },
+    }
 
     /**
      * @method clear
      * 清除hover层外所有内容
      */
-    clear: function () {
+    clear() {
         this.eachBuiltinLayer(this._clearLayer);
         return this;
-    },
+    }
 
     /**
      * @private
      * @method _clearLayer
      */
-    _clearLayer: function (layer) {
+    _clearLayer(layer) {
         layer.clear();
-    },
+    }
 
     /**
      * @method setBackgroundColor
      */
-    setBackgroundColor: function (backgroundColor) {
+    setBackgroundColor(backgroundColor) {
         this._backgroundColor = backgroundColor;
-    },
+    }
 
     /**
      * @method configLayer
@@ -922,7 +857,7 @@ CanvasPainter.prototype = {
      * @param {String} [config.motionBlur=false] 是否开启动态模糊
      * @param {Number} [config.lastFrameAlpha=0.7] 在开启动态模糊的时候使用，与上一帧混合的alpha值，值越大尾迹越明显
      */
-    configLayer: function (qlevel, config) {
+    configLayer(qlevel, config) {
         if (config) {
             let layerConfig = this._layerConfig;
             if (!layerConfig[qlevel]) {
@@ -940,25 +875,7 @@ CanvasPainter.prototype = {
                 }
             }
         }
-    },
-
-    /**
-     * @method delLayer
-     * 删除指定层
-     * @param {Number} qlevel 层所在的zlevel
-     */
-    delLayer: function (qlevel) {
-        let layers = this._layers;
-        let qlevelList = this._qlevelList;
-        let layer = layers[qlevel];
-        if (!layer) {
-            return;
-        }
-        layer.canvasInstance.parentNode.removeChild(layer.canvasInstance);
-        delete layers[qlevel];
-
-        qlevelList.splice(dataUtil.indexOf(qlevelList, qlevel), 1);
-    },
+    }
 
     /**
      * @method resize
@@ -966,7 +883,7 @@ CanvasPainter.prototype = {
      * @param {Number} width
      * @param {Number} height
      */
-    resize: function (width, height) {
+    resize(width, height) {
         if (!this._domRoot.style) { // Maybe in node or worker
             if (width == null || height == null) {
                 return;
@@ -982,9 +899,9 @@ CanvasPainter.prototype = {
             domRoot.style.display = 'none';
 
             // Save input w/h
-            let opts = this._opts;
-            width != null && (opts.width = width);
-            height != null && (opts.height = height);
+            let options = this.options;
+            width != null && (options.width = width);
+            height != null && (options.height = height);
 
             width = this._getSize(0);
             height = this._getSize(1);
@@ -1013,25 +930,25 @@ CanvasPainter.prototype = {
 
         }
         return this;
-    },
+    }
 
     /**
      * @method clearLayer
      * 清除单独的一个层
      * @param {Number} qlevel
      */
-    clearLayer: function (qlevel) {
+    clearLayer(qlevel) {
         let layer = this._layers[qlevel];
         if (layer) {
             layer.clear();
         }
-    },
+    }
 
     /**
      * @method dispose
      * 释放
      */
-    dispose: function () {
+    dispose() {
         this.root.innerHTML = '';
 
         this.root =
@@ -1039,26 +956,26 @@ CanvasPainter.prototype = {
 
         this._domRoot =
         this._layers = null;
-    },
+    }
 
     /**
      * @method getRenderedCanvas
      * Get canvas which has all thing rendered
-     * @param {Object} [opts]
-     * @param {String} [opts.backgroundColor]
-     * @param {Number} [opts.pixelRatio]
+     * @param {Object} [options]
+     * @param {String} [options.backgroundColor]
+     * @param {Number} [options.pixelRatio]
      */
-    getRenderedCanvas: function (opts) {
-        opts = opts || {};
+    getRenderedCanvas(options) {
+        options = options || {};
         if (this._singleCanvas && !this._compositeManually) {
             return this._layers[CANVAS_QLEVEL].dom;
         }
 
-        let imageLayer = new CanvasLayer('image',this._width,this._height,opts.pixelRatio || this.dpr);
+        let imageLayer = new CanvasLayer('image',this._width,this._height,options.pixelRatio || this.dpr);
         imageLayer.initContext();
-        imageLayer.clear(false, opts.backgroundColor || this._backgroundColor);
+        imageLayer.clear(false, options.backgroundColor || this._backgroundColor);
 
-        if (opts.pixelRatio <= this.dpr) {
+        if (options.pixelRatio <= this.dpr) {
             this.refresh();
 
             let width = imageLayer.dom.width;
@@ -1086,39 +1003,39 @@ CanvasPainter.prototype = {
         }
 
         return imageLayer.dom;
-    },
+    }
 
     /**
      * @method getWidth
      * 获取绘图区域宽度
      * @return {Number}
      */
-    getWidth: function () {
+    getWidth() {
         return this._width;
-    },
+    }
 
     /**
      * @method getHeight
      * 获取绘图区域高度
      * @return {Number}
      */
-    getHeight: function () {
+    getHeight() {
         return this._height;
-    },
+    }
 
     /**
      * @method _getSize
      * @param {*} whIdx 
      */
-    _getSize: function (whIdx) {
-        let opts = this._opts;
+    _getSize(whIdx) {
+        let options = this.options;
         let wh = ['width', 'height'][whIdx];
         let cwh = ['clientWidth', 'clientHeight'][whIdx];
         let plt = ['paddingLeft', 'paddingTop'][whIdx];
         let prb = ['paddingRight', 'paddingBottom'][whIdx];
 
-        if (opts[wh] != null && opts[wh] !== 'auto') {
-            return parseFloat(opts[wh]);
+        if (options[wh] != null && options[wh] !== 'auto') {
+            return parseFloat(options[wh]);
         }
 
         let root = this.root;
@@ -1130,14 +1047,14 @@ CanvasPainter.prototype = {
             - (dataUtil.parseInt10(stl[plt]) || 0)
             - (dataUtil.parseInt10(stl[prb]) || 0)
         ) | 0;
-    },
+    }
 
     /**
      * @method pathToImage
      * @param {*} path 
      * @param {*} dpr 
      */
-    pathToImage: function (path, dpr) {
+    pathToImage(path, dpr) {
         dpr = dpr || this.dpr;
 
         let canvas = canvasUtil.createCanvas();
@@ -1199,6 +1116,110 @@ CanvasPainter.prototype = {
 
         return imgShape;
     }
-};
 
-export default CanvasPainter;
+    /**
+     * @private
+     * @method isLayerValid
+     * @param {*} layer 
+     */
+    isLayerValid(layer) {
+        if (!layer){
+            return false;
+        }
+        if (layer.__builtin__){
+            return true;
+        }
+        if (typeof (layer.resize) !== 'function'
+            || typeof (layer.refresh) !== 'function'){
+            return false;
+        }
+        return true;
+    }
+    /**
+     * @private
+     * @method isDisplayableCulled
+     * @param {*} el 
+     * @param {*} width 
+     * @param {*} height 
+     */
+    isDisplayableCulled(el, width, height) {
+        this._tmpRect.copy(el.getBoundingRect());
+        if (el.transform) {
+            this._tmpRect.applyTransform(el.transform);
+        }
+        this._viewRect.width = width;
+        this._viewRect.height = height;
+        return !this._tmpRect.intersect(this._viewRect);
+    }
+    /**
+     * @private
+     * @method isClipPathChanged
+     * @param {*} clipPaths 
+     * @param {*} prevClipPaths 
+     */
+    isClipPathChanged(clipPaths, prevClipPaths) {
+        // displayable.__clipPaths can only be `null`/`undefined` or an non-empty array.
+        if (clipPaths === prevClipPaths) {
+            return false;
+        }
+        if (!clipPaths || !prevClipPaths || (clipPaths.length !== prevClipPaths.length)) {
+            return true;
+        }
+        for (let i = 0; i < clipPaths.length; i++) {
+            if (clipPaths[i] !== prevClipPaths[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @private
+     * @method doClip
+     * @param {*} clipPaths 
+     * @param {*} ctx 
+     */
+    doClip(clipPaths, ctx) {
+        for (let i = 0; i < clipPaths.length; i++) {
+            let clipPath = clipPaths[i];
+
+            clipPath.setTransform(ctx);
+            ctx.beginPath();
+            clipPath.buildPath(ctx, clipPath.shape);
+            ctx.clip();
+            // Transform back
+            clipPath.restoreTransform(ctx);
+        }
+    }
+    /**
+     * @private
+     * @method createDomRoot
+     * 不会直接在传入的 dom 节点内部创建 canvas 标签，而是再套一层div
+     * 目的是加上一些必须的 CSS 样式，方便实现特定的功能。
+     * @param {Number} width 
+     * @param {Number} height 
+     */
+    createDomRoot(width, height) {
+        let domRoot = document.createElement('div');
+        // domRoot.onselectstart = returnFalse; // Avoid page selected
+        domRoot.style.cssText = [
+            'position:relative',
+            // IOS13 safari probably has a compositing bug (z order of the canvas and the consequent
+            // dom does not act as expected) when some of the parent dom has
+            // `-webkit-overflow-scrolling: touch;` and the webpage is longer than one screen and
+            // the canvas is not at the top part of the page.
+            // Check `https://bugs.webkit.org/show_bug.cgi?id=203681` for more details. We remove
+            // this `overflow:hidden` to avoid the bug.
+            // 'overflow:hidden',
+            'width:' + width + 'px',
+            'height:' + height + 'px',
+            'padding:0',
+            'margin:0',
+            'border-width:0'
+        ].join(';') + ';';
+
+        //为了让div能够响应键盘事件，这个属性是必须的
+        // domRoot.setAttribute("tabindex","0");
+        return domRoot;
+    }
+}

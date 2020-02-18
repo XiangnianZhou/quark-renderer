@@ -16,8 +16,8 @@
     </style>
     <div id="main"></div>
     <script type="text/javascript">
-        var qr = qrenderer.init(document.getElementById('main'));
-        var starShape = new qrenderer.Star({
+        var qr = QuarkRenderer.init(document.getElementById('main'));
+        var starShape = new QuarkRenderer.Star({
             shape: {
                 x: 10,
                 y: 10,
@@ -37,7 +37,7 @@
         var NUMBER = 10000;
 
         for (var i = 0; i < NUMBER; i++) {
-            var star = new qrenderer.Image({
+            var star = new QuarkRenderer.Image({
                 scale: [1, 1],
                 zlevel: 1,
                 style: {
@@ -67,7 +67,7 @@
                 });
                 points.push(point);
             }
-            var polyline = new qrenderer.Polyline({
+            var polyline = new QuarkRenderer.Polyline({
                 zlevel: 0,
                 shape: {
                     smooth: 'spline',
