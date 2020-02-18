@@ -537,13 +537,9 @@ export default class CanvasPainter{
                 }
             }
 
-            //开始绘制元素，beforeBrush/brush/afterBrush 3个方法定义在基类 Displayable 中。
-            //每个元素自己知道如何绘制自身的形状。
             el.beforeBrush && el.beforeBrush(ctx);
-
             el.brush(ctx, scope.prevEl || null);
             scope.prevEl = el;
-
             el.afterBrush && el.afterBrush(ctx);
         }
     }
