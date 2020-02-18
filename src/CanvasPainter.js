@@ -129,12 +129,12 @@ export default class CanvasPainter{
          * In node environment using node-canvas
          * @private
          */
-        this._singleCanvas = !host.nodeName || host.nodeName.toUpperCase() === 'CANVAS';
+        this._singleCanvas = !this.host.nodeName || this.host.nodeName.toUpperCase() === 'CANVAS';
     
         //The code below is used to compatible with various runtime environments like browser, node-canvas, and Wechat mini-program.
         if (this._singleCanvas) {
-            let width = host.width;
-            let height = host.height;
+            let width = this.host.width;
+            let height = this.host.height;
     
             if (this.options.width != null) {
                 width = this.options.width;
@@ -145,15 +145,15 @@ export default class CanvasPainter{
             this.dpr = this.options.devicePixelRatio || 1;
     
             // Use canvas width and height directly
-            host.width = width * this.dpr;
-            host.height = height * this.dpr;
+            this.host.width = width * this.dpr;
+            this.host.height = height * this.dpr;
     
             this._width = width;
             this._height = height;
     
             // Create layer if only one given canvas
             // Device can be specified to create a high dpi image.
-            let mainLayer = new CanvasLayer(host,this._width,this._height,this.dpr);
+            let mainLayer = new CanvasLayer(this.host,this._width,this._height,this.dpr);
             mainLayer.__builtin__ = true;
             mainLayer.initContext();
             // FIXME Use canvas width and height
@@ -163,16 +163,16 @@ export default class CanvasPainter{
             // Not use common qlevel.
             qlevelList.push(CANVAS_QLEVEL);
     
-            this._host = host; // Here, this._host equals this.host.
+            this._host = this.host; // Here, this._host equals this.host.
         }else {
             this._width = this._getSize(0);
             this._height = this._getSize(1);
     
-            let domRoot = this.createDomRoot(// Craete a new div inside the host element.
+            let canvasContainer = this.createDomRoot(// Craete a new div inside the host element.
                 this._width, this._height
             );
-            this._host =domRoot;// In this case, this._host is different from this.host.
-            host.appendChild(domRoot);
+            this._host =canvasContainer;// In this case, this._host is different from this.host.
+            this.host.appendChild(canvasContainer);
         }
     }
 
@@ -195,6 +195,8 @@ export default class CanvasPainter{
 
     /**
      * @method getViewportRoot
+     * Do NOT use this method, because we can not get HTMLElement 
+     * and canvas instance in Wechat mini-program.
      * @return {HTMLDivElement}
      */
     getViewportRoot() {
@@ -203,6 +205,8 @@ export default class CanvasPainter{
 
     /**
      * @method getViewportRootOffset
+     * Do NOT use this method, because we can not get HTMLElement 
+     * and canvas instance in Wechat mini-program.
      * @return {Object}
      */
     getViewportRootOffset() {
@@ -586,6 +590,7 @@ export default class CanvasPainter{
      * @param {*} qlevel 
      * @param {*} layer 
      */
+    //TODO: fix this method for wechat mini-program.
     insertLayer(qlevel, layer) {
         let layersMap = this._layers;
         let qlevelList = this._qlevelList;
@@ -774,8 +779,7 @@ export default class CanvasPainter{
                 layer = this.getLayer(qlevel + INCREMENTAL_INC, this._needsManuallyCompositing);
                 layer.incremental = true;
                 incrementalLayerCount = 1;
-            }
-            else {
+            }else {
                 layer = this.getLayer(
                     qlevel + (incrementalLayerCount > 0 ? EL_AFTER_INCREMENTAL_INC : 0),
                     this._needsManuallyCompositing
@@ -794,8 +798,7 @@ export default class CanvasPainter{
                 layer.__startIndex = i;
                 if (!layer.incremental) {
                     layer.__drawIndex = i;
-                }
-                else {
+                }else {
                     // Mark layer draw index needs to update.
                     layer.__drawIndex = -1;
                 }
@@ -865,8 +868,7 @@ export default class CanvasPainter{
             let layerConfig = this._layerConfig;
             if (!layerConfig[qlevel]) {
                 layerConfig[qlevel] = config;
-            }
-            else {
+            }else {
                 dataUtil.merge(layerConfig[qlevel], config, true);
             }
 
@@ -887,18 +889,15 @@ export default class CanvasPainter{
      * @param {Number} height
      */
     resize(width, height) {
-        if (!this._host.style) { // Maybe in node or worker
+        if (!this._host.style) { // Maybe in node or worker or Wechat
             if (width == null || height == null) {
                 return;
             }
             this._width = width;
             this._height = height;
-
             this.getLayer(CANVAS_QLEVEL).resize(width, height);
-        }
-        else {
+        }else {
             let domRoot = this._host;
-            // FIXME Why ?
             domRoot.style.display = 'none';
 
             // Save input w/h
@@ -930,7 +929,6 @@ export default class CanvasPainter{
 
             this._width = width;
             this._height = height;
-
         }
         return this;
     }
@@ -953,11 +951,9 @@ export default class CanvasPainter{
      */
     dispose() {
         this.host.innerHTML = '';
-
-        this.host =
-        this.storage =
-
-        this._host =
+        this.host = null;
+        this.storage = null;
+        this._host = null;
         this._layers = null;
     }
 
@@ -968,6 +964,7 @@ export default class CanvasPainter{
      * @param {String} [options.backgroundColor]
      * @param {Number} [options.pixelRatio]
      */
+    //TODO: fix this for wechat mini-program.
     getRenderedCanvas(options) {
         options = options || {};
         if (this._singleCanvas && !this._compositeManually) {
@@ -980,22 +977,19 @@ export default class CanvasPainter{
 
         if (options.pixelRatio <= this.dpr) {
             this.refresh();
-
             let width = imageLayer.canvasInstance.width;
             let height = imageLayer.canvasInstance.height;
             let ctx = imageLayer.ctx;
             this.eachLayer(function (layer) {
                 if (layer.__builtin__) {
                     ctx.drawImage(layer.canvasInstance, 0, 0, width, height);
-                }
-                else if (layer.renderToCanvas) {
+                }else if (layer.renderToCanvas) {
                     imageLayer.ctx.save();
                     layer.renderToCanvas(imageLayer.ctx);
                     imageLayer.ctx.restore();
                 }
             });
-        }
-        else {
+        }else {
             // PENDING, echarts-gl and incremental rendering.
             let scope = {};
             let displayList = this.storage.getDisplayList(true);
@@ -1004,7 +998,6 @@ export default class CanvasPainter{
                 this._doPaintEl(el, imageLayer, true, scope);
             }
         }
-
         return imageLayer.canvasInstance;
     }
 
