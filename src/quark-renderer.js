@@ -43,7 +43,12 @@ export let version = '4.1.2';
  * 
  * 全局总入口，创建 QuarkRenderer 的实例。
  * 
- * @param {HTMLElement} host
+ * @param {HTMLDomElement|Canvas|Context} host 
+ * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
+ * or Context for Wechat mini-program.
+ * 
+ * 此属性可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
+ * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。
  * @param {Object} [options]
  * @param {String} [options.renderer='canvas'] 'canvas' or 'svg'
  * @param {Number} [options.devicePixelRatio]
@@ -143,10 +148,15 @@ class QuarkRenderer{
         //根据参数创建不同类型的 Painter 实例。
         this.painter = new painterMap[rendererType](this.host, this.storage, options, this.id);
 
-        //把DOM事件代理出来。
-        let handerProxy = (!env.node && !env.worker) ? new DomEventProxy(this.painter.getViewportRoot()) : null;
+        //代理DOM事件。
+        let handerProxy =null;
+        if(!(typeof ctx.moveTo==='function')){ // host is Context instance.
+            if(!env.node && !env.worker && !env.wxa){
+                handerProxy=new DomEventProxy(this.painter.getViewportRoot());
+            }
+        }
         
-        //QuarkRenderer 自己封装的事件机制
+        //QuarkRenderer 自己封装的事件机制。
         this.eventHandler = new QRendererEventHandler(this.storage, this.painter, handerProxy, this.painter.root);
     
         /**

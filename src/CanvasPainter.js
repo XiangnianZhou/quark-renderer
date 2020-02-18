@@ -25,7 +25,7 @@ const INCREMENTAL_INC = 0.001;
 export default class CanvasPainter{
     /**
      * @method constructor
-     * @param {HTMLDomElement|Canvas|Context} root 
+     * @param {HTMLDomElement|Canvas|Context} host 
      * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
      * or Context for Wechat mini-program.
      * 
@@ -34,56 +34,50 @@ export default class CanvasPainter{
      * @param {Storage} storage
      * @param {Object} options
      */
-    constructor(root, storage, options={}){
-        options = dataUtil.extend({},options);
-        this.options = options;
+    constructor(host, storage, options={}){
+        this.options = dataUtil.extend({},options);
+
+        /**
+         * @property {String} type
+         */
         this.type = 'canvas';
 
-        // In node environment using node-canvas
-        let singleCanvas = !root.nodeName || root.nodeName.toUpperCase() === 'CANVAS';
-    
         /**
          * @property {Number} dpr
          */
-        this.dpr = options.devicePixelRatio || devicePixelRatio;
-    
+        this.dpr = this.options.devicePixelRatio || devicePixelRatio;
+
         /**
-         * @property {Boolean} _singleCanvas
-         * @private
-         */
-        this._singleCanvas = singleCanvas;
-    
-        /**
-         * @property {HTMLDomElement|Canvas|Context} root 
+         * @property {HTMLDomElement|Canvas|Context} host 
          * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
          * or Context for Wechat mini-program.
          * 
          * 此属性可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
          * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。
          */
-        this.root = root;
+        this.host = host;
         // There is no style attribute on element in nodejs.
-        if (this.root.style) {
-            this.root.style['-webkit-tap-highlight-color'] = 'transparent';
-            this.root.style['-webkit-user-select'] =
-            this.root.style['user-select'] =
-            this.root.style['-webkit-touch-callout'] = 'none';
-            root.innerHTML = '';
+        if (this.host.style) {
+            this.host.style['-webkit-tap-highlight-color'] = 'transparent';
+            this.host.style['-webkit-user-select'] =
+            this.host.style['user-select'] =
+            this.host.style['-webkit-touch-callout'] = 'none';
+            host.innerHTML = '';
         }
 
         /**
          * @private
-         * @property {HTMLDomElement|Canvas|Context} _domRoot 
+         * @property {HTMLDomElement|Canvas|Context} _host 
          * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
-         * or Context for Wechat mini-program. In browser environment, this._domRoot is 
+         * or Context for Wechat mini-program. In browser environment, this._host is 
          * a div which is created by QuarkRenderer automaticly, 
-         * in other environments, this._domRoot equals this.root.
+         * in other environments, this._host equals this.host.
          * 
          * 此属性可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
-         * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。在浏览器环境中，this._domRoot 是 QuarkRenderer
-         * 自己自动创建的 div 层，在其它环境中，this._domRoot 等于 this.root。
+         * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。在浏览器环境中，this._host 是 QuarkRenderer
+         * 自己自动创建的 div 层，在其它环境中，this._host 等于 this.root。
          */
-        this._domRoot=null;
+        this._host=null;
     
         /**
          * @property {Storage} storage
@@ -111,41 +105,55 @@ export default class CanvasPainter{
         /**
          * @private
          * @property _needsManuallyCompositing
-         * qrenderer will do compositing when root is a canvas and have multiple zlevels.
+         * qrenderer will do compositing when host is a canvas and have multiple zlevels.
          */
         this._needsManuallyCompositing = false;
+
+        /**
+         * @private
+         * @property {CanvasLayer} _hoverlayer
+         */
+        this._hoverlayer = null;
+
+        /**
+         * @private
+         * @property {Array} _hoverElements
+         */
+        this._hoverElements = [];
     
-        if (!singleCanvas) {
-            this._width = this._getSize(0);
-            this._height = this._getSize(1);
+        this._tmpRect = new BoundingRect(0, 0, 0, 0);
+        this._viewRect = new BoundingRect(0, 0, 0, 0);
+
+        /**
+         * @property {Boolean} _singleCanvas
+         * In node environment using node-canvas
+         * @private
+         */
+        this._singleCanvas = !this.host.nodeName || this.host.nodeName.toUpperCase() === 'CANVAS';
     
-            let domRoot = this.createDomRoot(// Craete a new div inside the root element.
-                this._width, this._height
-            );
-            this._domRoot =domRoot;// In this case, this._domRoot is different from this.root.
-            root.appendChild(domRoot);
-        }else {
-            let width = root.width;
-            let height = root.height;
+        //The code below is used to compatible with various runtime environments like browser, node-canvas, and Wechat mini-program.
+        if (this._singleCanvas) {
+            let width = this.host.width;
+            let height = this.host.height;
     
-            if (options.width != null) {
-                width = options.width;
+            if (this.options.width != null) {
+                width = this.options.width;
             }
-            if (options.height != null) {
-                height = options.height;
+            if (this.options.height != null) {
+                height = this.options.height;
             }
-            this.dpr = options.devicePixelRatio || 1;
+            this.dpr = this.options.devicePixelRatio || 1;
     
             // Use canvas width and height directly
-            root.width = width * this.dpr;
-            root.height = height * this.dpr;
+            this.host.width = width * this.dpr;
+            this.host.height = height * this.dpr;
     
             this._width = width;
             this._height = height;
     
             // Create layer if only one given canvas
             // Device can be specified to create a high dpi image.
-            let mainLayer = new CanvasLayer(root,this._width,this._height,this.dpr);
+            let mainLayer = new CanvasLayer(this.host,this._width,this._height,this.dpr);
             mainLayer.__builtin__ = true;
             mainLayer.initContext();
             // FIXME Use canvas width and height
@@ -155,59 +163,41 @@ export default class CanvasPainter{
             // Not use common qlevel.
             qlevelList.push(CANVAS_QLEVEL);
     
-            this._domRoot = root; // Here, this._domRoot equals this.root.
+            this._host = this.host; // Here, this._host equals this.host.
+        }else {
+            this._width = this._getSize(0);
+            this._height = this._getSize(1);
+    
+            let canvasContainer = this.createDomRoot(// Craete a new div inside the host element.
+                this._width, this._height
+            );
+            this._host =canvasContainer;// In this case, this._host is different from this.host.
+            this.host.appendChild(canvasContainer);
         }
-    
-        /**
-         * @private
-         * @property {CanvasLayer} _hoverlayer
-         */
-        this._hoverlayer = null;
-        /**
-         * @private
-         * @property {Array} _hoverElements
-         */
-        this._hoverElements = [];
-    
-        this._tmpRect = new BoundingRect(0, 0, 0, 0);
-        this._viewRect = new BoundingRect(0, 0, 0, 0);
     }
 
     /**
-     * @method getType
-     * @return {String}
-     */
-    getType() {
-        return 'canvas';
-    }
-
-    /**
-     * @method isSingleCanvas
-     * If painter use a single canvas
-     * @return {Boolean}
-     */
-    isSingleCanvas() {
-        return this._singleCanvas;
-    }
-
-    /**
-     * @method getViewportRoot
+     * @method getHost
+     * Do NOT use this method in Wechat mini-program, because we can not get HTMLElement 
+     * nor canvas instance.
      * @return {HTMLDivElement}
      */
-    getViewportRoot() {
-        return this._domRoot;
+    getHost() {
+        return this._host;
     }
 
     /**
      * @method getViewportRootOffset
+     * Do NOT use this method in Wechat mini-program, because we can not get HTMLElement 
+     * nor canvas instance.
      * @return {Object}
      */
     getViewportRootOffset() {
-        let viewportRoot = this.getViewportRoot();
-        if (viewportRoot) {
+        let host = this.getHost();
+        if (host) {
             return {
-                offsetLeft: viewportRoot.offsetLeft || 0,
-                offsetTop: viewportRoot.offsetTop || 0
+                offsetLeft: host.offsetLeft || 0,
+                offsetTop: host.offsetTop || 0
             };
         }
     }
@@ -368,8 +358,8 @@ export default class CanvasPainter{
             this._compositeManually();
         }
 
-        //如果在一帧的时间内没有绘制完，在下一帧继续绘制
-        //TODO:这里需要测试一个极限值出来，在 16ms 的时间里面最多能绘制多少个元素。
+        //如果在一帧的时间内没有绘制完，在下一帧继续绘制。
+        //当前本机的测试值，1000 个元素同时进行动画，可以在 16ms 的时间中绘制完成。
         if (!finished) {
             let self = this;
             requestAnimationFrame(function () {
@@ -383,8 +373,8 @@ export default class CanvasPainter{
      */
     _compositeManually() {
         let ctx = this.getLayer(CANVAS_QLEVEL).ctx;
-        let width = this._domRoot.width;
-        let height = this._domRoot.height;
+        let width = this._host.width;
+        let height = this._host.height;
         ctx.clearRect(0, 0, width, height);
         // PENDING, If only builtin layer?
         this.eachBuiltinLayer(function (layer) {
@@ -453,7 +443,6 @@ export default class CanvasPainter{
                     // The rest elements will be drawn in the next frame.
                     // 这里的时间计算非常重要，如果 15ms 的时间内没有能绘制完所有元素，则跳出，等待下一帧继续绘制
                     // 但是 15ms 的时间依然是有限的，如果元素的数量非常巨大，例如有 1000 万个，还是会卡顿。
-                    // TODO: 这里需要实际 benchmark 一个数值出来。
                     if (dTime > 15) {
                         break;
                     }
@@ -531,13 +520,9 @@ export default class CanvasPainter{
                 }
             }
 
-            //开始绘制元素，beforeBrush/brush/afterBrush 3个方法定义在基类 Displayable 中。
-            //每个元素自己知道如何绘制自身的形状。
             el.beforeBrush && el.beforeBrush(ctx);
-
             el.brush(ctx, scope.prevEl || null);
             scope.prevEl = el;
-
             el.afterBrush && el.afterBrush(ctx);
         }
     }
@@ -580,6 +565,9 @@ export default class CanvasPainter{
 
     /**
      * @method insertLayer
+     * Insert layer dynamicly during runtime.
+     * Do NOT use this method in Wechat mini-program, because we can neither get HTMLElement 
+     * nor canvas instance.
      * @param {*} qlevel 
      * @param {*} layer 
      */
@@ -589,7 +577,6 @@ export default class CanvasPainter{
         let len = qlevelList.length;
         let prevLayer = null;
         let i = -1;
-        let domRoot = this._domRoot;
 
         if (layersMap[qlevel]) {
             console.log('ZLevel ' + qlevel + ' has been used already');
@@ -621,20 +608,20 @@ export default class CanvasPainter{
         // But it still under management of qrenderer.
         if (!layer.virtual) {
             if (prevLayer) {
-                let prevDom = prevLayer.dom;
+                let prevDom = prevLayer.canvasInstance;
                 if (prevDom.nextSibling) {
-                    domRoot.insertBefore(
+                    this.host.insertBefore(
                         layer.canvasInstance,
                         prevDom.nextSibling
                     );
                 }else {
-                    domRoot.appendChild(layer.canvasInstance);
+                    this.host.appendChild(layer.canvasInstance);
                 }
             }else {
-                if (domRoot.firstChild) {
-                    domRoot.insertBefore(layer.canvasInstance, domRoot.firstChild);
+                if (this.host.firstChild) {
+                    this.host.insertBefore(layer.canvasInstance, this.host.firstChild);
                 }else {
-                    domRoot.appendChild(layer.canvasInstance);
+                    this.host.appendChild(layer.canvasInstance);
                 }
             }
         }
@@ -768,11 +755,13 @@ export default class CanvasPainter{
             // PENDING If change one incremental element style ?
             // TODO Where there are non-incremental elements between incremental elements.
             if (el.incremental) {
-                layer = this.getLayer(qlevel + INCREMENTAL_INC, this._needsManuallyCompositing);
+                layer = this.getLayer(
+                    qlevel + INCREMENTAL_INC, 
+                    this._needsManuallyCompositing
+                );
                 layer.incremental = true;
                 incrementalLayerCount = 1;
-            }
-            else {
+            }else {
                 layer = this.getLayer(
                     qlevel + (incrementalLayerCount > 0 ? EL_AFTER_INCREMENTAL_INC : 0),
                     this._needsManuallyCompositing
@@ -791,8 +780,7 @@ export default class CanvasPainter{
                 layer.__startIndex = i;
                 if (!layer.incremental) {
                     layer.__drawIndex = i;
-                }
-                else {
+                }else {
                     // Mark layer draw index needs to update.
                     layer.__drawIndex = -1;
                 }
@@ -862,8 +850,7 @@ export default class CanvasPainter{
             let layerConfig = this._layerConfig;
             if (!layerConfig[qlevel]) {
                 layerConfig[qlevel] = config;
-            }
-            else {
+            }else {
                 dataUtil.merge(layerConfig[qlevel], config, true);
             }
 
@@ -884,18 +871,15 @@ export default class CanvasPainter{
      * @param {Number} height
      */
     resize(width, height) {
-        if (!this._domRoot.style) { // Maybe in node or worker
+        if (!this._host.style) { // Maybe in node or worker or Wechat
             if (width == null || height == null) {
                 return;
             }
             this._width = width;
             this._height = height;
-
             this.getLayer(CANVAS_QLEVEL).resize(width, height);
-        }
-        else {
-            let domRoot = this._domRoot;
-            // FIXME Why ?
+        }else {
+            let domRoot = this._host;
             domRoot.style.display = 'none';
 
             // Save input w/h
@@ -927,7 +911,6 @@ export default class CanvasPainter{
 
             this._width = width;
             this._height = height;
-
         }
         return this;
     }
@@ -949,26 +932,25 @@ export default class CanvasPainter{
      * 释放
      */
     dispose() {
-        this.root.innerHTML = '';
-
-        this.root =
-        this.storage =
-
-        this._domRoot =
+        this.host.innerHTML = '';
+        this.host = null;
+        this.storage = null;
+        this._host = null;
         this._layers = null;
     }
 
     /**
      * @method getRenderedCanvas
-     * Get canvas which has all thing rendered
+     * Get canvas which has all thing rendered.
+     * Do NOT use this method in Wechat mini-program, because we can not get HTMLElement 
+     * nor canvas instance.
      * @param {Object} [options]
      * @param {String} [options.backgroundColor]
      * @param {Number} [options.pixelRatio]
      */
-    getRenderedCanvas(options) {
-        options = options || {};
+    getRenderedCanvas(options={}) {
         if (this._singleCanvas && !this._compositeManually) {
-            return this._layers[CANVAS_QLEVEL].dom;
+            return this._layers[CANVAS_QLEVEL].canvasInstance;
         }
 
         let imageLayer = new CanvasLayer('image',this._width,this._height,options.pixelRatio || this.dpr);
@@ -977,22 +959,19 @@ export default class CanvasPainter{
 
         if (options.pixelRatio <= this.dpr) {
             this.refresh();
-
-            let width = imageLayer.dom.width;
-            let height = imageLayer.dom.height;
+            let width = imageLayer.canvasInstance.width;
+            let height = imageLayer.canvasInstance.height;
             let ctx = imageLayer.ctx;
             this.eachLayer(function (layer) {
                 if (layer.__builtin__) {
                     ctx.drawImage(layer.canvasInstance, 0, 0, width, height);
-                }
-                else if (layer.renderToCanvas) {
+                }else if (layer.renderToCanvas) {
                     imageLayer.ctx.save();
                     layer.renderToCanvas(imageLayer.ctx);
                     imageLayer.ctx.restore();
                 }
             });
-        }
-        else {
+        }else {
             // PENDING, echarts-gl and incremental rendering.
             let scope = {};
             let displayList = this.storage.getDisplayList(true);
@@ -1001,8 +980,7 @@ export default class CanvasPainter{
                 this._doPaintEl(el, imageLayer, true, scope);
             }
         }
-
-        return imageLayer.dom;
+        return imageLayer.canvasInstance;
     }
 
     /**
@@ -1025,6 +1003,8 @@ export default class CanvasPainter{
 
     /**
      * @method _getSize
+     * Do NOT use this method in Wechat mini-program, because we can not get HTMLElement 
+     * nor canvas instance.
      * @param {*} whIdx 
      */
     _getSize(whIdx) {
@@ -1038,12 +1018,11 @@ export default class CanvasPainter{
             return parseFloat(options[wh]);
         }
 
-        let root = this.root;
         // IE8 does not support getComputedStyle, but it use VML.
-        let stl = document.defaultView.getComputedStyle(root);
+        let stl = document.defaultView.getComputedStyle(this.host);
 
         return (
-            (root[cwh] || dataUtil.parseInt10(stl[wh]) || dataUtil.parseInt10(root.style[wh]))
+            (this.host[cwh] || dataUtil.parseInt10(stl[wh]) || dataUtil.parseInt10(this.host.style[wh]))
             - (dataUtil.parseInt10(stl[plt]) || 0)
             - (dataUtil.parseInt10(stl[prb]) || 0)
         ) | 0;
@@ -1057,7 +1036,7 @@ export default class CanvasPainter{
     pathToImage(path, dpr) {
         dpr = dpr || this.dpr;
 
-        let canvas = canvasUtil.createCanvas();
+        let canvas = canvasUtil.createCanvas();//创建隐藏的 canvas，在内存中。
         let ctx = canvasUtil.getContext(canvas);
         let rect = path.getBoundingRect();
         let style = path.style;
@@ -1135,6 +1114,7 @@ export default class CanvasPainter{
         }
         return true;
     }
+
     /**
      * @private
      * @method isDisplayableCulled
@@ -1151,6 +1131,7 @@ export default class CanvasPainter{
         this._viewRect.height = height;
         return !this._tmpRect.intersect(this._viewRect);
     }
+
     /**
      * @private
      * @method isClipPathChanged
@@ -1180,37 +1161,34 @@ export default class CanvasPainter{
      * @param {*} ctx 
      */
     doClip(clipPaths, ctx) {
-        for (let i = 0; i < clipPaths.length; i++) {
-            let clipPath = clipPaths[i];
-
+        clipPaths.forEach((clipPath,index)=>{
             clipPath.setTransform(ctx);
             ctx.beginPath();
             clipPath.buildPath(ctx, clipPath.shape);
             ctx.clip();
-            // Transform back
             clipPath.restoreTransform(ctx);
-        }
+        });
     }
+
     /**
      * @private
      * @method createDomRoot
-     * 不会直接在传入的 dom 节点内部创建 canvas 标签，而是再套一层div
+     * 在浏览器环境中，不会直接在传入的 dom 节点内部创建 canvas 标签，而是再内嵌一层div。
      * 目的是加上一些必须的 CSS 样式，方便实现特定的功能。
      * @param {Number} width 
      * @param {Number} height 
      */
     createDomRoot(width, height) {
         let domRoot = document.createElement('div');
-        // domRoot.onselectstart = returnFalse; // Avoid page selected
+        // IOS13 safari probably has a compositing bug (z order of the canvas and the consequent
+        // dom does not act as expected) when some of the parent dom has
+        // `-webkit-overflow-scrolling: touch;` and the webpage is longer than one screen and
+        // the canvas is not at the top part of the page.
+        // Check `https://bugs.webkit.org/show_bug.cgi?id=203681` for more details. We remove
+        // this `overflow:hidden` to avoid the bug.
+        // 'overflow:hidden',
         domRoot.style.cssText = [
             'position:relative',
-            // IOS13 safari probably has a compositing bug (z order of the canvas and the consequent
-            // dom does not act as expected) when some of the parent dom has
-            // `-webkit-overflow-scrolling: touch;` and the webpage is longer than one screen and
-            // the canvas is not at the top part of the page.
-            // Check `https://bugs.webkit.org/show_bug.cgi?id=203681` for more details. We remove
-            // this `overflow:hidden` to avoid the bug.
-            // 'overflow:hidden',
             'width:' + width + 'px',
             'height:' + height + 'px',
             'padding:0',
@@ -1218,8 +1196,6 @@ export default class CanvasPainter{
             'border-width:0'
         ].join(';') + ';';
 
-        //为了让div能够响应键盘事件，这个属性是必须的
-        // domRoot.setAttribute("tabindex","0");
         return domRoot;
     }
 }
