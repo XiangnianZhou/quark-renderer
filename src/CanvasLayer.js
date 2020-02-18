@@ -63,13 +63,13 @@ export default class CanvasLayer{
 
         // Create or set canvas instance.
         let canvasInstance=null;
-        if (host&&host.nodeName&&host.nodeName.toUpperCase() === 'CANVAS') {// host is canvas instance
+        if (host&&host.nodeName&&host.nodeName.toUpperCase() === 'CANVAS') {// host is a canvas instance
             canvasInstance = host;
             this.id = canvasInstance.id;
-        }else if(typeof host === 'string'){// host is id string
+        }else if(typeof host === 'string'){// host is an id string
             canvasInstance = canvasUtil.createCanvas(host,this.width,this.height,this.dpr);
             this.id=host;
-        }else{// host is Context instance
+        }else{// host is a Context instance
             this.ctx=host;
         }
         // There is no style attribute of canvasInstance in nodejs.
