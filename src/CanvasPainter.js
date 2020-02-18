@@ -25,7 +25,12 @@ const INCREMENTAL_INC = 0.001;
 export default class CanvasPainter{
     /**
      * @method constructor
-     * @param {HTMLDomElement|Canvas|Context} dom 绘图容器
+     * @param {HTMLDomElement|Canvas|Context} root 
+     * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
+     * or Context for Wechat mini-program.
+     * 
+     * 此属性可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
+     * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。
      * @param {Storage} storage
      * @param {Object} options
      */
@@ -49,7 +54,12 @@ export default class CanvasPainter{
         this._singleCanvas = singleCanvas;
     
         /**
-         * @property {HTMLElement} root 绘图容器
+         * @property {HTMLDomElement|Canvas|Context} root 
+         * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
+         * or Context for Wechat mini-program.
+         * 
+         * 此属性可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
+         * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。
          */
         this.root = root;
         // There is no style attribute on element in nodejs.
@@ -60,10 +70,18 @@ export default class CanvasPainter{
             this.root.style['-webkit-touch-callout'] = 'none';
             root.innerHTML = '';
         }
-    
+
         /**
          * @private
-         * @property {HTMLElement} _domRoot 绘图容器，或者 Canvas 实例
+         * @property {HTMLDomElement|Canvas|Context} _domRoot 
+         * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
+         * or Context for Wechat mini-program. In browser environment, this._domRoot is 
+         * a div which is created by QuarkRenderer automaticly, 
+         * in other environments, this._domRoot equals this.root.
+         * 
+         * 此属性可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
+         * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。在浏览器环境中，this._domRoot 是 QuarkRenderer
+         * 自己自动创建的 div 层，在其它环境中，this._domRoot 等于 this.root。
          */
         this._domRoot=null;
     
