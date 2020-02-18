@@ -1,5 +1,5 @@
-var qr = qrenderer.init(document.getElementById('main'));
-var circle1 = new qrenderer.Circle({
+var qr = QuarkRenderer.init(document.getElementById('main'));
+var circle1 = new QuarkRenderer.Circle({
     shape: {
         cx: 20,
         cy: 20,
@@ -11,7 +11,7 @@ var circle1 = new qrenderer.Circle({
     draggable: true
 });
 
-var circle2 = new qrenderer.Circle({
+var circle2 = new QuarkRenderer.Circle({
     shape: {
         cx: 60,
         cy: 60,
@@ -24,10 +24,10 @@ var circle2 = new qrenderer.Circle({
 });
 
 circle1.on('mouseover', function () {
-    qr.dom.style.cursor = 'move';
+    qr.host.style.cursor = 'move';
 });
 circle1.on('mouseout', function () {
-    qr.dom.style.cursor = 'default';
+    qr.host.style.cursor = 'default';
 });
 circle1.on('keydown', function (event) {
     console.log('keydown');

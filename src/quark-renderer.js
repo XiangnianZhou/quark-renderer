@@ -43,7 +43,7 @@ export let version = '4.1.2';
  * 
  * 全局总入口，创建 QuarkRenderer 的实例。
  * 
- * @param {HTMLElement} dom
+ * @param {HTMLElement} host
  * @param {Object} [options]
  * @param {String} [options.renderer='canvas'] 'canvas' or 'svg'
  * @param {Number} [options.devicePixelRatio]
@@ -51,8 +51,8 @@ export let version = '4.1.2';
  * @param {Number|String} [options.height] Can be 'auto' (the same as null/undefined)
  * @return {QuarkRenderer}
  */
-export function init(dom, options) {
-    let qr = new QuarkRenderer(dom, options);
+export function init(host, options) {
+    let qr = new QuarkRenderer(host, options);
     instances[qr.id] = qr;
     return qr;
 }
@@ -96,7 +96,7 @@ export function registerPainter(name, PainterClass) {
 /**
  * @method constructor QuarkRenderer
  * @param {String} id
- * @param {HTMLElement} dom
+ * @param {HTMLElement} host
  * @param {Object} [options]
  * @param {String} [options.renderer='canvas'] 'canvas' or 'svg'
  * @param {Number} [options.devicePixelRatio]
@@ -105,28 +105,28 @@ export function registerPainter(name, PainterClass) {
  * @return {QuarkRenderer}
  */
 class QuarkRenderer{
-    constructor(dom, options={}){
+    constructor(host, options={}){
         /**
          * @property {String}
          */
         this.id = guid();
 
         /**
-         * @property {HTMLDomElement|Canvas|Context} dom 
-         * This can be a HTMLDomElement like DIV, or a Canvas isntance, 
+         * @property {HTMLDomElement|Canvas|Context} host 
+         * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
          * or Context for Wechat mini-program.
          * 
-         * 可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
+         * 此属性可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
          * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。
          */
-        this.dom = dom;
+        this.host = host;
     
         let self = this;
     
         /**
          * @property {Storage}
          */
-        let storage = new Storage();
+        this.storage = new Storage();
     
         let rendererType = options.renderer;
         // TODO:WebGL
@@ -139,15 +139,15 @@ class QuarkRenderer{
         }else if (!rendererType || !painterMap[rendererType]) {
             rendererType = 'canvas';
         }
-        let painter = new painterMap[rendererType](dom, storage, options, this.id);
-    
-        this.storage = storage;
-        this.painter = painter;
-    
-        //把DOM事件代理出来
-        let handerProxy = (!env.node && !env.worker) ? new DomEventProxy(painter.getViewportRoot()) : null;
+
+        //根据参数创建不同类型的 Painter 实例。
+        this.painter = new painterMap[rendererType](this.host, this.storage, options, this.id);
+
+        //把DOM事件代理出来。
+        let handerProxy = (!env.node && !env.worker) ? new DomEventProxy(this.painter.getViewportRoot()) : null;
+        
         //QuarkRenderer 自己封装的事件机制
-        this.eventHandler = new QRendererEventHandler(storage, painter, handerProxy, painter.root);
+        this.eventHandler = new QRendererEventHandler(this.storage, this.painter, handerProxy, this.painter.root);
     
         /**
          * @property {GlobalAnimationMgr}
@@ -179,16 +179,17 @@ class QuarkRenderer{
     
         // 修改 storage.delFromStorage, 每次删除元素之前删除动画
         // FIXME 有点ugly
-        let oldDelFromStorage = storage.delFromStorage;
-        let oldAddToStorage = storage.addToStorage;
+        // What's going on here?
+        let oldDelFromStorage = this.storage.delFromStorage;
+        let oldAddToStorage = this.storage.addToStorage;
     
-        storage.delFromStorage = function (el) {
-            oldDelFromStorage.call(storage, el);
+        this.storage.delFromStorage = function (el) {
+            oldDelFromStorage.call(self.storage, el);
             el && el.removeSelfFromQr(self);
         };
     
-        storage.addToStorage = function (el) {
-            oldAddToStorage.call(storage, el);
+        this.storage.addToStorage = function (el) {
+            oldAddToStorage.call(self.storage, el);
             el.addSelfToQr(self);
         };    
     }
