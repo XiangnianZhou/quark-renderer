@@ -2,6 +2,7 @@ import * as dataUtil from './core/utils/data_structure_util';
 import * as canvasUtil from './core/utils/canvas_util';
 import Style from './graphic/Style';
 import Pattern from './graphic/Pattern';
+import guid from './core/utils/guid';
 
 /**
  * @class qrenderer.canvas.CanvasLayer
@@ -24,39 +25,55 @@ import Pattern from './graphic/Pattern';
 export default class CanvasLayer{
     /**
      * @method constructor CanvasLayer
-     * @param {String|Object} id
+     * @param {HTMLDomElement|Canvas|Context} host 
+     * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
+     * or Context for Wechat mini-program.
+     * 
+     * 此属性可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
+     * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。
      * @param {Number} width
      * @param {Number} height
      * @param {Number} [dpr]
      */
-    constructor(id,width,height,dpr){
+    constructor(host,width,height,dpr){
         /**
          * @property {String|Object} CanvasLayer id
          */
-        this.id = id;
+        this.id = guid();
+
         /**
          * @property {Number} CanvasLayer width
          */
         this.width=width;
+        
         /**
          * @property {Number} CanvasLayer height
          */
         this.height=height;
+        
         /**
          * @property {Number} CanvasLayer dpr
          */
         this.dpr = dpr;
+        
+        /**
+         * @property {Context} ctx Canvas context, this property will be initialized after calling initContext() method.
+         */
+        this.ctx;
 
         // Create or set canvas instance.
-        let canvasInstance;
-        if (dataUtil.isObject(id)) {// Don't use isDom because in node it will return false
-            canvasInstance = id;
+        let canvasInstance=null;
+        if (host&&host.nodeName&&host.nodeName.toUpperCase() === 'CANVAS') {// host is canvas instance
+            canvasInstance = host;
             this.id = canvasInstance.id;
-        }else if(typeof id === 'string'){
-            canvasInstance = canvasUtil.createCanvas(id,this.width,this.height,this.dpr);
+        }else if(typeof host === 'string'){// host is id string
+            canvasInstance = canvasUtil.createCanvas(host,this.width,this.height,this.dpr);
+            this.id=host;
+        }else{// host is Context instance
+            this.ctx=host;
         }
         // There is no style attribute of canvasInstance in nodejs.
-        if (canvasInstance.style) {
+        if (canvasInstance&&canvasInstance.style) {
             canvasInstance.onselectstart = ()=>{return false;}; // 避免页面选中的尴尬
             canvasInstance.style['-webkit-user-select'] = 'none';
             canvasInstance.style['user-select'] = 'none';
@@ -69,19 +86,15 @@ export default class CanvasLayer{
 
         /**
          * @property {Canvas} canvasInstance
-         * 注意：在微信小程序中，获取不到 canvas 实例，只能获取到 Context 对象。
+         * 注意：this.canvasInstance 可能为null，因为在微信小程序中，没有办法获取 canvas 实例，只能获取到 Context 对象。
          */
         this.canvasInstance = canvasInstance;
-
-        /**
-         * @property {Context} ctx Canvas context, this property will be initialized after calling initContext() method.
-         */
-        this.ctx;
 
         /**
          * @property {Canvas} hiddenCanvas 隐藏的画布实例
          */
         this.hiddenCanvas = null;
+
         /**
          * @property {Context} hiddenContext 隐藏的画布上下文
          */
@@ -92,10 +105,12 @@ export default class CanvasLayer{
          * @property {String} 每次清空画布的颜色
          */
         this.clearColor = 0;
+
         /**
          * @property {boolean} 是否开启动态模糊
          */
         this.motionBlur = false;
+        
         /**
          * @property {Number} 在开启动态模糊的时候使用，与上一帧混合的alpha值，值越大尾迹越明显
          */
@@ -120,14 +135,16 @@ export default class CanvasLayer{
      * @method initContext
      */
     initContext() {
-        this.ctx = canvasUtil.getContext(this.canvasInstance);
+        if(this.canvasInstance){
+            this.ctx = canvasUtil.getContext(this.canvasInstance);
+        }
         this.ctx.dpr = this.dpr;
     }
 
     /**
-     * @method createBackBuffer
+     * @method creatHiddenCanvas
      */
-    createBackBuffer() {
+    creatHiddenCanvas() {
         this.hiddenCanvas = canvasUtil.createCanvas('back-' + this.id, this.width,this.height, this.dpr);
         this.hiddenContext = canvasUtil.getContext(this.hiddenCanvas);
         if (this.dpr !== 1) {
@@ -141,25 +158,24 @@ export default class CanvasLayer{
      * @param  {Number} height
      */
     resize(width, height) {
-        let dpr = this.dpr;
-        let canvasInstance = this.canvasInstance;
-        let domStyle = canvasInstance.style;
-        let hiddenCanvas = this.hiddenCanvas;
-
-        if (domStyle) {
-            domStyle.width = width + 'px';
-            domStyle.height = height + 'px';
+        //Can NOT get canvas instance in Wechat mini-program.
+        if(!this.canvasInstance){
+            return;
         }
+        if (this.canvasInstance.style) {
+            this.canvasInstance.style.width = width + 'px';
+            this.canvasInstance.style.height = height + 'px';
+        }
+        this.canvasInstance.width = width * this.dpr;
+        this.canvasInstance.height = height * this.dpr;
 
-        canvasInstance.width = width * dpr;
-        canvasInstance.height = height * dpr;
-
-        if (hiddenCanvas) {
-            hiddenCanvas.width = width * dpr;
-            hiddenCanvas.height = height * dpr;
-            if (dpr !== 1) {
-                this.hiddenContext.scale(dpr, dpr);
-            }
+        if (!this.hiddenCanvas) {
+            return;
+        }
+        this.hiddenCanvas.width = width * this.dpr;
+        this.hiddenCanvas.height = height * this.dpr;
+        if (this.dpr !== 1) {
+            this.hiddenContext.scale(this.dpr, this.dpr);
         }
     }
 
@@ -170,34 +186,32 @@ export default class CanvasLayer{
      * @param {Color} [clearColor]
      */
     clear(clearAll, clearColor) {
-        clearColor = clearColor || this.clearColor;
-        let canvasInstance = this.canvasInstance;
-        let ctx = this.ctx;
-        let width = canvasInstance.width;
-        let height = canvasInstance.height;
+        clearColor = clearColor || this.clearColor;        
         let haveMotionBLur = this.motionBlur && !clearAll;
         let lastFrameAlpha = this.lastFrameAlpha;
         let dpr = this.dpr;
-
-        if (haveMotionBLur) {
+        
+        if (haveMotionBLur&&this.canvasInstance) {
+            let width = this.canvasInstance.width;
+            let height = this.canvasInstance.height;
             if (!this.hiddenCanvas) {
-                this.createBackBuffer();
+                this.creatHiddenCanvas();
             }
             this.hiddenContext.globalCompositeOperation = 'copy';
             this.hiddenContext.drawImage(
-                canvasInstance, 0, 0,
+                this.canvasInstance, 0, 0,
                 width / dpr,
                 height / dpr
             );
         }
 
-        ctx.clearRect(0, 0, width, height);
+        this.ctx.clearRect(0, 0, this.width,this.height);
         if (clearColor && clearColor !== 'transparent') {
             let clearColorGradientOrPattern;
             // Gradient
             if (clearColor.colorStops) {
                 // Cache canvasInstance gradient
-                clearColorGradientOrPattern = clearColor.__canvasGradient || Style.getGradient(ctx, clearColor, {
+                clearColorGradientOrPattern = clearColor.__canvasGradient || Style.getGradient(this.ctx, clearColor, {
                     x: 0,
                     y: 0,
                     width: width,
@@ -205,20 +219,19 @@ export default class CanvasLayer{
                 });
                 clearColor.__canvasGradient = clearColorGradientOrPattern;
             }else if (clearColor.image) {// Pattern
-                clearColorGradientOrPattern = Pattern.prototype.getCanvasPattern.call(clearColor, ctx);
+                clearColorGradientOrPattern = Pattern.prototype.getCanvasPattern.call(clearColor, this.ctx);
             }
-            ctx.save();
-            ctx.fillStyle = clearColorGradientOrPattern || clearColor;
-            ctx.fillRect(0, 0, width, height);
-            ctx.restore();
+            this.ctx.save();
+            this.ctx.fillStyle = clearColorGradientOrPattern || clearColor;
+            this.ctx.fillRect(0, 0, width, height);
+            this.ctx.restore();
         }
 
-        if (haveMotionBLur) {
-            let hiddenCanvas = this.hiddenCanvas;
-            ctx.save();
-            ctx.globalAlpha = lastFrameAlpha;
-            ctx.drawImage(hiddenCanvas, 0, 0, width, height);
-            ctx.restore();
+        if (haveMotionBLur&&this.hiddenCanvas) {
+            this.ctx.save();
+            this.ctx.globalAlpha = lastFrameAlpha;
+            this.ctx.drawImage(this.hiddenCanvas, 0, 0, width, height);
+            this.ctx.restore();
         }
     }
 }
