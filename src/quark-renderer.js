@@ -115,6 +115,9 @@ class QuarkRenderer{
          * @property {HTMLDomElement|Canvas|Context} dom 
          * This can be a HTMLDomElement like DIV, or a Canvas isntance, 
          * or Context for Wechat mini-program.
+         * 
+         * 可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
+         * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。
          */
         this.dom = dom;
     
