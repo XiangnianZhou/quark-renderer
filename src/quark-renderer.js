@@ -5,6 +5,7 @@ import Storage from './Storage';
 import CanvasPainter from './CanvasPainter';
 import GlobalAnimationMgr from './animation/GlobalAnimationMgr';
 import DomEventProxy from './event/DomEventProxy';
+import * as textContain from './core/contain/text';
 
 /**
  * @class qrenderer.core.QuarkRenderer
@@ -148,12 +149,18 @@ class QuarkRenderer{
         //根据参数创建不同类型的 Painter 实例。
         this.painter = new painterMap[rendererType](this.host, this.storage, options, this.id);
 
-        //代理DOM事件。
         let handerProxy =null;
-        if(!(typeof this.host.moveTo==='function')){ // host is Context instance.
+        if(typeof this.host.moveTo!=='function'){
+            //代理DOM事件。
             if(!env.node && !env.worker && !env.wxa){
                 handerProxy=new DomEventProxy(this.painter.getViewportRoot());
             }
+        }else{
+            // host is Context instance, override function.
+            textContain.$override('measureText', function (text, textFont) {
+                self.font = font || DEFAULT_FONT;
+                return self.measureText(text);
+            });
         }
         
         //QuarkRenderer 自己封装的事件机制。
