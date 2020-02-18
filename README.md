@@ -25,6 +25,7 @@ Here are the key improvements compare to the original ZRender:
 - Fixed some bugs in /test directory.
 - Use [jsduck](https://github.com/senchalabs/jsduck) for better API document.
 - Refactored all the comments for jsduck.
+- Support Wechat mini-program directly, do not need any hack.
 
 ## Usage
 
