@@ -16,7 +16,8 @@
     <canvas id="main" width="800" height="600"></canvas>
     <script type="text/javascript">
         let main = document.getElementById('main');
-        let qr = QuarkRenderer.init(main);
+        let ctx=main.getContext("2d");
+        let qr = QuarkRenderer.init(ctx,{width:800,height:600});
         let gradient = new QuarkRenderer.LinearGradient();
         gradient.addColorStop(0, 'red');
         gradient.addColorStop(1, 'black');
