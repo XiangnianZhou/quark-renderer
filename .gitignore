@@ -165,6 +165,3 @@ pip-log.txt
 lib
 /lib
 node_modules
-
-api
-/api
