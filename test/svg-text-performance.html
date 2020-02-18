@@ -63,7 +63,7 @@
 
     var qr = QuarkRenderer.init(document.getElementById('main'));
 
-    var result = qrenderer.parseSVG(svg);
+    var result = QuarkRenderer.parseSVG(svg);
 
     var qrEl = document.getElementById('main');
     mainGroup = result.root;

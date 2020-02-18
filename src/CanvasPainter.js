@@ -17,127 +17,14 @@ import guid from './core/utils/guid';
  * @see 基于 VML 接口的 CanvasPainter 类在 vml 目录下
  */
 
-let HOVER_LAYER_QLEVEL = 1e5;
-let CANVAS_QLEVEL = 314159;
-let EL_AFTER_INCREMENTAL_INC = 0.01;
-let INCREMENTAL_INC = 0.001;
-
-/**
- * @private
- * @method isLayerValid
- * @param {*} layer 
- */
-function isLayerValid(layer) {
-    if (!layer){
-        return false;
-    }
-
-    if (layer.__builtin__){
-        return true;
-    }
-
-    if (typeof (layer.resize) !== 'function'
-        || typeof (layer.refresh) !== 'function'){
-        return false;
-    }
-    return true;
-}
-
-let tmpRect = new BoundingRect(0, 0, 0, 0);
-let viewRect = new BoundingRect(0, 0, 0, 0);
-/**
- * @private
- * @method isDisplayableCulled
- * @param {*} el 
- * @param {*} width 
- * @param {*} height 
- */
-function isDisplayableCulled(el, width, height) {
-    tmpRect.copy(el.getBoundingRect());
-    if (el.transform) {
-        tmpRect.applyTransform(el.transform);
-    }
-    viewRect.width = width;
-    viewRect.height = height;
-    return !tmpRect.intersect(viewRect);
-}
-
-/**
- * @private
- * @method isClipPathChanged
- * @param {*} clipPaths 
- * @param {*} prevClipPaths 
- */
-function isClipPathChanged(clipPaths, prevClipPaths) {
-    // displayable.__clipPaths can only be `null`/`undefined` or an non-empty array.
-    if (clipPaths === prevClipPaths) {
-        return false;
-    }
-    if (!clipPaths || !prevClipPaths || (clipPaths.length !== prevClipPaths.length)) {
-        return true;
-    }
-    for (let i = 0; i < clipPaths.length; i++) {
-        if (clipPaths[i] !== prevClipPaths[i]) {
-            return true;
-        }
-    }
-    return false;
-}
-
-/**
- * @private
- * @method doClip
- * @param {*} clipPaths 
- * @param {*} ctx 
- */
-function doClip(clipPaths, ctx) {
-    for (let i = 0; i < clipPaths.length; i++) {
-        let clipPath = clipPaths[i];
-
-        clipPath.setTransform(ctx);
-        ctx.beginPath();
-        clipPath.buildPath(ctx, clipPath.shape);
-        ctx.clip();
-        // Transform back
-        clipPath.restoreTransform(ctx);
-    }
-}
-
-/**
- * @private
- * @method createDomRoot
- * 不会直接在传入的 dom 节点内部创建 canvas 标签，而是再套一层div
- * 目的是加上一些必须的 CSS 样式，方便实现特定的功能。
- * @param {Number} width 
- * @param {Number} height 
- */
-function createDomRoot(width, height) {
-    let domRoot = document.createElement('div');
-    // domRoot.onselectstart = returnFalse; // Avoid page selected
-    domRoot.style.cssText = [
-        'position:relative',
-        // IOS13 safari probably has a compositing bug (z order of the canvas and the consequent
-        // dom does not act as expected) when some of the parent dom has
-        // `-webkit-overflow-scrolling: touch;` and the webpage is longer than one screen and
-        // the canvas is not at the top part of the page.
-        // Check `https://bugs.webkit.org/show_bug.cgi?id=203681` for more details. We remove
-        // this `overflow:hidden` to avoid the bug.
-        // 'overflow:hidden',
-        'width:' + width + 'px',
-        'height:' + height + 'px',
-        'padding:0',
-        'margin:0',
-        'border-width:0'
-    ].join(';') + ';';
-
-    //为了让div能够响应键盘事件，这个属性是必须的
-    // domRoot.setAttribute("tabindex","0");
-    return domRoot;
-}
+const HOVER_LAYER_QLEVEL = 1e5;
+const CANVAS_QLEVEL = 314159;
+const EL_AFTER_INCREMENTAL_INC = 0.01;
+const INCREMENTAL_INC = 0.001;
 
 /**
  * @method constructor
- * @param {HTMLElement} root 绘图容器
+ * @param {HTMLDomElement|Canvas|Context} dom 绘图容器
  * @param {Storage} storage
  * @param {Object} options
  */
@@ -212,7 +99,7 @@ let CanvasPainter = function (root, storage, options) {
         this._width = this._getSize(0);
         this._height = this._getSize(1);
 
-        let domRoot = createDomRoot(// Craete a new div inside the root element.
+        let domRoot = this.createDomRoot(// Craete a new div inside the root element.
             this._width, this._height
         );
         this._domRoot =domRoot;// In this case, this._domRoot is different from this.root.
@@ -261,6 +148,9 @@ let CanvasPainter = function (root, storage, options) {
      * @property {Array} _hoverElements
      */
     this._hoverElements = [];
+
+    this._tmpRect = new BoundingRect(0, 0, 0, 0);
+    this._viewRect = new BoundingRect(0, 0, 0, 0);
 };
 
 CanvasPainter.prototype = {
@@ -602,14 +492,14 @@ CanvasPainter.prototype = {
             // And setTransform with scale 0 will cause set back transform failed.
             && !(m && !m[0] && !m[3])
             // Ignore culled element
-            && !(el.culling && isDisplayableCulled(el, this._width, this._height))
+            && !(el.culling && this.isDisplayableCulled(el, this._width, this._height))
         ) {
 
             let clipPaths = el.__clipPaths;
             let prevElClipPaths = scope.prevElClipPaths;
 
             // Optimize when clipping on group with several elements
-            if (!prevElClipPaths || isClipPathChanged(clipPaths, prevElClipPaths)) {
+            if (!prevElClipPaths || this.isClipPathChanged(clipPaths, prevElClipPaths)) {
                 // If has previous clipping state, restore from it
                 if (prevElClipPaths) {
                     ctx.restore();
@@ -620,7 +510,7 @@ CanvasPainter.prototype = {
                 // New clipping state
                 if (clipPaths) {
                     ctx.save();
-                    doClip(clipPaths, ctx);
+                    this.doClip(clipPaths, ctx);
                     scope.prevElClipPaths = clipPaths;
                 }
             }
@@ -690,7 +580,7 @@ CanvasPainter.prototype = {
             return;
         }
         // Check if is a valid layer
-        if (!isLayerValid(layer)) {
+        if (!this.isLayerValid(layer)) {
             console.log('CanvasLayer of qlevel ' + qlevel + ' is not valid');
             return;
         }
@@ -1207,6 +1097,111 @@ CanvasPainter.prototype = {
         }
 
         return imgShape;
+    },
+    /**
+     * @private
+     * @method isLayerValid
+     * @param {*} layer 
+     */
+    isLayerValid:function(layer) {
+        if (!layer){
+            return false;
+        }
+        if (layer.__builtin__){
+            return true;
+        }
+        if (typeof (layer.resize) !== 'function'
+            || typeof (layer.refresh) !== 'function'){
+            return false;
+        }
+        return true;
+    },
+    /**
+     * @private
+     * @method isDisplayableCulled
+     * @param {*} el 
+     * @param {*} width 
+     * @param {*} height 
+     */
+    isDisplayableCulled:function(el, width, height) {
+        this._tmpRect.copy(el.getBoundingRect());
+        if (el.transform) {
+            this._tmpRect.applyTransform(el.transform);
+        }
+        this._viewRect.width = width;
+        this._viewRect.height = height;
+        return !this._tmpRect.intersect(this._viewRect);
+    },
+    /**
+     * @private
+     * @method isClipPathChanged
+     * @param {*} clipPaths 
+     * @param {*} prevClipPaths 
+     */
+    isClipPathChanged:function(clipPaths, prevClipPaths) {
+        // displayable.__clipPaths can only be `null`/`undefined` or an non-empty array.
+        if (clipPaths === prevClipPaths) {
+            return false;
+        }
+        if (!clipPaths || !prevClipPaths || (clipPaths.length !== prevClipPaths.length)) {
+            return true;
+        }
+        for (let i = 0; i < clipPaths.length; i++) {
+            if (clipPaths[i] !== prevClipPaths[i]) {
+                return true;
+            }
+        }
+        return false;
+    },
+
+    /**
+     * @private
+     * @method doClip
+     * @param {*} clipPaths 
+     * @param {*} ctx 
+     */
+    doClip:function(clipPaths, ctx) {
+        for (let i = 0; i < clipPaths.length; i++) {
+            let clipPath = clipPaths[i];
+
+            clipPath.setTransform(ctx);
+            ctx.beginPath();
+            clipPath.buildPath(ctx, clipPath.shape);
+            ctx.clip();
+            // Transform back
+            clipPath.restoreTransform(ctx);
+        }
+    },
+    /**
+     * @private
+     * @method createDomRoot
+     * 不会直接在传入的 dom 节点内部创建 canvas 标签，而是再套一层div
+     * 目的是加上一些必须的 CSS 样式，方便实现特定的功能。
+     * @param {Number} width 
+     * @param {Number} height 
+     */
+    createDomRoot:function(width, height) {
+        let domRoot = document.createElement('div');
+        // domRoot.onselectstart = returnFalse; // Avoid page selected
+        domRoot.style.cssText = [
+            'position:relative',
+            // IOS13 safari probably has a compositing bug (z order of the canvas and the consequent
+            // dom does not act as expected) when some of the parent dom has
+            // `-webkit-overflow-scrolling: touch;` and the webpage is longer than one screen and
+            // the canvas is not at the top part of the page.
+            // Check `https://bugs.webkit.org/show_bug.cgi?id=203681` for more details. We remove
+            // this `overflow:hidden` to avoid the bug.
+            // 'overflow:hidden',
+            'width:' + width + 'px',
+            'height:' + height + 'px',
+            'padding:0',
+            'margin:0',
+            'border-width:0'
+        ].join(';') + ';';
+
+        //为了让div能够响应键盘事件，这个属性是必须的
+        // domRoot.setAttribute("tabindex","0");
+        return domRoot;
     }
 };
 

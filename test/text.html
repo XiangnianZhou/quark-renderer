@@ -18,18 +18,9 @@
     <script type="text/javascript">
 
     var showBoundingRect;
-
-    // requireES([
-    //     'qrenderer/src/qrenderer',
-    //     'qrenderer/src/graphic/Text',
-    //     'qrenderer/src/graphic/shape/Line',
-    //     'qrenderer/src/graphic/shape/Rect',
-    //     'qrenderer/src/vml/vml'
-    // ], function(qrenderer, Text, Line, Rect){
-
-    var Text = qrenderer.Text;
-    var Line = qrenderer.Line;
-    var Rect = qrenderer.Rect;
+    var Text = QuarkRenderer.Text;
+    var Line = QuarkRenderer.Line;
+    var Rect = QuarkRenderer.Rect;
 
     var qr = QuarkRenderer.init(document.getElementById('main'), {
         renderer: window.__QRENDER__DEFAULT__RENDERER__
