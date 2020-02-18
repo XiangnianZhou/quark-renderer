@@ -375,8 +375,8 @@ export default class CanvasPainter{
             this._compositeManually();
         }
 
-        //如果在一帧的时间内没有绘制完，在下一帧继续绘制
-        //TODO:这里需要测试一个极限值出来，在 16ms 的时间里面最多能绘制多少个元素。
+        //如果在一帧的时间内没有绘制完，在下一帧继续绘制。
+        //当前本机的测试值，1000 个元素同时进行动画，可以在 16ms 的时间中绘制完成。
         if (!finished) {
             let self = this;
             requestAnimationFrame(function () {
@@ -460,7 +460,6 @@ export default class CanvasPainter{
                     // The rest elements will be drawn in the next frame.
                     // 这里的时间计算非常重要，如果 15ms 的时间内没有能绘制完所有元素，则跳出，等待下一帧继续绘制
                     // 但是 15ms 的时间依然是有限的，如果元素的数量非常巨大，例如有 1000 万个，还是会卡顿。
-                    // TODO: 这里需要实际 benchmark 一个数值出来。
                     if (dTime > 15) {
                         break;
                     }
@@ -776,7 +775,10 @@ export default class CanvasPainter{
             // PENDING If change one incremental element style ?
             // TODO Where there are non-incremental elements between incremental elements.
             if (el.incremental) {
-                layer = this.getLayer(qlevel + INCREMENTAL_INC, this._needsManuallyCompositing);
+                layer = this.getLayer(
+                    qlevel + INCREMENTAL_INC, 
+                    this._needsManuallyCompositing
+                );
                 layer.incremental = true;
                 incrementalLayerCount = 1;
             }else {
