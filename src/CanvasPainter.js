@@ -138,35 +138,44 @@ function createDomRoot(width, height) {
  * @method constructor
  * @param {HTMLElement} root 绘图容器
  * @param {Storage} storage
- * @param {Object} opts
+ * @param {Object} options
  */
-let CanvasPainter = function (root, storage, opts) {
+let CanvasPainter = function (root, storage, options) {
     this.type = 'canvas';
     // In node environment using node-canvas
     let singleCanvas = !root.nodeName // In node ?
         || root.nodeName.toUpperCase() === 'CANVAS';
-    this._opts = opts = dataUtil.extend({}, opts || {});
+    this._opts = options = dataUtil.extend({}, options || {});
+
     /**
      * @property {Number} dpr
      */
-    this.dpr = opts.devicePixelRatio || devicePixelRatio;
+    this.dpr = options.devicePixelRatio || devicePixelRatio;
+
     /**
      * @property {Boolean} _singleCanvas
      * @private
      */
     this._singleCanvas = singleCanvas;
+
     /**
      * @property {HTMLElement} root 绘图容器
      */
     this.root = root;
-    let rootStyle = root.style;
-    if (rootStyle) {
-        rootStyle['-webkit-tap-highlight-color'] = 'transparent';
-        rootStyle['-webkit-user-select'] =
-        rootStyle['user-select'] =
-        rootStyle['-webkit-touch-callout'] = 'none';
+    // There is no style attribute on element in nodejs.
+    if (this.root.style) {
+        this.root.style['-webkit-tap-highlight-color'] = 'transparent';
+        this.root.style['-webkit-user-select'] =
+        this.root.style['user-select'] =
+        this.root.style['-webkit-touch-callout'] = 'none';
         root.innerHTML = '';
     }
+
+    /**
+     * @private
+     * @property {HTMLElement} _domRoot 绘图容器，或者 Canvas 实例
+     */
+    this._domRoot=null;
 
     /**
      * @property {Storage} storage
@@ -202,21 +211,22 @@ let CanvasPainter = function (root, storage, opts) {
         this._width = this._getSize(0);
         this._height = this._getSize(1);
 
-        let domRoot = this._domRoot = createDomRoot(
+        let domRoot = createDomRoot(// Craete a new div inside the root element.
             this._width, this._height
         );
+        this._domRoot =domRoot;// In this case, this._domRoot is different from this.root.
         root.appendChild(domRoot);
     }else {
         let width = root.width;
         let height = root.height;
 
-        if (opts.width != null) {
-            width = opts.width;
+        if (options.width != null) {
+            width = options.width;
         }
-        if (opts.height != null) {
-            height = opts.height;
+        if (options.height != null) {
+            height = options.height;
         }
-        this.dpr = opts.devicePixelRatio || 1;
+        this.dpr = options.devicePixelRatio || 1;
 
         // Use canvas width and height directly
         root.width = width * this.dpr;
@@ -237,7 +247,7 @@ let CanvasPainter = function (root, storage, opts) {
         // Not use common qlevel.
         qlevelList.push(CANVAS_QLEVEL);
 
-        this._domRoot = root;
+        this._domRoot = root; // Here, this._domRoot equals this.root.
     }
 
     /**
@@ -982,9 +992,9 @@ CanvasPainter.prototype = {
             domRoot.style.display = 'none';
 
             // Save input w/h
-            let opts = this._opts;
-            width != null && (opts.width = width);
-            height != null && (opts.height = height);
+            let options = this._opts;
+            width != null && (options.width = width);
+            height != null && (options.height = height);
 
             width = this._getSize(0);
             height = this._getSize(1);
@@ -1044,21 +1054,21 @@ CanvasPainter.prototype = {
     /**
      * @method getRenderedCanvas
      * Get canvas which has all thing rendered
-     * @param {Object} [opts]
-     * @param {String} [opts.backgroundColor]
-     * @param {Number} [opts.pixelRatio]
+     * @param {Object} [options]
+     * @param {String} [options.backgroundColor]
+     * @param {Number} [options.pixelRatio]
      */
-    getRenderedCanvas: function (opts) {
-        opts = opts || {};
+    getRenderedCanvas: function (options) {
+        options = options || {};
         if (this._singleCanvas && !this._compositeManually) {
             return this._layers[CANVAS_QLEVEL].dom;
         }
 
-        let imageLayer = new CanvasLayer('image',this._width,this._height,opts.pixelRatio || this.dpr);
+        let imageLayer = new CanvasLayer('image',this._width,this._height,options.pixelRatio || this.dpr);
         imageLayer.initContext();
-        imageLayer.clear(false, opts.backgroundColor || this._backgroundColor);
+        imageLayer.clear(false, options.backgroundColor || this._backgroundColor);
 
-        if (opts.pixelRatio <= this.dpr) {
+        if (options.pixelRatio <= this.dpr) {
             this.refresh();
 
             let width = imageLayer.dom.width;
@@ -1111,14 +1121,14 @@ CanvasPainter.prototype = {
      * @param {*} whIdx 
      */
     _getSize: function (whIdx) {
-        let opts = this._opts;
+        let options = this._opts;
         let wh = ['width', 'height'][whIdx];
         let cwh = ['clientWidth', 'clientHeight'][whIdx];
         let plt = ['paddingLeft', 'paddingTop'][whIdx];
         let prb = ['paddingRight', 'paddingBottom'][whIdx];
 
-        if (opts[wh] != null && opts[wh] !== 'auto') {
-            return parseFloat(opts[wh]);
+        if (options[wh] != null && options[wh] !== 'auto') {
+            return parseFloat(options[wh]);
         }
 
         let root = this.root;

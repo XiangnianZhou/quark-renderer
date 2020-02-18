@@ -105,9 +105,7 @@ export function registerPainter(name, PainterClass) {
  * @return {QuarkRenderer}
  */
 class QuarkRenderer{
-    constructor(id, dom, options){
-        options = options || {};
-
+    constructor(id, dom, options={}){
         /**
          * @property {HTMLDomElement}
          */
