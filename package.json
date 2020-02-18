@@ -12,7 +12,7 @@
     "url": "https://github.com/quark-renderer/quark-renderer"
   },
   "scripts": {
-    "clean": "del-cli -f /api /dist /lib",
+    "clean": "del-cli -f api dist lib",
     "prepublish": "npm run clean && node build/build-quark-renderer/build.js --prepublish",
     "build": "npm run clean && npm install && node build/build-quark-renderer/build.js --release",
     "dev": "node build/build-quark-renderer/build.js --watch",

@@ -68,7 +68,12 @@ var version = &#39;4.1.2&#39;;
  * 
  * 全局总入口，创建 QuarkRenderer 的实例。
  * 
- * @param {HTMLElement} dom
+ * @param {HTMLDomElement|Canvas|Context} host 
+ * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
+ * or Context for Wechat mini-program.
+ * 
+ * 此属性可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
+ * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。
  * @param {Object} [options]
  * @param {String} [options.renderer=&#39;canvas&#39;] &#39;canvas&#39; or &#39;svg&#39;
  * @param {Number} [options.devicePixelRatio]
@@ -77,8 +82,8 @@ var version = &#39;4.1.2&#39;;
  * @return {QuarkRenderer}
  */
 
-function init(dom, options) {
-  var qr = new QuarkRenderer(dom, options);
+function init(host, options) {
+  var qr = new QuarkRenderer(host, options);
   instances[qr.id] = qr;
   return qr;
 }
@@ -123,7 +128,7 @@ function registerPainter(name, PainterClass) {
 <span id='qrenderer-core-QuarkRenderer-method-constructor'>/**
 </span> * @method constructor QuarkRenderer
  * @param {String} id
- * @param {HTMLElement} dom
+ * @param {HTMLElement} host
  * @param {Object} [options]
  * @param {String} [options.renderer=&#39;canvas&#39;] &#39;canvas&#39; or &#39;svg&#39;
  * @param {Number} [options.devicePixelRatio]
@@ -136,7 +141,7 @@ function registerPainter(name, PainterClass) {
 var QuarkRenderer =
 /*#__PURE__*/
 function () {
-  function QuarkRenderer(dom) {
+  function QuarkRenderer(host) {
     var options = arguments.length &gt; 1 &amp;&amp; arguments[1] !== undefined ? arguments[1] : {};
 
     _classCallCheck(this, QuarkRenderer);
@@ -145,19 +150,22 @@ function () {
 </span>     * @property {String}
      */
     this.id = guid();
-<span id='qrenderer-core-QuarkRenderer-property-dom'>    /**
-</span>     * @property {HTMLDomElement|Canvas|Context} dom 
-     * This can be a HTMLDomElement like DIV, or a Canvas isntance, 
+<span id='qrenderer-core-QuarkRenderer-property-host'>    /**
+</span>     * @property {HTMLDomElement|Canvas|Context} host 
+     * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
      * or Context for Wechat mini-program.
+     * 
+     * 此属性可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
+     * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。
      */
 
-    this.dom = dom;
+    this.host = host;
     var self = this;
 <span id='qrenderer-core-QuarkRenderer-property-storage'>    /**
 </span>     * @property {Storage}
      */
 
-    var storage = new Storage();
+    this.storage = new Storage();
     var rendererType = options.renderer; // TODO:WebGL
     // TODO: remove vml
 
@@ -169,15 +177,22 @@ function () {
       rendererType = &#39;vml&#39;;
     } else if (!rendererType || !painterMap[rendererType]) {
       rendererType = &#39;canvas&#39;;
-    }
+    } //根据参数创建不同类型的 Painter 实例。
 
-    var painter = new painterMap[rendererType](dom, storage, options, this.id);
-    this.storage = storage;
-    this.painter = painter; //把DOM事件代理出来
 
-    var handerProxy = !env.node &amp;&amp; !env.worker ? new DomEventProxy(painter.getViewportRoot()) : null; //QuarkRenderer 自己封装的事件机制
+    this.painter = new painterMap[rendererType](this.host, this.storage, options, this.id); //代理DOM事件。
 
-    this.eventHandler = new QRendererEventHandler(storage, painter, handerProxy, painter.root);
+    var handerProxy = null;
+
+    if (!(typeof ctx.moveTo === &#39;function&#39;)) {
+      // host is Context instance.
+      if (!env.node &amp;&amp; !env.worker &amp;&amp; !env.wxa) {
+        handerProxy = new DomEventProxy(this.painter.getViewportRoot());
+      }
+    } //QuarkRenderer 自己封装的事件机制。
+
+
+    this.eventHandler = new QRendererEventHandler(this.storage, this.painter, handerProxy, this.painter.root);
 <span id='qrenderer-core-QuarkRenderer-property-globalAnimationMgr'>    /**
 </span>     * @property {GlobalAnimationMgr}
      * 利用 GlobalAnimationMgr 动画的 frame 事件渲染下一张画面， QuarkRenderer 依赖此机制来刷新 canvas 画布。
@@ -207,17 +222,18 @@ function () {
 
     this._needsRefresh; // 修改 storage.delFromStorage, 每次删除元素之前删除动画
     // FIXME 有点ugly
+    // What&#39;s going on here?
 
-    var oldDelFromStorage = storage.delFromStorage;
-    var oldAddToStorage = storage.addToStorage;
+    var oldDelFromStorage = this.storage.delFromStorage;
+    var oldAddToStorage = this.storage.addToStorage;
 
-    storage.delFromStorage = function (el) {
-      oldDelFromStorage.call(storage, el);
+    this.storage.delFromStorage = function (el) {
+      oldDelFromStorage.call(self.storage, el);
       el &amp;&amp; el.removeSelfFromQr(self);
     };
 
-    storage.addToStorage = function (el) {
-      oldAddToStorage.call(storage, el);
+    this.storage.addToStorage = function (el) {
+      oldAddToStorage.call(self.storage, el);
       el.addSelfToQr(self);
     };
   }
