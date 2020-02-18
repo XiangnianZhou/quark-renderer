@@ -25,6 +25,7 @@ Here are the key improvements compare to the original ZRender:
 - Fixed some bugs in /test directory.
 - Use [jsduck](https://github.com/senchalabs/jsduck) for better API document.
 - Refactored all the comments for jsduck.
+- Support Wechat mini-program directly, do not need any hack.
 
 ## Usage
 
@@ -32,7 +33,7 @@ Here are the key improvements compare to the original ZRender:
 - Run npm build.
 - Check the examples inside /test directory.
 
-Example:
+Browser example:
 
 ```html
 <!DOCTYPE html>
@@ -102,6 +103,54 @@ Example:
 </html>
 ```
 
+Wechat mini-program example:
+
+```html
+<view class="page">
+    <view class="page__hd">
+        <view class="page__title">Quark Renderer 小程序示例1</view>
+    </view>
+    <view class="page__bd page__bd_spacing">
+        <view style="width:100%;height:500px;">
+            <canvas style="width: 300px; height: 500px;" canvas-id="firstCanvas"></canvas>
+        </view>
+    </view>
+</view>
+```
+
+```javascript
+onReady: function () {
+    let ctx = wx.createCanvasContext('firstCanvas');
+    //注意这里的初始化参数，因为微信小程序不允许操作 DOM，所以引擎不能自动获取到宽度高度，这里需要手动传进去
+    let qr = QuarkRenderer.init(ctx,{width:300,height:500,renderer:'canvas'});
+    let polygon = new QuarkRenderer.Polygon({
+        position: [100, 100],
+        scale: [1, 1],
+        style: {
+            fill: 'red'
+        }
+    });
+
+    setInterval(function () {
+        let len = Math.round(Math.random() * 100);
+        let points = [];
+        let r = (Math.random() * 100);
+        for (let i = 0; i <= len; i++) {
+            let phi = i / len * Math.PI * 2;
+            let x = Math.cos(phi) * r + 100;
+            let y = Math.sin(phi) * r + 100;
+            points.push([x, y]);
+        }
+        polygon.animateTo({
+            shape: {
+                points: points
+            }
+        }, 500, 'cubicOut');
+    }, 1000);
+    qr.add(polygon);
+}
+```
+
 ## Document
 
 The document is in /api directory, open /api/index.html in your browser then you can see a beautiful API document just like Sencha(ExtJS).
@@ -113,6 +162,10 @@ The document is in /api directory, open /api/index.html in your browser then you
 <img src="./docs/images/2.gif">
 <br/>
 <img src="./docs/images/3.gif">
+
+Wechat mini-program example:
+
+<img src="./docs/images/wechat.png">
 
 ## License
 
