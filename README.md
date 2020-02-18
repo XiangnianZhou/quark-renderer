@@ -28,7 +28,9 @@ Here are the key improvements compare to the original ZRender:
 
 ## Usage
 
-**Pull this repo to your local device, check the examples inside /test directory.**
+- Pull this repo to your local device.
+- Run npm build.
+- Check the examples inside /test directory.
 
 Example:
 
