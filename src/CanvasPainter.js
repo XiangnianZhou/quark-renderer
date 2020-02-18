@@ -177,29 +177,12 @@ export default class CanvasPainter{
     }
 
     /**
-     * @method getType
-     * @return {String}
-     */
-    getType() {
-        return 'canvas';
-    }
-
-    /**
-     * @method isSingleCanvas
-     * If painter use a single canvas
-     * @return {Boolean}
-     */
-    isSingleCanvas() {
-        return this._singleCanvas;
-    }
-
-    /**
-     * @method getViewportRoot
+     * @method getHost
      * Do NOT use this method in Wechat mini-program, because we can not get HTMLElement 
      * nor canvas instance.
      * @return {HTMLDivElement}
      */
-    getViewportRoot() {
+    getHost() {
         return this._host;
     }
 
@@ -210,11 +193,11 @@ export default class CanvasPainter{
      * @return {Object}
      */
     getViewportRootOffset() {
-        let viewportRoot = this.getViewportRoot();
-        if (viewportRoot) {
+        let host = this.getHost();
+        if (host) {
             return {
-                offsetLeft: viewportRoot.offsetLeft || 0,
-                offsetTop: viewportRoot.offsetTop || 0
+                offsetLeft: host.offsetLeft || 0,
+                offsetTop: host.offsetTop || 0
             };
         }
     }
