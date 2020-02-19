@@ -167,7 +167,7 @@ function () {
      */
 
     this.storage = new Storage();
-    var rendererType = options.renderer | &#39;canvas&#39;; // TODO:WebGL
+    var rendererType = options.renderer;
 
     if (!rendererType || !painterMap[rendererType]) {
       rendererType = &#39;canvas&#39;;

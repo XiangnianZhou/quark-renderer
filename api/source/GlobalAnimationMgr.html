@@ -122,9 +122,8 @@ function () {
 <span id='qrenderer-animation-GlobalAnimationMgr-method-_startLoop'>    /**
 </span>     * @private
      * @method _startLoop
-     * TODO:需要确认在大量节点下的动画性能问题，比如 100 万个元素同时进行动画
-     * 这里开始利用requestAnimationFrame递归执行
-     * 如果这里的 _update() 不能在16ms的时间内完成一轮动画，就会出现明显的卡顿。
+     * 这里开始利用requestAnimationFrame递归执行，如果这里的 _update() 不能在16ms的
+     * 时间内完成一轮动画，就会出现明显的卡顿。
      * 按照 W3C 的推荐标准 60fps，这里的 step 函数大约每隔 16ms 被调用一次
      * @see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
      */

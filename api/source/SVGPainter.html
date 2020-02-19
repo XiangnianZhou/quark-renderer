@@ -102,14 +102,14 @@ function getSvgElement(displayable) {
 }
 <span id='qrenderer-svg-SVGPainter-method-constructor'>/**
 </span> * @method constructor SVGPainter
- * @param {HTMLElement} root 绘图容器
+ * @param {HTMLElement} host
  * @param {Storage} storage
  * @param {Object} opts
  */
 
 
-var SVGPainter = function SVGPainter(root, storage, opts, qrId) {
-  this.root = root;
+var SVGPainter = function SVGPainter(host, storage, opts, qrId) {
+  this.host = host;
   this.storage = storage;
   this._opts = opts = dataUtil.extend({}, opts || {});
   var svgRoot = createElement(&#39;svg&#39;);
@@ -124,7 +124,7 @@ var SVGPainter = function SVGPainter(root, storage, opts, qrId) {
   viewport.style.cssText = &#39;overflow:hidden;position:relative&#39;;
   this._svgRoot = svgRoot;
   this._viewport = viewport;
-  root.appendChild(viewport);
+  host.appendChild(viewport);
   viewport.appendChild(svgRoot);
   this.resize(opts.width, opts.height);
   this._visibleList = [];
@@ -140,10 +140,10 @@ SVGPainter.prototype = {
     return &#39;svg&#39;;
   },
 
-<span id='qrenderer-svg-SVGPainter-method-getViewportRoot'>  /**
-</span>   * @method getViewportRoot
+<span id='qrenderer-svg-SVGPainter-method-getHost'>  /**
+</span>   * @method getHost
    */
-  getViewportRoot: function getViewportRoot() {
+  getHost: function getHost() {
     return this._viewport;
   },
 
@@ -394,17 +394,17 @@ SVGPainter.prototype = {
       return parseFloat(opts[wh]);
     }
 
-    var root = this.root; // IE8 does not support getComputedStyle, but it use VML.
+    var host = this.host; // IE8 does not support getComputedStyle, but it use VML.
 
-    var stl = document.defaultView.getComputedStyle(root);
-    return (root[cwh] || dataUtil.parseInt10(stl[wh]) || dataUtil.parseInt10(root.style[wh])) - (dataUtil.parseInt10(stl[plt]) || 0) - (dataUtil.parseInt10(stl[prb]) || 0) | 0;
+    var stl = document.defaultView.getComputedStyle(host);
+    return (host[cwh] || dataUtil.parseInt10(stl[wh]) || dataUtil.parseInt10(host.style[wh])) - (dataUtil.parseInt10(stl[plt]) || 0) - (dataUtil.parseInt10(stl[prb]) || 0) | 0;
   },
 
 <span id='qrenderer-svg-SVGPainter-method-dispose'>  /**
 </span>   * @method dispose
    */
   dispose: function dispose() {
-    this.root.innerHTML = &#39;&#39;;
+    this.host.innerHTML = &#39;&#39;;
     this._svgRoot = this._viewport = this.storage = null;
   },
 
@@ -413,7 +413,7 @@ SVGPainter.prototype = {
    */
   clear: function clear() {
     if (this._viewport) {
-      this.root.removeChild(this._viewport);
+      this.host.removeChild(this._viewport);
     }
   },
 
