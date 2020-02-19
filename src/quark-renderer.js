@@ -24,8 +24,6 @@ if(!env.canvasSupported){
     throw new Error("Need Canvas Environment.");
 }
 
-let useVML = !env.canvasSupported;
-
 let painterMap = {
     canvas: CanvasPainter
 };
@@ -36,7 +34,7 @@ let instances = {};
 /**
  * @property {String}
  */
-export let version = '4.1.2';
+export let version = '1.0.11';
 
 /**
  * @method qrenderer.init()
@@ -134,15 +132,9 @@ class QuarkRenderer{
          */
         this.storage = new Storage();
     
-        let rendererType = options.renderer;
+        let rendererType = options.renderer|'canvas';
         // TODO:WebGL
-        // TODO: remove vml
-        if (useVML) {
-            if (!painterMap.vml) {
-                throw new Error('You need to require \'qrenderer/vml/vml\' to support IE8');
-            }
-            rendererType = 'vml';
-        }else if (!rendererType || !painterMap[rendererType]) {
+        if (!rendererType || !painterMap[rendererType]) {
             rendererType = 'canvas';
         }
 

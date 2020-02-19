@@ -63,8 +63,6 @@
     "../../lib/svg/helper/ClippathManager.js",
     "../../lib/svg/helper/Definable.js",
     "../../lib/svg/helper/GradientManager.js",
-    "../../lib/svg/helper/ShadowManager.js",
-    "../../lib/vml/graphic.js",
-    "../../lib/vml/VMLPainter.js"
+    "../../lib/svg/helper/ShadowManager.js"
   ]
 }

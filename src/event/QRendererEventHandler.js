@@ -387,7 +387,6 @@ QRendererEventHandler.prototype = {
         for (var i = list.length - 1; i >= 0; i--) {
             var hoverCheckResult;
             if (list[i] !== exclude
-                // getDisplayList may include ignored item in VML mode
                 && !list[i].ignore
                 && (hoverCheckResult = isHover(list[i], x, y))
             ) {

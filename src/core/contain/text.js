@@ -40,7 +40,7 @@ export function getWidth(text, font) {
     let width = 0;
 
     for (let i = 0, l = textLines.length; i < l; i++) {
-        // textContain.measureText may be overrided in SVG or VML
+        // textContain.measureText may be overrided in SVG.
         width = mathMax(measureText(textLines[i], font).width, width);
     }
 

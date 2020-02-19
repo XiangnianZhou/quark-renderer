@@ -14,7 +14,6 @@ import guid from './core/utils/guid';
  * @class qrenderer.canvas.CanvasPainter
  * 这是基于 canvas 接口的 CanvasPainter 类
  * @see 基于 SVG 接口的 CanvasPainter 类在 svg 目录下
- * @see 基于 VML 接口的 CanvasPainter 类在 vml 目录下
  */
 
 const HOVER_LAYER_QLEVEL = 1e5;
@@ -610,18 +609,18 @@ export default class CanvasPainter{
             if (prevLayer) {
                 let prevDom = prevLayer.canvasInstance;
                 if (prevDom.nextSibling) {
-                    this.host.insertBefore(
+                    this._host.insertBefore(
                         layer.canvasInstance,
                         prevDom.nextSibling
                     );
                 }else {
-                    this.host.appendChild(layer.canvasInstance);
+                    this._host.appendChild(layer.canvasInstance);
                 }
             }else {
-                if (this.host.firstChild) {
-                    this.host.insertBefore(layer.canvasInstance, this.host.firstChild);
+                if (this._host.firstChild) {
+                    this._host.insertBefore(layer.canvasInstance, this._host.firstChild);
                 }else {
-                    this.host.appendChild(layer.canvasInstance);
+                    this._host.appendChild(layer.canvasInstance);
                 }
             }
         }
