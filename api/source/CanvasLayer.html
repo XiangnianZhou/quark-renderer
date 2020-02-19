@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var dataUtil = require(&quot;./core/utils/data_structure_util&quot;);
+
+var canvasUtil = require(&quot;./core/utils/canvas_util&quot;);
+
+var Style = require(&quot;./graphic/Style&quot;);
+
+var Pattern = require(&quot;./graphic/Pattern&quot;);
+
+var guid = require(&quot;./core/utils/guid&quot;);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
+
+function _defineProperties(target, props) { for (var i = 0; i &lt; props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (&quot;value&quot; in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+<span id='qrenderer-canvas-CanvasLayer'>/**
+</span> * @class qrenderer.canvas.CanvasLayer
+ * 
+ * CanvasLayer is designed to create canvas layers, it will be used in CanvasPainter.
+ * CanvasPainter will create several canvas instances during the paint process, some 
+ * of them are invisiable, such as the one used for export a image.
+ * Attention: we can NOT create canvas dynamicly in Wechat mini-program, because Wechat
+ * does not allow us to manipulate DOM.
+ * 
+ * 该类被设计用来创建 canvas 层，在 CanvasPainter 类中会引用此类。
+ * 在绘图过程中， CanvasPainter 会创建多个 canvas 实例来辅助操作，
+ * 某些 canvas 实例是隐藏的，比如用来导出图片的 canvas。
+ * 注意：在微信小程序中不能动态创建 canvas 标签，因为微信小程序不允许 DOM 操作。
+ * 
+ * @author pissang(https://www.github.com/pissang)
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+var CanvasLayer =
+/*#__PURE__*/
+function () {
+<span id='qrenderer-canvas-CanvasLayer-method-constructor'>  /**
+</span>   * @method constructor CanvasLayer
+   * @param {HTMLDomElement|Canvas|Context} host 
+   * This can be a HTMLDomElement like a DIV, or a Canvas instance, 
+   * or Context for Wechat mini-program.
+   * 
+   * 此属性可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
+   * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。
+   * @param {Number} width
+   * @param {Number} height
+   * @param {Number} [dpr]
+   */
+  function CanvasLayer(host, width, height, dpr) {
+    _classCallCheck(this, CanvasLayer);
+
+<span id='qrenderer-canvas-CanvasLayer-property-CanvasLayer'>    /**
+</span>     * @property {String|Object} CanvasLayer id
+     */
+    this.id = guid();
+<span id='qrenderer-canvas-CanvasLayer-property-CanvasLayer'>    /**
+</span>     * @property {Number} CanvasLayer width
+     */
+
+    this.width = width;
+<span id='qrenderer-canvas-CanvasLayer-property-CanvasLayer'>    /**
+</span>     * @property {Number} CanvasLayer height
+     */
+
+    this.height = height;
+<span id='qrenderer-canvas-CanvasLayer-property-CanvasLayer'>    /**
+</span>     * @property {Number} CanvasLayer dpr
+     */
+
+    this.dpr = dpr;
+<span id='qrenderer-canvas-CanvasLayer-property-ctx'>    /**
+</span>     * @property {Context} ctx Canvas context, this property will be initialized after calling initContext() method.
+     */
+
+    this.ctx; // Create or set canvas instance.
+
+    var canvasInstance = null;
+
+    if (host &amp;&amp; host.nodeName &amp;&amp; host.nodeName.toUpperCase() === &#39;CANVAS&#39;) {
+      // host is a canvas instance
+      canvasInstance = host;
+      this.id = canvasInstance.id;
+    } else if (typeof host === &#39;string&#39;) {
+      // host is an id string
+      canvasInstance = canvasUtil.createCanvas(host, this.width, this.height, this.dpr);
+      this.id = host;
+    } else {
+      // host is a Context instance
+      this.ctx = host;
+    } // There is no style attribute of canvasInstance in nodejs.
+
+
+    if (canvasInstance &amp;&amp; canvasInstance.style) {
+      canvasInstance.onselectstart = function () {
+        return false;
+      }; // 避免页面选中的尴尬
+
+
+      canvasInstance.style[&#39;-webkit-user-select&#39;] = &#39;none&#39;;
+      canvasInstance.style[&#39;user-select&#39;] = &#39;none&#39;;
+      canvasInstance.style[&#39;-webkit-touch-callout&#39;] = &#39;none&#39;;
+      canvasInstance.style[&#39;-webkit-tap-highlight-color&#39;] = &#39;rgba(0,0,0,0)&#39;;
+      canvasInstance.style[&#39;padding&#39;] = 0; // eslint-disable-line dot-notation
+
+      canvasInstance.style[&#39;margin&#39;] = 0; // eslint-disable-line dot-notation
+
+      canvasInstance.style[&#39;border-width&#39;] = 0;
+    }
+<span id='qrenderer-canvas-CanvasLayer-property-canvasInstance'>    /**
+</span>     * @property {Canvas} canvasInstance
+     * 注意：this.canvasInstance 可能为null，因为在微信小程序中，没有办法获取 canvas 实例，只能获取到 Context 对象。
+     */
+
+
+    this.canvasInstance = canvasInstance;
+<span id='qrenderer-canvas-CanvasLayer-property-hiddenCanvas'>    /**
+</span>     * @property {Canvas} hiddenCanvas 隐藏的画布实例
+     */
+
+    this.hiddenCanvas = null;
+<span id='qrenderer-canvas-CanvasLayer-property-hiddenContext'>    /**
+</span>     * @property {Context} hiddenContext 隐藏的画布上下文
+     */
+
+    this.hiddenContext = null;
+    this.config = null;
+<span id='qrenderer-canvas-CanvasLayer-property-clearColor'>    /**
+</span>     * @property {String} 每次清空画布的颜色
+     */
+
+    this.clearColor = 0;
+<span id='qrenderer-canvas-CanvasLayer-property-motionBlur'>    /**
+</span>     * @property {boolean} 是否开启动态模糊
+     */
+
+    this.motionBlur = false;
+<span id='qrenderer-canvas-CanvasLayer-property-lastFrameAlpha'>    /**
+</span>     * @property {Number} 在开启动态模糊的时候使用，与上一帧混合的alpha值，值越大尾迹越明显
+     */
+
+    this.lastFrameAlpha = 0.7;
+    this.__dirty = true;
+    this.__used = false;
+    this.__drawIndex = 0;
+    this.__startIndex = 0;
+    this.__endIndex = 0;
+    this.incremental = false;
+  }
+<span id='qrenderer-canvas-CanvasLayer-method-getElementCount'>  /**
+</span>   * @method getElementCount
+   */
+
+
+  _createClass(CanvasLayer, [{
+    key: &quot;getElementCount&quot;,
+    value: function getElementCount() {
+      return this.__endIndex - this.__startIndex;
+    }
+<span id='qrenderer-canvas-CanvasLayer-method-initContext'>    /**
+</span>     * @method initContext
+     */
+
+  }, {
+    key: &quot;initContext&quot;,
+    value: function initContext() {
+      if (this.canvasInstance) {
+        this.ctx = canvasUtil.getContext(this.canvasInstance);
+      }
+
+      this.ctx.dpr = this.dpr;
+    }
+<span id='qrenderer-canvas-CanvasLayer-method-creatHiddenCanvas'>    /**
+</span>     * @method creatHiddenCanvas
+     */
+
+  }, {
+    key: &quot;creatHiddenCanvas&quot;,
+    value: function creatHiddenCanvas() {
+      this.hiddenCanvas = canvasUtil.createCanvas(&#39;back-&#39; + this.id, this.width, this.height, this.dpr);
+      this.hiddenContext = canvasUtil.getContext(this.hiddenCanvas);
+
+      if (this.dpr !== 1) {
+        this.hiddenContext.scale(this.dpr, this.dpr);
+      }
+    }
+<span id='qrenderer-canvas-CanvasLayer-method-resize'>    /**
+</span>     * @method resize
+     * @param  {Number} width
+     * @param  {Number} height
+     */
+
+  }, {
+    key: &quot;resize&quot;,
+    value: function resize(width, height) {
+      //Can NOT get canvas instance in Wechat mini-program.
+      if (!this.canvasInstance) {
+        return;
+      }
+
+      if (this.canvasInstance.style) {
+        this.canvasInstance.style.width = width + &#39;px&#39;;
+        this.canvasInstance.style.height = height + &#39;px&#39;;
+      }
+
+      this.canvasInstance.width = width * this.dpr;
+      this.canvasInstance.height = height * this.dpr;
+
+      if (!this.hiddenCanvas) {
+        return;
+      }
+
+      this.hiddenCanvas.width = width * this.dpr;
+      this.hiddenCanvas.height = height * this.dpr;
+
+      if (this.dpr !== 1) {
+        this.hiddenContext.scale(this.dpr, this.dpr);
+      }
+    }
+<span id='qrenderer-canvas-CanvasLayer-method-clear'>    /**
+</span>     * @method clear
+     * 清空该层画布
+     * @param {boolean} [clearAll=false] Clear all with out motion blur
+     * @param {Color} [clearColor]
+     */
+
+  }, {
+    key: &quot;clear&quot;,
+    value: function clear(clearAll, clearColor) {
+      clearColor = clearColor || this.clearColor;
+      var haveMotionBLur = this.motionBlur &amp;&amp; !clearAll;
+      var lastFrameAlpha = this.lastFrameAlpha;
+      var dpr = this.dpr;
+
+      if (haveMotionBLur &amp;&amp; this.canvasInstance) {
+        var _width = this.canvasInstance.width;
+        var _height = this.canvasInstance.height;
+
+        if (!this.hiddenCanvas) {
+          this.creatHiddenCanvas();
+        }
+
+        this.hiddenContext.globalCompositeOperation = &#39;copy&#39;;
+        this.hiddenContext.drawImage(this.canvasInstance, 0, 0, _width / dpr, _height / dpr);
+      }
+
+      this.ctx.clearRect(0, 0, this.width, this.height);
+
+      if (clearColor &amp;&amp; clearColor !== &#39;transparent&#39;) {
+        var clearColorGradientOrPattern; // Gradient
+
+        if (clearColor.colorStops) {
+          // Cache canvasInstance gradient
+          clearColorGradientOrPattern = clearColor.__canvasGradient || Style.getGradient(this.ctx, clearColor, {
+            x: 0,
+            y: 0,
+            width: width,
+            height: height
+          });
+          clearColor.__canvasGradient = clearColorGradientOrPattern;
+        } else if (clearColor.image) {
+          // Pattern
+          clearColorGradientOrPattern = Pattern.prototype.getCanvasPattern.call(clearColor, this.ctx);
+        }
+
+        this.ctx.save();
+        this.ctx.fillStyle = clearColorGradientOrPattern || clearColor;
+        this.ctx.fillRect(0, 0, width, height);
+        this.ctx.restore();
+      }
+
+      if (haveMotionBLur &amp;&amp; this.hiddenCanvas) {
+        this.ctx.save();
+        this.ctx.globalAlpha = lastFrameAlpha;
+        this.ctx.drawImage(this.hiddenCanvas, 0, 0, width, height);
+        this.ctx.restore();
+      }
+    }
+  }]);
+
+  return CanvasLayer;
+}();
+
+module.exports = CanvasLayer;</pre>
+</body>
+</html>
