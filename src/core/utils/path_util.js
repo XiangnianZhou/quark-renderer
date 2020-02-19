@@ -357,7 +357,7 @@ function createPathOptions(str, opts) {
     opts.buildPath = function (path) {
         if (path.setData) {
             path.setData(pathProxy.data);
-            // Svg and vml renderer don't have context
+            // Svg renderer don't have context
             var ctx = path.getContext();
             if (ctx) {
                 path.rebuildPath(ctx);
@@ -411,7 +411,7 @@ export function mergePath(pathEls, opts) {
     pathBundle.createPathProxy();
     pathBundle.buildPath = function (path) {
         path.appendPath(pathList);
-        // Svg and vml renderer don't have context
+        // Svg renderer don't have context
         var ctx = path.getContext();
         if (ctx) {
             path.rebuildPath(ctx);
