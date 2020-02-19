@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var classUtil = require(&quot;../core/utils/class_util&quot;);
+
+var Element = require(&quot;./Element&quot;);
+
+var BoundingRect = require(&quot;./transform/BoundingRect&quot;);
+
+var _data_structure_util = require(&quot;../core/utils/data_structure_util&quot;);
+
+var extend = _data_structure_util.extend;
+
+function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
+
+function _defineProperties(target, props) { for (var i = 0; i &lt; props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (&quot;value&quot; in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call &amp;&amp; (_typeof(call) === &quot;object&quot; || typeof call === &quot;function&quot;)) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(&quot;this hasn&#39;t been initialised - super() hasn&#39;t been called&quot;); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== &quot;function&quot; &amp;&amp; superClass !== null) { throw new TypeError(&quot;Super expression must either be null or a function&quot;); } subClass.prototype = Object.create(superClass &amp;&amp; superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+<span id='qrenderer-graphic-Group'>/**
+</span> * @class qrenderer.graphic.Group
+ * 
+ * - Group is a container, it&#39;s not visible.
+ * - Group can have child nodes, not the other Element types.
+ * - The transformations applied to Group will apply to its children too.
+ * 
+ * - Group 是一个容器，本身不可见。
+ * - Group 可以插入子节点，其它类型不能。
+ * - Group 上的变换也会被应用到子节点上。
+ * 
+ *      @example small frame
+ *      let Group = require(&#39;qrenderer/Group&#39;);
+ *      let Circle = require(&#39;qrenderer/graphic/shape/Circle&#39;);
+ *      let g = new Group();
+ *      g.position[0] = 100;
+ *      g.position[1] = 100;
+ *      g.add(new Circle({
+ *          style: {
+ *              x: 100,
+ *              y: 100,
+ *              r: 20,
+ *          }
+ *      }));
+ *      qr.add(g);
+ */
+var Group =
+/*#__PURE__*/
+function (_Element) {
+  _inherits(Group, _Element);
+
+<span id='qrenderer-graphic-Group-method-constructor'>  /**
+</span>   * @method constructor Group
+   */
+  function Group() {
+    var _this;
+
+    var options = arguments.length &gt; 0 &amp;&amp; arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Group);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Group).call(this, options));
+<span id='qrenderer-graphic-Group-property-_children'>    /**
+</span>     * @private
+     * @property _children
+     */
+
+    _this._children = [];
+<span id='qrenderer-graphic-Group-property-__storage'>    /**
+</span>     * @private
+     * @property __storage
+     */
+
+    _this.__storage = null;
+<span id='qrenderer-graphic-Group-property-__dirty'>    /**
+</span>     * @private
+     * @property __dirty
+     */
+
+    _this.__dirty = true;
+<span id='qrenderer-graphic-Group-property-isGroup'>    /**
+</span>     * @property isGroup
+     */
+
+    _this.isGroup = true;
+<span id='qrenderer-graphic-Group-property-type'>    /**
+</span>     * @property {String}
+     */
+
+    _this.type = &#39;group&#39;;
+<span id='qrenderer-graphic-Group-property-silent'>    /**
+</span>     * @property {Boolean} 所有子孙元素是否响应鼠标事件
+     */
+
+    _this.silent = false;
+    classUtil.copyOwnProperties(_assertThisInitialized(_this), options);
+    return _this;
+  }
+<span id='qrenderer-graphic-Group-method-children'>  /**
+</span>   * @method children
+   * @return {Array&lt;Element&gt;}
+   */
+
+
+  _createClass(Group, [{
+    key: &quot;children&quot;,
+    value: function children() {
+      return this._children.slice();
+    }
+<span id='qrenderer-graphic-Group-method-childAt'>    /**
+</span>     * @method childAt
+     * 获取指定 index 的儿子节点
+     * @param  {Number} idx
+     * @return {Element}
+     */
+
+  }, {
+    key: &quot;childAt&quot;,
+    value: function childAt(idx) {
+      return this._children[idx];
+    }
+<span id='qrenderer-graphic-Group-method-childOfName'>    /**
+</span>     * @method childOfName
+     * 获取指定名字的儿子节点
+     * @param  {String} name
+     * @return {Element}
+     */
+
+  }, {
+    key: &quot;childOfName&quot;,
+    value: function childOfName(name) {
+      var children = this._children;
+
+      for (var i = 0; i &lt; children.length; i++) {
+        if (children[i].name === name) {
+          return children[i];
+        }
+      }
+    }
+<span id='qrenderer-graphic-Group-method-childCount'>    /**
+</span>     * @method childCount
+     * @return {Number}
+     */
+
+  }, {
+    key: &quot;childCount&quot;,
+    value: function childCount() {
+      return this._children.length;
+    }
+<span id='qrenderer-graphic-Group-method-add'>    /**
+</span>     * @method add
+     * 添加子节点到最后
+     * @param {Element} child
+     */
+
+  }, {
+    key: &quot;add&quot;,
+    value: function add(child) {
+      if (child &amp;&amp; child !== this &amp;&amp; child.parent !== this) {
+        this._children.push(child);
+
+        this._doAdd(child);
+      }
+
+      return this;
+    }
+<span id='qrenderer-graphic-Group-method-addBefore'>    /**
+</span>     * @method addBefore
+     * 添加子节点在 nextSibling 之前
+     * @param {Element} child
+     * @param {Element} nextSibling
+     */
+
+  }, {
+    key: &quot;addBefore&quot;,
+    value: function addBefore(child, nextSibling) {
+      if (child &amp;&amp; child !== this &amp;&amp; child.parent !== this &amp;&amp; nextSibling &amp;&amp; nextSibling.parent === this) {
+        var children = this._children;
+        var idx = children.indexOf(nextSibling);
+
+        if (idx &gt;= 0) {
+          children.splice(idx, 0, child);
+
+          this._doAdd(child);
+        }
+      }
+
+      return this;
+    }
+<span id='qrenderer-graphic-Group-method-_doAdd'>    /**
+</span>     * @private
+     * @method _doAdd
+     * @param {*} child 
+     */
+
+  }, {
+    key: &quot;_doAdd&quot;,
+    value: function _doAdd(child) {
+      if (child.parent) {
+        child.parent.remove(child);
+      }
+
+      child.parent = this; //把子节点的 parent 属性指向自己，在事件冒泡的时候会使用 parent 属性。
+
+      var storage = this.__storage;
+      var qr = this.__qr;
+
+      if (storage &amp;&amp; storage !== child.__storage) {
+        storage.addToStorage(child);
+
+        if (child instanceof Group) {
+          child.addChildrenToStorage(storage);
+        }
+      }
+
+      qr &amp;&amp; qr.refresh();
+    }
+<span id='qrenderer-graphic-Group-method-remove'>    /**
+</span>     * @method remove
+     * 移除子节点
+     * @param {Element} child
+     */
+
+  }, {
+    key: &quot;remove&quot;,
+    value: function remove(child) {
+      var qr = this.__qr;
+      var storage = this.__storage;
+      var children = this._children;
+      var idx = dataUtil.indexOf(children, child);
+
+      if (idx &lt; 0) {
+        return this;
+      }
+
+      children.splice(idx, 1);
+      child.parent = null;
+
+      if (storage) {
+        storage.delFromStorage(child);
+
+        if (child instanceof Group) {
+          child.delChildrenFromStorage(storage);
+        }
+      }
+
+      qr &amp;&amp; qr.refresh();
+      return this;
+    }
+<span id='qrenderer-graphic-Group-method-removeAll'>    /**
+</span>     * @method removeAll
+     * 移除所有子节点
+     */
+
+  }, {
+    key: &quot;removeAll&quot;,
+    value: function removeAll() {
+      var children = this._children;
+      var storage = this.__storage;
+      var child;
+      var i;
+
+      for (i = 0; i &lt; children.length; i++) {
+        child = children[i];
+
+        if (storage) {
+          storage.delFromStorage(child);
+
+          if (child instanceof Group) {
+            child.delChildrenFromStorage(storage);
+          }
+        }
+
+        child.parent = null;
+      }
+
+      children.length = 0;
+      return this;
+    }
+<span id='qrenderer-graphic-Group-method-eachChild'>    /**
+</span>     * @method eachChild
+     * 遍历所有子节点
+     * @param  {Function} cb
+     * @param  {Object}   context
+     */
+
+  }, {
+    key: &quot;eachChild&quot;,
+    value: function eachChild(cb, context) {
+      var children = this._children;
+
+      for (var i = 0; i &lt; children.length; i++) {
+        var child = children[i];
+        cb.call(context, child, i);
+      }
+
+      return this;
+    }
+<span id='qrenderer-graphic-Group-method-traverse'>    /**
+</span>     * @method traverse
+     * 深度优先遍历所有子孙节点
+     * @param  {Function} cb
+     * @param  {Object}   context
+     */
+
+  }, {
+    key: &quot;traverse&quot;,
+    value: function traverse(cb, context) {
+      for (var i = 0; i &lt; this._children.length; i++) {
+        var child = this._children[i];
+        cb.call(context, child);
+
+        if (child.type === &#39;group&#39;) {
+          child.traverse(cb, context);
+        }
+      }
+
+      return this;
+    }
+<span id='qrenderer-graphic-Group-method-addChildrenToStorage'>    /**
+</span>     * @method addChildrenToStorage
+     * @param {Storage} storage 
+     */
+
+  }, {
+    key: &quot;addChildrenToStorage&quot;,
+    value: function addChildrenToStorage(storage) {
+      for (var i = 0; i &lt; this._children.length; i++) {
+        var child = this._children[i];
+        storage.addToStorage(child);
+
+        if (child instanceof Group) {
+          child.addChildrenToStorage(storage);
+        }
+      }
+    }
+<span id='qrenderer-graphic-Group-method-delChildrenFromStorage'>    /**
+</span>     * @method delChildrenFromStorage
+     * @param {Storage} storage 
+     */
+
+  }, {
+    key: &quot;delChildrenFromStorage&quot;,
+    value: function delChildrenFromStorage(storage) {
+      for (var i = 0; i &lt; this._children.length; i++) {
+        var child = this._children[i];
+        storage.delFromStorage(child);
+
+        if (child instanceof Group) {
+          child.delChildrenFromStorage(storage);
+        }
+      }
+    }
+<span id='qrenderer-graphic-Group-method-dirty'>    /**
+</span>     * @method dirty
+     * @return {Group}
+     */
+
+  }, {
+    key: &quot;dirty&quot;,
+    value: function dirty() {
+      this.__dirty = true;
+      this.__qr &amp;&amp; this.__qr.refresh();
+      return this;
+    }
+<span id='qrenderer-graphic-Group-method-getBoundingRect'>    /**
+</span>     * @method getBoundingRect
+     * @return {BoundingRect}
+     */
+
+  }, {
+    key: &quot;getBoundingRect&quot;,
+    value: function getBoundingRect(includeChildren) {
+      // TODO Caching
+      var rect = null;
+      var tmpRect = new BoundingRect(0, 0, 0, 0);
+      var children = includeChildren || this._children;
+      var tmpMat = [];
+
+      for (var i = 0; i &lt; children.length; i++) {
+        var child = children[i];
+
+        if (child.ignore || child.invisible) {
+          continue;
+        }
+
+        var childRect = child.getBoundingRect();
+        var transform = child.getLocalTransform(tmpMat); // TODO
+        // The boundingRect cacluated by transforming original
+        // rect may be bigger than the actual bundingRect when rotation
+        // is used. (Consider a circle rotated aginst its center, where
+        // the actual boundingRect should be the same as that not be
+        // rotated.) But we can not find better approach to calculate
+        // actual boundingRect yet, considering performance.
+
+        if (transform) {
+          tmpRect.copy(childRect);
+          tmpRect.applyTransform(transform);
+          rect = rect || tmpRect.clone();
+          rect.union(tmpRect);
+        } else {
+          rect = rect || childRect.clone();
+          rect.union(childRect);
+        }
+      }
+
+      return rect || tmpRect;
+    }
+  }]);
+
+  return Group;
+}(Element);
+
+var _default = Group;
+module.exports = _default;</pre>
+</body>
+</html>
