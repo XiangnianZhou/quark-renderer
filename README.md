@@ -166,7 +166,7 @@ The document is in /api directory, open /api/index.html in your browser then you
 
 Wechat mini-program example:
 
-<img src="./docs/images/wechat.png">
+<img src="./docs/images/4.gif">
 
 ## License
 
