@@ -69,8 +69,7 @@ export function init(host, options) {
 export function dispose(qr) {
     if (qr) {
         qr.dispose();
-    }
-    else {
+    }else {
         for (let key in instances) {
             if (instances.hasOwnProperty(key)) {
                 instances[key].dispose();
@@ -78,7 +77,6 @@ export function dispose(qr) {
         }
         instances = {};
     }
-
     return this;
 }
 
@@ -132,8 +130,7 @@ class QuarkRenderer{
          */
         this.storage = new Storage();
     
-        let rendererType = options.renderer|'canvas';
-        // TODO:WebGL
+        let rendererType = options.renderer;
         if (!rendererType || !painterMap[rendererType]) {
             rendererType = 'canvas';
         }

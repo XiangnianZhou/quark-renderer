@@ -76,12 +76,12 @@ function getSvgElement(displayable) {
 
 /**
  * @method constructor SVGPainter
- * @param {HTMLElement} root 绘图容器
+ * @param {HTMLElement} host
  * @param {Storage} storage
  * @param {Object} opts
  */
-let SVGPainter = function (root, storage, opts, qrId) {
-    this.root = root;
+let SVGPainter = function (host, storage, opts, qrId) {
+    this.host = host;
     this.storage = storage;
     this._opts = opts = dataUtil.extend({}, opts || {});
     let svgRoot = createElement('svg');
@@ -101,7 +101,7 @@ let SVGPainter = function (root, storage, opts, qrId) {
     this._svgRoot = svgRoot;
     this._viewport = viewport;
 
-    root.appendChild(viewport);
+    host.appendChild(viewport);
     viewport.appendChild(svgRoot);
 
     this.resize(opts.width, opts.height);
@@ -121,9 +121,9 @@ SVGPainter.prototype = {
     },
 
     /**
-     * @method getViewportRoot
+     * @method getHost
      */
-    getViewportRoot: function () {
+    getHost: function () {
         return this._viewport;
     },
 
@@ -377,12 +377,12 @@ SVGPainter.prototype = {
             return parseFloat(opts[wh]);
         }
 
-        let root = this.root;
+        let host = this.host;
         // IE8 does not support getComputedStyle, but it use VML.
-        let stl = document.defaultView.getComputedStyle(root);
+        let stl = document.defaultView.getComputedStyle(host);
 
         return (
-            (root[cwh] || dataUtil.parseInt10(stl[wh]) || dataUtil.parseInt10(root.style[wh]))
+            (host[cwh] || dataUtil.parseInt10(stl[wh]) || dataUtil.parseInt10(host.style[wh]))
             - (dataUtil.parseInt10(stl[plt]) || 0)
             - (dataUtil.parseInt10(stl[prb]) || 0)
         ) | 0;
@@ -392,7 +392,7 @@ SVGPainter.prototype = {
      * @method dispose
      */
     dispose: function () {
-        this.root.innerHTML = '';
+        this.host.innerHTML = '';
 
         this._svgRoot =
             this._viewport =
@@ -405,7 +405,7 @@ SVGPainter.prototype = {
      */
     clear: function () {
         if (this._viewport) {
-            this.root.removeChild(this._viewport);
+            this.host.removeChild(this._viewport);
         }
     },
 
