@@ -11,9 +11,8 @@
 
     requireES([
         'quark-renderer/src/quark-renderer',
-        'quark-renderer/src/graphic/shape/Sector',
-        'quark-renderer/src/vml/vml'
-    ], function(qrenderer, SectorShape){
+        'quark-renderer/src/graphic/shape/Sector'
+    ], function(QuarkRenderer, SectorShape){
         // 初始化qrenderer
         var qr = QuarkRenderer.init(document.getElementById('main'));
 

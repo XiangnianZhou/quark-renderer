@@ -1,4 +1,4 @@
-import Displayable from './Displayable';
+import Element from './Element';
 import BoundingRect from './transform/BoundingRect';
 import * as dataUtil from '../core/utils/data_structure_util';
 import * as imageHelper from './utils/image';
@@ -7,7 +7,7 @@ import * as imageHelper from './utils/image';
  * @class qrenderer.graphic.QImage 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default class QImage extends Displayable{
+export default class QImage extends Element{
     /**
      * @method constructor QImage
      * @param {Object} options

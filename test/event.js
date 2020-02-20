@@ -33,10 +33,10 @@ var circle2 = new QuarkRenderer.Circle({
 });
 
 circle1.on('mouseover', function () {
-    qr.dom.style.cursor = 'move';
+    qr.host.style.cursor = 'move';
 });
 circle1.on('mouseout', function () {
-    qr.dom.style.cursor = 'default';
+    qr.host.style.cursor = 'default';
 });
 
 circle2.on('dragenter', function () {

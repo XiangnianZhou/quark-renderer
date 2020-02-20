@@ -1,4 +1,4 @@
-import Displayable from './Displayable';
+import Element from './Element';
 import * as dataUtil from '../core/utils/data_structure_util';
 import * as classUtil from '../core/utils/class_util';
 import PathProxy from './PathProxy';
@@ -10,31 +10,36 @@ import {mathMax,mathAbs,mathSqrt} from '../graphic/constants';
  * @class qrenderer.graphic.Path 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-class Path extends Displayable{
+class Path extends Element{
     /**
      * @method constructor Path
      * @param {Object} options
      */
     constructor(options){
         super(options);
+
+        /**
+         * @property {String} type
+         */
+        this.type='path';
+
         /**
          * @property {PathProxy}
          * @readOnly
          */
         this.path = null;
-        /**
-         * @property {String} type
-         */
-        this.type='path';
+
         /**
          * @private
          * @property __dirtyPath
          */
         this.__dirtyPath=true;
+
         /**
          * @property {Number} strokeContainThreshold
          */
         this.strokeContainThreshold=5;
+
         /**
          * @property {Number} segmentIgnoreThreshold
          * This item default to be false. But in map series in echarts,
@@ -48,8 +53,6 @@ class Path extends Displayable{
          * See `subPixelOptimize`.
          */
         this.subPixelOptimize=false;
-
-        classUtil.copyOwnProperties(this,this.options,['style','shape']);
     }
 
     /**
@@ -58,18 +61,17 @@ class Path extends Displayable{
      * @param {Element} prevEl 
      */
     brush(ctx, prevEl) {
-        let style = this.style;
         let path = this.path || new PathProxy(true);
-        let hasStroke = style.hasStroke();
-        let hasFill = style.hasFill();
-        let fill = style.fill;
-        let stroke = style.stroke;
+        let hasStroke = this.style.hasStroke();
+        let hasFill = this.style.hasFill();
+        let fill = this.style.fill;
+        let stroke = this.style.stroke;
         let hasFillGradient = hasFill && !!(fill.colorStops);
         let hasStrokeGradient = hasStroke && !!(stroke.colorStops);
         let hasFillPattern = hasFill && !!(fill.image);
         let hasStrokePattern = hasStroke && !!(stroke.image);
 
-        style.bind(ctx, this, prevEl);
+        this.style.bind(ctx, this, prevEl);
         this.setTransform(ctx);
 
         if (this.__dirty) {
@@ -77,11 +79,11 @@ class Path extends Displayable{
             // Update gradient because bounding rect may changed
             if (hasFillGradient) {
                 rect = rect || this.getBoundingRect();
-                this._fillGradient = style.getGradient(ctx, fill, rect);
+                this._fillGradient = this.style.getGradient(ctx, fill, rect);
             }
             if (hasStrokeGradient) {
                 rect = rect || this.getBoundingRect();
-                this._strokeGradient = style.getGradient(ctx, stroke, rect);
+                this._strokeGradient = this.style.getGradient(ctx, stroke, rect);
             }
         }
 
@@ -99,8 +101,8 @@ class Path extends Displayable{
             ctx.strokeStyle = Pattern.prototype.getCanvasPattern.call(stroke, ctx);
         }
 
-        let lineDash = style.lineDash;
-        let lineDashOffset = style.lineDashOffset;
+        let lineDash = this.style.lineDash;
+        let lineDashOffset = this.style.lineDashOffset;
 
         let ctxLineDash = !!ctx.setLineDash;
 
@@ -133,9 +135,9 @@ class Path extends Displayable{
         }
 
         if (hasFill) {
-            if (style.fillOpacity != null) {
+            if (this.style.fillOpacity != null) {
                 let originalGlobalAlpha = ctx.globalAlpha;
-                ctx.globalAlpha = style.fillOpacity * style.opacity;
+                ctx.globalAlpha = this.style.fillOpacity * this.style.opacity;
                 path.fill(ctx);
                 ctx.globalAlpha = originalGlobalAlpha;
             }else {
@@ -149,9 +151,9 @@ class Path extends Displayable{
         }
 
         if (hasStroke) {
-            if (style.strokeOpacity != null) {
+            if (this.style.strokeOpacity != null) {
                 let originalGlobalAlpha = ctx.globalAlpha;
-                ctx.globalAlpha = style.strokeOpacity * style.opacity;
+                ctx.globalAlpha = this.style.strokeOpacity * this.style.opacity;
                 path.stroke(ctx);
                 ctx.globalAlpha = originalGlobalAlpha;
             }else {
@@ -166,7 +168,7 @@ class Path extends Displayable{
         }
 
         // Draw rect text
-        if (style.text != null) {
+        if (this.style.text != null) {
             // Only restore transform when needs draw text.
             this.restoreTransform(ctx);
             this.drawRectText(ctx, this.getBoundingRect());
@@ -201,7 +203,6 @@ class Path extends Displayable{
      */
     getBoundingRect() {
         let rect = this._rect;
-        let style = this.style;
         let needsUpdateRect = !rect;
         if (needsUpdateRect) {
             let path = this.path;
@@ -217,7 +218,7 @@ class Path extends Displayable{
         }
         this._rect = rect;
 
-        if (style.hasStroke()) {
+        if (this.style.hasStroke()) {
             // Needs update rect with stroke lineWidth when
             // 1. Element changes scale or lineWidth
             // 2. Shape is changed
@@ -225,12 +226,12 @@ class Path extends Displayable{
             if (this.__dirty || needsUpdateRect) {
                 rectWithStroke.copy(rect);
                 // FIXME Must after updateTransform
-                let w = style.lineWidth;
+                let w = this.style.lineWidth;
                 // PENDING, Min line width is needed when line is horizontal or vertical
-                let lineScale = style.strokeNoScale ? this.getLineScale() : 1;
+                let lineScale = this.style.strokeNoScale ? this.getLineScale() : 1;
 
                 // Only add extra hover lineWidth when there are no fill
-                if (!style.hasFill()) {
+                if (!this.style.hasFill()) {
                     w = mathMax(w, this.strokeContainThreshold || 4);
                 }
                 // Consider line width
@@ -334,7 +335,7 @@ class Path extends Displayable{
             this.__dirtyPath = true;
             this._rect = null;
         }else {
-            Displayable.prototype.attrKV.call(this, key, value);
+            Element.prototype.attrKV.call(this, key, value);
         }
     }
 

@@ -14,9 +14,9 @@
         [
             'quark-renderer/src/quark-renderer',
             'quark-renderer/src/graphic/shape/Polygon',
-            'quark-renderer/src/core/utils/bboxUtil'
+            'quark-renderer/src/core/utils/bbox_util'
         ],
-        function (qrenderer, PolygonShape, bbox) {
+        function (QuarkRenderer, PolygonShape, bbox) {
 
             // 初始化qrenderer
             var qr = QuarkRenderer.init(document.getElementById('main'));

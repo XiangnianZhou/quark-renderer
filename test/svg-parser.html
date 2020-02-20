@@ -19,7 +19,7 @@
 
         fetch('./data/svg/Tehran_topo.svg')
             .then(response => response.text())
-            .then(qrenderer.parseSVG)
+            .then(QuarkRenderer.parseSVG)
             .then(result => {
                 result.root.scale = [0.4, 0.4];
                 qr.add(result.root);

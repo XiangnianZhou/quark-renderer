@@ -363,7 +363,7 @@
 
 
     <script type="text/javascript">
-        var clone = qrenderer.util.clone;
+        var clone = QuarkRenderer.dataUtil.clone;
         var encodeHTML = testHelper.encodeHTML;
         var _timer;
         var _storage = {};
@@ -389,7 +389,7 @@
                 renderer: window.__QRENDER__DEFAULT__RENDERER__
             });
 
-            qrenderer.util.each(posList, function (textPos, idx) {
+            QuarkRenderer.dataUtil.each(posList, function (textPos, idx) {
                 var text = textPos + '中文';
                 var shape = new QuarkRenderer.Rect({
                     position: [(idx % 3) * 220, 120 * Math.floor(idx / 3)],
@@ -415,7 +415,7 @@
                 renderer: window.__QRENDER__DEFAULT__RENDERER__
             });
 
-            qrenderer.util.each(posList, function (textPos, idx) {
+            QuarkRenderer.dataUtil.each(posList, function (textPos, idx) {
                 var text = textPos;
 
                 var shape = new QuarkRenderer.Rect({
