@@ -65,6 +65,9 @@ let Transformable = function (options={}) {
      * 逆变换矩阵。
      */
     this.inverseTransform=null;
+
+    //全局缩放比例
+    this.globalScaleRatio=1;
 };
 
 Transformable.prototype={
@@ -211,14 +214,9 @@ Transformable.prototype={
         let parentHasTransform = parent && parent.transform;
         let needLocalTransform = this.needLocalTransform();
 
-        let m = this.transform;
-        if (!(needLocalTransform || parentHasTransform)) {
-            m && matrixUtil.identity(m);
-            return;
-        }
+        let m = this.transform || matrixUtil.create();
 
-        m = m || matrixUtil.create();
-
+        // 自身的变换
         if (needLocalTransform) {
             this.getLocalTransform(m);
         }else {
@@ -259,24 +257,25 @@ Transformable.prototype={
      * 获取本地变换矩阵。
      * @param {*} m 
      */
-    getLocalTransform:function (m) {
-        m = m || [];
+    getLocalTransform:function (m=[]) {
         matrixUtil.identity(m);
-    
-        let origin = this.origin;
-        let scale = this.scale || [1, 1];
+
         let rotation = this.rotation || 0;
-        let position = this.position || [0, 0];
+        let position = this.position || [0,0];
+        let origin = this.origin || [0,0];
+        let scale = this.scale || [1,1];
     
         if (origin) {
             // Translate to origin
             m[4] -= origin[0];
             m[5] -= origin[1];
         }
+        
         matrixUtil.scale(m, m, scale);
         if (rotation) {
             matrixUtil.rotate(m, m, rotation);
         }
+
         if (origin) {
             // Translate back from origin
             m[4] += origin[0];
@@ -285,7 +284,7 @@ Transformable.prototype={
     
         m[4] += position[0];
         m[5] += position[1];
-    
+
         return m;
     },
 
@@ -299,10 +298,9 @@ Transformable.prototype={
             // TODO return or set identity?
             return;
         }
+        
         let sx = m[0] * m[0] + m[1] * m[1];
         let sy = m[2] * m[2] + m[3] * m[3];
-        let position = this.position;
-        let scale = this.scale;
         if (dataUtil.isNotAroundZero(sx - 1)) {
             sx = mathSqrt(sx);
         }
@@ -316,11 +314,11 @@ Transformable.prototype={
             sy = -sy;
         }
 
-        position[0] = m[4];
-        position[1] = m[5];
-        scale[0] = sx;
-        scale[1] = sy;
         this.rotation = mathAtan2(-m[1] / sy, m[0] / sx);
+        this.position[0] = m[4];
+        this.position[1] = m[5];
+        this.scale[0] = sx;
+        this.scale[1] = sy;
     },
 
     /**
