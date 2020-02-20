@@ -37,24 +37,6 @@ class Group extends Element{
         super(options);
 
         /**
-         * @private
-         * @property _children
-         */
-        this._children = [];
-
-        /**
-         * @private
-         * @property __storage
-         */
-        this.__storage = null;
-
-        /**
-         * @private
-         * @property __dirty
-         */
-        this.__dirty = true;
-
-        /**
          * @property isGroup
          */
         this.isGroup=true;
@@ -63,13 +45,17 @@ class Group extends Element{
          * @property {String}
          */
         this.type='group';
-    
+        
         /**
-         * @property {Boolean} 所有子孙元素是否响应鼠标事件
+         * @property children
          */
-        this.silent=false;
+        this.children = [];
 
-        classUtil.copyOwnProperties(this,options);
+        /**
+         * @private
+         * @property __storage
+         */
+        this.__storage = null;
     }
 
     /**
@@ -77,7 +63,7 @@ class Group extends Element{
      * @return {Array<Element>}
      */
     children() {
-        return this._children.slice();
+        return this.children.slice();
     }
 
     /**
@@ -87,7 +73,7 @@ class Group extends Element{
      * @return {Element}
      */
     childAt(idx) {
-        return this._children[idx];
+        return this.children[idx];
     }
 
     /**
@@ -97,7 +83,7 @@ class Group extends Element{
      * @return {Element}
      */
     childOfName(name) {
-        let children = this._children;
+        let children = this.children;
         for (let i = 0; i < children.length; i++) {
             if (children[i].name === name) {
                 return children[i];
@@ -110,7 +96,7 @@ class Group extends Element{
      * @return {Number}
      */
     childCount() {
-        return this._children.length;
+        return this.children.length;
     }
 
     /**
@@ -120,7 +106,7 @@ class Group extends Element{
      */
     add(child) {
         if (child && child !== this && child.parent !== this) {
-            this._children.push(child);
+            this.children.push(child);
             this._doAdd(child);
         }
         return this;
@@ -136,7 +122,7 @@ class Group extends Element{
         if (child && child !== this && child.parent !== this
             && nextSibling && nextSibling.parent === this) {
 
-            let children = this._children;
+            let children = this.children;
             let idx = children.indexOf(nextSibling);
 
             if (idx >= 0) {
@@ -180,7 +166,7 @@ class Group extends Element{
     remove(child) {
         let qr = this.__qr;
         let storage = this.__storage;
-        let children = this._children;
+        let children = this.children;
 
         let idx = dataUtil.indexOf(children, child);
         if (idx < 0) {
@@ -205,7 +191,7 @@ class Group extends Element{
      * 移除所有子节点
      */
     removeAll() {
-        let children = this._children;
+        let children = this.children;
         let storage = this.__storage;
         let child;
         let i;
@@ -231,7 +217,7 @@ class Group extends Element{
      * @param  {Object}   context
      */
     eachChild(cb, context) {
-        let children = this._children;
+        let children = this.children;
         for (let i = 0; i < children.length; i++) {
             let child = children[i];
             cb.call(context, child, i);
@@ -246,8 +232,8 @@ class Group extends Element{
      * @param  {Object}   context
      */
     traverse(cb, context) {
-        for (let i = 0; i < this._children.length; i++) {
-            let child = this._children[i];
+        for (let i = 0; i < this.children.length; i++) {
+            let child = this.children[i];
             cb.call(context, child);
 
             if (child.type === 'group') {
@@ -262,8 +248,8 @@ class Group extends Element{
      * @param {Storage} storage 
      */
     addChildrenToStorage(storage) {
-        for (let i = 0; i < this._children.length; i++) {
-            let child = this._children[i];
+        for (let i = 0; i < this.children.length; i++) {
+            let child = this.children[i];
             storage.addToStorage(child);
             if (child instanceof Group) {
                 child.addChildrenToStorage(storage);
@@ -276,8 +262,8 @@ class Group extends Element{
      * @param {Storage} storage 
      */
     delChildrenFromStorage(storage) {
-        for (let i = 0; i < this._children.length; i++) {
-            let child = this._children[i];
+        for (let i = 0; i < this.children.length; i++) {
+            let child = this.children[i];
             storage.delFromStorage(child);
             if (child instanceof Group) {
                 child.delChildrenFromStorage(storage);
@@ -303,7 +289,7 @@ class Group extends Element{
         // TODO Caching
         let rect = null;
         let tmpRect = new BoundingRect(0, 0, 0, 0);
-        let children = includeChildren || this._children;
+        let children = includeChildren || this.children;
         let tmpMat = [];
 
         for (let i = 0; i < children.length; i++) {

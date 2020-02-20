@@ -1,11 +1,11 @@
-import guid from './core/utils/guid';
-import env from './core/env';
 import QRendererEventHandler from './event/QRendererEventHandler';
-import Storage from './Storage';
-import CanvasPainter from './CanvasPainter';
+import CanvasPainter from './canvas/CanvasPainter';
 import GlobalAnimationMgr from './animation/GlobalAnimationMgr';
 import DomEventProxy from './event/DomEventProxy';
+import Storage from './Storage';
 import * as textContain from './core/contain/text';
+import guid from './core/utils/guid';
+import env from './core/env';
 
 /**
  * @class qrenderer.core.QuarkRenderer

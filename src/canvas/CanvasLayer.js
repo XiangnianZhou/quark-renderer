@@ -1,8 +1,8 @@
-import * as dataUtil from './core/utils/data_structure_util';
-import * as canvasUtil from './core/utils/canvas_util';
-import Style from './graphic/Style';
-import Pattern from './graphic/Pattern';
-import guid from './core/utils/guid';
+import * as dataUtil from '../core/utils/data_structure_util';
+import * as canvasUtil from '../core/utils/canvas_util';
+import Style from '../graphic/Style';
+import Pattern from '../graphic/Pattern';
+import guid from '../core/utils/guid';
 
 /**
  * @class qrenderer.canvas.CanvasLayer
@@ -190,10 +190,12 @@ export default class CanvasLayer{
         let haveMotionBLur = this.motionBlur && !clearAll;
         let lastFrameAlpha = this.lastFrameAlpha;
         let dpr = this.dpr;
-        
+        let width=0;
+        let height=0;
+
         if (haveMotionBLur&&this.canvasInstance) {
-            let width = this.canvasInstance.width;
-            let height = this.canvasInstance.height;
+            width = this.canvasInstance.width;
+            height = this.canvasInstance.height;
             if (!this.hiddenCanvas) {
                 this.creatHiddenCanvas();
             }
