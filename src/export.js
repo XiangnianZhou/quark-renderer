@@ -7,6 +7,7 @@ import * as pathUtil from './core/utils/path_util';
 import * as canvasUtil from './core/utils/canvas_util';
 import * as matrixUtil from './core/utils/matrix_util';
 import * as vectorUtil from './core/utils/vector_util';
+import * as bboxUtil from './core/utils/bbox_util';
 import {parseSVG} from './svg/SVGParser';
 
 export {default as Group} from './graphic/Group';
@@ -42,4 +43,5 @@ export {dataUtil as dataUtil};
 export {canvasUtil as canvasUtil};
 export {matrixUtil};
 export {vectorUtil};
+export {bboxUtil};
 export {parseSVG};
