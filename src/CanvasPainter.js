@@ -603,7 +603,7 @@ export default class CanvasPainter{
         layersMap[qlevel] = layer;
 
         // Vitual layer will not directly show on the screen.
-        // (It can be a WebGL layer and assigned to a ZImage element)
+        // (It can be a WebGL layer and assigned to a QImage element)
         // But it still under management of qrenderer.
         if (!layer.virtual) {
             if (prevLayer) {
