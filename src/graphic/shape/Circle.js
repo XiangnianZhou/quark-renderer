@@ -40,13 +40,6 @@ export default class Circle extends Path{
         if (inBundle) {
             ctx.moveTo(shape.cx + shape.r, shape.cy);
         }
-        // else {
-        //     if (ctx.allocate && !ctx.data.length) {
-        //         ctx.allocate(ctx.CMD_MEM_SIZE.A);
-        //     }
-        // }
-        // Better stroking in ShapeBundle
-        // ctx.moveTo(shape.cx + shape.r, shape.cy);
         ctx.arc(shape.cx, shape.cy, shape.r, 0, PI2, true);
     }
 }

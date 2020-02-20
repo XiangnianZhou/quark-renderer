@@ -1,15 +1,15 @@
-import Displayable from './Displayable';
+import Element from './Element';
 import BoundingRect from './transform/BoundingRect';
 import * as dataUtil from '../core/utils/data_structure_util';
 import * as imageHelper from './utils/image';
 
 /**
- * @class qrenderer.graphic.ZImage 
+ * @class qrenderer.graphic.QImage 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default class ZImage extends Displayable{
+export default class QImage extends Element{
     /**
-     * @method constructor ZImage
+     * @method constructor QImage
      * @param {Object} options
      */
     constructor(options){

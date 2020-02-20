@@ -25,7 +25,7 @@
         }
 
         function createShape(i) {
-            var ShapeClass = ( i % 5 == 0 ) ? qrenderer.Trochoid : qrenderer.Rose;
+            var ShapeClass = ( i % 5 == 0 ) ? QuarkRenderer.Trochoid : QuarkRenderer.Rose;
             var r = ( i % 5 == 0 ) ? random(50, 20) : [random(100, 30)];
 
             var shape = new ShapeClass({

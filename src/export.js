@@ -35,8 +35,9 @@ export {default as LinearGradient} from './graphic/gradient/LinearGradient';
 export {default as RadialGradient} from './graphic/gradient/RadialGradient';
 export {default as Pattern} from './graphic/Pattern';
 export {default as BoundingRect} from './graphic/transform/BoundingRect';
-export {colorUtil as color};
-export {pathUtil as path};
+
+export {colorUtil as colorUtil};
+export {pathUtil as pathUtil};
 export {dataUtil as dataUtil};
 export {canvasUtil as canvasUtil};
 export {matrix};

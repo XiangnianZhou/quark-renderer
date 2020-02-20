@@ -215,10 +215,10 @@
 
     <script type="text/javascript">
 
-        var Text = qrenderer.Text;
-        var Rect = qrenderer.Rect;
+        var Text = QuarkRenderer.Text;
+        var Rect = QuarkRenderer.Rect;
 
-        var wrap = createCase(qrenderer, 'main0', {
+        var wrap = createCase(QuarkRenderer, 'main0', {
             title: 'Only green Rect * 3, no text, should cache',
             logProps: ['fillStyle', 'strokeStyle'],
             expectLog: [
@@ -238,7 +238,7 @@
             }
         });
 
-        var wrap = createCase(qrenderer, 'main1', {
+        var wrap = createCase(QuarkRenderer, 'main1', {
             title: 'Rect text and rect one by one, only cache rect',
             logProps: ['fillStyle', 'strokeStyle'],
             expectLog: [

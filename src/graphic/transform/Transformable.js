@@ -24,44 +24,42 @@ function isNotAroundZero(val) {
 /**
  * @method constructor Transformable
  */
-let Transformable = function (opts={}) {
+let Transformable = function (options={}) {
     /**
      * @property {Array<Number>}
      * 旋转角度
      */
-    this.rotation = 0;
+    this.rotation = (options.rotation===null||options.rotation===undefined)?0:options.rotation;
 
     /**
      * @property {Array<Number>}
      * 平移
      */
-    this.position = [0, 0];
+    this.position = (options.position===null||options.position===undefined)?[0, 0]:options.position;
     
+    /**
+     * @property {Array<Number>}
+     * 变换的原点，默认为最左上角的(0,0)点
+     */
+    this.origin = (options.origin===null||options.origin===undefined)?[0, 0]:options.origin;
+
     /**
      * @property {Array<Number>}
      * 缩放
      */
-    this.scale = [1, 1];
+    this.scale = (options.scale===null||options.scale===undefined)?[1, 1]:options.scale;
 
     /**
      * @property {Array<Number>}
      * 扭曲
      */
-    this.skew = [1,1];
+    this.skew = (options.skew===null||options.skew===undefined)?[1, 1]:options.skew;
 
     /**
      * @property {Array<Number>}
      * 翻转
      */
-    this.flip = [1,1];
-
-    /**
-     * @property {Array<Number>}
-     * 变换的原点，默认为最左上角的(0,0)点
-     */
-    this.origin = [0,0];
-
-    classUtil.copyOwnProperties(this,opts);
+    this.flip = (options.flip===null||options.flip===undefined)?[1, 1]:options.flip;
 };
 
 Transformable.prototype.transform = null;

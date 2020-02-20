@@ -1,19 +1,19 @@
-import requestAnimationFrame from './animation/utils/request_animation_frame';
-import {devicePixelRatio} from './config';
 import * as dataUtil from './core/utils/data_structure_util';
+import * as canvasUtil from './core/utils/canvas_util';
 import BoundingRect from './graphic/transform/BoundingRect';
-import timsort from './core/utils/timsort';
 import CanvasLayer from './CanvasLayer';
 import Image from './graphic/Image';
-import env from './core/env';
-import {mathRandom,mathMax} from './graphic/constants';
-import * as canvasUtil from './core/utils/canvas_util';
 import guid from './core/utils/guid';
+import timsort from './core/utils/timsort';
+import requestAnimationFrame from './animation/utils/request_animation_frame';
+import {mathRandom,mathMax} from './graphic/constants';
+import {devicePixelRatio} from './config';
+import env from './core/env';
 
 /**
  * @class qrenderer.canvas.CanvasPainter
  * 这是基于 canvas 接口的 CanvasPainter 类
- * @see 基于 SVG 接口的 CanvasPainter 类在 svg 目录下
+ * @see 基于 SVG 接口的 SVGPainter 类在 svg 目录下
  */
 
 const HOVER_LAYER_QLEVEL = 1e5;
@@ -603,7 +603,7 @@ export default class CanvasPainter{
         layersMap[qlevel] = layer;
 
         // Vitual layer will not directly show on the screen.
-        // (It can be a WebGL layer and assigned to a ZImage element)
+        // (It can be a WebGL layer and assigned to a QImage element)
         // But it still under management of qrenderer.
         if (!layer.virtual) {
             if (prevLayer) {
