@@ -318,7 +318,7 @@ export default class CanvasPainter{
             // FIXME style and shape ?
             if (!originalEl.invisible) {
                 el.transform = originalEl.transform;
-                el.invTransform = originalEl.invTransform;
+                el.inverseTransform = originalEl.inverseTransform;
                 el.__clipPaths = originalEl.__clipPaths;
                 // el.
                 this._doPaintEl(el, hoverLayer, true, scope);

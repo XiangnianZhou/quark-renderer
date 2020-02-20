@@ -69,7 +69,7 @@
 
     <script type="text/javascript">
 
-        function createCase(qrenderer, domId, opt) {
+        function createCase(QuarkRenderer, domId, opt) {
             var dom = document.getElementById(domId);
             var wrap = {};
             var log = [];
@@ -263,7 +263,7 @@
             }
         });
 
-        var wrap = createCase(qrenderer, 'main2', {
+        var wrap = createCase(QuarkRenderer, 'main2', {
             title: 'textStroke the same as stroke (red)',
             logProps: ['fillStyle', 'strokeStyle'],
             expectLog: [
@@ -295,7 +295,7 @@
 
 
 
-        var wrap = createCase(qrenderer, 'main3', {
+        var wrap = createCase(QuarkRenderer, 'main3', {
             title: 'blue, red, blue (no text)',
             logProps: ['fillStyle', 'strokeStyle'],
             expectLog: [
@@ -327,7 +327,7 @@
 
 
 
-        var wrap = createCase(qrenderer, 'main4', {
+        var wrap = createCase(QuarkRenderer, 'main4', {
             title: 'Only the first has red text',
             logProps: ['fillStyle', 'strokeStyle'],
             expectLog: [
@@ -362,7 +362,7 @@
 
 
 
-        var wrap = createCase(qrenderer, 'main5', {
+        var wrap = createCase(QuarkRenderer, 'main5', {
             title: 'should be: blue rect, red text, blue rect with red text, red text, red text',
             logProps: ['fillStyle', 'strokeStyle', 'font'],
             expectLog: [
@@ -428,7 +428,7 @@
 
 
 
-        var wrap = createCase(qrenderer, 'main6', {
+        var wrap = createCase(QuarkRenderer, 'main6', {
             logProps: ['fillStyle', 'strokeStyle', 'font'],
             expectLog: [
                 // el1
@@ -474,7 +474,7 @@
 
 
 
-        var wrap = createCase(qrenderer, 'main7', {
+        var wrap = createCase(QuarkRenderer, 'main7', {
             title: 'Can not cache RectFont because of save/restore.',
             logProps: ['fillStyle', 'strokeStyle', 'font'],
             expectLog: [
@@ -532,7 +532,7 @@
 
 
 
-        var wrap = createCase(qrenderer, 'main7', {
+        var wrap = createCase(QuarkRenderer, 'main7', {
             title: 'Can not cache RectFont because of save/restore.',
             logProps: ['fillStyle', 'strokeStyle', 'font', 'globalAlpha'],
             expectLog: [
@@ -598,7 +598,7 @@
 
 
 
-        var wrap = createCase(qrenderer, 'main8', {
+        var wrap = createCase(QuarkRenderer, 'main8', {
             title: 'Can not cache because of backgroundColor.',
             logProps: ['fillStyle', 'strokeStyle'],
             expectLog: [
@@ -645,7 +645,7 @@
 
 
 
-        var wrap = createCase(qrenderer, 'main9', {
+        var wrap = createCase(QuarkRenderer, 'main9', {
             title: 'Can not cache because of rich. But RectRich do not effect the cache of Rect.',
             logProps: ['fillStyle', 'strokeStyle'],
             expectLog: [
@@ -717,7 +717,7 @@
 
 
 
-        var wrap = createCase(qrenderer, 'main10', {
+        var wrap = createCase(QuarkRenderer, 'main10', {
             title: 'The 2nd text el do not needed be draw',
             logProps: ['fillStyle', 'strokeStyle'],
             expectLog: [

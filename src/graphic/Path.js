@@ -257,7 +257,7 @@ class Path extends Element{
      * @param {*} y 
      */
     contain(x, y) {
-        let localPos = this.transformCoordToLocal(x, y);
+        let localPos = this.globalToLocal(x, y);
         let rect = this.getBoundingRect();
         let style = this.style;
         x = localPos[0];

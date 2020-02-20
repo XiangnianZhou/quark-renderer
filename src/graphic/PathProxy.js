@@ -1,5 +1,5 @@
 import * as curve from '../core/utils/curve_util';
-import * as vec2 from '../core/utils/vector';
+import * as vectorUtil from '../core/utils/vector_util';
 import * as bbox from '../core/utils/bbox_util';
 import BoundingRect from './transform/BoundingRect';
 import {devicePixelRatio as dpr} from '../config';
@@ -663,8 +663,8 @@ PathProxy.prototype = {
             }
 
             // Union
-            vec2.min(min, min, min2);
-            vec2.max(max, max, max2);
+            vectorUtil.min(min, min, min2);
+            vectorUtil.max(max, max, max2);
         }
 
         // No data

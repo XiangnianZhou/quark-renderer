@@ -112,9 +112,9 @@
         roamTransformable.updateTransform();
         rawTransformable.updateTransform();
 
-        QuarkRenderer.matrix.copy(
+        QuarkRenderer.matrixUtil.copy(
             root.transform || (root.transform = []),
-            rawTransformable.transform || QuarkRenderer.matrix.create()
+            rawTransformable.transform || QuarkRenderer.matrixUtil.create()
         );
 
         root.decomposeTransform();

@@ -1,13 +1,13 @@
 /**
  * @author Yi Shen(https://github.com/pissang)
  */
-import * as vec2 from './vector';
+import * as vectorUtil from './vector_util';
 import * as curve from './curve_util';
 import {PI2,mathAsin,mathCos,mathSin,mathPow,mathSqrt,PI,mathMin,mathMax,mathAbs} from '../../graphic/constants';
 
-var start = vec2.create();
-var end = vec2.create();
-var extremity = vec2.create();
+var start = vectorUtil.create();
+var end = vectorUtil.create();
+var extremity = vectorUtil.create();
 
 /**
  * 从顶点数组中计算出最小包围盒，写入`min`和`max`中
@@ -154,8 +154,8 @@ export function fromQuadratic(x0, y0, x1, y1, x2, y2, min, max) {
 export function fromArc(
     x, y, rx, ry, startAngle, endAngle, anticlockwise, min, max
 ) {
-    var vec2Min = vec2.min;
-    var vec2Max = vec2.max;
+    var vec2Min = vectorUtil.min;
+    var vec2Max = vectorUtil.max;
 
     var diff = mathAbs(startAngle - endAngle);
 

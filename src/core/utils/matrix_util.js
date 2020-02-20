@@ -7,7 +7,7 @@ import {mathSin,mathCos} from '../../graphic/constants';
 
 /* global Float32Array */
 
-var ArrayCtor = typeof Float32Array === 'undefined'
+let ArrayCtor = typeof Float32Array === 'undefined'
     ? Array
     : Float32Array;
 
@@ -16,9 +16,8 @@ var ArrayCtor = typeof Float32Array === 'undefined'
  * @return {Float32Array|Array.<Number>}
  */
 export function create() {
-    var out = new ArrayCtor(6);
+    let out = new ArrayCtor(6);
     identity(out);
-
     return out;
 }
 
@@ -61,12 +60,12 @@ export function mul(out, m1, m2) {
     // Consider matrix.mul(m, m2, m);
     // where out is the same as m2.
     // So use temp variable to escape error.
-    var out0 = m1[0] * m2[0] + m1[2] * m2[1];
-    var out1 = m1[1] * m2[0] + m1[3] * m2[1];
-    var out2 = m1[0] * m2[2] + m1[2] * m2[3];
-    var out3 = m1[1] * m2[2] + m1[3] * m2[3];
-    var out4 = m1[0] * m2[4] + m1[2] * m2[5] + m1[4];
-    var out5 = m1[1] * m2[4] + m1[3] * m2[5] + m1[5];
+    let out0 = m1[0] * m2[0] + m1[2] * m2[1];
+    let out1 = m1[1] * m2[0] + m1[3] * m2[1];
+    let out2 = m1[0] * m2[2] + m1[2] * m2[3];
+    let out3 = m1[1] * m2[2] + m1[3] * m2[3];
+    let out4 = m1[0] * m2[4] + m1[2] * m2[5] + m1[4];
+    let out5 = m1[1] * m2[4] + m1[3] * m2[5] + m1[5];
     out[0] = out0;
     out[1] = out1;
     out[2] = out2;
@@ -99,14 +98,14 @@ export function translate(out, a, v) {
  * @param {Number} rad
  */
 export function rotate(out, a, rad) {
-    var aa = a[0];
-    var ac = a[2];
-    var atx = a[4];
-    var ab = a[1];
-    var ad = a[3];
-    var aty = a[5];
-    var st = mathSin(rad);
-    var ct = mathCos(rad);
+    let aa = a[0];
+    let ac = a[2];
+    let atx = a[4];
+    let ab = a[1];
+    let ad = a[3];
+    let aty = a[5];
+    let st = mathSin(rad);
+    let ct = mathCos(rad);
 
     out[0] = aa * ct + ab * st;
     out[1] = -aa * st + ab * ct;
@@ -124,8 +123,8 @@ export function rotate(out, a, rad) {
  * @param {Float32Array|Array.<Number>} v
  */
 export function scale(out, a, v) {
-    var vx = v[0];
-    var vy = v[1];
+    let vx = v[0];
+    let vy = v[1];
     out[0] = a[0] * vx;
     out[1] = a[1] * vy;
     out[2] = a[2] * vx;
@@ -141,15 +140,14 @@ export function scale(out, a, v) {
  * @param {Float32Array|Array.<Number>} a
  */
 export function invert(out, a) {
+    let aa = a[0];
+    let ac = a[2];
+    let atx = a[4];
+    let ab = a[1];
+    let ad = a[3];
+    let aty = a[5];
 
-    var aa = a[0];
-    var ac = a[2];
-    var atx = a[4];
-    var ab = a[1];
-    var ad = a[3];
-    var aty = a[5];
-
-    var det = aa * ad - ab * ac;
+    let det = aa * ad - ab * ac;
     if (!det) {
         return null;
     }
@@ -169,7 +167,7 @@ export function invert(out, a) {
  * @param {Float32Array|Array.<Number>} a
  */
 export function clone(a) {
-    var b = create();
+    let b = create();
     copy(b, a);
     return b;
 }

@@ -112,7 +112,7 @@ IncrementalDisplayble.prototype={
         return this._rect;
     },
     contain:function (x, y) {
-        let localPos = this.transformCoordToLocal(x, y);
+        let localPos = this.globalToLocal(x, y);
         let rect = this.getBoundingRect();
         if (rect.contain(localPos[0], localPos[1])) {
             for (let i = 0; i < this._displayables.length; i++) {

@@ -1,5 +1,5 @@
-import * as vec2 from '../../core/utils/vector';
-import * as matrix from '../../core/utils/matrix';
+import * as vectorUtil from '../../core/utils/vector_util';
+import * as matrixUtil from '../../core/utils/matrix_util';
 import {mathMin,mathMax} from '../constants';
 
 /**
@@ -11,7 +11,7 @@ import {mathMin,mathMax} from '../constants';
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let v2ApplyTransform = vec2.applyTransform;
+let v2ApplyTransform = vectorUtil.applyTransform;
 let lt = [];
 let rb = [];
 let lb = [];
@@ -121,12 +121,12 @@ class BoundingRect{
         let sx = b.width / a.width;
         let sy = b.height / a.height;
 
-        let m = matrix.create();
+        let m = matrixUtil.create();
 
         // 矩阵右乘
-        matrix.translate(m, m, [-a.x, -a.y]);
-        matrix.scale(m, m, [sx, sy]);
-        matrix.translate(m, m, [b.x, b.y]);
+        matrixUtil.translate(m, m, [-a.x, -a.y]);
+        matrixUtil.scale(m, m, [sx, sy]);
+        matrixUtil.translate(m, m, [b.x, b.y]);
 
         return m;
     }

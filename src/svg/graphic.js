@@ -1,7 +1,7 @@
 import {createElement} from './core';
 import PathProxy from '../graphic/PathProxy';
 import BoundingRect from '../graphic/transform/BoundingRect';
-import * as matrix from '../core/utils/matrix';
+import * as matrixUtil from '../core/utils/matrix_util';
 import * as textContain from '../core/contain/text';
 import * as textUtil from '../graphic/utils/text_util';
 import Text from '../graphic/Text';
@@ -456,10 +456,10 @@ let svgTextDrawRectText = function (el, hostRect) {
 };
 
 function setTextTransform(textSvgEl, needTransformTextByHostEl, elTransform, style, hostRect, baseX, baseY) {
-    matrix.identity(_tmpTextTransform);
+    matrixUtil.identity(_tmpTextTransform);
 
     if (needTransformTextByHostEl && elTransform) {
-        matrix.copy(_tmpTextTransform, elTransform);
+        matrixUtil.copy(_tmpTextTransform, elTransform);
     }
 
     // textRotation only apply in RectText.
@@ -477,7 +477,7 @@ function setTextTransform(textSvgEl, needTransformTextByHostEl, elTransform, sty
         _tmpTextTransform[4] -= baseX;
         _tmpTextTransform[5] -= baseY;
         // Positive: anticlockwise
-        matrix.rotate(_tmpTextTransform, _tmpTextTransform, textRotation);
+        matrixUtil.rotate(_tmpTextTransform, _tmpTextTransform, textRotation);
         _tmpTextTransform[4] += baseX;
         _tmpTextTransform[5] += baseY;
     }
