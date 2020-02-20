@@ -150,7 +150,33 @@ Transformable.prototype={
      * @param {*} m 
      */
     getLocalTransform:function (m) {
-        return Transformable.getLocalTransform(this, m);
+        m = m || [];
+        matrixUtil.identity(m);
+    
+        let origin = this.origin;
+        let scale = this.scale || [1, 1];
+        let rotation = this.rotation || 0;
+        let position = this.position || [0, 0];
+    
+        if (origin) {
+            // Translate to origin
+            m[4] -= origin[0];
+            m[5] -= origin[1];
+        }
+        matrixUtil.scale(m, m, scale);
+        if (rotation) {
+            matrixUtil.rotate(m, m, rotation);
+        }
+        if (origin) {
+            // Translate back from origin
+            m[4] += origin[0];
+            m[5] += origin[1];
+        }
+    
+        m[4] += position[0];
+        m[5] += position[1];
+    
+        return m;
     },
 
     /**
@@ -303,44 +329,5 @@ Transformable.prototype={
         return v2;
     }
 }
-
-/**
- * @static
- * @method getLocalTransform
- * @param {Object} target
- * @param {Array<Number>} target.origin
- * @param {Number} target.rotation
- * @param {Array<Number>} target.position
- * @param {Array<Number>} [m]
- */
-Transformable.getLocalTransform = function (target, m) {
-    m = m || [];
-    matrixUtil.identity(m);
-
-    let origin = target.origin;
-    let scale = target.scale || [1, 1];
-    let rotation = target.rotation || 0;
-    let position = target.position || [0, 0];
-
-    if (origin) {
-        // Translate to origin
-        m[4] -= origin[0];
-        m[5] -= origin[1];
-    }
-    matrixUtil.scale(m, m, scale);
-    if (rotation) {
-        matrixUtil.rotate(m, m, rotation);
-    }
-    if (origin) {
-        // Translate back from origin
-        m[4] += origin[0];
-        m[5] += origin[1];
-    }
-
-    m[4] += position[0];
-    m[5] += position[1];
-
-    return m;
-};
 
 export default Transformable;
