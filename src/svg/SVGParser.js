@@ -10,7 +10,7 @@ import Polygon from '../graphic/shape/Polygon';
 import Polyline from '../graphic/shape/Polyline';
 import LinearGradient from '../graphic/gradient/LinearGradient';
 import Style from '../graphic/Style';
-import * as matrix from '../core/utils/matrix';
+import * as matrix from '../core/utils/matrix_util';
 import { createFromString } from '../core/utils/path_util';
 import { isString, extend, trim, each } from '../core/utils/data_structure_util';
 import { defaults } from '../core/utils/class_util';

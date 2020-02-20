@@ -1,4 +1,4 @@
-import * as matrix from '../../core/utils/matrix';
+import * as matrix from '../../core/utils/matrix_util';
 import * as vector from '../../core/utils/vector';
 import {mathSqrt,mathAtan2} from '../constants';
 import * as classUtil from '../../core/utils/class_util';
