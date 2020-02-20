@@ -5,7 +5,7 @@ import * as dataUtil from './core/utils/data_structure_util';
 import * as colorUtil from './core/utils/color_util';
 import * as pathUtil from './core/utils/path_util';
 import * as canvasUtil from './core/utils/canvas_util';
-import * as matrix from './core/utils/matrix_util';
+import * as matrixUtil from './core/utils/matrix_util';
 import * as vector from './core/utils/vector';
 import {parseSVG} from './svg/SVGParser';
 
@@ -40,6 +40,6 @@ export {colorUtil as colorUtil};
 export {pathUtil as pathUtil};
 export {dataUtil as dataUtil};
 export {canvasUtil as canvasUtil};
-export {matrix};
+export {matrixUtil};
 export {vector};
 export {parseSVG};

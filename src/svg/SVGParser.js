@@ -10,7 +10,7 @@ import Polygon from '../graphic/shape/Polygon';
 import Polyline from '../graphic/shape/Polyline';
 import LinearGradient from '../graphic/gradient/LinearGradient';
 import Style from '../graphic/Style';
-import * as matrix from '../core/utils/matrix_util';
+import * as matrixUtil from '../core/utils/matrix_util';
 import { createFromString } from '../core/utils/path_util';
 import { isString, extend, trim, each } from '../core/utils/data_structure_util';
 import { defaults } from '../core/utils/class_util';
@@ -582,19 +582,19 @@ function parseTransformAttribute(xmlNode, node) {
         for (let i = transformOps.length - 1; i > 0; i -= 2) {
             let value = transformOps[i];
             let type = transformOps[i - 1];
-            m = m || matrix.create();
+            m = m || matrixUtil.create();
             switch (type) {
                 case 'translate':
                     value = trim(value).split(DILIMITER_REG);
-                    matrix.translate(m, m, [parseFloat(value[0]), parseFloat(value[1] || 0)]);
+                    matrixUtil.translate(m, m, [parseFloat(value[0]), parseFloat(value[1] || 0)]);
                     break;
                 case 'scale':
                     value = trim(value).split(DILIMITER_REG);
-                    matrix.scale(m, m, [parseFloat(value[0]), parseFloat(value[1] || value[0])]);
+                    matrixUtil.scale(m, m, [parseFloat(value[0]), parseFloat(value[1] || value[0])]);
                     break;
                 case 'rotate':
                     value = trim(value).split(DILIMITER_REG);
-                    matrix.rotate(m, m, parseFloat(value[0]));
+                    matrixUtil.rotate(m, m, parseFloat(value[0]));
                     break;
                 case 'skew':
                     value = trim(value).split(DILIMITER_REG);

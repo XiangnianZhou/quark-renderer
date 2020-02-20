@@ -1,4 +1,4 @@
-import * as matrix from '../../core/utils/matrix_util';
+import * as matrixUtil from '../../core/utils/matrix_util';
 import * as vector from '../../core/utils/vector';
 import {mathSqrt,mathAtan2} from '../constants';
 import * as classUtil from '../../core/utils/class_util';
@@ -16,10 +16,10 @@ import * as dataUtil from '../../core/utils/data_structure_util';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
-let mIdentity = matrix.identity;
+let mIdentity = matrixUtil.identity;
 let scaleTmp = [];
 let tmpTransform = [];
-let originTransform = matrix.create();
+let originTransform = matrixUtil.create();
 
 /**
  * @method constructor Transformable
@@ -109,7 +109,7 @@ Transformable.prototype={
             return;
         }
 
-        m = m || matrix.create();
+        m = m || matrixUtil.create();
 
         if (needLocalTransform) {
             this.getLocalTransform(m);
@@ -120,9 +120,9 @@ Transformable.prototype={
         // 应用父节点变换
         if (parentHasTransform) {
             if (needLocalTransform) {
-                matrix.mul(m, parent.transform, m);
+                matrixUtil.mul(m, parent.transform, m);
             }else {
-                matrix.copy(m, parent.transform);
+                matrixUtil.copy(m, parent.transform);
             }
         }
 
@@ -142,8 +142,8 @@ Transformable.prototype={
         //保存变换矩阵
         this.transform = m;
         //计算逆变换矩阵
-        this.inverseTransform = this.inverseTransform || matrix.create();
-        this.inverseTransform = matrix.invert(this.inverseTransform, m);
+        this.inverseTransform = this.inverseTransform || matrixUtil.create();
+        this.inverseTransform = matrixUtil.invert(this.inverseTransform, m);
     },
 
     /**
@@ -231,14 +231,14 @@ Transformable.prototype={
         let m = this.transform;
         if (parent && parent.transform) {
             // Get local transform and decompose them to position, scale, rotation
-            matrix.mul(tmpTransform, parent.inverseTransform, m);
+            matrixUtil.mul(tmpTransform, parent.inverseTransform, m);
             m = tmpTransform;
         }
         let origin = this.origin;
         if (origin && (origin[0] || origin[1])) {
             originTransform[4] = origin[0];
             originTransform[5] = origin[1];
-            matrix.mul(tmpTransform, m, originTransform);
+            matrixUtil.mul(tmpTransform, m, originTransform);
             tmpTransform[4] -= origin[0];
             tmpTransform[5] -= origin[1];
             m = tmpTransform;
@@ -327,9 +327,9 @@ Transformable.getLocalTransform = function (target, m) {
         m[4] -= origin[0];
         m[5] -= origin[1];
     }
-    matrix.scale(m, m, scale);
+    matrixUtil.scale(m, m, scale);
     if (rotation) {
-        matrix.rotate(m, m, rotation);
+        matrixUtil.rotate(m, m, rotation);
     }
     if (origin) {
         // Translate back from origin
