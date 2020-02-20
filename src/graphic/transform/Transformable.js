@@ -16,10 +16,8 @@ import * as dataUtil from '../../core/utils/data_structure_util';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
-let mIdentity = matrixUtil.identity;
 let scaleTmp = [];
-let tmpTransform = [];
-let originTransform = matrixUtil.create();
+let transformTmp = [];
 
 /**
  * @method constructor Transformable
@@ -105,7 +103,7 @@ Transformable.prototype={
 
         let m = this.transform;
         if (!(needLocalTransform || parentHasTransform)) {
-            m && mIdentity(m);
+            m && matrixUtil.identity(m);
             return;
         }
 
@@ -114,7 +112,7 @@ Transformable.prototype={
         if (needLocalTransform) {
             this.getLocalTransform(m);
         }else {
-            mIdentity(m);
+            matrixUtil.identity(m);
         }
 
         // 应用父节点变换
@@ -231,17 +229,19 @@ Transformable.prototype={
         let m = this.transform;
         if (parent && parent.transform) {
             // Get local transform and decompose them to position, scale, rotation
-            matrixUtil.mul(tmpTransform, parent.inverseTransform, m);
-            m = tmpTransform;
+            matrixUtil.mul(transformTmp, parent.inverseTransform, m);
+            m = transformTmp;
         }
+
         let origin = this.origin;
+        let originTransform = matrixUtil.create();
         if (origin && (origin[0] || origin[1])) {
             originTransform[4] = origin[0];
             originTransform[5] = origin[1];
-            matrixUtil.mul(tmpTransform, m, originTransform);
-            tmpTransform[4] -= origin[0];
-            tmpTransform[5] -= origin[1];
-            m = tmpTransform;
+            matrixUtil.mul(transformTmp, m, originTransform);
+            transformTmp[4] -= origin[0];
+            transformTmp[5] -= origin[1];
+            m = transformTmp;
         }
 
         this.setLocalTransform(m);
@@ -315,7 +315,7 @@ Transformable.prototype={
  */
 Transformable.getLocalTransform = function (target, m) {
     m = m || [];
-    mIdentity(m);
+    matrixUtil.identity(m);
 
     let origin = target.origin;
     let scale = target.scale || [1, 1];
