@@ -26,58 +26,61 @@ let originTransform = matrix.create();
  */
 let Transformable = function (options={}) {
     /**
-     * @property {Array<Number>}
-     * 旋转角度
-     */
-    this.rotation = (options.rotation===null||options.rotation===undefined)?0:options.rotation;
-
-    /**
-     * @property {Array<Number>}
-     * 平移
-     */
-    this.position = (options.position===null||options.position===undefined)?[0, 0]:options.position;
-    
-    /**
-     * @property {Array<Number>}
-     * 变换的原点，默认为最左上角的(0,0)点
+     * @property {Array<Number>} origin
+     * 几何变换的原点，默认为最左上角的(0,0)点。
      */
     this.origin = (options.origin===null||options.origin===undefined)?[0, 0]:options.origin;
 
     /**
-     * @property {Array<Number>}
-     * 缩放
+     * @property {Array<Number>} rotation
+     * 旋转角度。
+     */
+    this.rotation = (options.rotation===null||options.rotation===undefined)?0:options.rotation;
+
+    /**
+     * @property {Array<Number>} position
+     * 平移，二维数组。
+     */
+    this.position = (options.position===null||options.position===undefined)?[0, 0]:options.position;
+    
+    /**
+     * @property {Array<Number>} scale
+     * 缩放，二维数组。
      */
     this.scale = (options.scale===null||options.scale===undefined)?[1, 1]:options.scale;
 
     /**
-     * @property {Array<Number>}
-     * 扭曲
+     * @property {Array<Number>} skew
+     * 扭曲，二维数组。
      */
     this.skew = (options.skew===null||options.skew===undefined)?[1, 1]:options.skew;
 
     /**
-     * @property {Array<Number>}
-     * 翻转
+     * @property {Array<Number>} flip
+     * 翻转。
      */
     this.flip = (options.flip===null||options.flip===undefined)?[1, 1]:options.flip;
+
+    this.transform=null;
 };
 
 Transformable.prototype={
     constructor:Transformable,
 
-    transform:null,
-
     /**
      * @method needLocalTransform
-     * 判断是否需要有坐标变换
-     * 如果有坐标变换, 则从position, rotation, scale以及父节点的transform计算出自身的transform矩阵
+     * 判断是否需要有坐标变换，如果有坐标变换, 则从position, rotation, scale以及父节点的transform计算出自身的transform矩阵
      */
     needLocalTransform:function () {
         return dataUtil.isNotAroundZero(this.rotation)
             || dataUtil.isNotAroundZero(this.position[0])
             || dataUtil.isNotAroundZero(this.position[1])
             || dataUtil.isNotAroundZero(this.scale[0] - 1)
-            || dataUtil.isNotAroundZero(this.scale[1] - 1);
+            || dataUtil.isNotAroundZero(this.scale[1] - 1)
+            || dataUtil.isNotAroundZero(this.skew[0] - 1)
+            || dataUtil.isNotAroundZero(this.skew[1] - 1)
+            || dataUtil.isNotAroundZero(this.flip[0] - 1)
+            || dataUtil.isNotAroundZero(this.flip[1] - 1);
     },
 
     updateTransform:function () {
