@@ -2,24 +2,24 @@ import * as matrix from '../../core/utils/matrix';
 import * as vector from '../../core/utils/vector';
 import {mathSqrt,mathAtan2} from '../constants';
 import * as classUtil from '../../core/utils/class_util';
+import * as dataUtil from '../../core/utils/data_structure_util';
 
 /**
  * @abstract
  * @class qrenderer.graphic.Transformable
- * 提供变换扩展
+ * 
+ * Provide geometric transformation functions for Element, such as position, scale, skew, rotation, flip.
+ * 
+ * 为 Element 提供几何变换功能，例如：平移、缩放、扭曲、旋转、翻转。
+ * 
  * @author pissang (https://www.github.com/pissang)
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
 let mIdentity = matrix.identity;
-let EPSILON = 5e-5;
 let scaleTmp = [];
 let tmpTransform = [];
 let originTransform = matrix.create();
-
-function isNotAroundZero(val) {
-    return val > EPSILON || val < -EPSILON;
-}
 
 /**
  * @method constructor Transformable
@@ -73,11 +73,11 @@ Transformable.prototype={
      * 如果有坐标变换, 则从position, rotation, scale以及父节点的transform计算出自身的transform矩阵
      */
     needLocalTransform:function () {
-        return isNotAroundZero(this.rotation)
-            || isNotAroundZero(this.position[0])
-            || isNotAroundZero(this.position[1])
-            || isNotAroundZero(this.scale[0] - 1)
-            || isNotAroundZero(this.scale[1] - 1);
+        return dataUtil.isNotAroundZero(this.rotation)
+            || dataUtil.isNotAroundZero(this.position[0])
+            || dataUtil.isNotAroundZero(this.position[1])
+            || dataUtil.isNotAroundZero(this.scale[0] - 1)
+            || dataUtil.isNotAroundZero(this.scale[1] - 1);
     },
 
     updateTransform:function () {
@@ -164,10 +164,10 @@ Transformable.prototype={
         let sy = m[2] * m[2] + m[3] * m[3];
         let position = this.position;
         let scale = this.scale;
-        if (isNotAroundZero(sx - 1)) {
+        if (dataUtil.isNotAroundZero(sx - 1)) {
             sx = mathSqrt(sx);
         }
-        if (isNotAroundZero(sy - 1)) {
+        if (dataUtil.isNotAroundZero(sy - 1)) {
             sy = mathSqrt(sy);
         }
         if (m[0] < 0) {

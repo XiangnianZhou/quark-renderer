@@ -798,3 +798,13 @@ export function getArrayDim(keyframes) {
 export function parseInt10(val) {
     return parseInt(val, 10);
 }
+
+
+let EPSILON = 5e-5;
+export function isNotAroundZero(val) {
+    return val > EPSILON || val < -EPSILON;
+}
+
+export function isAroundZero(val) {
+    return !isNotAroundZero(val);
+}
