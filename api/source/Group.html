@@ -35,9 +35,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call &amp;&amp; (_typeof(call) === &quot;object&quot; || typeof call === &quot;function&quot;)) { return call; } return _assertThisInitialized(self); }
 
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(&quot;this hasn&#39;t been initialised - super() hasn&#39;t been called&quot;); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== &quot;function&quot; &amp;&amp; superClass !== null) { throw new TypeError(&quot;Super expression must either be null or a function&quot;); } subClass.prototype = Object.create(superClass &amp;&amp; superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -85,24 +85,6 @@ function (_Element) {
     _classCallCheck(this, Group);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Group).call(this, options));
-<span id='qrenderer-graphic-Group-property-_children'>    /**
-</span>     * @private
-     * @property _children
-     */
-
-    _this._children = [];
-<span id='qrenderer-graphic-Group-property-__storage'>    /**
-</span>     * @private
-     * @property __storage
-     */
-
-    _this.__storage = null;
-<span id='qrenderer-graphic-Group-property-__dirty'>    /**
-</span>     * @private
-     * @property __dirty
-     */
-
-    _this.__dirty = true;
 <span id='qrenderer-graphic-Group-property-isGroup'>    /**
 </span>     * @property isGroup
      */
@@ -113,12 +95,17 @@ function (_Element) {
      */
 
     _this.type = &#39;group&#39;;
-<span id='qrenderer-graphic-Group-property-silent'>    /**
-</span>     * @property {Boolean} 所有子孙元素是否响应鼠标事件
+<span id='qrenderer-graphic-Group-property-children'>    /**
+</span>     * @property children
      */
 
-    _this.silent = false;
-    classUtil.copyOwnProperties(_assertThisInitialized(_this), options);
+    _this.children = [];
+<span id='qrenderer-graphic-Group-property-__storage'>    /**
+</span>     * @private
+     * @property __storage
+     */
+
+    _this.__storage = null;
     return _this;
   }
 <span id='qrenderer-graphic-Group-method-children'>  /**
@@ -130,7 +117,7 @@ function (_Element) {
   _createClass(Group, [{
     key: &quot;children&quot;,
     value: function children() {
-      return this._children.slice();
+      return this.children.slice();
     }
 <span id='qrenderer-graphic-Group-method-childAt'>    /**
 </span>     * @method childAt
@@ -142,7 +129,7 @@ function (_Element) {
   }, {
     key: &quot;childAt&quot;,
     value: function childAt(idx) {
-      return this._children[idx];
+      return this.children[idx];
     }
 <span id='qrenderer-graphic-Group-method-childOfName'>    /**
 </span>     * @method childOfName
@@ -154,7 +141,7 @@ function (_Element) {
   }, {
     key: &quot;childOfName&quot;,
     value: function childOfName(name) {
-      var children = this._children;
+      var children = this.children;
 
       for (var i = 0; i &lt; children.length; i++) {
         if (children[i].name === name) {
@@ -170,7 +157,7 @@ function (_Element) {
   }, {
     key: &quot;childCount&quot;,
     value: function childCount() {
-      return this._children.length;
+      return this.children.length;
     }
 <span id='qrenderer-graphic-Group-method-add'>    /**
 </span>     * @method add
@@ -182,7 +169,7 @@ function (_Element) {
     key: &quot;add&quot;,
     value: function add(child) {
       if (child &amp;&amp; child !== this &amp;&amp; child.parent !== this) {
-        this._children.push(child);
+        this.children.push(child);
 
         this._doAdd(child);
       }
@@ -200,7 +187,7 @@ function (_Element) {
     key: &quot;addBefore&quot;,
     value: function addBefore(child, nextSibling) {
       if (child &amp;&amp; child !== this &amp;&amp; child.parent !== this &amp;&amp; nextSibling &amp;&amp; nextSibling.parent === this) {
-        var children = this._children;
+        var children = this.children;
         var idx = children.indexOf(nextSibling);
 
         if (idx &gt;= 0) {
@@ -251,7 +238,7 @@ function (_Element) {
     value: function remove(child) {
       var qr = this.__qr;
       var storage = this.__storage;
-      var children = this._children;
+      var children = this.children;
       var idx = dataUtil.indexOf(children, child);
 
       if (idx &lt; 0) {
@@ -280,7 +267,7 @@ function (_Element) {
   }, {
     key: &quot;removeAll&quot;,
     value: function removeAll() {
-      var children = this._children;
+      var children = this.children;
       var storage = this.__storage;
       var child;
       var i;
@@ -312,7 +299,7 @@ function (_Element) {
   }, {
     key: &quot;eachChild&quot;,
     value: function eachChild(cb, context) {
-      var children = this._children;
+      var children = this.children;
 
       for (var i = 0; i &lt; children.length; i++) {
         var child = children[i];
@@ -331,8 +318,8 @@ function (_Element) {
   }, {
     key: &quot;traverse&quot;,
     value: function traverse(cb, context) {
-      for (var i = 0; i &lt; this._children.length; i++) {
-        var child = this._children[i];
+      for (var i = 0; i &lt; this.children.length; i++) {
+        var child = this.children[i];
         cb.call(context, child);
 
         if (child.type === &#39;group&#39;) {
@@ -350,8 +337,8 @@ function (_Element) {
   }, {
     key: &quot;addChildrenToStorage&quot;,
     value: function addChildrenToStorage(storage) {
-      for (var i = 0; i &lt; this._children.length; i++) {
-        var child = this._children[i];
+      for (var i = 0; i &lt; this.children.length; i++) {
+        var child = this.children[i];
         storage.addToStorage(child);
 
         if (child instanceof Group) {
@@ -367,8 +354,8 @@ function (_Element) {
   }, {
     key: &quot;delChildrenFromStorage&quot;,
     value: function delChildrenFromStorage(storage) {
-      for (var i = 0; i &lt; this._children.length; i++) {
-        var child = this._children[i];
+      for (var i = 0; i &lt; this.children.length; i++) {
+        var child = this.children[i];
         storage.delFromStorage(child);
 
         if (child instanceof Group) {
@@ -399,7 +386,7 @@ function (_Element) {
       // TODO Caching
       var rect = null;
       var tmpRect = new BoundingRect(0, 0, 0, 0);
-      var children = includeChildren || this._children;
+      var children = includeChildren || this.children;
       var tmpMat = [];
 
       for (var i = 0; i &lt; children.length; i++) {

@@ -39,7 +39,7 @@ var LinearGradient = require(&quot;../graphic/gradient/LinearGradient&quot;);
 
 var Style = require(&quot;../graphic/Style&quot;);
 
-var matrix = require(&quot;../core/utils/matrix&quot;);
+var matrixUtil = require(&quot;../core/utils/matrix_util&quot;);
 
 var _path_util = require(&quot;../core/utils/path_util&quot;);
 
@@ -609,22 +609,22 @@ function parseTransformAttribute(xmlNode, node) {
     for (var i = transformOps.length - 1; i &gt; 0; i -= 2) {
       var value = transformOps[i];
       var type = transformOps[i - 1];
-      m = m || matrix.create();
+      m = m || matrixUtil.create();
 
       switch (type) {
         case &#39;translate&#39;:
           value = trim(value).split(DILIMITER_REG);
-          matrix.translate(m, m, [parseFloat(value[0]), parseFloat(value[1] || 0)]);
+          matrixUtil.translate(m, m, [parseFloat(value[0]), parseFloat(value[1] || 0)]);
           break;
 
         case &#39;scale&#39;:
           value = trim(value).split(DILIMITER_REG);
-          matrix.scale(m, m, [parseFloat(value[0]), parseFloat(value[1] || value[0])]);
+          matrixUtil.scale(m, m, [parseFloat(value[0]), parseFloat(value[1] || value[0])]);
           break;
 
         case &#39;rotate&#39;:
           value = trim(value).split(DILIMITER_REG);
-          matrix.rotate(m, m, parseFloat(value[0]));
+          matrixUtil.rotate(m, m, parseFloat(value[0]));
           break;
 
         case &#39;skew&#39;:

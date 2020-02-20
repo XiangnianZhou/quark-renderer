@@ -19,7 +19,7 @@
 
 var classUtil = require(&quot;../core/utils/class_util&quot;);
 
-var vec2 = require(&quot;../core/utils/vector&quot;);
+var vectorUtil = require(&quot;../core/utils/vector_util&quot;);
 
 var eventTool = require(&quot;../core/utils/event_util&quot;);
 
@@ -455,7 +455,7 @@ dataUtil.each([&#39;click&#39;, &#39;mousedown&#39;, &#39;mouseup&#39;, &#39;mou
       // which should be filtered, otherwise it will bring trouble to
       // pan and zoom.
       || !this._downPoint // Arbitrary value
-      || vec2.dist(this._downPoint, [event.qrX, event.qrY]) &gt; 4) {
+      || vectorUtil.dist(this._downPoint, [event.qrX, event.qrY]) &gt; 4) {
         return;
       }
 

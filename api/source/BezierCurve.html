@@ -17,7 +17,7 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">var Path = require(&quot;../Path&quot;);
 
-var vec2 = require(&quot;../../core/utils/vector&quot;);
+var vectorUtil = require(&quot;../../core/utils/vector_util&quot;);
 
 var curveUtil = require(&quot;../../core/utils/curve_util&quot;);
 
@@ -166,7 +166,7 @@ function (_Path) {
     key: &quot;tangentAt&quot;,
     value: function tangentAt(t) {
       var p = someVectorAt(this.shape, t, true);
-      return vec2.normalize(p, p);
+      return vectorUtil.normalize(p, p);
     }
   }]);
 

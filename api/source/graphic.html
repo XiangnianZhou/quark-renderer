@@ -23,7 +23,7 @@ var PathProxy = require(&quot;../graphic/PathProxy&quot;);
 
 var BoundingRect = require(&quot;../graphic/transform/BoundingRect&quot;);
 
-var matrix = require(&quot;../core/utils/matrix&quot;);
+var matrixUtil = require(&quot;../core/utils/matrix_util&quot;);
 
 var textContain = require(&quot;../core/contain/text&quot;);
 
@@ -477,10 +477,10 @@ var svgTextDrawRectText = function svgTextDrawRectText(el, hostRect) {
 };
 
 function setTextTransform(textSvgEl, needTransformTextByHostEl, elTransform, style, hostRect, baseX, baseY) {
-  matrix.identity(_tmpTextTransform);
+  matrixUtil.identity(_tmpTextTransform);
 
   if (needTransformTextByHostEl &amp;&amp; elTransform) {
-    matrix.copy(_tmpTextTransform, elTransform);
+    matrixUtil.copy(_tmpTextTransform, elTransform);
   } // textRotation only apply in RectText.
 
 
@@ -500,7 +500,7 @@ function setTextTransform(textSvgEl, needTransformTextByHostEl, elTransform, sty
     _tmpTextTransform[4] -= baseX;
     _tmpTextTransform[5] -= baseY; // Positive: anticlockwise
 
-    matrix.rotate(_tmpTextTransform, _tmpTextTransform, textRotation);
+    matrixUtil.rotate(_tmpTextTransform, _tmpTextTransform, textRotation);
     _tmpTextTransform[4] += baseX;
     _tmpTextTransform[5] += baseY;
   } // See the definition in `Style.js#textOrigin`, the default

@@ -325,7 +325,7 @@ function (_Element) {
   }, {
     key: &quot;contain&quot;,
     value: function contain(x, y) {
-      var localPos = this.transformCoordToLocal(x, y);
+      var localPos = this.globalToLocal(x, y);
       var rect = this.getBoundingRect();
       var style = this.style;
       x = localPos[0];

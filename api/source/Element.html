@@ -78,6 +78,11 @@ function () {
      */
 
     this.name = &#39;&#39;;
+<span id='qrenderer-graphic-Element-property-parent'>    /**
+</span>     * @property {Element} parent 父节点
+     */
+
+    this.parent = null;
 <span id='qrenderer-graphic-Element-property-ignore'>    /**
 </span>     * @property {Boolean} ignore
      * 
@@ -599,7 +604,7 @@ function () {
   }, {
     key: &quot;rectContain&quot;,
     value: function rectContain(x, y) {
-      var coord = this.transformCoordToLocal(x, y);
+      var coord = this.globalToLocal(x, y);
       var rect = this.getBoundingRect();
       return rect.contain(coord[0], coord[1]);
     }

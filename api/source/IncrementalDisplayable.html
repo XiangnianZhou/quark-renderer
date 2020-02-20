@@ -147,7 +147,7 @@ IncrementalDisplayble.prototype = {
     return this._rect;
   },
   contain: function contain(x, y) {
-    var localPos = this.transformCoordToLocal(x, y);
+    var localPos = this.globalToLocal(x, y);
     var rect = this.getBoundingRect();
 
     if (rect.contain(localPos[0], localPos[1])) {

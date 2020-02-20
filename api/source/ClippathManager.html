@@ -21,7 +21,7 @@ var dataUtil = require(&quot;../../core/utils/data_structure_util&quot;);
 
 var classUtil = require(&quot;../../core/utils/class_util&quot;);
 
-var matrix = require(&quot;../../core/utils/matrix&quot;);
+var matrixUtil = require(&quot;../../core/utils/matrix_util&quot;);
 
 function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
@@ -135,7 +135,7 @@ function (_Definable) {
 
         var svgProxy = this.getSvgProxy(clipPath);
 
-        if (clipPath.transform &amp;&amp; clipPath.parent.invTransform &amp;&amp; !isText) {
+        if (clipPath.transform &amp;&amp; clipPath.parent.inverseTransform &amp;&amp; !isText) {
 <span id='qrenderer-svg-helper-ClippathManager-property-'>          /**
 </span>           * If a clipPath has a parent with transform, the transform
            * of parent should not be considered when setting transform
@@ -146,7 +146,7 @@ function (_Definable) {
           // Store old transform
           var transform = Array.prototype.slice.call(clipPath.transform); // Transform back from parent, and brush path
 
-          matrix.mul(clipPath.transform, clipPath.parent.invTransform, clipPath.transform);
+          matrixUtil.mul(clipPath.transform, clipPath.parent.inverseTransform, clipPath.transform);
           svgProxy.brush(clipPath); // Set back transform of clipPath
 
           clipPath.transform = transform;

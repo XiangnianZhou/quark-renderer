@@ -155,7 +155,7 @@ Storage.prototype = {
     }
 
     if (el.isGroup) {
-      var children = el._children;
+      var children = el.children;
 
       for (var i = 0; i &lt; children.length; i++) {
         var child = children[i]; // Force to mark as dirty if group is dirty

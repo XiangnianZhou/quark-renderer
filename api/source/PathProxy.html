@@ -17,7 +17,7 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">var curve = require(&quot;../core/utils/curve_util&quot;);
 
-var vec2 = require(&quot;../core/utils/vector&quot;);
+var vectorUtil = require(&quot;../core/utils/vector_util&quot;);
 
 var bbox = require(&quot;../core/utils/bbox_util&quot;);
 
@@ -663,8 +663,8 @@ PathProxy.prototype = {
       } // Union
 
 
-      vec2.min(min, min, min2);
-      vec2.max(max, max, max2);
+      vectorUtil.min(min, min, min2);
+      vectorUtil.max(max, max, max2);
     } // No data
 
 
