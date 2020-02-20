@@ -42,6 +42,11 @@ class Element{
          * @property {String} name 元素名字
          */
         this.name='';
+
+        /**
+         * @property {Element} parent 父节点
+         */
+        this.parent=null;
     
         /**
          * @property {Boolean} ignore
@@ -519,7 +524,7 @@ class Element{
      * @return {Boolean}
      */
     rectContain(x, y) {
-        let coord = this.transformCoordToLocal(x, y);
+        let coord = this.globalToLocal(x, y);
         let rect = this.getBoundingRect();
         return rect.contain(coord[0], coord[1]);
     }

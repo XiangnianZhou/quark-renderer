@@ -61,7 +61,17 @@ let Transformable = function (options={}) {
      */
     this.flip = (options.flip===null||options.flip===undefined)?[1, 1]:options.flip;
 
+    /**
+     * @property {Matrix} transform
+     * 变换矩阵。
+     */
     this.transform=null;
+
+    /**
+     * @property {Matrix} inverseTransform
+     * 逆变换矩阵。
+     */
+    this.inverseTransform=null;
 };
 
 Transformable.prototype={
@@ -69,7 +79,8 @@ Transformable.prototype={
 
     /**
      * @method needLocalTransform
-     * 判断是否需要有坐标变换，如果有坐标变换, 则从position, rotation, scale以及父节点的transform计算出自身的transform矩阵
+     * 判断是否需要有坐标变换，如果有坐标变换, 则从 position, rotation, scale, skew, flip 以及父节点的 transform 计算出自身的 transform 矩阵
+     * @return {Boolean}
      */
     needLocalTransform:function () {
         return dataUtil.isNotAroundZero(this.rotation)
@@ -83,6 +94,10 @@ Transformable.prototype={
             || dataUtil.isNotAroundZero(this.flip[1] - 1);
     },
 
+    /**
+     * @method updateTransform
+     * 更新变换矩阵。
+     */
     updateTransform:function () {
         let parent = this.parent;
         let parentHasTransform = parent && parent.transform;
@@ -98,8 +113,7 @@ Transformable.prototype={
 
         if (needLocalTransform) {
             this.getLocalTransform(m);
-        }
-        else {
+        }else {
             mIdentity(m);
         }
 
@@ -107,57 +121,45 @@ Transformable.prototype={
         if (parentHasTransform) {
             if (needLocalTransform) {
                 matrix.mul(m, parent.transform, m);
-            }
-            else {
+            }else {
                 matrix.copy(m, parent.transform);
             }
         }
-        // 保存这个变换矩阵
-        this.transform = m;
 
-        let globalScaleRatio = this.globalScaleRatio;
-        if (globalScaleRatio != null && globalScaleRatio !== 1) {
+        if (this.globalScaleRatio != null && this.globalScaleRatio !== 1) {
             this.getGlobalScale(scaleTmp);
             let relX = scaleTmp[0] < 0 ? -1 : 1;
             let relY = scaleTmp[1] < 0 ? -1 : 1;
-            let sx = ((scaleTmp[0] - relX) * globalScaleRatio + relX) / scaleTmp[0] || 0;
-            let sy = ((scaleTmp[1] - relY) * globalScaleRatio + relY) / scaleTmp[1] || 0;
-
+            let sx = ((scaleTmp[0] - relX) * this.globalScaleRatio + relX) / scaleTmp[0] || 0;
+            let sy = ((scaleTmp[1] - relY) * this.globalScaleRatio + relY) / scaleTmp[1] || 0;
+            
             m[0] *= sx;
             m[1] *= sx;
             m[2] *= sy;
             m[3] *= sy;
         }
-
-        this.invTransform = this.invTransform || matrix.create();
-        matrix.invert(this.invTransform, m);
+        
+        //保存变换矩阵
+        this.transform = m;
+        //计算逆变换矩阵
+        this.inverseTransform = this.inverseTransform || matrix.create();
+        this.inverseTransform = matrix.invert(this.inverseTransform, m);
     },
 
+    /**
+     * @method getLocalTransform
+     * 获取本地变换矩阵。
+     * @param {*} m 
+     */
     getLocalTransform:function (m) {
         return Transformable.getLocalTransform(this, m);
     },
 
     /**
-     * @method setTransform
-     * 将自己的transform应用到context上
-     * @param {CanvasRenderingContext2D} ctx
+     * @method setLocalTransform
+     * 设置本地变换矩阵。
+     * @param {*} m 
      */
-    setTransform:function (ctx) {
-        let m = this.transform;
-        let dpr = ctx.dpr || 1;
-        if (m) {
-            ctx.setTransform(dpr * m[0], dpr * m[1], dpr * m[2], dpr * m[3], dpr * m[4], dpr * m[5]);
-        }
-        else {
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        }
-    },
-
-    restoreTransform:function (ctx) {
-        let dpr = ctx.dpr || 1;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    },
-
     setLocalTransform:function (m) {
         if (!m) {
             // TODO return or set identity?
@@ -188,6 +190,37 @@ Transformable.prototype={
     },
 
     /**
+     * @method setTransform
+     * 
+     * Apply the transform matrix to context.
+     * 
+     * 将自己的transform应用到context上。
+     * 
+     * @param {CanvasRenderingContext2D} ctx
+     */
+    setTransform:function (ctx) {
+        let m = this.transform;
+        let dpr = ctx.dpr || 1;
+        if (m) {
+            ctx.setTransform(dpr * m[0], dpr * m[1], dpr * m[2], dpr * m[3], dpr * m[4], dpr * m[5]);
+        }
+        else {
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+    },
+
+    /**
+     * @method restoreTransform
+     * 重置变换矩阵。
+     * @param {Context} ctx 
+     */
+    restoreTransform:function (ctx) {
+        let dpr = ctx.dpr || 1;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    },
+
+    /**
+     * @method decomposeTransform
      * 分解`transform`矩阵到`position`, `rotation`, `scale`
      */
     decomposeTransform:function () {
@@ -198,7 +231,7 @@ Transformable.prototype={
         let m = this.transform;
         if (parent && parent.transform) {
             // Get local transform and decompose them to position, scale, rotation
-            matrix.mul(tmpTransform, parent.invTransform, m);
+            matrix.mul(tmpTransform, parent.inverseTransform, m);
             m = tmpTransform;
         }
         let origin = this.origin;
@@ -239,29 +272,29 @@ Transformable.prototype={
     },
 
     /**
-     * @method transformCoordToLocal
-     * 变换坐标位置到 shape 的局部坐标空间
+     * @method globalToLocal
+     * 变换坐标位置到 shape 的局部坐标空间。
      * @param {Number} x
      * @param {Number} y
      * @return {Array<Number>}
      */
-    transformCoordToLocal:function (x, y) {
+    globalToLocal:function (x, y) {
         let v2 = [x, y];
-        let invTransform = this.invTransform;
-        if (invTransform) {
-            vector.applyTransform(v2, v2, invTransform);
+        let inverseTransform = this.inverseTransform;
+        if (inverseTransform) {
+            vector.applyTransform(v2, v2, inverseTransform);
         }
         return v2;
     },
 
     /**
-     * @method transformCoordToGlobal
+     * @method localToGlobal
      * 变换局部坐标位置到全局坐标空间
      * @param {Number} x
      * @param {Number} y
      * @return {Array<Number>}
      */
-    transformCoordToGlobal:function (x, y) {
+    localToGlobal:function (x, y) {
         let v2 = [x, y];
         let transform = this.transform;
         if (transform) {

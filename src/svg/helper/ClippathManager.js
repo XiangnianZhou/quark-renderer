@@ -87,7 +87,7 @@ class ClippathManager extends Definable{
             // Build path and add to <clipPath>
             let svgProxy = this.getSvgProxy(clipPath);
             if (clipPath.transform
-                && clipPath.parent.invTransform
+                && clipPath.parent.inverseTransform
                 && !isText
             ) {
                 /**
@@ -105,7 +105,7 @@ class ClippathManager extends Definable{
                 // Transform back from parent, and brush path
                 matrix.mul(
                     clipPath.transform,
-                    clipPath.parent.invTransform,
+                    clipPath.parent.inverseTransform,
                     clipPath.transform
                 );
                 svgProxy.brush(clipPath);
