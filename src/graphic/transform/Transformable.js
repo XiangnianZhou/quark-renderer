@@ -8,10 +8,11 @@ import * as dataUtil from '../../core/utils/data_structure_util';
  * @abstract
  * @class qrenderer.graphic.Transformable
  * 
- * Provide geometric transformation functions for Element, such as position, scale, skew, rotation, flip.
+ * Provide geometric transformation functions for Element, such as position, scale, skew, rotation.
  * 
  * 为 Element 提供几何变换功能，例如：平移、缩放、扭曲、旋转、翻转。
  * 
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
  * @author pissang (https://www.github.com/pissang)
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
@@ -54,12 +55,6 @@ let Transformable = function (options={}) {
     this.skew = (options.skew===null||options.skew===undefined)?[1, 1]:options.skew;
 
     /**
-     * @property {Array<Number>} flip
-     * 翻转。
-     */
-    this.flip = (options.flip===null||options.flip===undefined)?[1, 1]:options.flip;
-
-    /**
      * @property {Matrix} transform
      * 变换矩阵。
      */
@@ -76,8 +71,125 @@ Transformable.prototype={
     constructor:Transformable,
 
     /**
+     * @method setRotation
+     * 设置旋转角度。
+     * @param {Number} rotation 角度
+     */
+    setRotation:function(rotation=0){
+        this.rotation=rotation;
+    },
+
+    /**
+     * @method setOrigin
+     * 设置变换原点。
+     * @param {Array<Number>} origin 二维数组
+     */
+    setOrigin:function(origin=[0,0]){
+        this.origin=origin;
+    },
+
+    /**
+     * @method setOriginX
+     * 单独设置 X 轴原点。
+     * @param {Number} originX 数值
+     */
+    setOriginX:function(originX=0){
+        this.origin[0]=originX;
+    },
+
+    /**
+     * @method setOriginY
+     * 单独设置 Y 轴原点。
+     * @param {Number} originY 数值
+     */
+    setOriginY:function(originY=0){
+        this.origin[1]=originY;
+    },
+
+    /**
+     * @method setPosition
+     * 设置位置。
+     * @param {Array<Number>} position 二维数组
+     */
+    setPosition:function(position=[0,0]){
+        this.position=position;
+    },
+
+    /**
+     * @method setX
+     * 单独设置 X 轴位置。
+     * @param {Number} x 数值
+     */
+    setX:function(x=0){
+        this.position[0]=x;
+    },
+
+    /**
+     * @method setY
+     * 单独设置 Y 轴位置。
+     * @param {Number} y 数值
+     */
+    setY:function(y){
+        this.position[1]=y;
+    },
+
+    /**
+     * @method setScale
+     * 设置缩放。
+     * @param {Array<Number>} scale 二维数组
+     */
+    setScale:function(scale=[1,1]){
+        this.scale=scale;
+    },
+
+    /**
+     * @method setScaleX
+     * 单独设置 X 轴方向上的缩放。
+     * @param {Number} scaleX 数值
+     */
+    setScaleX:function(scaleX=1){
+        this.scale[0]=scaleX;
+    },
+
+    /**
+     * @method setScaleY
+     * 单独设置 Y 轴方向上的缩放。
+     * @param {Number} scaleY 数值
+     */
+    setScaleY:function(scaleY=1){
+        this.scale[1]=scaleY;
+    },
+
+    /**
+     * @method setSkew
+     * 设置扭曲。
+     * @param {Array<Number>} skew 二维数组
+     */
+    setSkew:function(skew=[1,1]){
+        this.skew=skew;
+    },
+
+    /**
+     * @method setSkewX
+     * 单独设置 X 轴方向上的扭曲。
+     * @param {Number} skewX 数值
+     */
+    setSkewX:function(skewX){
+        this.skew[0]=skewX;
+    },
+
+    /**
+     * @method setSkewY
+     * 单独设置 Y 轴方向上的扭曲。
+     * @param {Number} skewY 数值
+     */
+    setSkewY:function(skewY){
+        this.skew[1]=skewY;
+    },
+
+    /**
      * @method needLocalTransform
-     * 判断是否需要有坐标变换，如果有坐标变换, 则从 position, rotation, scale, skew, flip 以及父节点的 transform 计算出自身的 transform 矩阵
+     * 判断是否需要有坐标变换，如果有坐标变换, 则从 position, rotation, scale, skew 以及父节点的 transform 计算出自身的 transform 矩阵
      * @return {Boolean}
      */
     needLocalTransform:function () {
@@ -87,9 +199,7 @@ Transformable.prototype={
             || dataUtil.isNotAroundZero(this.scale[0] - 1)
             || dataUtil.isNotAroundZero(this.scale[1] - 1)
             || dataUtil.isNotAroundZero(this.skew[0] - 1)
-            || dataUtil.isNotAroundZero(this.skew[1] - 1)
-            || dataUtil.isNotAroundZero(this.flip[0] - 1)
-            || dataUtil.isNotAroundZero(this.flip[1] - 1);
+            || dataUtil.isNotAroundZero(this.skew[1] - 1);
     },
 
     /**
@@ -227,8 +337,7 @@ Transformable.prototype={
         let dpr = ctx.dpr || 1;
         if (m) {
             ctx.setTransform(dpr * m[0], dpr * m[1], dpr * m[2], dpr * m[3], dpr * m[4], dpr * m[5]);
-        }
-        else {
+        }else {
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         }
     },
@@ -245,7 +354,7 @@ Transformable.prototype={
 
     /**
      * @method decomposeTransform
-     * 分解`transform`矩阵到`position`, `rotation`, `scale`
+     * 分解`transform`矩阵到`position`, `rotation`, `scale`。
      */
     decomposeTransform:function () {
         if (!this.transform) {
