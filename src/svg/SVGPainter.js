@@ -80,33 +80,30 @@ function getSvgElement(displayable) {
  * @param {Storage} storage
  * @param {Object} opts
  */
-let SVGPainter = function (host, storage, opts, qrId) {
+let SVGPainter = function (host, storage, opts={}, qrId) {
+    opts = dataUtil.extend({}, opts);
+    this._opts = opts;
     this.host = host;
     this.storage = storage;
-    this._opts = opts = dataUtil.extend({}, opts || {});
+    this._visibleList = [];
+
     let svgRoot = createElement('svg');
-    
     svgRoot.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
     svgRoot.setAttribute('version', '1.1');
     svgRoot.setAttribute('baseProfile', 'full');
     svgRoot.style.cssText = 'user-select:none;position:absolute;left:0;top:0;';
-
     this.gradientManager = new GradientManager(qrId, svgRoot);
     this.clipPathManager = new ClippathManager(qrId, svgRoot);
     this.shadowManager = new ShadowManager(qrId, svgRoot);
-
-    let viewport = document.createElement('div');
-    viewport.style.cssText = 'overflow:hidden;position:relative';
-
     this._svgRoot = svgRoot;
-    this._viewport = viewport;
 
-    host.appendChild(viewport);
-    viewport.appendChild(svgRoot);
+    let div = document.createElement('div');
+    div.style.cssText = 'overflow:hidden;position:relative';
+    this._host = div;
+    this.host.appendChild(div);
+    this._host.appendChild(svgRoot);
 
     this.resize(opts.width, opts.height);
-
-    this._visibleList = [];
 };
 
 SVGPainter.prototype = {
@@ -124,7 +121,7 @@ SVGPainter.prototype = {
      * @method getHost
      */
     getHost: function () {
-        return this._viewport;
+        return this._host;
     },
 
     /**
@@ -144,9 +141,7 @@ SVGPainter.prototype = {
      * @method refresh
      */
     refresh: function () {
-
         let list = this.storage.getDisplayList(true);
-
         this._paintList(list);
     },
 
@@ -155,7 +150,7 @@ SVGPainter.prototype = {
      */
     setBackgroundColor: function (backgroundColor) {
         // TODO gradient
-        this._viewport.style.background = backgroundColor;
+        this._host.style.background = backgroundColor;
     },
 
     /**
@@ -317,7 +312,7 @@ SVGPainter.prototype = {
      * @method resize
      */
     resize: function (width, height) {
-        let viewport = this._viewport;
+        let viewport = this._host;
         // FIXME Why ?
         viewport.style.display = 'none';
 
@@ -395,7 +390,7 @@ SVGPainter.prototype = {
         this.host.innerHTML = '';
 
         this._svgRoot =
-            this._viewport =
+            this._host =
             this.storage =
             null;
     },
@@ -404,8 +399,8 @@ SVGPainter.prototype = {
      * @method clear
      */
     clear: function () {
-        if (this._viewport) {
-            this.host.removeChild(this._viewport);
+        if (this._host) {
+            this.host.removeChild(this._host);
         }
     },
 
