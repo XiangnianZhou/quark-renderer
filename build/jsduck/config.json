@@ -24,7 +24,6 @@
     "../../lib/CanvasLayer.js",
     "../../lib/graphic/BoundingRect.js",
     "../../lib/graphic/CompoundPath.js",
-    "../../lib/graphic/Displayable.js",
     "../../lib/graphic/Element.js",
     "../../lib/graphic/Group.js",
     "../../lib/graphic/Image.js",

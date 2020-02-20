@@ -190,10 +190,12 @@ export default class CanvasLayer{
         let haveMotionBLur = this.motionBlur && !clearAll;
         let lastFrameAlpha = this.lastFrameAlpha;
         let dpr = this.dpr;
-        
+        let width=0;
+        let height=0;
+
         if (haveMotionBLur&&this.canvasInstance) {
-            let width = this.canvasInstance.width;
-            let height = this.canvasInstance.height;
+            width = this.canvasInstance.width;
+            height = this.canvasInstance.height;
             if (!this.hiddenCanvas) {
                 this.creatHiddenCanvas();
             }
