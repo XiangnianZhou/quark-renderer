@@ -260,9 +260,9 @@ Transformable.prototype={
     getLocalTransform:function (m=[]) {
         matrixUtil.identity(m);
 
+        let origin = this.origin || [0,0];
         let rotation = this.rotation || 0;
         let position = this.position || [0,0];
-        let origin = this.origin || [0,0];
         let scale = this.scale || [1,1];
     
         if (origin) {
@@ -307,6 +307,7 @@ Transformable.prototype={
         if (dataUtil.isNotAroundZero(sy - 1)) {
             sy = mathSqrt(sy);
         }
+        //why?
         if (m[0] < 0) {
             sx = -sx;
         }
@@ -319,6 +320,8 @@ Transformable.prototype={
         this.position[1] = m[5];
         this.scale[0] = sx;
         this.scale[1] = sy;
+        this.skew[0]=m[1];
+        this.skew[1]=m[2];
     },
 
     /**
@@ -352,7 +355,7 @@ Transformable.prototype={
 
     /**
      * @method decomposeTransform
-     * 分解`transform`矩阵到`position`, `rotation`, `scale`。
+     * 分解`transform`矩阵到`position`, `scale`, `skew`。
      */
     decomposeTransform:function () {
         if (!this.transform) {
@@ -385,9 +388,8 @@ Transformable.prototype={
      * Get global scale
      * @return {Array<Number>}
      */
-    getGlobalScale:function (out) {
+    getGlobalScale:function (out=[]) {
         let m = this.transform;
-        out = out || [];
         if (!m) {
             out[0] = 1;
             out[1] = 1;
