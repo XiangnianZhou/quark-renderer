@@ -1,5 +1,5 @@
 import Path from '../Path';
-import * as vec2 from '../../core/utils/vector';
+import * as vectorUtil from '../../core/utils/vector_util';
 import * as curveUtil from '../../core/utils/curve_util';
 import * as dataUtil from '../../core/utils/data_structure_util';
 
@@ -134,6 +134,6 @@ export default class BezierCurve extends Path{
      */
     tangentAt(t) {
         let p = someVectorAt(this.shape, t, true);
-        return vec2.normalize(p, p);
+        return vectorUtil.normalize(p, p);
     }
 }

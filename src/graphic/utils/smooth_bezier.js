@@ -1,9 +1,3 @@
-/**
- * 贝塞尔平滑曲线
- * @author pissang (https://www.github.com/pissang)
- *         Kener (@Kener-林峰, kener.linfeng@gmail.com)
- *         errorrik (errorrik@gmail.com)
- */
 
 import {
     min as v2Min,
@@ -13,8 +7,15 @@ import {
     add as v2Add,
     clone as v2Clone,
     sub as v2Sub
-} from '../../core/utils/vector';
+} from '../../core/utils/vector_util';
 
+/**
+ * 贝塞尔平滑曲线
+ * @author pissang (https://www.github.com/pissang)
+ *         Kener (@Kener-林峰, kener.linfeng@gmail.com)
+ *         errorrik (errorrik@gmail.com)
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 /**
  * 贝塞尔平滑曲线
  * @alias smoothBezier

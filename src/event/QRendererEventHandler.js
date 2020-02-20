@@ -1,6 +1,6 @@
 import * as dataUtil from '../core/utils/data_structure_util';
 import * as classUtil from '../core/utils/class_util';
-import * as vec2 from '../core/utils/vector';
+import * as vectorUtil from '../core/utils/vector_util';
 import * as eventTool from '../core/utils/event_util';
 import MultiDragDrop from './MultiDragDrop';
 import Eventful from './Eventful';
@@ -458,7 +458,7 @@ dataUtil.each(['click', 'mousedown',
                 // pan and zoom.
                 || !this._downPoint
                 // Arbitrary value
-                || vec2.dist(this._downPoint, [event.qrX, event.qrY]) > 4
+                || vectorUtil.dist(this._downPoint, [event.qrX, event.qrY]) > 4
             ) {
                 return;
             }

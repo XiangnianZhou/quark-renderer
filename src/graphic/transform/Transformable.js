@@ -1,6 +1,6 @@
-import * as matrixUtil from '../../core/utils/matrix_util';
-import * as vector from '../../core/utils/vector';
 import {mathSqrt,mathAtan2} from '../constants';
+import * as matrixUtil from '../../core/utils/matrix_util';
+import * as vectorUtil from '../../core/utils/vector_util';
 import * as classUtil from '../../core/utils/class_util';
 import * as dataUtil from '../../core/utils/data_structure_util';
 
@@ -282,7 +282,7 @@ Transformable.prototype={
         let v2 = [x, y];
         let inverseTransform = this.inverseTransform;
         if (inverseTransform) {
-            vector.applyTransform(v2, v2, inverseTransform);
+            vectorUtil.applyTransform(v2, v2, inverseTransform);
         }
         return v2;
     },
@@ -298,7 +298,7 @@ Transformable.prototype={
         let v2 = [x, y];
         let transform = this.transform;
         if (transform) {
-            vector.applyTransform(v2, v2, transform);
+            vectorUtil.applyTransform(v2, v2, transform);
         }
         return v2;
     }

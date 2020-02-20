@@ -6,7 +6,7 @@ import * as colorUtil from './core/utils/color_util';
 import * as pathUtil from './core/utils/path_util';
 import * as canvasUtil from './core/utils/canvas_util';
 import * as matrixUtil from './core/utils/matrix_util';
-import * as vector from './core/utils/vector';
+import * as vectorUtil from './core/utils/vector_util';
 import {parseSVG} from './svg/SVGParser';
 
 export {default as Group} from './graphic/Group';
@@ -41,5 +41,5 @@ export {pathUtil as pathUtil};
 export {dataUtil as dataUtil};
 export {canvasUtil as canvasUtil};
 export {matrixUtil};
-export {vector};
+export {vectorUtil};
 export {parseSVG};

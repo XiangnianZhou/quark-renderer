@@ -1,5 +1,5 @@
 import PathProxy from '../../graphic/PathProxy';
-import {applyTransform as v2ApplyTransform} from './vector';
+import {applyTransform as v2ApplyTransform} from './vector_util';
 import {mathSqrt,mathAtan2} from '../../graphic/constants';
 
 var CMD = PathProxy.CMD;

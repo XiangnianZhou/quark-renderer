@@ -1,4 +1,4 @@
-import * as vec2 from '../../core/utils/vector';
+import * as vectorUtil from '../../core/utils/vector_util';
 import * as matrixUtil from '../../core/utils/matrix_util';
 import {mathMin,mathMax} from '../constants';
 
@@ -11,7 +11,7 @@ import {mathMin,mathMax} from '../constants';
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let v2ApplyTransform = vec2.applyTransform;
+let v2ApplyTransform = vectorUtil.applyTransform;
 let lt = [];
 let rb = [];
 let lb = [];

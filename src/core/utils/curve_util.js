@@ -6,7 +6,7 @@
 import {
     create as v2Create,
     distSquare as v2DistSquare
-} from './vector';
+} from './vector_util';
 import {mathPow,mathSqrt,mathAcos,mathCos,mathSin} from '../../graphic/constants';
 
 var EPSILON = 1e-8;
