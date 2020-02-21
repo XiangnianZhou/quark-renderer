@@ -1066,7 +1066,7 @@ export default class CanvasPainter{
         path.position = [leftMargin - rect.x, topMargin - rect.y];
         path.rotation = 0;
         path.scale = [1, 1];
-        path.updateTransform();
+        path.composeLocalTransform();
         if (path) {
             path.brush(ctx);
         }

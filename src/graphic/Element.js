@@ -265,7 +265,7 @@ class Element{
         this.transform[4]+=dx;
         this.transform[5]+=dy;
 
-        this.decomposeTransform();
+        this.decomposeLocalTransform();
         this.dirty(false);
     }
 
@@ -286,7 +286,7 @@ class Element{
      * 刷新，每一帧回调。
      */
     update() {
-        this.updateTransform();
+        this.composeLocalTransform();
     }
 
     /**

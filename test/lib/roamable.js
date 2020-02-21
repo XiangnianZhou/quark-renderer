@@ -62,7 +62,7 @@
         }
         var pointerPos = [e.offsetX, e.offsetY];
         for (var i = 0; i < roots.length; i++) {
-            updateTransform(
+            composeLocalTransform(
                 roots[i],
                 [pointerPos[0] - moving[0], pointerPos[1] - moving[1]],
                 [1, 1],
@@ -93,11 +93,11 @@
         var scaleDelta = wheelDelta > 0 ? factor : 1 / factor;
 
         for (var i = 0; i < roots.length; i++) {
-            updateTransform(roots[i], [0, 0], [scaleDelta, scaleDelta], [originX, originY]);
+            composeLocalTransform(roots[i], [0, 0], [scaleDelta, scaleDelta], [originX, originY]);
         }
     }
 
-    function updateTransform(rootRecord, positionDeltas, scaleDeltas, origin) {
+    function composeLocalTransform(rootRecord, positionDeltas, scaleDeltas, origin) {
         var root = rootRecord.root;
 
         rawTransformable.scale = root.scale.slice();
@@ -109,15 +109,15 @@
         roamTransformable.origin = origin;
         roamTransformable.position = positionDeltas;
 
-        roamTransformable.updateTransform();
-        rawTransformable.updateTransform();
+        roamTransformable.composeLocalTransform();
+        rawTransformable.composeLocalTransform();
 
         QuarkRenderer.matrixUtil.copy(
             root.transform || (root.transform = []),
             rawTransformable.transform || QuarkRenderer.matrixUtil.create()
         );
 
-        root.decomposeTransform();
+        root.decomposeLocalTransform();
         root.dirty(true);
 
         var handler = rootRecord.handler;

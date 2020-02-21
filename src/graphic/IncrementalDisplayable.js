@@ -60,7 +60,7 @@ IncrementalDisplayble.prototype={
         }
     },
     update:function () {
-        this.updateTransform();
+        this.composeLocalTransform();
         for (let i = this._cursor; i < this._displayables.length; i++) {
             let displayable = this._displayables[i];
             // PENDING

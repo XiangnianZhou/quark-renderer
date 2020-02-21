@@ -146,21 +146,21 @@ Transformable.prototype={
     },
 
     /**
-     * @method setScaleX
+     * @method setScaleWidth
      * 单独设置 X 轴方向上的缩放。
-     * @param {Number} scaleX 数值
+     * @param {Number} scaleWidth 数值
      */
-    setScaleX:function(scaleX=1){
-        this.scale[0]=scaleX;
+    setScaleWidth:function(scaleWidth=1){
+        this.scale[0]=scaleWidth;
     },
 
     /**
-     * @method setScaleY
+     * @method setScaleHeight
      * 单独设置 Y 轴方向上的缩放。
-     * @param {Number} scaleY 数值
+     * @param {Number} scaleHeight 数值
      */
-    setScaleY:function(scaleY=1){
-        this.scale[1]=scaleY;
+    setScaleHeight:function(scaleHeight=1){
+        this.scale[1]=scaleHeight;
     },
 
     /**
@@ -195,8 +195,6 @@ Transformable.prototype={
      * 
      * 如果变化的值小于5e-5（0.00005），则不需要变换。
      * 
-     * TODO:分别单独判断
-     * 
      * @return {Boolean}
      */
     needLocalTransform:function () {
@@ -210,10 +208,104 @@ Transformable.prototype={
     },
 
     /**
-     * @method updateTransform
-     * 根据单独设置的参数更新变换矩阵。
+     * @method applyTransform
+     * 
+     * Apply this.transform matrix to context.
+     * 
+     * 将自己的 transform 应用到 context 上。
+     * 
+     * @param {CanvasRenderingContext2D} ctx
      */
-    updateTransform:function () {
+    applyTransform:function (ctx) {
+        let m = this.transform;
+        let dpr = ctx.dpr || 1;
+        if (m) {
+            ctx.setTransform(dpr * m[0], dpr * m[1], dpr * m[2], dpr * m[3], dpr * m[4], dpr * m[5]);
+        }else {
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+    },
+
+    /**
+     * @method restoreTransform
+     * 重置变换矩阵。
+     * @param {Context} ctx 
+     */
+    restoreTransform:function (ctx) {
+        let dpr = ctx.dpr || 1;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    },
+
+    /**
+     * @method getLocalTransform
+     * 获取本地变换矩阵。
+     * @param {*} m 
+     */
+    getLocalTransform:function (m=[]) {
+        matrixUtil.identity(m);
+
+        let origin = this.origin || [0,0];
+        let rotation = this.rotation || 0;
+        let position = this.position || [0,0];
+        let scale = this.scale || [1,1];
+    
+        m[4] -= origin[0];
+        m[5] -= origin[1];
+        
+        matrixUtil.scale(m, m, scale);
+        matrixUtil.rotate(m, m, rotation);
+        //TODO:计算 skew 的值
+
+        m[4] += origin[0];
+        m[5] += origin[1];
+    
+        m[4] += position[0];
+        m[5] += position[1];
+
+        return m;
+    },
+
+    /**
+     * @method setLocalTransform
+     * 设置本地变换矩阵。
+     * @param {Matrix} m 
+     */
+    setLocalTransform:function (m) {
+        if (!m) {
+            // TODO return or set identity?
+            return;
+        }
+        
+        let sx = m[0] * m[0] + m[1] * m[1];
+        let sy = m[2] * m[2] + m[3] * m[3];
+        if (dataUtil.isNotAroundZero(sx - 1)) {
+            sx = mathSqrt(sx);
+        }
+        if (dataUtil.isNotAroundZero(sy - 1)) {
+            sy = mathSqrt(sy);
+        }
+        if (m[0] < 0) {
+            sx = -sx;
+        }
+        if (m[3] < 0) {
+            sy = -sy;
+        }
+
+        this.rotation = mathAtan2(-m[1] / sy, m[0] / sx);
+        this.position[0] = m[4];
+        this.position[1] = m[5];
+        this.scale[0] = sx;
+        this.scale[1] = sy;
+        this.skew[0]=m[1];
+        this.skew[1]=m[2];
+    },
+
+    /**
+     * @method composeLocalTransform
+     * 把各项参数，包括：scale、position、skew、rotation、父层的变换矩阵、全局缩放，全部
+     * 结合在一起，计算出一个新的本地变换矩阵，此操作是 decomposeLocalTransform 是互逆的。
+     */
+    composeLocalTransform:function () {
         let parent = this.parent;
         let parentHasTransform = parent && parent.transform;
         let needLocalTransform = this.needLocalTransform();
@@ -258,109 +350,14 @@ Transformable.prototype={
     },
 
     /**
-     * @method getLocalTransform
-     * 获取本地变换矩阵。
-     * @param {*} m 
+     * @method decomposeLocalTransform
+     * 把 transform 矩阵分解到 position、scale、skew、rotation 上去，此操作与 composeLocalTransform 是互逆的。
      */
-    getLocalTransform:function (m=[]) {
-        matrixUtil.identity(m);
-
-        let origin = this.origin || [0,0];
-        let rotation = this.rotation || 0;
-        let position = this.position || [0,0];
-        let scale = this.scale || [1,1];
-    
-        m[4] -= origin[0];
-        m[5] -= origin[1];
-        
-        matrixUtil.scale(m, m, scale);
-        matrixUtil.rotate(m, m, rotation);
-
-        m[4] += origin[0];
-        m[5] += origin[1];
-    
-        m[4] += position[0];
-        m[5] += position[1];
-        
-        return m;
-    },
-
-    /**
-     * @method applyTransform
-     * 
-     * Apply this.transform matrix to context.
-     * 
-     * 将自己的 transform 应用到 context 上。
-     * 
-     * @param {CanvasRenderingContext2D} ctx
-     */
-    applyTransform:function (ctx) {
-        let m = this.transform;
-        let dpr = ctx.dpr || 1;
-        if (m) {
-            ctx.setTransform(dpr * m[0], dpr * m[1], dpr * m[2], dpr * m[3], dpr * m[4], dpr * m[5]);
-        }else {
-            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        }
-    },
-
-    /**
-     * @method restoreTransform
-     * 重置变换矩阵。
-     * @param {Context} ctx 
-     */
-    restoreTransform:function (ctx) {
-        let dpr = ctx.dpr || 1;
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    },
-
-    /**
-     * @method setLocalTransform
-     * 设置本地变换矩阵。
-     * @param {Matrix} m 
-     */
-    setLocalTransform:function (m) {
-        if (!m) {
-            // TODO return or set identity?
-            return;
-        }
-        
-        let sx = m[0] * m[0] + m[1] * m[1];
-        let sy = m[2] * m[2] + m[3] * m[3];
-        if (dataUtil.isNotAroundZero(sx - 1)) {
-            sx = mathSqrt(sx);
-        }
-        if (dataUtil.isNotAroundZero(sy - 1)) {
-            sy = mathSqrt(sy);
-        }
-        if (m[0] < 0) {
-            sx = -sx;
-        }
-        if (m[3] < 0) {
-            sy = -sy;
-        }
-
-        this.rotation = mathAtan2(-m[1] / sy, m[0] / sx);
-        this.position[0] = m[4];
-        this.position[1] = m[5];
-        this.scale[0] = sx;
-        this.scale[1] = sy;
-        this.skew[0]=m[1];
-        this.skew[1]=m[2];
-    },
-
-    /**
-     * @method decomposeTransform
-     * 分解`transform`矩阵到`position`, `scale`, `skew`。
-     */
-    decomposeTransform:function () {
+    decomposeLocalTransform:function () {
         let m = this.transform;
         let transformTmp=matrixUtil.create();
-
         if (this.parent && this.parent.transform) {
-            // Get local transform and decompose them to position, scale, rotation
-            transformTmp=matrixUtil.mul(this.parent.inverseTransform, m);
-            m = transformTmp;
+            m=transformTmp=matrixUtil.mul(this.parent.inverseTransform, m);
         }
 
         let origin = this.origin;
@@ -384,11 +381,6 @@ Transformable.prototype={
      */
     getGlobalScale:function (out=[]) {
         let m = this.transform;
-        if (!m) {
-            out[0] = 1;
-            out[1] = 1;
-            return out;
-        }
         out[0] = mathSqrt(m[0] * m[0] + m[1] * m[1]);
         out[1] = mathSqrt(m[2] * m[2] + m[3] * m[3]);
         if (m[0] < 0) {
