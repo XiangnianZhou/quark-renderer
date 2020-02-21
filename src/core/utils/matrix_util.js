@@ -1,13 +1,15 @@
 import {mathSin,mathCos} from '../../graphic/constants';
 
 /**
- * 3x2矩阵操作类
+ * 2x3矩阵操作类，方便进行仿射变换运算。
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
  * @exports qrenderer/core/matrix
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
 /* global Float32Array */
 
-let ArrayCtor = typeof Float32Array === 'undefined'
+let ArrayConstructor = typeof Float32Array === 'undefined'
     ? Array
     : Float32Array;
 
@@ -16,9 +18,7 @@ let ArrayCtor = typeof Float32Array === 'undefined'
  * @return {Float32Array|Array.<Number>}
  */
 export function create() {
-    let out = new ArrayCtor(6);
-    identity(out);
-    return out;
+    return identity(new ArrayConstructor(6));
 }
 
 /**
