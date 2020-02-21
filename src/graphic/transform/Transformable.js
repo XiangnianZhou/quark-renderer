@@ -226,7 +226,7 @@ Transformable.prototype={
         // 应用父节点变换
         if (parentHasTransform) {
             if (needLocalTransform) {
-                matrixUtil.mul(m, parent.transform, m);
+                m=matrixUtil.mul(parent.transform, m);
             }else {
                 matrixUtil.copy(m, parent.transform);
             }
@@ -365,7 +365,7 @@ Transformable.prototype={
         let m = this.transform;
         if (parent && parent.transform) {
             // Get local transform and decompose them to position, scale, rotation
-            matrixUtil.mul(transformTmp, parent.inverseTransform, m);
+            transformTmp=matrixUtil.mul(parent.inverseTransform, m);
             m = transformTmp;
         }
 
@@ -374,7 +374,7 @@ Transformable.prototype={
         if (origin && (origin[0] || origin[1])) {
             originTransform[4] = origin[0];
             originTransform[5] = origin[1];
-            matrixUtil.mul(transformTmp, m, originTransform);
+            transformTmp=matrixUtil.mul(m, originTransform);
             transformTmp[4] -= origin[0];
             transformTmp[5] -= origin[1];
             m = transformTmp;

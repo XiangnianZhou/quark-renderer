@@ -51,28 +51,18 @@ export function copy(out, m) {
 }
 
 /**
- * 矩阵相乘
- * @param {Float32Array|Array.<Number>} out
+ * 矩阵相乘，Context.transform 定义的实际上是一个 3×3 的方阵，所以这里一定可以相乘。
  * @param {Float32Array|Array.<Number>} m1
  * @param {Float32Array|Array.<Number>} m2
  */
-export function mul(out, m1, m2) {
-    // Consider matrix.mul(m, m2, m);
-    // where out is the same as m2.
-    // So use temp variable to escape error.
+export function mul(m1, m2) {
     let out0 = m1[0] * m2[0] + m1[2] * m2[1];
     let out1 = m1[1] * m2[0] + m1[3] * m2[1];
     let out2 = m1[0] * m2[2] + m1[2] * m2[3];
     let out3 = m1[1] * m2[2] + m1[3] * m2[3];
     let out4 = m1[0] * m2[4] + m1[2] * m2[5] + m1[4];
     let out5 = m1[1] * m2[4] + m1[3] * m2[5] + m1[5];
-    out[0] = out0;
-    out[1] = out1;
-    out[2] = out2;
-    out[3] = out3;
-    out[4] = out4;
-    out[5] = out5;
-    return out;
+    return [out0,out1,out2,out3,out4,out5];
 }
 
 /**
