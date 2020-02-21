@@ -72,7 +72,7 @@ class Path extends Element{
         let hasStrokePattern = hasStroke && !!(stroke.image);
 
         this.style.bind(ctx, this, prevEl);
-        this.setTransform(ctx);
+        this.applyTransform(ctx);
 
         if (this.__dirty) {
             let rect;

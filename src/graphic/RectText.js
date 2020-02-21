@@ -44,7 +44,7 @@ RectText.prototype = {
                 rect = tmpRect;
             }
         }else {
-            this.setTransform(ctx);
+            this.applyTransform(ctx);
         }
         // transformText and textRotation can not be used at the same time.
         textUtil.renderText(this, ctx, text, style, rect, WILL_BE_RESTORED);

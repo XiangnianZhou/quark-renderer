@@ -1,7 +1,7 @@
 import {mathSin,mathCos} from '../../graphic/constants';
 
 /**
- * 2x3矩阵操作类，方便进行仿射变换运算。
+ * 矩阵操作类，方便进行仿射变换运算。
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
  * @exports qrenderer/core/matrix
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>

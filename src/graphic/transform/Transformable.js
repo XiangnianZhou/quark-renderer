@@ -294,51 +294,15 @@ Transformable.prototype={
     },
 
     /**
-     * @method setLocalTransform
-     * 设置本地变换矩阵。
-     * @param {*} m 
-     */
-    setLocalTransform:function (m) {
-        if (!m) {
-            // TODO return or set identity?
-            return;
-        }
-        
-        let sx = m[0] * m[0] + m[1] * m[1];
-        let sy = m[2] * m[2] + m[3] * m[3];
-        if (dataUtil.isNotAroundZero(sx - 1)) {
-            sx = mathSqrt(sx);
-        }
-        if (dataUtil.isNotAroundZero(sy - 1)) {
-            sy = mathSqrt(sy);
-        }
-        //why?
-        if (m[0] < 0) {
-            sx = -sx;
-        }
-        if (m[3] < 0) {
-            sy = -sy;
-        }
-
-        this.rotation = mathAtan2(-m[1] / sy, m[0] / sx);
-        this.position[0] = m[4];
-        this.position[1] = m[5];
-        this.scale[0] = sx;
-        this.scale[1] = sy;
-        this.skew[0]=m[1];
-        this.skew[1]=m[2];
-    },
-
-    /**
-     * @method setTransform
+     * @method applyTransform
      * 
-     * Apply the transform matrix to context.
+     * Apply this.transform matrix to context.
      * 
      * 将自己的 transform 应用到 context 上。
      * 
      * @param {CanvasRenderingContext2D} ctx
      */
-    setTransform:function (ctx) {
+    applyTransform:function (ctx) {
         let m = this.transform;
         let dpr = ctx.dpr || 1;
         if (m) {
@@ -359,18 +323,51 @@ Transformable.prototype={
     },
 
     /**
+     * @method setLocalTransform
+     * 设置本地变换矩阵。
+     * @param {*} m 
+     */
+    setLocalTransform:function (m) {
+        if (!m) {
+            // TODO return or set identity?
+            return;
+        }
+        
+        let sx = m[0] * m[0] + m[1] * m[1];
+        let sy = m[2] * m[2] + m[3] * m[3];
+        if (dataUtil.isNotAroundZero(sx - 1)) {
+            sx = mathSqrt(sx);
+        }
+        if (dataUtil.isNotAroundZero(sy - 1)) {
+            sy = mathSqrt(sy);
+        }
+        if (m[0] < 0) {
+            sx = -sx;
+        }
+        if (m[3] < 0) {
+            sy = -sy;
+        }
+
+        this.rotation = mathAtan2(-m[1] / sy, m[0] / sx);
+        this.position[0] = m[4];
+        this.position[1] = m[5];
+        this.scale[0] = sx;
+        this.scale[1] = sy;
+        this.skew[0]=m[1];
+        this.skew[1]=m[2];
+    },
+
+    /**
      * @method decomposeTransform
      * 分解`transform`矩阵到`position`, `scale`, `skew`。
      */
     decomposeTransform:function () {
-        if (!this.transform) {
-            return;
-        }
-        let parent = this.parent;
         let m = this.transform;
-        if (parent && parent.transform) {
+        let transformTmp=matrixUtil.create();
+
+        if (this.parent && this.parent.transform) {
             // Get local transform and decompose them to position, scale, rotation
-            transformTmp=matrixUtil.mul(parent.inverseTransform, m);
+            transformTmp=matrixUtil.mul(this.parent.inverseTransform, m);
             m = transformTmp;
         }
 

@@ -48,7 +48,7 @@ export default class Text extends Element{
             return;
         }
 
-        this.setTransform(ctx);
+        this.applyTransform(ctx);
 
         textUtil.renderText(this, ctx, text, style, null, prevEl);
 
