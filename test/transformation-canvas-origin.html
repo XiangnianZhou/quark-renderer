@@ -5,7 +5,7 @@
     <title>Transform</title>
 </head>
 <body>
-    <canvas id="main" style="width:1000px;height:600px;"></canvas>
+    <canvas id="main" width="800" height="1000"></canvas>
 
     <script type="text/javascript">
         let canvas=document.getElementById("main");
@@ -42,6 +42,16 @@
         }
         // rotateExample();
 
+        //skew matrix(1,tan(θy),tan(θx),1,0,0)
+        function skewExample() {
+            ctx.save();
+            ctx.setTransform(1,0,Math.tan(60),1,0,0);
+            ctx.fillStyle = '#0095DD';
+            ctx.fillRect(150, 150, 100, 100); 
+            ctx.restore();
+        }
+        skewExample();
+
         // transform
         function transformExample() {
             var sin = Math.sin(Math.PI / 6);
@@ -60,7 +70,7 @@
             ctx.fillStyle = 'rgba(255, 128, 255, 0.5)';
             ctx.fillRect(0, 50, 100, 100);
         }
-        transformExample();
+        // transformExample();
     </script>
 </body>
 </html>

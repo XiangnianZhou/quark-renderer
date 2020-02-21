@@ -125,6 +125,17 @@ export function scale(out, a, v) {
 }
 
 /**
+ * 斜切变换
+ * @param {Float32Array|Array.<Number>} out
+ * @param {Float32Array|Array.<Number>} a
+ * @param {Float32Array|Array.<Number>} v
+ */
+export function skew(out, a, v) {
+    //TODO:implement this
+    return out;
+}
+
+/**
  * 求逆矩阵
  * @param {Float32Array|Array.<Number>} out
  * @param {Float32Array|Array.<Number>} a

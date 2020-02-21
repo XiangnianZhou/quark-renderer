@@ -103,7 +103,7 @@ IncrementalDisplayble.prototype={
                 let displayable = this._displayables[i];
                 let childRect = displayable.getBoundingRect().clone();
                 if (displayable.needLocalTransform()) {
-                    childRect.applyTransform(displayable.getLocalTransform(m));
+                    childRect.applyTransform(displayable.getLocalTransform());
                 }
                 rect.union(childRect);
             }

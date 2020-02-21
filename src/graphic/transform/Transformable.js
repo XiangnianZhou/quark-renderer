@@ -239,16 +239,17 @@ Transformable.prototype={
     /**
      * @method getLocalTransform
      * 获取本地变换矩阵。
-     * @param {*} m 
      */
-    getLocalTransform:function (m=[]) {
-        matrixUtil.identity(m);
-
+    getLocalTransform:function () {
         let origin = this.origin || [0,0];
         let rotation = this.rotation || 0;
         let position = this.position || [0,0];
         let scale = this.scale || [1,1];
-    
+        let skew = this.skew || [1,1];
+        
+        let m=matrixUtil.create();
+
+        //移动原点
         m[4] -= origin[0];
         m[5] -= origin[1];
         
@@ -256,9 +257,11 @@ Transformable.prototype={
         matrixUtil.rotate(m, m, rotation);
         //TODO:计算 skew 的值
 
+        //原点移回去
         m[4] += origin[0];
         m[5] += origin[1];
     
+        //平移变换的值
         m[4] += position[0];
         m[5] += position[1];
 
@@ -314,7 +317,7 @@ Transformable.prototype={
 
         // 自身的变换
         if (needLocalTransform) {
-            this.getLocalTransform(m);
+            m=this.getLocalTransform();
         }else {
             matrixUtil.identity(m);
         }

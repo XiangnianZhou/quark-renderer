@@ -290,8 +290,7 @@ class Group extends Element{
         let rect = null;
         let tmpRect = new BoundingRect(0, 0, 0, 0);
         let children = includeChildren || this.children;
-        let tmpMat = [];
-
+        
         for (let i = 0; i < children.length; i++) {
             let child = children[i];
             if (child.ignore || child.invisible) {
@@ -299,7 +298,7 @@ class Group extends Element{
             }
 
             let childRect = child.getBoundingRect();
-            let transform = child.getLocalTransform(tmpMat);
+            let transform = child.getLocalTransform();
             // TODO
             // The boundingRect cacluated by transforming original
             // rect may be bigger than the actual bundingRect when rotation
