@@ -270,26 +270,18 @@ Transformable.prototype={
         let position = this.position || [0,0];
         let scale = this.scale || [1,1];
     
-        if (origin) {
-            // Translate to origin
-            m[4] -= origin[0];
-            m[5] -= origin[1];
-        }
+        m[4] -= origin[0];
+        m[5] -= origin[1];
         
         matrixUtil.scale(m, m, scale);
-        if (rotation) {
-            matrixUtil.rotate(m, m, rotation);
-        }
+        matrixUtil.rotate(m, m, rotation);
 
-        if (origin) {
-            // Translate back from origin
-            m[4] += origin[0];
-            m[5] += origin[1];
-        }
+        m[4] += origin[0];
+        m[5] += origin[1];
     
         m[4] += position[0];
         m[5] += position[1];
-
+        
         return m;
     },
 
@@ -325,7 +317,7 @@ Transformable.prototype={
     /**
      * @method setLocalTransform
      * 设置本地变换矩阵。
-     * @param {*} m 
+     * @param {Matrix} m 
      */
     setLocalTransform:function (m) {
         if (!m) {
