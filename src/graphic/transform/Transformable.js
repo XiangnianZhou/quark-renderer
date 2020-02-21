@@ -192,7 +192,11 @@ Transformable.prototype={
 
     /**
      * @method needLocalTransform
-     * 判断是否需要有坐标变换，如果有坐标变换, 则从 position, rotation, scale, skew 以及父节点的 transform 计算出自身的 transform 矩阵
+     * 
+     * 如果变化的值小于5e-5（0.00005），则不需要变换。
+     * 
+     * TODO:分别单独判断
+     * 
      * @return {Boolean}
      */
     needLocalTransform:function () {
@@ -207,7 +211,7 @@ Transformable.prototype={
 
     /**
      * @method updateTransform
-     * 更新变换矩阵。
+     * 根据单独设置的参数更新变换矩阵。
      */
     updateTransform:function () {
         let parent = this.parent;
@@ -232,6 +236,7 @@ Transformable.prototype={
             }
         }
 
+        // 应用全局缩放
         if (this.globalScaleRatio != null && this.globalScaleRatio !== 1) {
             this.getGlobalScale(scaleTmp);
             let relX = scaleTmp[0] < 0 ? -1 : 1;

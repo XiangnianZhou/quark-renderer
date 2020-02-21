@@ -5,6 +5,7 @@ import Style from './Style';
 import RectText from './RectText';
 import * as dataUtil from '../core/utils/data_structure_util';
 import * as classUtil from '../core/utils/class_util';
+import * as matrixUtil from '../core/utils/matrix_util';
 import guid from '../core/utils/guid';
 
 /**
@@ -261,12 +262,11 @@ class Element{
                 break;
         }
 
-        let m = this.transform;
-        if (!m) {
-            m = this.transform = [1, 0, 0, 1, 0, 0];
+        if(!this.transform){
+            this.transform=matrixUtil.create();
         }
-        m[4] += dx;
-        m[5] += dy;
+        this.transform[4]+=dx;
+        this.transform[5]+=dy;
 
         this.decomposeTransform();
         this.dirty(false);
