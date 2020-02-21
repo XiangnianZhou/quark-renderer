@@ -58,7 +58,7 @@ let Transformable = function (options={}) {
      * @property {Matrix} transform
      * 变换矩阵。
      */
-    this.transform=null;
+    this.transform=matrixUtil.create();;
 
     /**
      * @property {Matrix} inverseTransform
@@ -218,7 +218,7 @@ Transformable.prototype={
         let parentHasTransform = parent && parent.transform;
         let needLocalTransform = this.needLocalTransform();
 
-        let m = this.transform || matrixUtil.create();
+        let m = this.transform;
 
         // 自身的变换
         if (needLocalTransform) {
@@ -334,7 +334,7 @@ Transformable.prototype={
      * 
      * Apply the transform matrix to context.
      * 
-     * 将自己的transform应用到context上。
+     * 将自己的 transform 应用到 context 上。
      * 
      * @param {CanvasRenderingContext2D} ctx
      */

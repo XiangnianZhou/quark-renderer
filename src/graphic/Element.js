@@ -262,9 +262,6 @@ class Element{
                 break;
         }
 
-        if(!this.transform){
-            this.transform=matrixUtil.create();
-        }
         this.transform[4]+=dx;
         this.transform[5]+=dy;
 

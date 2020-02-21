@@ -25,7 +25,7 @@ export function create() {
  * 设置矩阵为单位矩阵
  * @param {Float32Array|Array.<Number>} out
  */
-export function identity() {
+export function identity(out) {
     out[0] = 1;
     out[1] = 0;
     out[2] = 0;
