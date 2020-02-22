@@ -780,7 +780,6 @@ export default class CanvasPainter{
                 if (!layer.incremental) {
                     layer.__drawIndex = i;
                 }else {
-                    // Mark layer draw index needs to update.
                     layer.__drawIndex = -1;
                 }
                 updatePrevLayer(i);
