@@ -99,13 +99,11 @@ Storage.prototype = {
         if (el.ignore && !includeIgnore) {
             return;
         }
-        el.beforeUpdate();
 
         if (el.__dirty) {
             el.update();
         }
 
-        el.afterUpdate();
         let userSetClipPath = el.clipPath;
         if (userSetClipPath) {
             // FIXME 效率影响

@@ -270,15 +270,6 @@ class Element{
     }
 
     /**
-     * @property {Function} beforeUpdate
-     * 
-     * Hook before update.
-     * 
-     * 刷新之前回调。
-     */
-    beforeUpdate() {}
-
-    /**
      * @property {Function} update
      * 
      * Update each frame.
@@ -288,15 +279,6 @@ class Element{
     update() {
         this.composeLocalTransform();
     }
-
-    /**
-     * @property {Function} afterUpdate
-     * 
-     * Hook after update.
-     * 
-     * 刷新之后回调。
-     */
-    afterUpdate() {}
     
     /**
      * @property {Function} traverse
