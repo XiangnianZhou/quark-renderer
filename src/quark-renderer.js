@@ -157,19 +157,7 @@ class QuarkRenderer{
     
         /**
          * @property {GlobalAnimationMgr}
-         * 利用 GlobalAnimationMgr 动画的 frame 事件渲染下一张画面， QuarkRenderer 依赖此机制来刷新 canvas 画布。
-         * FROM MDN：
-         * The window.requestAnimationFrame() method tells the browser that you wish 
-         * to perform an animation and requests that the browser calls a specified 
-         * function to update an animation before the next repaint. The method takes 
-         * a callback as an argument to be invoked before the repaint.
-         * 
-         * https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
-         * 
-         * NOTE: 这里有潜在的性能限制，由于 requestAnimationFrame 方法每秒回调60次，每次执行时间约 16ms
-         * 如果在 16ms 的时间内无法渲染完一帧画面，会出现卡顿。也就是说， QuarkRenderer 引擎在同一张 canvas 上
-         * 能够渲染的图形元素数量有上限。本机在 Chrome 浏览器中 Benchmark 的结果大约为 100 万个矩形会出现
-         * 明显的卡顿。
+         * 利用 GlobalAnimationMgr 的 frame 事件刷新画布上的元素。
          */
         this.globalAnimationMgr = new GlobalAnimationMgr();
         this.globalAnimationMgr.on("frame",function(){
