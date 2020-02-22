@@ -101,7 +101,7 @@ Storage.prototype = {
         }
 
         if (el.__dirty) {
-            el.update();
+            el.calcTransform();
         }
 
         let userSetClipPath = el.clipPath;

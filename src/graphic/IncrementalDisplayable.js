@@ -59,20 +59,20 @@ IncrementalDisplayble.prototype={
             cb && cb(this._temporaryDisplayables[i]);
         }
     },
-    update:function () {
+    calcTransform:function () {
         this.composeLocalTransform();
         for (let i = this._cursor; i < this.elements.length; i++) {
             let element = this.elements[i];
             // PENDING
             element.parent = this;
-            element.update();
+            element.composeLocalTransform();
             element.parent = null;
         }
         for (let i = 0; i < this._temporaryDisplayables.length; i++) {
             let element = this._temporaryDisplayables[i];
             // PENDING
             element.parent = this;
-            element.update();
+            element.composeLocalTransform();
             element.parent = null;
         }
     },

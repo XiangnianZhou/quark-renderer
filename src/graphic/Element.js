@@ -270,13 +270,9 @@ class Element{
     }
 
     /**
-     * @property {Function} update
-     * 
-     * Update each frame.
-     * 
-     * 刷新，每一帧回调。
+     * @property {Function} calcTransform
      */
-    update() {
+    calcTransform() {
         this.composeLocalTransform();
     }
     
