@@ -54,15 +54,15 @@ Storage.prototype = {
     /**
      * @method getDisplayList
      * 返回所有图形的绘制队列
-     * @param {boolean} [update=false] 是否在返回前更新该数组
-     * @param {boolean} [includeIgnore=false] 是否包含 ignore 的数组, 在 update 为 true 的时候有效
+     * @param {boolean} [needUpdate=false] 是否在返回前更新该数组
+     * @param {boolean} [includeIgnore=false] 是否包含 ignore 的数组, 在 needUpdate 为 true 的时候有效
      *
      * 详见{@link Displayable.prototype.updateDisplayList}
      * @return {Array<Displayable>}
      */
-    getDisplayList: function (update, includeIgnore) {
+    getDisplayList: function (needUpdate, includeIgnore) {
         includeIgnore = includeIgnore || false;
-        if (update) {
+        if (needUpdate) {
             this.updateDisplayList(includeIgnore);
         }
         return this._displayList;

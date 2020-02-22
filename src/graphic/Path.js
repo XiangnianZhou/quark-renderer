@@ -219,7 +219,7 @@ class Path extends Element{
         this._rect = rect;
 
         if (this.style.hasStroke()) {
-            // Needs update rect with stroke lineWidth when
+            // Update rect with stroke lineWidth when
             // 1. Element changes scale or lineWidth
             // 2. Shape is changed
             let rectWithStroke = this._rectWithStroke || (this._rectWithStroke = rect.clone());
