@@ -275,19 +275,8 @@ Transformable.prototype={
      * @param {Matrix} m 
      */
     setLocalTransform:function (m) {
-        if (!m) {
-            // TODO return or set identity?
-            return;
-        }
-        
-        let sx = m[0] * m[0] + m[1] * m[1];
-        let sy = m[2] * m[2] + m[3] * m[3];
-        if (dataUtil.isNotAroundZero(sx - 1)) {
-            sx = mathSqrt(sx);
-        }
-        if (dataUtil.isNotAroundZero(sy - 1)) {
-            sy = mathSqrt(sy);
-        }
+        let sx = mathSqrt(m[0] * m[0] + m[1] * m[1]);
+        let sy = mathSqrt(m[2] * m[2] + m[3] * m[3]);
         if (m[0] < 0) {
             sx = -sx;
         }
