@@ -264,11 +264,10 @@ class Element{
 
         this.transform[4]+=dx;
         this.transform[5]+=dy;
-
         this.decomposeLocalTransform();
-        this.dirty(false);
+        this.dirty();
     }
-    
+
     /**
      * @property {Function} traverse
      * @param  {Function} cb
@@ -347,7 +346,7 @@ class Element{
         clipPath.__clipTarget = this;
 
         //TODO: FIX this，子类 Path 中的 dirty() 方法有参数。
-        this.dirty(false);
+        this.dirty();
     }
 
     /**
@@ -369,7 +368,7 @@ class Element{
             clipPath.__clipTarget = null;
             this.clipPath = null;
 
-            this.dirty(false);
+            this.dirty();
         }
     }
 
@@ -533,7 +532,7 @@ class Element{
                 }
             }
         }
-        this.dirty(false);
+        this.dirty();
         return this;
     }
 
@@ -557,7 +556,7 @@ class Element{
      */
     setStyle(key, value) {
         this.style.set(key, value);
-        this.dirty(false);
+        this.dirty();
         return this;
     }
 
@@ -568,7 +567,7 @@ class Element{
      */
     useStyle(obj) {
         this.style = new Style(obj, this);
-        this.dirty(false);
+        this.dirty();
         return this;
     }
 }
