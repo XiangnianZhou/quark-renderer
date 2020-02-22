@@ -101,7 +101,7 @@ Storage.prototype = {
         }
 
         if (el.__dirty) {
-            el.calcTransform();
+            el.composeLocalTransform();
         }
 
         let userSetClipPath = el.clipPath;
@@ -140,7 +140,6 @@ Storage.prototype = {
             el.__dirty = false;
         }else {
             el.__clipPaths = clipPaths;
-
             this._displayList[this._displayListLen++] = el;
         }
     },

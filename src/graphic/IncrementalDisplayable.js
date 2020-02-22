@@ -59,8 +59,8 @@ IncrementalDisplayble.prototype={
             cb && cb(this._temporaryDisplayables[i]);
         }
     },
-    calcTransform:function () {
-        this.composeLocalTransform();
+    composeLocalTransform:function () {
+        Element.prototype.composeLocalTransform.call(this);
         for (let i = this._cursor; i < this.elements.length; i++) {
             let element = this.elements[i];
             // PENDING

@@ -268,13 +268,6 @@ class Element{
         this.decomposeLocalTransform();
         this.dirty(false);
     }
-
-    /**
-     * @property {Function} calcTransform
-     */
-    calcTransform() {
-        this.composeLocalTransform();
-    }
     
     /**
      * @property {Function} traverse
