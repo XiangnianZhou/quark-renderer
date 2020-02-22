@@ -19,7 +19,7 @@ import BoundingRect from './transform/BoundingRect';
 // TODO Style override ?
 function IncrementalDisplayble(opts) {
     classUtil.inheritProperties(this,Element,opts);
-    this._displayables = [];
+    this.elements = [];
     this._temporaryDisplayables = [];
     this._cursor = 0;
     this.notClear = true;
@@ -31,17 +31,17 @@ IncrementalDisplayble.prototype={
     constructor:IncrementalDisplayble,
     incremental:true,
     clearDisplaybles:function () {
-        this._displayables = [];
+        this.elements = [];
         this._temporaryDisplayables = [];
         this._cursor = 0;
         this.dirty();
         this.notClear = false;
     },
-    addDisplayable:function (displayable, notPersistent) {
+    addDisplayable:function (element, notPersistent) {
         if (notPersistent) {
-            this._temporaryDisplayables.push(displayable);
+            this._temporaryDisplayables.push(element);
         }else {
-            this._displayables.push(displayable);
+            this.elements.push(element);
         }
         this.dirty();
     },
@@ -52,8 +52,8 @@ IncrementalDisplayble.prototype={
         }
     },
     eachPendingDisplayable:function (cb) {
-        for (let i = this._cursor; i < this._displayables.length; i++) {
-            cb && cb(this._displayables[i]);
+        for (let i = this._cursor; i < this.elements.length; i++) {
+            cb && cb(this.elements[i]);
         }
         for (let i = 0; i < this._temporaryDisplayables.length; i++) {
             cb && cb(this._temporaryDisplayables[i]);
@@ -61,37 +61,37 @@ IncrementalDisplayble.prototype={
     },
     update:function () {
         this.composeLocalTransform();
-        for (let i = this._cursor; i < this._displayables.length; i++) {
-            let displayable = this._displayables[i];
+        for (let i = this._cursor; i < this.elements.length; i++) {
+            let element = this.elements[i];
             // PENDING
-            displayable.parent = this;
-            displayable.update();
-            displayable.parent = null;
+            element.parent = this;
+            element.update();
+            element.parent = null;
         }
         for (let i = 0; i < this._temporaryDisplayables.length; i++) {
-            let displayable = this._temporaryDisplayables[i];
+            let element = this._temporaryDisplayables[i];
             // PENDING
-            displayable.parent = this;
-            displayable.update();
-            displayable.parent = null;
+            element.parent = this;
+            element.update();
+            element.parent = null;
         }
     },
     brush:function (ctx, prevEl) {
         // Render persistant displayables.
         let i = this._cursor;
-        for (; i < this._displayables.length; i++) {
-            let displayable = this._displayables[i];
-            displayable.beforeBrush && displayable.beforeBrush(ctx);
-            displayable.brush(ctx, i === this._cursor ? null : this._displayables[i - 1]);
-            displayable.afterBrush && displayable.afterBrush(ctx);
+        for (; i < this.elements.length; i++) {
+            let element = this.elements[i];
+            element.beforeBrush && element.beforeBrush(ctx);
+            element.brush(ctx, i === this._cursor ? null : this.elements[i - 1]);
+            element.afterBrush && element.afterBrush(ctx);
         }
         this._cursor = i;
         // Render temporary displayables.
         for (let i = 0; i < this._temporaryDisplayables.length; i++) {
-            let displayable = this._temporaryDisplayables[i];
-            displayable.beforeBrush && displayable.beforeBrush(ctx);
-            displayable.brush(ctx, i === 0 ? null : this._temporaryDisplayables[i - 1]);
-            displayable.afterBrush && displayable.afterBrush(ctx);
+            let element = this._temporaryDisplayables[i];
+            element.beforeBrush && element.beforeBrush(ctx);
+            element.brush(ctx, i === 0 ? null : this._temporaryDisplayables[i - 1]);
+            element.afterBrush && element.afterBrush(ctx);
         }
         this._temporaryDisplayables = [];
         this.notClear = true;
@@ -99,11 +99,11 @@ IncrementalDisplayble.prototype={
     getBoundingRect:function () {
         if (!this._rect) {
             let rect = new BoundingRect(Infinity, Infinity, -Infinity, -Infinity);
-            for (let i = 0; i < this._displayables.length; i++) {
-                let displayable = this._displayables[i];
-                let childRect = displayable.getBoundingRect().clone();
-                if (displayable.needLocalTransform()) {
-                    childRect.applyTransform(displayable.getLocalTransform());
+            for (let i = 0; i < this.elements.length; i++) {
+                let element = this.elements[i];
+                let childRect = element.getBoundingRect().clone();
+                if (element.needLocalTransform()) {
+                    childRect.applyTransform(element.getLocalTransform());
                 }
                 rect.union(childRect);
             }
@@ -115,9 +115,9 @@ IncrementalDisplayble.prototype={
         let localPos = this.globalToLocal(x, y);
         let rect = this.getBoundingRect();
         if (rect.contain(localPos[0], localPos[1])) {
-            for (let i = 0; i < this._displayables.length; i++) {
-                let displayable = this._displayables[i];
-                if (displayable.contain(x, y)) {
+            for (let i = 0; i < this.elements.length; i++) {
+                let element = this.elements[i];
+                if (element.contain(x, y)) {
                     return true;
                 }
             }
