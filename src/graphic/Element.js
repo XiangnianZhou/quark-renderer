@@ -375,9 +375,7 @@ class Element{
         clipPath.__qr = qr;
         clipPath.__clipTarget = this;
 
-        //TODO: FIX this，需要重写一下，考虑把 Element 类和 Displayable 类合并起来。
-        //dirty() 方法定义在子类 Displayable 中，这里似乎不应该直接调用，作为父类的 Element 不应该了解子类的实现，否则不易理解和维护。
-        //另，Displayable 中的 dirty() 方法没有参数，而孙类 Path 中的 dirty() 方法有参数。
+        //TODO: FIX this，子类 Path 中的 dirty() 方法有参数。
         this.dirty(false);
     }
 
