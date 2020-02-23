@@ -109,7 +109,8 @@ export function registerPainter(name, PainterClass) {
 class QuarkRenderer{
     constructor(host, options={}){
         /**
-         * @property {String}
+         * @private
+         * @property {String} id
          */
         this.id = guid();
 
@@ -126,21 +127,21 @@ class QuarkRenderer{
         let self = this;
     
         /**
-         * @property {Storage}
+         * @private
+         * @property {Storage} storage
          */
         this.storage = new Storage();
-    
+
+        //根据参数创建不同类型的 Painter 实例。
         let rendererType = options.renderer;
         if (!rendererType || !painterMap[rendererType]) {
             rendererType = 'canvas';
         }
-
-        //根据参数创建不同类型的 Painter 实例。
         this.painter = new painterMap[rendererType](this.host, this.storage, options, this.id);
 
+        //利用代理拦截 DOM 事件，转发到 QuarkRenderer 自己封装的事件机制。
         let handerProxy =null;
         if(typeof this.host.moveTo!=='function'){
-            //代理DOM事件。
             if(!env.node && !env.worker && !env.wxa){
                 handerProxy=new DomEventProxy(this.painter.getHost());
             }
@@ -151,25 +152,16 @@ class QuarkRenderer{
                 return self.host.measureText(text);
             });
         }
-        
-        //QuarkRenderer 自己封装的事件机制。
+        /**
+         * @private
+         * @property {QRendererEventHandler} eventHandler
+         * QuarkRenderer 自己封装的事件机制，这是画布内部的事件系统。
+         */
         this.eventHandler = new QRendererEventHandler(this.storage, this.painter, handerProxy, this.painter.root);
     
         /**
          * @property {GlobalAnimationMgr}
-         * 利用 GlobalAnimationMgr 动画的 frame 事件渲染下一张画面， QuarkRenderer 依赖此机制来刷新 canvas 画布。
-         * FROM MDN：
-         * The window.requestAnimationFrame() method tells the browser that you wish 
-         * to perform an animation and requests that the browser calls a specified 
-         * function to update an animation before the next repaint. The method takes 
-         * a callback as an argument to be invoked before the repaint.
-         * 
-         * https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
-         * 
-         * NOTE: 这里有潜在的性能限制，由于 requestAnimationFrame 方法每秒回调60次，每次执行时间约 16ms
-         * 如果在 16ms 的时间内无法渲染完一帧画面，会出现卡顿。也就是说， QuarkRenderer 引擎在同一张 canvas 上
-         * 能够渲染的图形元素数量有上限。本机在 Chrome 浏览器中 Benchmark 的结果大约为 100 万个矩形会出现
-         * 明显的卡顿。
+         * 利用 GlobalAnimationMgr 的 frame 事件刷新画布上的元素。
          */
         this.globalAnimationMgr = new GlobalAnimationMgr();
         this.globalAnimationMgr.on("frame",function(){
@@ -181,23 +173,7 @@ class QuarkRenderer{
          * @property {boolean}
          * @private
          */
-        this._needsRefresh;
-    
-        // 修改 storage.delFromStorage, 每次删除元素之前删除动画
-        // FIXME 有点ugly
-        // What's going on here?
-        let oldDelFromStorage = this.storage.delFromStorage;
-        let oldAddToStorage = this.storage.addToStorage;
-    
-        this.storage.delFromStorage = function (el) {
-            oldDelFromStorage.call(self.storage, el);
-            el && el.removeSelfFromQr(self);
-        };
-    
-        this.storage.addToStorage = function (el) {
-            oldAddToStorage.call(self.storage, el);
-            el.addSelfToQr(self);
-        };    
+        this._needRefresh;  
     }
 
     /**
@@ -215,8 +191,9 @@ class QuarkRenderer{
      * @param  {qrenderer/Element} el
      */
     add(el) {
-        this.storage.addRoot(el);
-        this._needsRefresh = true;
+        el.__qr=this;
+        this.storage.addToRoot(el);
+        this.refresh();
     }
 
     /**
@@ -225,8 +202,9 @@ class QuarkRenderer{
      * @param  {qrenderer/Element} el
      */
     remove(el) {
-        this.storage.delRoot(el);
-        this._needsRefresh = true;
+        this.storage.delFromRoot(el);
+        el.__qr=null;
+        this.refresh();
     }
 
     /**
@@ -243,7 +221,7 @@ class QuarkRenderer{
         if (this.painter.configLayer) {
             this.painter.configLayer(qLevel, config);
         }
-        this._needsRefresh = true;
+        this.refresh();
     }
 
     /**
@@ -255,7 +233,7 @@ class QuarkRenderer{
         if (this.painter.setBackgroundColor) {
             this.painter.setBackgroundColor(backgroundColor);
         }
-        this._needsRefresh = true;
+        this.refresh();
     }
 
     /**
@@ -264,19 +242,12 @@ class QuarkRenderer{
      * Repaint the canvas immediately
      */
     refreshImmediately() {
-        // let start = new Date();
         // Clear needsRefresh ahead to avoid something wrong happens in refresh
         // Or it will cause qrenderer refreshes again and again.
-        this._needsRefresh = this._needsRefreshHover = false;
+        this._needRefresh = this._needsRefreshHover = false;
         this.painter.refresh();
         // Avoid trigger qr.refresh in Element#beforeUpdate hook
-        this._needsRefresh = this._needsRefreshHover = false;
-
-        // let end = new Date();
-        // let log = document.getElementById('log');
-        // if (log) {
-        //     log.innerHTML = log.innerHTML + '<br>' + (end - start);
-        // }
+        this._needRefresh = this._needsRefreshHover = false;
     }
 
     /**
@@ -284,7 +255,7 @@ class QuarkRenderer{
      * Mark and repaint the canvas in the next frame of browser
      */
     refresh() {
-        this._needsRefresh = true;
+        this._needRefresh = true;
     }
 
     /**
@@ -296,7 +267,7 @@ class QuarkRenderer{
     flush() {
         let triggerRendered;
 
-        if (this._needsRefresh) {      //是否需要全部重绘
+        if (this._needRefresh) {      //是否需要全部重绘
             triggerRendered = true;
             this.refreshImmediately();
         }
@@ -482,7 +453,7 @@ class QuarkRenderer{
      * Clear all objects and the canvas.
      */
     clear() {
-        this.storage.delRoot();
+        this.storage.delFromRoot();
         this.painter.clear();
     }
 

@@ -72,11 +72,6 @@ class GlobalAnimationMgr{
         });
 
         this._timestamp = time;
-
-        // TODO:What's going on here?
-        // 'frame' should be triggered before stage, because upper application
-        // depends on the sequence (e.g., echarts-stream and finish
-        // event judge)
         this.trigger('frame', delta);
     }
 

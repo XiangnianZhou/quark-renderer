@@ -103,8 +103,7 @@ class ClippathManager extends Definable{
                 );
     
                 // Transform back from parent, and brush path
-                matrixUtil.mul(
-                    clipPath.transform,
+                clipPath.transform=matrixUtil.mul(
                     clipPath.parent.inverseTransform,
                     clipPath.transform
                 );

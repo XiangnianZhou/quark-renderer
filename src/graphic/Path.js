@@ -72,7 +72,7 @@ class Path extends Element{
         let hasStrokePattern = hasStroke && !!(stroke.image);
 
         this.style.bind(ctx, this, prevEl);
-        this.setTransform(ctx);
+        this.applyTransform(ctx);
 
         if (this.__dirty) {
             let rect;
@@ -219,13 +219,13 @@ class Path extends Element{
         this._rect = rect;
 
         if (this.style.hasStroke()) {
-            // Needs update rect with stroke lineWidth when
+            // Update rect with stroke lineWidth when
             // 1. Element changes scale or lineWidth
             // 2. Shape is changed
             let rectWithStroke = this._rectWithStroke || (this._rectWithStroke = rect.clone());
             if (this.__dirty || needsUpdateRect) {
                 rectWithStroke.copy(rect);
-                // FIXME Must after updateTransform
+                // FIXME Must after composeLocalTransform
                 let w = this.style.lineWidth;
                 // PENDING, Min line width is needed when line is horizontal or vertical
                 let lineScale = this.style.strokeNoScale ? this.getLineScale() : 1;

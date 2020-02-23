@@ -58,8 +58,7 @@ export default class QImage extends Element{
             height = image.height;
         }
 
-        // 设置transform
-        this.setTransform(ctx);
+        this.applyTransform(ctx);
 
         if (style.sWidth && style.sHeight) {
             let sx = style.sx || 0;

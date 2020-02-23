@@ -5,6 +5,7 @@ import Style from './Style';
 import RectText from './RectText';
 import * as dataUtil from '../core/utils/data_structure_util';
 import * as classUtil from '../core/utils/class_util';
+import * as matrixUtil from '../core/utils/matrix_util';
 import guid from '../core/utils/guid';
 
 /**
@@ -31,7 +32,7 @@ class Element{
         /**
          * @property {String} id
          */
-        this.id = this.options.id || guid();
+        this.id = 'el-'+guid();
 
         /**
          * @property {String} type 元素类型
@@ -44,7 +45,7 @@ class Element{
         this.name='';
 
         /**
-         * @property {Element} parent 父节点
+         * @property {Element} parent 父节点，添加到 Group 的元素存在父节点。
          */
         this.parent=null;
     
@@ -69,15 +70,6 @@ class Element{
          * @see http://www.w3.org/TR/2dcontext/#clipping-region
          */
         this.clipPath=null;
-    
-        /**
-         * @property {Boolean} isGroup
-         * 
-         * Whether this object is a Group.
-         * 
-         * 是否是 Group
-         */
-        this.isGroup=false;
 
         // FIXME Stateful must be mixined after style is setted
         // Stateful.call(this, options);
@@ -261,46 +253,12 @@ class Element{
                 break;
         }
 
-        let m = this.transform;
-        if (!m) {
-            m = this.transform = [1, 0, 0, 1, 0, 0];
-        }
-        m[4] += dx;
-        m[5] += dy;
-
-        this.decomposeTransform();
-        this.dirty(false);
+        this.transform[4]+=dx;
+        this.transform[5]+=dy;
+        this.decomposeLocalTransform();
+        this.dirty();
     }
 
-    /**
-     * @property {Function} beforeUpdate
-     * 
-     * Hook before update.
-     * 
-     * 刷新之前回调。
-     */
-    beforeUpdate() {}
-
-    /**
-     * @property {Function} update
-     * 
-     * Update each frame.
-     * 
-     * 刷新，每一帧回调。
-     */
-    update() {
-        this.updateTransform();
-    }
-
-    /**
-     * @property {Function} afterUpdate
-     * 
-     * Hook after update.
-     * 
-     * 刷新之后回调。
-     */
-    afterUpdate() {}
-    
     /**
      * @property {Function} traverse
      * @param  {Function} cb
@@ -366,7 +324,7 @@ class Element{
     setClipPath(clipPath) {
         let qr = this.__qr;
         if (qr) {
-            clipPath.addSelfToQr(qr);
+            clipPath.addToQr(qr);
         }
 
         // Remove previous clip path
@@ -378,10 +336,8 @@ class Element{
         clipPath.__qr = qr;
         clipPath.__clipTarget = this;
 
-        //TODO: FIX this，需要重写一下，考虑把 Element 类和 Displayable 类合并起来。
-        //dirty() 方法定义在子类 Displayable 中，这里似乎不应该直接调用，作为父类的 Element 不应该了解子类的实现，否则不易理解和维护。
-        //另，Displayable 中的 dirty() 方法没有参数，而孙类 Path 中的 dirty() 方法有参数。
-        this.dirty(false);
+        //TODO: FIX this，子类 Path 中的 dirty() 方法有参数。
+        this.dirty();
     }
 
     /**
@@ -396,14 +352,14 @@ class Element{
         let clipPath = this.clipPath;
         if (clipPath) {
             if (clipPath.__qr) {
-                clipPath.removeSelfFromQr(clipPath.__qr);
+                clipPath.removeFromQr(clipPath.__qr);
             }
 
             clipPath.__qr = null;
             clipPath.__clipTarget = null;
             this.clipPath = null;
 
-            this.dirty(false);
+            this.dirty();
         }
     }
 
@@ -422,40 +378,34 @@ class Element{
     }
 
     /**
-     * @method addSelfToQr
+     * @method addToQr
      * Add self to qrenderer instance.
      * Not recursively because it will be invoked when element added to storage.
      * 
      * 把当前对象添加到 qrenderer 实例中去。
      * 不会递归添加，因为当元素被添加到 storage 中的时候会执行递归操作。
-     * 
-     * @param {QuarkRenderer} qr
      */
-    addSelfToQr(qr) {
-        this.__qr = qr;
-        // 添加动画
+    addToQr() {
         let animationProcessList = this.animationProcessList;
         if (animationProcessList) {
             for (let i = 0; i < animationProcessList.length; i++) {
-                qr.globalAnimationMgr.addAnimationProcess(animationProcessList[i]);
+                this.__qr.globalAnimationMgr.addAnimationProcess(animationProcessList[i]);
             }
         }
 
         if (this.clipPath) {
-            this.clipPath.addSelfToQr(qr);
+            this.clipPath.addToQr();
         }
     }
 
     /**
-     * @method removeSelfFromQr
+     * @method removeFromQr
      * Remove self from qrenderer instance.
      * 
      * 把当前对象从 qrenderer 实例中删除。
-     * 
-     * @param {QuarkRenderer} qr
      */
-    removeSelfFromQr(qr) {
-        this.__qr = null;
+    removeFromQr() {
+        let qr=this.__qr;
         // 移除动画
         let animationProcessList = this.animationProcessList;
         if (animationProcessList) {
@@ -465,8 +415,9 @@ class Element{
         }
 
         if (this.clipPath) {
-            this.clipPath.removeSelfFromQr(qr);
+            this.clipPath.removeFromQr(qr);
         }
+        this.__qr=null;
     }
 
     /**
@@ -567,7 +518,7 @@ class Element{
                 }
             }
         }
-        this.dirty(false);
+        this.dirty();
         return this;
     }
 
@@ -591,7 +542,7 @@ class Element{
      */
     setStyle(key, value) {
         this.style.set(key, value);
-        this.dirty(false);
+        this.dirty();
         return this;
     }
 
@@ -602,7 +553,7 @@ class Element{
      */
     useStyle(obj) {
         this.style = new Style(obj, this);
-        this.dirty(false);
+        this.dirty();
         return this;
     }
 }

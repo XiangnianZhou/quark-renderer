@@ -419,7 +419,7 @@ export default class CanvasPainter{
                 layer.clear(false, clearColor);
             }else if (start === layer.__startIndex) {
                 let firstEl = list[start];
-                if (!firstEl.incremental || !firstEl.notClear || paintAll) {
+                if (!firstEl.incremental || paintAll) {
                     layer.clear(false, clearColor);
                 }
             }
@@ -493,7 +493,7 @@ export default class CanvasPainter{
             && el.style.opacity !== 0
             // Ignore scale 0 element, in some environment like node-canvas
             // Draw a scale 0 element can cause all following draw wrong
-            // And setTransform with scale 0 will cause set back transform failed.
+            // And applyTransform with scale 0 will cause set back transform failed.
             && !(m && !m[0] && !m[3])
             // Ignore culled element
             && !(el.culling && this.isDisplayableCulled(el, this._width, this._height))
@@ -780,7 +780,6 @@ export default class CanvasPainter{
                 if (!layer.incremental) {
                     layer.__drawIndex = i;
                 }else {
-                    // Mark layer draw index needs to update.
                     layer.__drawIndex = -1;
                 }
                 updatePrevLayer(i);
@@ -1066,7 +1065,7 @@ export default class CanvasPainter{
         path.position = [leftMargin - rect.x, topMargin - rect.y];
         path.rotation = 0;
         path.scale = [1, 1];
-        path.updateTransform();
+        path.composeLocalTransform();
         if (path) {
             path.brush(ctx);
         }
@@ -1161,7 +1160,7 @@ export default class CanvasPainter{
      */
     doClip(clipPaths, ctx) {
         clipPaths.forEach((clipPath,index)=>{
-            clipPath.setTransform(ctx);
+            clipPath.applyTransform(ctx);
             ctx.beginPath();
             clipPath.buildPath(ctx, clipPath.shape);
             ctx.clip();

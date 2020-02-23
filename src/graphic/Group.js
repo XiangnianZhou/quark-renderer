@@ -6,11 +6,9 @@ import { extend } from '../core/utils/data_structure_util';
 /**
  * @class qrenderer.graphic.Group
  * 
- * - Group is a container, it's not visible.
  * - Group can have child nodes, not the other Element types.
  * - The transformations applied to Group will apply to its children too.
  * 
- * - Group 是一个容器，本身不可见。
  * - Group 可以插入子节点，其它类型不能。
  * - Group 上的变换也会被应用到子节点上。
  * 
@@ -18,9 +16,8 @@ import { extend } from '../core/utils/data_structure_util';
  *      let Group = require('qrenderer/Group');
  *      let Circle = require('qrenderer/graphic/shape/Circle');
  *      let g = new Group();
- *      g.position[0] = 100;
- *      g.position[1] = 100;
  *      g.add(new Circle({
+ *          position:[100,100],
  *          style: {
  *              x: 100,
  *              y: 100,
@@ -37,11 +34,6 @@ class Group extends Element{
         super(options);
 
         /**
-         * @property isGroup
-         */
-        this.isGroup=true;
-    
-        /**
          * @property {String}
          */
         this.type='group';
@@ -56,6 +48,13 @@ class Group extends Element{
          * @property __storage
          */
         this.__storage = null;
+
+        //对象先添加到了 group ，但是 group 还没有添加到 qr，这里重新设置一遍，确保 API 调用者不需要考虑添加顺序。
+        this.on("add",()=>{
+            this.children.forEach((item,index)=>{
+                item.__qr=this.__qr;
+            });
+        });
     }
 
     /**
@@ -142,20 +141,16 @@ class Group extends Element{
         if (child.parent) {
             child.parent.remove(child);
         }
-
         child.parent = this;//把子节点的 parent 属性指向自己，在事件冒泡的时候会使用 parent 属性。
-
         let storage = this.__storage;
-        let qr = this.__qr;
         if (storage && storage !== child.__storage) {
-
             storage.addToStorage(child);
-
-            if (child instanceof Group) {
+            if (child.type==='group') {
                 child.addChildrenToStorage(storage);
             }
         }
-        qr && qr.refresh();
+        child.__qr=this.__qr;
+        this.__qr && this.__qr.refresh();
     }
 
     /**
@@ -177,7 +172,7 @@ class Group extends Element{
 
         if (storage) {
             storage.delFromStorage(child);
-            if (child instanceof Group) {
+            if (child.type==='group') {
                 child.delChildrenFromStorage(storage);
             }
         }
@@ -199,7 +194,7 @@ class Group extends Element{
             child = children[i];
             if (storage) {
                 storage.delFromStorage(child);
-                if (child instanceof Group) {
+                if (child.type==='group') {
                     child.delChildrenFromStorage(storage);
                 }
             }
@@ -235,7 +230,6 @@ class Group extends Element{
         for (let i = 0; i < this.children.length; i++) {
             let child = this.children[i];
             cb.call(context, child);
-
             if (child.type === 'group') {
                 child.traverse(cb, context);
             }
@@ -251,7 +245,7 @@ class Group extends Element{
         for (let i = 0; i < this.children.length; i++) {
             let child = this.children[i];
             storage.addToStorage(child);
-            if (child instanceof Group) {
+            if (child.type==='group') {
                 child.addChildrenToStorage(storage);
             }
         }
@@ -265,7 +259,7 @@ class Group extends Element{
         for (let i = 0; i < this.children.length; i++) {
             let child = this.children[i];
             storage.delFromStorage(child);
-            if (child instanceof Group) {
+            if (child.type==='group') {
                 child.delChildrenFromStorage(storage);
             }
         }
@@ -290,8 +284,7 @@ class Group extends Element{
         let rect = null;
         let tmpRect = new BoundingRect(0, 0, 0, 0);
         let children = includeChildren || this.children;
-        let tmpMat = [];
-
+        
         for (let i = 0; i < children.length; i++) {
             let child = children[i];
             if (child.ignore || child.invisible) {
@@ -299,7 +292,7 @@ class Group extends Element{
             }
 
             let childRect = child.getBoundingRect();
-            let transform = child.getLocalTransform(tmpMat);
+            let transform = child.getLocalTransform();
             // TODO
             // The boundingRect cacluated by transforming original
             // rect may be bigger than the actual bundingRect when rotation

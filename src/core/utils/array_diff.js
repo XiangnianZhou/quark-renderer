@@ -105,7 +105,6 @@ function hirschberg(arr0, arr1, i0, i1, j0, j1, equal, score0, score1) {
         for (j = 0; j < len1; j++) {
             if (equal(a, arr1[j + j0]) && !matched) {
                 matched = true;
-                // Equal and update use the index in first array
                 append(out, '=', i0, j + j0);
             }
             else {
