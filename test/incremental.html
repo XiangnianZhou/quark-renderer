@@ -7,42 +7,17 @@
 </head>
 <body style="margin:0px;">
     <canvas id="main" width="1000px" height="600px" style="width:1000px;height:600px;"></canvas>
+    <div id="counterDiv" style="font-size:32px;color:crimson;font-weight: bold;"></div>
     <script type="text/javascript">
         var qr = QuarkRenderer.init(document.getElementById('main'));
 
-        qr.add(new QuarkRenderer.Rect({
-            shape: {
-                x: 0,
-                y: 0,
-                width: qr.getWidth(),
-                height: qr.getHeight()
-            },
-            style: {
-                fill: 'red'
-            }
-        }));
-
-        var incrementalDisplayable = new QuarkRenderer.IncrementalDisplayable();
-        qr.add(incrementalDisplayable);
-
-        var countText = new QuarkRenderer.Text({
-            style: {
-                text: 0,
-                x: 10,
-                y: 10,
-                textFont: '40px sans-serif',
-                textFill: '#fff',
-                textStroke: '#000',
-                textStrokeWidth: 2
-            }
-        });
-        qr.add(countText);
-
+        let counter=0;
         qr.globalAnimationMgr.on('frame', function ()  {
             for (var i = 0; i < 2000; i++) {
                 var circleShape = new QuarkRenderer.Circle({
+                    incremental:true,
                     shape: {
-                        r: 5 + Math.random() * 5
+                        r: 1 + Math.random() * 2
                     },
                     style: {
                         fill: '#121',
@@ -50,16 +25,15 @@
                     },
                     position: [Math.random() * qr.getWidth(), Math.random() * qr.getHeight()]
                 });
-                incrementalDisplayable.addDisplayable(circleShape, true);
+                qr.add(circleShape);
             }
-
-            countText.style.text += 2000;
-            countText.dirty();
+            counter+=2000;
+            document.querySelector("#counterDiv").innerHTML=counter;
         });
 
         setInterval(function () {
-            incrementalDisplayable.clearDisplaybles();
-        }, 5000);
+            qr.clear();
+        }, 3000);
     </script>
 </body>
 </html>

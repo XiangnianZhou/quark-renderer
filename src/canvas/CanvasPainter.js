@@ -419,7 +419,7 @@ export default class CanvasPainter{
                 layer.clear(false, clearColor);
             }else if (start === layer.__startIndex) {
                 let firstEl = list[start];
-                if (!firstEl.incremental || !firstEl.notClear || paintAll) {
+                if (!firstEl.incremental || paintAll) {
                     layer.clear(false, clearColor);
                 }
             }
