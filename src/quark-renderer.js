@@ -204,7 +204,7 @@ class QuarkRenderer{
      */
     add(el) {
         this.storage.addRoot(el);
-        this._needsRefresh = true;
+        this.refresh();
     }
 
     /**
@@ -214,7 +214,7 @@ class QuarkRenderer{
      */
     remove(el) {
         this.storage.delRoot(el);
-        this._needsRefresh = true;
+        this.refresh();
     }
 
     /**
@@ -231,7 +231,7 @@ class QuarkRenderer{
         if (this.painter.configLayer) {
             this.painter.configLayer(qLevel, config);
         }
-        this._needsRefresh = true;
+        this.refresh();
     }
 
     /**
@@ -243,7 +243,7 @@ class QuarkRenderer{
         if (this.painter.setBackgroundColor) {
             this.painter.setBackgroundColor(backgroundColor);
         }
-        this._needsRefresh = true;
+        this.refresh();
     }
 
     /**
