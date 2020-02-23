@@ -1,5 +1,5 @@
 import * as vectorUtil from '../../core/utils/vector_util';
-import * as matrixUtil from '../../core/utils/matrix_util';
+import * as matrixUtil from '../../core/utils/affine_matrix_util';
 import {mathMin,mathMax} from '../constants';
 
 /**

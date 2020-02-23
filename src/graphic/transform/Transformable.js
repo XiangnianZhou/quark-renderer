@@ -1,5 +1,5 @@
 import {mathSqrt,mathAtan2} from '../constants';
-import * as matrixUtil from '../../core/utils/matrix_util';
+import * as matrixUtil from '../../core/utils/affine_matrix_util';
 import * as vectorUtil from '../../core/utils/vector_util';
 import * as classUtil from '../../core/utils/class_util';
 import * as dataUtil from '../../core/utils/data_structure_util';

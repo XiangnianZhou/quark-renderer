@@ -5,7 +5,7 @@ import Style from './Style';
 import RectText from './RectText';
 import * as dataUtil from '../core/utils/data_structure_util';
 import * as classUtil from '../core/utils/class_util';
-import * as matrixUtil from '../core/utils/matrix_util';
+import * as matrixUtil from '../core/utils/affine_matrix_util';
 import guid from '../core/utils/guid';
 
 /**
