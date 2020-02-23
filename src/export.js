@@ -5,7 +5,7 @@ import * as dataUtil from './core/utils/data_structure_util';
 import * as colorUtil from './core/utils/color_util';
 import * as pathUtil from './core/utils/path_util';
 import * as canvasUtil from './core/utils/canvas_util';
-import * as matrixUtil from './core/utils/matrix_util';
+import * as matrixUtil from './core/utils/affine_matrix_util';
 import * as vectorUtil from './core/utils/vector_util';
 import * as bboxUtil from './core/utils/bbox_util';
 import {parseSVG} from './svg/SVGParser';

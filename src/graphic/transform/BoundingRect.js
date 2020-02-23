@@ -1,5 +1,5 @@
 import * as vectorUtil from '../../core/utils/vector_util';
-import * as matrixUtil from '../../core/utils/matrix_util';
+import * as matrixUtil from '../../core/utils/affine_matrix_util';
 import {mathMin,mathMax} from '../constants';
 
 /**
@@ -122,12 +122,9 @@ class BoundingRect{
         let sy = b.height / a.height;
 
         let m = matrixUtil.create();
-
-        // 矩阵右乘
-        matrixUtil.translate(m, m, [-a.x, -a.y]);
-        matrixUtil.scale(m, m, [sx, sy]);
-        matrixUtil.translate(m, m, [b.x, b.y]);
-
+        m = matrixUtil.translate(m, [-a.x, -a.y]);
+        m = matrixUtil.scale(m, [sx, sy]);
+        m = matrixUtil.translate(m, [b.x, b.y]);
         return m;
     }
 

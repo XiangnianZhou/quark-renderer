@@ -10,7 +10,7 @@ import Polygon from '../graphic/shape/Polygon';
 import Polyline from '../graphic/shape/Polyline';
 import LinearGradient from '../graphic/gradient/LinearGradient';
 import Style from '../graphic/Style';
-import * as matrixUtil from '../core/utils/matrix_util';
+import * as matrixUtil from '../core/utils/affine_matrix_util';
 import { createFromString } from '../core/utils/path_util';
 import { isString, extend, trim, each } from '../core/utils/data_structure_util';
 import { defaults } from '../core/utils/class_util';
@@ -586,15 +586,15 @@ function parseTransformAttribute(xmlNode, node) {
             switch (type) {
                 case 'translate':
                     value = trim(value).split(DILIMITER_REG);
-                    matrixUtil.translate(m, m, [parseFloat(value[0]), parseFloat(value[1] || 0)]);
+                    m = matrixUtil.translate(m, [parseFloat(value[0]), parseFloat(value[1] || 0)]);
                     break;
                 case 'scale':
                     value = trim(value).split(DILIMITER_REG);
-                    matrixUtil.scale(m, m, [parseFloat(value[0]), parseFloat(value[1] || value[0])]);
+                    m = matrixUtil.scale(m, [parseFloat(value[0]), parseFloat(value[1] || value[0])]);
                     break;
                 case 'rotate':
                     value = trim(value).split(DILIMITER_REG);
-                    matrixUtil.rotate(m, m, parseFloat(value[0]));
+                    m = matrixUtil.rotate(m, parseFloat(value[0]));
                     break;
                 case 'skew':
                     value = trim(value).split(DILIMITER_REG);
