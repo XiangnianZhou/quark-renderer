@@ -48,6 +48,13 @@ class Group extends Element{
          * @property __storage
          */
         this.__storage = null;
+
+        //对象先添加到了 group ，但是 group 还没有添加到 qr，这里重新设置一遍，确保 API 调用者不需要考虑添加顺序。
+        this.on("add",()=>{
+            this.children.forEach((item,index)=>{
+                item.__qr=this.__qr;
+            });
+        });
     }
 
     /**

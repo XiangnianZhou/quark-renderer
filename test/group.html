@@ -34,9 +34,9 @@
         var group = new QuarkRenderer.Group({
             position: [100, 100]
         });
-        qr.add(group);//先添加group
         group.add(circle);
         group.add(circle2);
+        qr.add(group);
         
         group.animate('', true)
             .when(1000, {

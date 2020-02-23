@@ -159,9 +159,11 @@ Storage.prototype = {
             el.addChildrenToStorage(this);
         }
         this.trigger("beforeAdd",el);
+        el.trigger("beforeAdd",el);
         this.addToStorage(el);
         this._roots.set(el.id,el);
         this.trigger("add",el);
+        el.trigger("add",el);
     },
 
     /**
@@ -196,6 +198,7 @@ Storage.prototype = {
                 el.delChildrenFromStorage(this);
             }
             this.trigger("del",el);
+            el.trigger("del",el);
         }
     },
 
