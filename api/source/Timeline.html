@@ -99,7 +99,6 @@ function () {
       var easingFunc = typeof easing === &#39;string&#39; ? easingFuncs[easing] : easing;
       var schedule = typeof easingFunc === &#39;function&#39; ? easingFunc(percent) : percent;
       this.fire(&#39;frame&#39;, schedule); // 结束或者重新开始周期
-      // 抛出而不是直接调用事件直到 stage.update 后再统一调用这些事件
 
       if (percent === 1) {
         if (this.loop) {

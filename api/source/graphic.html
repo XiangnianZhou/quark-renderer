@@ -65,7 +65,7 @@ function pathHasStroke(style, isText) {
   return stroke != null &amp;&amp; stroke !== NONE;
 }
 
-function setTransform(svgEl, m) {
+function applyTransform(svgEl, m) {
   if (m) {
     attr(svgEl, &#39;transform&#39;, &#39;matrix(&#39; + Array.prototype.join.call(m, &#39;,&#39;) + &#39;)&#39;);
   }
@@ -272,7 +272,7 @@ svgPath.brush = function (el) {
   }
 
   bindStyle(svgEl, style, false, el);
-  setTransform(svgEl, el.transform);
+  applyTransform(svgEl, el.transform);
 
   if (style.text != null) {
     svgTextDrawRectText(el, el.getBoundingRect());
@@ -323,7 +323,7 @@ svgImage.brush = function (el) {
   attr(svgEl, &#39;height&#39;, dh);
   attr(svgEl, &#39;x&#39;, x);
   attr(svgEl, &#39;y&#39;, y);
-  setTransform(svgEl, el.transform);
+  applyTransform(svgEl, el.transform);
 
   if (style.text != null) {
     svgTextDrawRectText(el, el.getBoundingRect());
@@ -507,7 +507,7 @@ function setTextTransform(textSvgEl, needTransformTextByHostEl, elTransform, sty
   // origin is from the result of `getBoxPosition`.
 
 
-  setTransform(textSvgEl, _tmpTextTransform);
+  applyTransform(textSvgEl, _tmpTextTransform);
 } // FIXME merge the same code with `helper/text.js#getTextXForPadding`;
 
 

@@ -46,11 +46,9 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 <span id='qrenderer-graphic-Group'>/**
 </span> * @class qrenderer.graphic.Group
  * 
- * - Group is a container, it&#39;s not visible.
  * - Group can have child nodes, not the other Element types.
  * - The transformations applied to Group will apply to its children too.
  * 
- * - Group 是一个容器，本身不可见。
  * - Group 可以插入子节点，其它类型不能。
  * - Group 上的变换也会被应用到子节点上。
  * 
@@ -58,9 +56,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  *      let Group = require(&#39;qrenderer/Group&#39;);
  *      let Circle = require(&#39;qrenderer/graphic/shape/Circle&#39;);
  *      let g = new Group();
- *      g.position[0] = 100;
- *      g.position[1] = 100;
  *      g.add(new Circle({
+ *          position:[100,100],
  *          style: {
  *              x: 100,
  *              y: 100,
@@ -85,11 +82,6 @@ function (_Element) {
     _classCallCheck(this, Group);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Group).call(this, options));
-<span id='qrenderer-graphic-Group-property-isGroup'>    /**
-</span>     * @property isGroup
-     */
-
-    _this.isGroup = true;
 <span id='qrenderer-graphic-Group-property-type'>    /**
 </span>     * @property {String}
      */
@@ -105,7 +97,14 @@ function (_Element) {
      * @property __storage
      */
 
-    _this.__storage = null;
+    _this.__storage = null; //对象先添加到了 group ，但是 group 还没有添加到 qr，这里重新设置一遍，确保 API 调用者不需要考虑添加顺序。
+
+    _this.on(&quot;add&quot;, function () {
+      _this.children.forEach(function (item, index) {
+        item.__qr = _this.__qr;
+      });
+    });
+
     return _this;
   }
 <span id='qrenderer-graphic-Group-method-children'>  /**
@@ -215,17 +214,17 @@ function (_Element) {
       child.parent = this; //把子节点的 parent 属性指向自己，在事件冒泡的时候会使用 parent 属性。
 
       var storage = this.__storage;
-      var qr = this.__qr;
 
       if (storage &amp;&amp; storage !== child.__storage) {
         storage.addToStorage(child);
 
-        if (child instanceof Group) {
+        if (child.type === &#39;group&#39;) {
           child.addChildrenToStorage(storage);
         }
       }
 
-      qr &amp;&amp; qr.refresh();
+      child.__qr = this.__qr;
+      this.__qr &amp;&amp; this.__qr.refresh();
     }
 <span id='qrenderer-graphic-Group-method-remove'>    /**
 </span>     * @method remove
@@ -251,7 +250,7 @@ function (_Element) {
       if (storage) {
         storage.delFromStorage(child);
 
-        if (child instanceof Group) {
+        if (child.type === &#39;group&#39;) {
           child.delChildrenFromStorage(storage);
         }
       }
@@ -278,7 +277,7 @@ function (_Element) {
         if (storage) {
           storage.delFromStorage(child);
 
-          if (child instanceof Group) {
+          if (child.type === &#39;group&#39;) {
             child.delChildrenFromStorage(storage);
           }
         }
@@ -341,7 +340,7 @@ function (_Element) {
         var child = this.children[i];
         storage.addToStorage(child);
 
-        if (child instanceof Group) {
+        if (child.type === &#39;group&#39;) {
           child.addChildrenToStorage(storage);
         }
       }
@@ -358,7 +357,7 @@ function (_Element) {
         var child = this.children[i];
         storage.delFromStorage(child);
 
-        if (child instanceof Group) {
+        if (child.type === &#39;group&#39;) {
           child.delChildrenFromStorage(storage);
         }
       }
@@ -387,7 +386,6 @@ function (_Element) {
       var rect = null;
       var tmpRect = new BoundingRect(0, 0, 0, 0);
       var children = includeChildren || this.children;
-      var tmpMat = [];
 
       for (var i = 0; i &lt; children.length; i++) {
         var child = children[i];
@@ -397,7 +395,7 @@ function (_Element) {
         }
 
         var childRect = child.getBoundingRect();
-        var transform = child.getLocalTransform(tmpMat); // TODO
+        var transform = child.getLocalTransform(); // TODO
         // The boundingRect cacluated by transforming original
         // rect may be bigger than the actual bundingRect when rotation
         // is used. (Consider a circle rotated aginst its center, where

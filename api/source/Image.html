@@ -101,10 +101,9 @@ function (_Element) {
       } else if (width == null &amp;&amp; height == null) {
         width = image.width;
         height = image.height;
-      } // 设置transform
+      }
 
-
-      this.setTransform(ctx);
+      this.applyTransform(ctx);
 
       if (style.sWidth &amp;&amp; style.sHeight) {
         var sx = style.sx || 0;

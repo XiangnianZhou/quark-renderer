@@ -128,7 +128,7 @@ function (_Element) {
       var hasFillPattern = hasFill &amp;&amp; !!fill.image;
       var hasStrokePattern = hasStroke &amp;&amp; !!stroke.image;
       this.style.bind(ctx, this, prevEl);
-      this.setTransform(ctx);
+      this.applyTransform(ctx);
 
       if (this.__dirty) {
         var rect; // Update gradient because bounding rect may changed
@@ -284,13 +284,13 @@ function (_Element) {
       this._rect = rect;
 
       if (this.style.hasStroke()) {
-        // Needs update rect with stroke lineWidth when
+        // Update rect with stroke lineWidth when
         // 1. Element changes scale or lineWidth
         // 2. Shape is changed
         var rectWithStroke = this._rectWithStroke || (this._rectWithStroke = rect.clone());
 
         if (this.__dirty || needsUpdateRect) {
-          rectWithStroke.copy(rect); // FIXME Must after updateTransform
+          rectWithStroke.copy(rect); // FIXME Must after composeLocalTransform
 
           var w = this.style.lineWidth; // PENDING, Min line width is needed when line is horizontal or vertical
 

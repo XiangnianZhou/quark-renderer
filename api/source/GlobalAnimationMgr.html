@@ -112,11 +112,7 @@ function () {
         ap.nextFrame(time, delta);
       });
 
-      this._timestamp = time; // TODO:What&#39;s going on here?
-      // &#39;frame&#39; should be triggered before stage, because upper application
-      // depends on the sequence (e.g., echarts-stream and finish
-      // event judge)
-
+      this._timestamp = time;
       this.trigger(&#39;frame&#39;, delta);
     }
 <span id='qrenderer-animation-GlobalAnimationMgr-method-_startLoop'>    /**

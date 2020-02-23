@@ -15,7 +15,11 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">var util = require(&quot;./core/utils/data_structure_util&quot;);
+  <pre class="prettyprint lang-js">var Eventful = require(&quot;./event/Eventful&quot;);
+
+var classUtil = require(&quot;./core/utils/class_util&quot;);
+
+var util = require(&quot;./core/utils/data_structure_util&quot;);
 
 var env = require(&quot;./core/env&quot;);
 
@@ -44,7 +48,7 @@ var Storage = function Storage() {
 </span>   * @private
    * @property _roots
    */
-  this._roots = []; //直接放在画布上的对象为根对象
+  this._roots = new Map(); //直接放在画布上的对象为根对象
 
 <span id='qrenderer-core-Storage-property-_displayList'>  /**
 </span>   * @private
@@ -58,6 +62,7 @@ var Storage = function Storage() {
    */
 
   this._displayListLen = 0;
+  classUtil.inheritProperties(this, Eventful);
 };
 
 Storage.prototype = {
@@ -69,24 +74,24 @@ Storage.prototype = {
    * @param  {Object} context
    */
   traverse: function traverse(cb, context) {
-    for (var i = 0; i &lt; this._roots.length; i++) {
-      this._roots[i].traverse(cb, context);
-    }
+    this._roots.forEach(function (el, id, map) {
+      el.traverse(cb, context);
+    });
   },
 
 <span id='qrenderer-core-Storage-method-getDisplayList'>  /**
 </span>   * @method getDisplayList
    * 返回所有图形的绘制队列
-   * @param {boolean} [update=false] 是否在返回前更新该数组
-   * @param {boolean} [includeIgnore=false] 是否包含 ignore 的数组, 在 update 为 true 的时候有效
+   * @param {boolean} [needUpdate=false] 是否在返回前更新该数组
+   * @param {boolean} [includeIgnore=false] 是否包含 ignore 的数组, 在 needUpdate 为 true 的时候有效
    *
    * 详见{@link Displayable.prototype.updateDisplayList}
    * @return {Array&lt;Displayable&gt;}
    */
-  getDisplayList: function getDisplayList(update, includeIgnore) {
+  getDisplayList: function getDisplayList(needUpdate, includeIgnore) {
     includeIgnore = includeIgnore || false;
 
-    if (update) {
+    if (needUpdate) {
       this.updateDisplayList(includeIgnore);
     }
 
@@ -101,13 +106,15 @@ Storage.prototype = {
    * @param {boolean} [includeIgnore=false] 是否包含 ignore 的数组
    */
   updateDisplayList: function updateDisplayList(includeIgnore) {
+    var _this = this;
+
     this._displayListLen = 0;
-    var roots = this._roots;
     var displayList = this._displayList;
 
-    for (var i = 0, len = roots.length; i &lt; len; i++) {
-      this._updateAndAddDisplayable(roots[i], null, includeIgnore);
-    }
+    this._roots.forEach(function (el, id, map) {
+      _this._updateAndAddDisplayable(el, null, includeIgnore); //recursive update
+
+    });
 
     displayList.length = this._displayListLen;
     env.canvasSupported &amp;&amp; timsort(displayList, this.displayableSortFunc);
@@ -124,13 +131,10 @@ Storage.prototype = {
       return;
     }
 
-    el.beforeUpdate();
-
     if (el.__dirty) {
-      el.update();
+      el.composeLocalTransform();
     }
 
-    el.afterUpdate();
     var userSetClipPath = el.clipPath;
 
     if (userSetClipPath) {
@@ -147,14 +151,14 @@ Storage.prototype = {
       while (currentClipPath) {
         // clipPath 的变换是基于使用这个 clipPath 的元素
         currentClipPath.parent = parentClipPath;
-        currentClipPath.updateTransform();
+        currentClipPath.composeLocalTransform();
         clipPaths.push(currentClipPath);
         parentClipPath = currentClipPath;
         currentClipPath = currentClipPath.clipPath;
       }
     }
 
-    if (el.isGroup) {
+    if (el.type === &#39;group&#39;) {
       var children = el.children;
 
       for (var i = 0; i &lt; children.length; i++) {
@@ -176,65 +180,71 @@ Storage.prototype = {
     }
   },
 
-<span id='qrenderer-core-Storage-method-addRoot'>  /**
-</span>   * @method addRoot
+<span id='qrenderer-core-Storage-method-addToRoot'>  /**
+</span>   * @method addToRoot
    * 添加图形(Shape)或者组(Group)到根节点
    * @param {Element} el
    */
-  addRoot: function addRoot(el) {
+  addToRoot: function addToRoot(el) {
     if (el.__storage === this) {
       return;
     }
 
-    if (el instanceof Group) {
+    if (el.type === &#39;group&#39;) {
       el.addChildrenToStorage(this);
     }
 
+    this.trigger(&quot;beforeAdd&quot;, el);
+    el.trigger(&quot;beforeAdd&quot;, el);
     this.addToStorage(el);
 
-    this._roots.push(el);
+    this._roots.set(el.id, el);
+
+    this.trigger(&quot;add&quot;, el);
+    el.trigger(&quot;add&quot;, el);
   },
 
-<span id='qrenderer-core-Storage-method-delRoot'>  /**
+<span id='qrenderer-core-Storage-method-delFromRoot'>  /**
 </span>   * @method
    * 删除指定的图形(Shape)或者组(Group)
    * @param {string|Array.&lt;String&gt;} [el] 如果为空清空整个Storage
    */
-  delRoot: function delRoot(el) {
+  delFromRoot: function delFromRoot(el) {
+    var _this2 = this;
+
     if (el == null) {
-      // 不指定el清空
-      for (var i = 0; i &lt; this._roots.length; i++) {
-        var root = this._roots[i];
-
-        if (root instanceof Group) {
-          root.delChildrenFromStorage(this);
+      //全部清空
+      this._roots.forEach(function (item, id, map) {
+        if (item &amp;&amp; item.type === &#39;group&#39;) {
+          item.delChildrenFromStorage(_this2);
         }
-      }
+      });
 
-      this._roots = [];
+      this._roots = new Map();
       this._displayList = [];
       this._displayListLen = 0;
       return;
     }
 
     if (el instanceof Array) {
-      for (var _i = 0, l = el.length; _i &lt; l; _i++) {
-        this.delRoot(el[_i]);
+      for (var i = 0, l = el.length; i &lt; l; i++) {
+        this.delFromRoot(el[i]);
       }
 
       return;
     }
 
-    var idx = util.indexOf(this._roots, el);
-
-    if (idx &gt;= 0) {
+    if (this._roots.get(el.id)) {
       this.delFromStorage(el);
 
-      this._roots.splice(idx, 1);
+      this._roots[&quot;delete&quot;](el.id);
 
-      if (el instanceof Group) {
+      if (el.type === &#39;group&#39;) {
         el.delChildrenFromStorage(this);
       }
+
+      this.trigger(&quot;del&quot;, el);
+      el.trigger(&quot;del&quot;, el);
     }
   },
 
@@ -245,6 +255,7 @@ Storage.prototype = {
   addToStorage: function addToStorage(el) {
     if (el) {
       el.__storage = this;
+      el.addToQr();
       el.dirty(false);
     }
 
@@ -258,6 +269,7 @@ Storage.prototype = {
   delFromStorage: function delFromStorage(el) {
     if (el) {
       el.__storage = null;
+      el.removeFromQr();
     }
 
     return this;
@@ -268,7 +280,8 @@ Storage.prototype = {
    * 清空并且释放Storage
    */
   dispose: function dispose() {
-    this._renderList = this._roots = null;
+    this._renderList = null;
+    this._roots = null;
   },
   displayableSortFunc: function displayableSortFunc(a, b) {
     if (a.qlevel === b.qlevel) {
@@ -288,6 +301,7 @@ Storage.prototype = {
     return a.qlevel - b.qlevel;
   }
 };
+classUtil.mixin(Storage, Eventful);
 var _default = Storage;
 module.exports = _default;</pre>
 </body>

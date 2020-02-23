@@ -95,7 +95,7 @@ function (_Element) {
         return;
       }
 
-      this.setTransform(ctx);
+      this.applyTransform(ctx);
       textUtil.renderText(this, ctx, text, style, null, prevEl);
       this.restoreTransform(ctx);
     }

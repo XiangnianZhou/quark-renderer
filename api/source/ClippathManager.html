@@ -146,7 +146,7 @@ function (_Definable) {
           // Store old transform
           var transform = Array.prototype.slice.call(clipPath.transform); // Transform back from parent, and brush path
 
-          matrixUtil.mul(clipPath.transform, clipPath.parent.inverseTransform, clipPath.transform);
+          clipPath.transform = matrixUtil.mul(clipPath.parent.inverseTransform, clipPath.transform);
           svgProxy.brush(clipPath); // Set back transform of clipPath
 
           clipPath.transform = transform;

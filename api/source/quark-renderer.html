@@ -148,7 +148,8 @@ function () {
     _classCallCheck(this, QuarkRenderer);
 
 <span id='qrenderer-core-QuarkRenderer-property-id'>    /**
-</span>     * @property {String}
+</span>     * @private
+     * @property {String} id
      */
     this.id = guid();
 <span id='qrenderer-core-QuarkRenderer-property-host'>    /**
@@ -163,22 +164,23 @@ function () {
     this.host = host;
     var self = this;
 <span id='qrenderer-core-QuarkRenderer-property-storage'>    /**
-</span>     * @property {Storage}
+</span>     * @private
+     * @property {Storage} storage
      */
 
-    this.storage = new Storage();
+    this.storage = new Storage(); //根据参数创建不同类型的 Painter 实例。
+
     var rendererType = options.renderer;
 
     if (!rendererType || !painterMap[rendererType]) {
       rendererType = &#39;canvas&#39;;
-    } //根据参数创建不同类型的 Painter 实例。
+    }
 
+    this.painter = new painterMap[rendererType](this.host, this.storage, options, this.id); //利用代理拦截 DOM 事件，转发到 QuarkRenderer 自己封装的事件机制。
 
-    this.painter = new painterMap[rendererType](this.host, this.storage, options, this.id);
     var handerProxy = null;
 
     if (typeof this.host.moveTo !== &#39;function&#39;) {
-      //代理DOM事件。
       if (!env.node &amp;&amp; !env.worker &amp;&amp; !env.wxa) {
         handerProxy = new DomEventProxy(this.painter.getHost());
       }
@@ -188,25 +190,18 @@ function () {
         self.font = font || textContain.DEFAULT_FONT;
         return self.host.measureText(text);
       });
-    } //QuarkRenderer 自己封装的事件机制。
+    }
+<span id='qrenderer-core-QuarkRenderer-property-eventHandler'>    /**
+</span>     * @private
+     * @property {QRendererEventHandler} eventHandler
+     * QuarkRenderer 自己封装的事件机制，这是画布内部的事件系统。
+     */
 
 
     this.eventHandler = new QRendererEventHandler(this.storage, this.painter, handerProxy, this.painter.root);
 <span id='qrenderer-core-QuarkRenderer-property-globalAnimationMgr'>    /**
 </span>     * @property {GlobalAnimationMgr}
-     * 利用 GlobalAnimationMgr 动画的 frame 事件渲染下一张画面， QuarkRenderer 依赖此机制来刷新 canvas 画布。
-     * FROM MDN：
-     * The window.requestAnimationFrame() method tells the browser that you wish 
-     * to perform an animation and requests that the browser calls a specified 
-     * function to update an animation before the next repaint. The method takes 
-     * a callback as an argument to be invoked before the repaint.
-     * 
-     * https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
-     * 
-     * NOTE: 这里有潜在的性能限制，由于 requestAnimationFrame 方法每秒回调60次，每次执行时间约 16ms
-     * 如果在 16ms 的时间内无法渲染完一帧画面，会出现卡顿。也就是说， QuarkRenderer 引擎在同一张 canvas 上
-     * 能够渲染的图形元素数量有上限。本机在 Chrome 浏览器中 Benchmark 的结果大约为 100 万个矩形会出现
-     * 明显的卡顿。
+     * 利用 GlobalAnimationMgr 的 frame 事件刷新画布上的元素。
      */
 
     this.globalAnimationMgr = new GlobalAnimationMgr();
@@ -219,22 +214,7 @@ function () {
      * @private
      */
 
-    this._needsRefresh; // 修改 storage.delFromStorage, 每次删除元素之前删除动画
-    // FIXME 有点ugly
-    // What&#39;s going on here?
-
-    var oldDelFromStorage = this.storage.delFromStorage;
-    var oldAddToStorage = this.storage.addToStorage;
-
-    this.storage.delFromStorage = function (el) {
-      oldDelFromStorage.call(self.storage, el);
-      el &amp;&amp; el.removeSelfFromQr(self);
-    };
-
-    this.storage.addToStorage = function (el) {
-      oldAddToStorage.call(self.storage, el);
-      el.addSelfToQr(self);
-    };
+    this._needRefresh;
   }
 <span id='qrenderer-core-QuarkRenderer-method-'>  /**
 </span>   * @method
@@ -257,8 +237,9 @@ function () {
   }, {
     key: &quot;add&quot;,
     value: function add(el) {
-      this.storage.addRoot(el);
-      this._needsRefresh = true;
+      el.__qr = this;
+      this.storage.addToRoot(el);
+      this.refresh();
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @method
@@ -269,8 +250,9 @@ function () {
   }, {
     key: &quot;remove&quot;,
     value: function remove(el) {
-      this.storage.delRoot(el);
-      this._needsRefresh = true;
+      this.storage.delFromRoot(el);
+      el.__qr = null;
+      this.refresh();
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @private
@@ -290,7 +272,7 @@ function () {
         this.painter.configLayer(qLevel, config);
       }
 
-      this._needsRefresh = true;
+      this.refresh();
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @method
@@ -305,7 +287,7 @@ function () {
         this.painter.setBackgroundColor(backgroundColor);
       }
 
-      this._needsRefresh = true;
+      this.refresh();
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @private
@@ -316,17 +298,12 @@ function () {
   }, {
     key: &quot;refreshImmediately&quot;,
     value: function refreshImmediately() {
-      // let start = new Date();
       // Clear needsRefresh ahead to avoid something wrong happens in refresh
       // Or it will cause qrenderer refreshes again and again.
-      this._needsRefresh = this._needsRefreshHover = false;
+      this._needRefresh = this._needsRefreshHover = false;
       this.painter.refresh(); // Avoid trigger qr.refresh in Element#beforeUpdate hook
 
-      this._needsRefresh = this._needsRefreshHover = false; // let end = new Date();
-      // let log = document.getElementById(&#39;log&#39;);
-      // if (log) {
-      //     log.innerHTML = log.innerHTML + &#39;&lt;br&gt;&#39; + (end - start);
-      // }
+      this._needRefresh = this._needsRefreshHover = false;
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @method
@@ -336,7 +313,7 @@ function () {
   }, {
     key: &quot;refresh&quot;,
     value: function refresh() {
-      this._needsRefresh = true;
+      this._needRefresh = true;
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @private
@@ -350,7 +327,7 @@ function () {
     value: function flush() {
       var triggerRendered;
 
-      if (this._needsRefresh) {
+      if (this._needRefresh) {
         //是否需要全部重绘
         triggerRendered = true;
         this.refreshImmediately();
@@ -571,7 +548,7 @@ function () {
   }, {
     key: &quot;clear&quot;,
     value: function clear() {
-      this.storage.delRoot();
+      this.storage.delFromRoot();
       this.painter.clear();
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
