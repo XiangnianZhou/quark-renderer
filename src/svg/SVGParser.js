@@ -590,7 +590,7 @@ function parseTransformAttribute(xmlNode, node) {
                     break;
                 case 'scale':
                     value = trim(value).split(DILIMITER_REG);
-                    matrixUtil.scale(m, m, [parseFloat(value[0]), parseFloat(value[1] || value[0])]);
+                    m = matrixUtil.scale(m, [parseFloat(value[0]), parseFloat(value[1] || value[0])]);
                     break;
                 case 'rotate':
                     value = trim(value).split(DILIMITER_REG);

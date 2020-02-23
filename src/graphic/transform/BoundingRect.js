@@ -122,12 +122,9 @@ class BoundingRect{
         let sy = b.height / a.height;
 
         let m = matrixUtil.create();
-
-        // 矩阵右乘
         m = matrixUtil.translate(m, [-a.x, -a.y]);
-        matrixUtil.scale(m, m, [sx, sy]);
+        m = matrixUtil.scale(m, [sx, sy]);
         m = matrixUtil.translate(m, [b.x, b.y]);
-
         return m;
     }
 

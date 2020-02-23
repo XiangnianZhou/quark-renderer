@@ -254,9 +254,9 @@ Transformable.prototype={
         m[5] -= origin[1];
         
         //TODO:这里的实现有问题，缩放、旋转、斜切、位移是有顺序的。
-        matrixUtil.scale(m, m, scale);
+        m = matrixUtil.scale(m, scale);
         m = matrixUtil.rotate(m, rotation);
-        //TODO:计算 skew 的值
+        // m = matrixUtil.skew(m,skew);
 
         //原点移回去
         m[4] += origin[0];
