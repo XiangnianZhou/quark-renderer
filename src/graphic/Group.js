@@ -6,11 +6,9 @@ import { extend } from '../core/utils/data_structure_util';
 /**
  * @class qrenderer.graphic.Group
  * 
- * - Group is a container, it's not visible.
  * - Group can have child nodes, not the other Element types.
  * - The transformations applied to Group will apply to its children too.
  * 
- * - Group 是一个容器，本身不可见。
  * - Group 可以插入子节点，其它类型不能。
  * - Group 上的变换也会被应用到子节点上。
  * 
