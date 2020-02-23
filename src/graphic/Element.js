@@ -70,16 +70,7 @@ class Element{
          * @see http://www.w3.org/TR/2dcontext/#clipping-region
          */
         this.clipPath=null;
-    
-        /**
-         * @property {Boolean} isGroup
-         * 
-         * Whether this object is a Group.
-         * 
-         * 是否是 Group
-         */
-        this.isGroup=false;
-
+        
         // FIXME Stateful must be mixined after style is setted
         // Stateful.call(this, options);
 

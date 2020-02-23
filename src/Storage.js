@@ -129,7 +129,7 @@ Storage.prototype = {
             }
         }
 
-        if (el.isGroup) {
+        if (el.type==='group') {
             let children = el.children;
             for (let i = 0; i < children.length; i++) {
                 let child = children[i];
@@ -157,9 +157,10 @@ Storage.prototype = {
         if (el.__storage === this) {
             return;
         }
-        if (el instanceof Group) {
+        if (el.type==='group') {
             el.addChildrenToStorage(this);
         }
+        this.trigger("beforeAdd",el);
         this.addToStorage(el);
         this._roots.push(el);
         this.trigger("add",el);

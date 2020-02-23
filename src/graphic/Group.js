@@ -16,9 +16,8 @@ import { extend } from '../core/utils/data_structure_util';
  *      let Group = require('qrenderer/Group');
  *      let Circle = require('qrenderer/graphic/shape/Circle');
  *      let g = new Group();
- *      g.position[0] = 100;
- *      g.position[1] = 100;
  *      g.add(new Circle({
+ *          position:[100,100],
  *          style: {
  *              x: 100,
  *              y: 100,
@@ -34,11 +33,6 @@ class Group extends Element{
     constructor(options={}){
         super(options);
 
-        /**
-         * @property isGroup
-         */
-        this.isGroup=true;
-    
         /**
          * @property {String}
          */
@@ -140,20 +134,16 @@ class Group extends Element{
         if (child.parent) {
             child.parent.remove(child);
         }
-
         child.parent = this;//把子节点的 parent 属性指向自己，在事件冒泡的时候会使用 parent 属性。
-
         let storage = this.__storage;
-        let qr = this.__qr;
         if (storage && storage !== child.__storage) {
-
             storage.addToStorage(child);
-
-            if (child instanceof Group) {
+            if (child.type==='group') {
                 child.addChildrenToStorage(storage);
             }
         }
-        qr && qr.refresh();
+        child.__qr=this.__qr;
+        this.__qr && this.__qr.refresh();
     }
 
     /**
@@ -175,7 +165,7 @@ class Group extends Element{
 
         if (storage) {
             storage.delFromStorage(child);
-            if (child instanceof Group) {
+            if (child.type==='group') {
                 child.delChildrenFromStorage(storage);
             }
         }
@@ -197,7 +187,7 @@ class Group extends Element{
             child = children[i];
             if (storage) {
                 storage.delFromStorage(child);
-                if (child instanceof Group) {
+                if (child.type==='group') {
                     child.delChildrenFromStorage(storage);
                 }
             }
@@ -233,7 +223,6 @@ class Group extends Element{
         for (let i = 0; i < this.children.length; i++) {
             let child = this.children[i];
             cb.call(context, child);
-
             if (child.type === 'group') {
                 child.traverse(cb, context);
             }
@@ -249,7 +238,7 @@ class Group extends Element{
         for (let i = 0; i < this.children.length; i++) {
             let child = this.children[i];
             storage.addToStorage(child);
-            if (child instanceof Group) {
+            if (child.type==='group') {
                 child.addChildrenToStorage(storage);
             }
         }
@@ -263,7 +252,7 @@ class Group extends Element{
         for (let i = 0; i < this.children.length; i++) {
             let child = this.children[i];
             storage.delFromStorage(child);
-            if (child instanceof Group) {
+            if (child.type==='group') {
                 child.delChildrenFromStorage(storage);
             }
         }
