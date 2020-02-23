@@ -51,7 +51,7 @@ export function copy(out, m) {
 }
 
 /**
- * 矩阵相乘，Context.transform 定义的实际上是一个 3×3 的方阵，所以这里一定可以相乘。
+ * m1 左乘 m2，Context.transform 定义的实际上是一个 3×3 的方阵，所以这里一定可以相乘。
  * @param {Float32Array|Array.<Number>} m1
  * @param {Float32Array|Array.<Number>} m2
  */
@@ -80,27 +80,9 @@ export function translate(a, v) {
  * @param {Number} rad
  */
 export function rotate(a, rad) {
-    // let sinx = mathSin(rad);
-    // let cosx = mathCos(rad);
-    // return mul([cosx,sinx,-sinx,cosx,0,0],a);
     let sinx = mathSin(rad);
     let cosx = mathCos(rad);
-    
-    let aa = a[0];
-    let ac = a[2];
-    let tx = a[4];
-    let ab = a[1];
-    let ad = a[3];
-    let ty = a[5];
-
-    let out=[];
-    out[0] = aa * cosx + ab * sinx;
-    out[1] = -aa * sinx + ab * cosx;
-    out[2] = ac * cosx + ad * sinx;
-    out[3] = -ac * sinx + cosx * ad;
-    out[4] = cosx * tx + sinx * ty;
-    out[5] = cosx * ty - sinx * tx;
-    return out;
+    return mul([cosx,-sinx,sinx,cosx,0,0],a);
 }
 
 /**
