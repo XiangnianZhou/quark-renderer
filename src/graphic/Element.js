@@ -45,7 +45,7 @@ class Element{
         this.name='';
 
         /**
-         * @property {Element} parent 父节点
+         * @property {Element} parent 父节点，添加到 Group 的元素存在父节点。
          */
         this.parent=null;
     
