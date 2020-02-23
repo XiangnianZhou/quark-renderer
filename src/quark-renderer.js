@@ -252,19 +252,12 @@ class QuarkRenderer{
      * Repaint the canvas immediately
      */
     refreshImmediately() {
-        // let start = new Date();
         // Clear needsRefresh ahead to avoid something wrong happens in refresh
         // Or it will cause qrenderer refreshes again and again.
         this._needsRefresh = this._needsRefreshHover = false;
         this.painter.refresh();
         // Avoid trigger qr.refresh in Element#beforeUpdate hook
         this._needsRefresh = this._needsRefreshHover = false;
-
-        // let end = new Date();
-        // let log = document.getElementById('log');
-        // if (log) {
-        //     log.innerHTML = log.innerHTML + '<br>' + (end - start);
-        // }
     }
 
     /**
