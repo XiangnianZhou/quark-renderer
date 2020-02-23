@@ -124,9 +124,9 @@ class BoundingRect{
         let m = matrixUtil.create();
 
         // 矩阵右乘
-        matrixUtil.translate(m, m, [-a.x, -a.y]);
+        m = matrixUtil.translate(m, [-a.x, -a.y]);
         matrixUtil.scale(m, m, [sx, sy]);
-        matrixUtil.translate(m, m, [b.x, b.y]);
+        m = matrixUtil.translate(m, [b.x, b.y]);
 
         return m;
     }

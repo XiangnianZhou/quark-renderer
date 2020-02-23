@@ -67,18 +67,11 @@ export function mul(m1, m2) {
 
 /**
  * 平移变换
- * @param {Float32Array|Array.<Number>} out
  * @param {Float32Array|Array.<Number>} a
  * @param {Float32Array|Array.<Number>} v
  */
-export function translate(out, a, v) {
-    out[0] = a[0];
-    out[1] = a[1];
-    out[2] = a[2];
-    out[3] = a[3];
-    out[4] = a[4] + v[0];
-    out[5] = a[5] + v[1];
-    return out;
+export function translate(a, v) {
+    return mul([1,0,0,1,v[0],v[1]],a);
 }
 
 /**

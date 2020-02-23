@@ -586,7 +586,7 @@ function parseTransformAttribute(xmlNode, node) {
             switch (type) {
                 case 'translate':
                     value = trim(value).split(DILIMITER_REG);
-                    matrixUtil.translate(m, m, [parseFloat(value[0]), parseFloat(value[1] || 0)]);
+                    m = matrixUtil.translate(m, [parseFloat(value[0]), parseFloat(value[1] || 0)]);
                     break;
                 case 'scale':
                     value = trim(value).split(DILIMITER_REG);
