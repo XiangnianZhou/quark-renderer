@@ -477,7 +477,7 @@ function setTextTransform(textSvgEl, needTransformTextByHostEl, elTransform, sty
         _tmpTextTransform[4] -= baseX;
         _tmpTextTransform[5] -= baseY;
         // Positive: anticlockwise
-        matrixUtil.rotate(_tmpTextTransform, _tmpTextTransform, textRotation);
+        _tmpTextTransform = matrixUtil.rotate(_tmpTextTransform, textRotation);
         _tmpTextTransform[4] += baseX;
         _tmpTextTransform[5] += baseY;
     }

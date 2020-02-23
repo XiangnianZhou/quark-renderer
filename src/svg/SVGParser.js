@@ -594,7 +594,7 @@ function parseTransformAttribute(xmlNode, node) {
                     break;
                 case 'rotate':
                     value = trim(value).split(DILIMITER_REG);
-                    matrixUtil.rotate(m, m, parseFloat(value[0]));
+                    m = matrixUtil.rotate(m, parseFloat(value[0]));
                     break;
                 case 'skew':
                     value = trim(value).split(DILIMITER_REG);

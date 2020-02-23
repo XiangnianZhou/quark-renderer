@@ -52,7 +52,7 @@ let Transformable = function (options={}) {
      * @property {Array<Number>} skew
      * 扭曲，二维数组。
      */
-    this.skew = (options.skew===null||options.skew===undefined)?[1, 1]:options.skew;
+    this.skew = (options.skew===null||options.skew===undefined)?[0, 0]:options.skew;
 
     /**
      * @property {Matrix} transform
@@ -245,7 +245,7 @@ Transformable.prototype={
         let rotation = this.rotation || 0;
         let position = this.position || [0,0];
         let scale = this.scale || [1,1];
-        let skew = this.skew || [1,1];
+        let skew = this.skew || [0,0];
         
         let m=matrixUtil.create();
 
@@ -255,7 +255,7 @@ Transformable.prototype={
         
         //TODO:这里的实现有问题，缩放、旋转、斜切、位移是有顺序的。
         matrixUtil.scale(m, m, scale);
-        matrixUtil.rotate(m, m, rotation);
+        m = matrixUtil.rotate(m, rotation);
         //TODO:计算 skew 的值
 
         //原点移回去

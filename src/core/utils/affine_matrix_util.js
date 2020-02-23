@@ -76,26 +76,30 @@ export function translate(a, v) {
 
 /**
  * 旋转变换
- * @param {Float32Array|Array.<Number>} out
  * @param {Float32Array|Array.<Number>} a
  * @param {Number} rad
  */
-export function rotate(out, a, rad) {
+export function rotate(a, rad) {
+    // let sinx = mathSin(rad);
+    // let cosx = mathCos(rad);
+    // return mul([cosx,sinx,-sinx,cosx,0,0],a);
+    let sinx = mathSin(rad);
+    let cosx = mathCos(rad);
+    
     let aa = a[0];
     let ac = a[2];
-    let atx = a[4];
+    let tx = a[4];
     let ab = a[1];
     let ad = a[3];
-    let aty = a[5];
-    let st = mathSin(rad);
-    let ct = mathCos(rad);
+    let ty = a[5];
 
-    out[0] = aa * ct + ab * st;
-    out[1] = -aa * st + ab * ct;
-    out[2] = ac * ct + ad * st;
-    out[3] = -ac * st + ct * ad;
-    out[4] = ct * atx + st * aty;
-    out[5] = ct * aty - st * atx;
+    let out=[];
+    out[0] = aa * cosx + ab * sinx;
+    out[1] = -aa * sinx + ab * cosx;
+    out[2] = ac * cosx + ad * sinx;
+    out[3] = -ac * sinx + cosx * ad;
+    out[4] = cosx * tx + sinx * ty;
+    out[5] = cosx * ty - sinx * tx;
     return out;
 }
 
