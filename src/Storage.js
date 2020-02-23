@@ -84,7 +84,7 @@ Storage.prototype = {
         let displayList = this._displayList;
 
         this._roots.forEach((el,id,map)=>{
-            this._updateAndAddDisplayable(el, null, includeIgnore);
+            this._updateAndAddDisplayable(el, null, includeIgnore);//recursive update
         });
 
         displayList.length = this._displayListLen;
