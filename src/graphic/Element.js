@@ -32,7 +32,7 @@ class Element{
         /**
          * @property {String} id
          */
-        this.id = this.options.id || guid();
+        this.id = 'el-'+guid();
 
         /**
          * @property {String} type 元素类型

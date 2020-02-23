@@ -23,7 +23,7 @@ let Storage = function () { // jshint ignore:line
      * @private
      * @property _roots
      */
-    this._roots = [];//直接放在画布上的对象为根对象
+    this._roots = new Map();//直接放在画布上的对象为根对象
 
     /**
      * @private
@@ -50,9 +50,9 @@ Storage.prototype = {
      * @param  {Object} context
      */
     traverse: function (cb, context) {
-        for (let i = 0; i < this._roots.length; i++) {
-            this._roots[i].traverse(cb, context);
-        }
+        this._roots.forEach((el,id,map)=>{
+            el.traverse(cb,context);
+        });
     },
 
     /**
@@ -81,15 +81,13 @@ Storage.prototype = {
      */
     updateDisplayList: function (includeIgnore) {
         this._displayListLen = 0;
-
-        let roots = this._roots;
         let displayList = this._displayList;
-        for (let i = 0, len = roots.length; i < len; i++) {
-            this._updateAndAddDisplayable(roots[i], null, includeIgnore);
-        }
+
+        this._roots.forEach((el,id,map)=>{
+            this._updateAndAddDisplayable(el, null, includeIgnore);
+        });
 
         displayList.length = this._displayListLen;
-
         env.canvasSupported && timsort(displayList, this.displayableSortFunc);
     },
 
@@ -162,7 +160,7 @@ Storage.prototype = {
         }
         this.trigger("beforeAdd",el);
         this.addToStorage(el);
-        this._roots.push(el);
+        this._roots.set(el.id,el);
         this.trigger("add",el);
     },
 
@@ -172,19 +170,15 @@ Storage.prototype = {
      * @param {string|Array.<String>} [el] 如果为空清空整个Storage
      */
     delFromRoot: function (el) {
-        if (el == null) {
-            // 不指定el清空
-            for (let i = 0; i < this._roots.length; i++) {
-                let root = this._roots[i];
-                if (root instanceof Group) {
-                    root.delChildrenFromStorage(this);
+        if (el == null) {//全部清空
+            this._roots.forEach((item,id,map)=>{
+                if(item&&item.type==='group'){
+                    item.delChildrenFromStorage(this);
                 }
-            }
-
-            this._roots = [];
+            });
+            this._roots = new Map();
             this._displayList = [];
             this._displayListLen = 0;
-
             return;
         }
 
@@ -195,12 +189,10 @@ Storage.prototype = {
             return;
         }
 
-
-        let idx = util.indexOf(this._roots, el);
-        if (idx >= 0) {
+        if(this._roots.get(el.id)){
             this.delFromStorage(el);
-            this._roots.splice(idx, 1);
-            if (el instanceof Group) {
+            this._roots.delete(el.id);
+            if (el.type==='group') {
                 el.delChildrenFromStorage(this);
             }
             this.trigger("del",el);
@@ -237,7 +229,7 @@ Storage.prototype = {
      * 清空并且释放Storage
      */
     dispose: function () {
-        this._renderList =
+        this._renderList =null;
         this._roots = null;
     },
 
