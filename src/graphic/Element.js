@@ -70,7 +70,7 @@ class Element{
          * @see http://www.w3.org/TR/2dcontext/#clipping-region
          */
         this.clipPath=null;
-        
+
         // FIXME Stateful must be mixined after style is setted
         // Stateful.call(this, options);
 
@@ -324,7 +324,7 @@ class Element{
     setClipPath(clipPath) {
         let qr = this.__qr;
         if (qr) {
-            clipPath.addSelfToQr(qr);
+            clipPath.addToQr(qr);
         }
 
         // Remove previous clip path
@@ -352,7 +352,7 @@ class Element{
         let clipPath = this.clipPath;
         if (clipPath) {
             if (clipPath.__qr) {
-                clipPath.removeSelfFromQr(clipPath.__qr);
+                clipPath.removeFromQr(clipPath.__qr);
             }
 
             clipPath.__qr = null;
@@ -378,15 +378,14 @@ class Element{
     }
 
     /**
-     * @method addSelfToQr
+     * @method addToQr
      * Add self to qrenderer instance.
      * Not recursively because it will be invoked when element added to storage.
      * 
      * 把当前对象添加到 qrenderer 实例中去。
      * 不会递归添加，因为当元素被添加到 storage 中的时候会执行递归操作。
      */
-    addSelfToQr() {
-        // 添加动画
+    addToQr() {
         let animationProcessList = this.animationProcessList;
         if (animationProcessList) {
             for (let i = 0; i < animationProcessList.length; i++) {
@@ -395,17 +394,17 @@ class Element{
         }
 
         if (this.clipPath) {
-            this.clipPath.addSelfToQr();
+            this.clipPath.addToQr();
         }
     }
 
     /**
-     * @method removeSelfFromQr
+     * @method removeFromQr
      * Remove self from qrenderer instance.
      * 
      * 把当前对象从 qrenderer 实例中删除。
      */
-    removeSelfFromQr() {
+    removeFromQr() {
         let qr=this.__qr;
         // 移除动画
         let animationProcessList = this.animationProcessList;
@@ -416,7 +415,7 @@ class Element{
         }
 
         if (this.clipPath) {
-            this.clipPath.removeSelfFromQr(qr);
+            this.clipPath.removeFromQr(qr);
         }
         this.__qr=null;
     }

@@ -214,7 +214,7 @@ Storage.prototype = {
     addToStorage: function (el) {
         if (el) {
             el.__storage = this;
-            el.addSelfToQr();
+            el.addToQr();
             el.dirty(false);
         }
         return this;
@@ -227,7 +227,7 @@ Storage.prototype = {
     delFromStorage: function (el) {
         if (el) {
             el.__storage = null;
-            el.removeSelfFromQr();
+            el.removeFromQr();
         }
         return this;
     },
