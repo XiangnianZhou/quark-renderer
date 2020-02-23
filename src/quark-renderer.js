@@ -109,7 +109,8 @@ export function registerPainter(name, PainterClass) {
 class QuarkRenderer{
     constructor(host, options={}){
         /**
-         * @property {String}
+         * @private
+         * @property {String} id
          */
         this.id = guid();
 
@@ -126,21 +127,27 @@ class QuarkRenderer{
         let self = this;
     
         /**
-         * @property {Storage}
+         * @private
+         * @property {Storage} storage
          */
         this.storage = new Storage();
-    
+        this.storage.on("add",function(el){
+            el && el.addSelfToQr(self);
+        });
+        this.storage.on("del",function(el){
+            el && el.removeSelfFromQr(self);
+        });
+
+        //根据参数创建不同类型的 Painter 实例。
         let rendererType = options.renderer;
         if (!rendererType || !painterMap[rendererType]) {
             rendererType = 'canvas';
         }
-
-        //根据参数创建不同类型的 Painter 实例。
         this.painter = new painterMap[rendererType](this.host, this.storage, options, this.id);
 
+        //利用代理拦截 DOM 事件，转发到 QuarkRenderer 自己封装的事件机制。
         let handerProxy =null;
         if(typeof this.host.moveTo!=='function'){
-            //代理DOM事件。
             if(!env.node && !env.worker && !env.wxa){
                 handerProxy=new DomEventProxy(this.painter.getHost());
             }
@@ -151,8 +158,11 @@ class QuarkRenderer{
                 return self.host.measureText(text);
             });
         }
-        
-        //QuarkRenderer 自己封装的事件机制。
+        /**
+         * @private
+         * @property {QRendererEventHandler} eventHandler
+         * QuarkRenderer 自己封装的事件机制，这是画布内部的事件系统。
+         */
         this.eventHandler = new QRendererEventHandler(this.storage, this.painter, handerProxy, this.painter.root);
     
         /**
@@ -169,23 +179,7 @@ class QuarkRenderer{
          * @property {boolean}
          * @private
          */
-        this._needsRefresh;
-    
-        // 修改 storage.delFromStorage, 每次删除元素之前删除动画
-        // FIXME 有点ugly
-        // What's going on here?
-        let oldDelFromStorage = this.storage.delFromStorage;
-        let oldAddToStorage = this.storage.addToStorage;
-    
-        this.storage.delFromStorage = function (el) {
-            oldDelFromStorage.call(self.storage, el);
-            el && el.removeSelfFromQr(self);
-        };
-    
-        this.storage.addToStorage = function (el) {
-            oldAddToStorage.call(self.storage, el);
-            el.addSelfToQr(self);
-        };    
+        this._needRefresh;  
     }
 
     /**
@@ -254,10 +248,10 @@ class QuarkRenderer{
     refreshImmediately() {
         // Clear needsRefresh ahead to avoid something wrong happens in refresh
         // Or it will cause qrenderer refreshes again and again.
-        this._needsRefresh = this._needsRefreshHover = false;
+        this._needRefresh = this._needsRefreshHover = false;
         this.painter.refresh();
         // Avoid trigger qr.refresh in Element#beforeUpdate hook
-        this._needsRefresh = this._needsRefreshHover = false;
+        this._needRefresh = this._needsRefreshHover = false;
     }
 
     /**
@@ -265,7 +259,7 @@ class QuarkRenderer{
      * Mark and repaint the canvas in the next frame of browser
      */
     refresh() {
-        this._needsRefresh = true;
+        this._needRefresh = true;
     }
 
     /**
@@ -277,7 +271,7 @@ class QuarkRenderer{
     flush() {
         let triggerRendered;
 
-        if (this._needsRefresh) {      //是否需要全部重绘
+        if (this._needRefresh) {      //是否需要全部重绘
             triggerRendered = true;
             this.refreshImmediately();
         }

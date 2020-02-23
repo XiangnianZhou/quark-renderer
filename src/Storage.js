@@ -1,3 +1,5 @@
+import Eventful from './event/Eventful';
+import * as classUtil from './core/utils/class_util';
 import * as util from './core/utils/data_structure_util';
 import env from './core/env';
 import Group from './graphic/Group';
@@ -34,6 +36,8 @@ let Storage = function () { // jshint ignore:line
      * @property _displayListLen
      */
     this._displayListLen = 0;
+
+    classUtil.inheritProperties(this,Eventful);
 };
 
 Storage.prototype = {
@@ -153,13 +157,12 @@ Storage.prototype = {
         if (el.__storage === this) {
             return;
         }
-
         if (el instanceof Group) {
             el.addChildrenToStorage(this);
         }
-
         this.addToStorage(el);
         this._roots.push(el);
+        this.trigger("add",el);
     },
 
     /**
@@ -195,6 +198,7 @@ Storage.prototype = {
         let idx = util.indexOf(this._roots, el);
         if (idx >= 0) {
             this.delFromStorage(el);
+            this.trigger("del",el);
             this._roots.splice(idx, 1);
             if (el instanceof Group) {
                 el.delChildrenFromStorage(this);
@@ -222,7 +226,6 @@ Storage.prototype = {
         if (el) {
             el.__storage = null;
         }
-
         return this;
     },
 
@@ -252,4 +255,5 @@ Storage.prototype = {
     }
 };
 
+classUtil.mixin(Storage, Eventful);
 export default Storage;
