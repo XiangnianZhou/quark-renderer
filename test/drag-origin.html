@@ -19,7 +19,9 @@
                 width: 100
             }
         })
+        qr.add(image);
 
+        //TODO:group 在拖拽时有bug
         const group = new QuarkRenderer.Group({
             position: [100, 100]
         })
@@ -32,9 +34,7 @@
                 height: 100,
                 width: 100
             }
-        })
-
-        qr.add(image);
+        });
         qr.add(group);
         group.add(image2);
     </script>

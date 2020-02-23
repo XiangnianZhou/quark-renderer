@@ -149,11 +149,11 @@ Storage.prototype = {
     },
 
     /**
-     * @method addRoot
+     * @method addToRoot
      * 添加图形(Shape)或者组(Group)到根节点
      * @param {Element} el
      */
-    addRoot: function (el) {
+    addToRoot: function (el) {
         if (el.__storage === this) {
             return;
         }
@@ -170,7 +170,7 @@ Storage.prototype = {
      * 删除指定的图形(Shape)或者组(Group)
      * @param {string|Array.<String>} [el] 如果为空清空整个Storage
      */
-    delRoot: function (el) {
+    delFromRoot: function (el) {
         if (el == null) {
             // 不指定el清空
             for (let i = 0; i < this._roots.length; i++) {
@@ -189,7 +189,7 @@ Storage.prototype = {
 
         if (el instanceof Array) {
             for (let i = 0, l = el.length; i < l; i++) {
-                this.delRoot(el[i]);
+                this.delFromRoot(el[i]);
             }
             return;
         }
@@ -198,11 +198,11 @@ Storage.prototype = {
         let idx = util.indexOf(this._roots, el);
         if (idx >= 0) {
             this.delFromStorage(el);
-            this.trigger("del",el);
             this._roots.splice(idx, 1);
             if (el instanceof Group) {
                 el.delChildrenFromStorage(this);
             }
+            this.trigger("del",el);
         }
     },
 
@@ -213,6 +213,7 @@ Storage.prototype = {
     addToStorage: function (el) {
         if (el) {
             el.__storage = this;
+            el.addSelfToQr();
             el.dirty(false);
         }
         return this;
@@ -225,6 +226,7 @@ Storage.prototype = {
     delFromStorage: function (el) {
         if (el) {
             el.__storage = null;
+            el.removeSelfFromQr();
         }
         return this;
     },

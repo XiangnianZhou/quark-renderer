@@ -131,12 +131,6 @@ class QuarkRenderer{
          * @property {Storage} storage
          */
         this.storage = new Storage();
-        this.storage.on("add",function(el){
-            el && el.addSelfToQr(self);
-        });
-        this.storage.on("del",function(el){
-            el && el.removeSelfFromQr(self);
-        });
 
         //根据参数创建不同类型的 Painter 实例。
         let rendererType = options.renderer;
@@ -197,7 +191,8 @@ class QuarkRenderer{
      * @param  {qrenderer/Element} el
      */
     add(el) {
-        this.storage.addRoot(el);
+        el.__qr=this;
+        this.storage.addToRoot(el);
         this.refresh();
     }
 
@@ -207,7 +202,8 @@ class QuarkRenderer{
      * @param  {qrenderer/Element} el
      */
     remove(el) {
-        this.storage.delRoot(el);
+        this.storage.delFromRoot(el);
+        el.__qr=null;
         this.refresh();
     }
 
@@ -457,7 +453,7 @@ class QuarkRenderer{
      * Clear all objects and the canvas.
      */
     clear() {
-        this.storage.delRoot();
+        this.storage.delFromRoot();
         this.painter.clear();
     }
 

@@ -393,21 +393,18 @@ class Element{
      * 
      * 把当前对象添加到 qrenderer 实例中去。
      * 不会递归添加，因为当元素被添加到 storage 中的时候会执行递归操作。
-     * 
-     * @param {QuarkRenderer} qr
      */
-    addSelfToQr(qr) {
-        this.__qr = qr;
+    addSelfToQr() {
         // 添加动画
         let animationProcessList = this.animationProcessList;
         if (animationProcessList) {
             for (let i = 0; i < animationProcessList.length; i++) {
-                qr.globalAnimationMgr.addAnimationProcess(animationProcessList[i]);
+                this.__qr.globalAnimationMgr.addAnimationProcess(animationProcessList[i]);
             }
         }
 
         if (this.clipPath) {
-            this.clipPath.addSelfToQr(qr);
+            this.clipPath.addSelfToQr();
         }
     }
 
@@ -416,11 +413,9 @@ class Element{
      * Remove self from qrenderer instance.
      * 
      * 把当前对象从 qrenderer 实例中删除。
-     * 
-     * @param {QuarkRenderer} qr
      */
-    removeSelfFromQr(qr) {
-        this.__qr = null;
+    removeSelfFromQr() {
+        let qr=this.__qr;
         // 移除动画
         let animationProcessList = this.animationProcessList;
         if (animationProcessList) {
@@ -432,6 +427,7 @@ class Element{
         if (this.clipPath) {
             this.clipPath.removeSelfFromQr(qr);
         }
+        this.__qr=null;
     }
 
     /**
