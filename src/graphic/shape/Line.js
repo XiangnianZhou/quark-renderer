@@ -9,10 +9,6 @@ import * as dataUtil from '../../core/utils/data_structure_util';
  */
 //TODO:Avoid create repeatly.
 let defaultConfig={
-    /**
-     * @property {String} type
-     */
-    type: 'line',
     shape: {
         x1: 0,
         y1: 0,
@@ -33,6 +29,10 @@ export default class Line extends Path{
      */
     constructor(options){
         super(dataUtil.merge(defaultConfig,options,true));
+        /**
+         * @property {String} type
+         */
+        this.type='line';
     }
 
     /**

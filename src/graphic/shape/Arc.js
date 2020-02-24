@@ -8,10 +8,6 @@ import {PI2,mathSin,mathCos,mathMin,mathMax} from '../../graphic/constants';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 let defaultConfig={
-    /**
-     * @property {String} type
-     */
-    type: 'arc',
     shape: {
         cx: 0,
         cy: 0,
@@ -33,6 +29,10 @@ export default class Arc extends Path{
      */
     constructor(options){
         super(dataUtil.merge(defaultConfig,options,true));
+        /**
+         * @property {String} type
+         */
+        this.type='arc';
     }
 
     /**

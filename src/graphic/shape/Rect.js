@@ -12,10 +12,6 @@ import * as dataUtil from '../../core/utils/data_structure_util';
 let subPixelOptimizeOutputShape = {};
 
 let defaultConfig={
-    /**
-     * @property {String} type
-     */
-    type: 'rect',
     shape: {
         // 左上、右上、右下、左下角的半径依次为r1、r2、r3、r4
         // r缩写为1         相当于 [1, 1, 1, 1]
@@ -37,6 +33,10 @@ export default class Rect extends Path{
      */
     constructor(options){
         super(dataUtil.merge(defaultConfig,options,true));
+        /**
+         * @property {String} type
+         */
+        this.type='rect';
     }
 
     /**

@@ -18,8 +18,11 @@ class Pattern{
         // declard by `color: {image: ...}`, where this constructor will not be called.
         this.image = image;
         this.repeat = repeat;
-        // Can be cloned
         this.type = 'pattern';
+        /**
+         * @property {String} type
+         */
+        this.type='pattern';
     }
 
     getCanvasPattern(ctx) {

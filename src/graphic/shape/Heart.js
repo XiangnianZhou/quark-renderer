@@ -7,10 +7,6 @@ import * as dataUtil from '../../core/utils/data_structure_util';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 let defaultConfig={
-    /**
-     * @property {String} type
-     */
-    type: 'heart',
     shape: {
         cx: 0,
         cy: 0,
@@ -25,6 +21,10 @@ export default class Heart extends Path{
      */
     constructor(options){
         super(dataUtil.merge(defaultConfig,options,true));
+        /**
+         * @property {String} type
+         */
+        this.type='heart';
     }
 
     /**

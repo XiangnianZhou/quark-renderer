@@ -8,10 +8,6 @@ import * as dataUtil from '../../core/utils/data_structure_util';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 let defaultConfig={
-    /**
-     * @property {String} type
-     */
-    type: 'polygon',
     shape: {
         points: null,
         smooth: false,
@@ -26,6 +22,10 @@ export default class Polygon extends Path{
      */
     constructor(options){
         super(dataUtil.merge(defaultConfig,options,true));
+        /**
+         * @property {String} type
+         */
+        this.type='polygon';
     }
 
     /**

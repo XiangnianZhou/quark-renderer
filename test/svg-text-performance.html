@@ -61,17 +61,14 @@
         return txts.join('');
     }
 
-    var qr = QuarkRenderer.init(document.getElementById('main'));
-
-    var result = QuarkRenderer.parseSVG(svg);
-
+    // TODO:fix this example
     var qrEl = document.getElementById('main');
+    qr = QuarkRenderer.init(qrEl,{renderer:'svg'});
+    var result = QuarkRenderer.parseSVG(svg);
     mainGroup = result.root;
-    qr = QuarkRenderer.init(qrEl);
     qr.add(mainGroup);
 
     roamable(qr, mainGroup);
-
 </script>
 </body>
 </html>

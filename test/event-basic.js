@@ -51,10 +51,6 @@ qr.add(circle2);
 qr.add(circle1);
 qr.add(circle3);
 
-circle2.attr('shape', {
-    r: 50 
-});
-
 qr.on("click",function(event){
     console.log(event);
 });

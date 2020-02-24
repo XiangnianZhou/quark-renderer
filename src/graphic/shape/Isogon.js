@@ -8,10 +8,6 @@ import {PI,mathSin,mathCos} from '../../graphic/constants';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 let defaultConfig={
-    /**
-     * @property {String} type
-     */
-    type: 'isogon',
     shape: {
         x: 0, 
         y: 0,
@@ -27,6 +23,10 @@ export default class Isogon extends Path{
      */
     constructor(options){
         super(dataUtil.merge(defaultConfig,options,true));
+        /**
+         * @property {String} type
+         */
+        this.type='isogon';
     }
 
     /**
