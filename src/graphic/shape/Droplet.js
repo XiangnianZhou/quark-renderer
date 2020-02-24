@@ -13,8 +13,10 @@ let defaultConfig={
     type: 'droplet',
 
     shape: {
-        cx: 0, cy: 0,
-        width: 0, height: 0
+        cx: 0, 
+        cy: 0,
+        width: 0, 
+        height: 0
     }
 };
 

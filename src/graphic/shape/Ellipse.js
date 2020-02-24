@@ -13,8 +13,10 @@ let defaultConfig={
     type: 'ellipse',
 
     shape: {
-        cx: 0, cy: 0,
-        rx: 0, ry: 0
+        cx: 0, 
+        cy: 0,
+        rx: 0, 
+        ry: 0
     }
 };
 

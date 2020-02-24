@@ -13,8 +13,10 @@ let defaultConfig={
      */
     type: 'isogon',
     shape: {
-        x: 0, y: 0,
-        r: 0, n: 0
+        x: 0, 
+        y: 0,
+        r: 0,
+        n: 0
     }
 };
 

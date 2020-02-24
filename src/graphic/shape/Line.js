@@ -14,13 +14,10 @@ let defaultConfig={
      */
     type: 'line',
     shape: {
-        // Start point
         x1: 0,
         y1: 0,
-        // End point
         x2: 0,
         y2: 0,
-
         percent: 1
     },
     style: {
