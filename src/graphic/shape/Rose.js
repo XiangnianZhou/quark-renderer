@@ -10,10 +10,6 @@ import {mathSin,mathCos} from '../../graphic/constants';
 let radian = Math.PI / 180;
 
 let defaultConfig={
-    /**
-     * @property {String} type
-     */
-    type: 'rose',
     shape: {
         cx: 0,
         cy: 0,
@@ -34,6 +30,10 @@ export default class Rose extends Path{
      */
     constructor(options){
         super(dataUtil.merge(defaultConfig,options,true));
+        /**
+         * @property {String} type
+         */
+        this.type='rose';
     }
 
     /**

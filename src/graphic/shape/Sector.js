@@ -9,10 +9,6 @@ import {mathSin,mathCos,mathMax,PI2} from '../../graphic/constants';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 let defaultConfig={
-    /**
-     * @property {String} type
-     */
-    type: 'sector',
     shape: {
         cx: 0,
         cy: 0,
@@ -31,6 +27,11 @@ export default class Sector extends Path{
      */
     constructor(options){
         super(dataUtil.merge(defaultConfig,options,true));
+        /**
+         * @property {String} type
+         */
+        this.type='sector';
+
         this.brush=fixClipWithShadow(Path.prototype.brush);
     }
 

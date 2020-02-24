@@ -8,16 +8,12 @@ import {PI2} from '../../graphic/constants';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 let defaultConfig={
-    /**
-     * @property {String} type
-     */
-    type: 'circle',
     shape: {
         cx: 0,
         cy: 0,
         r: 0
     }
-}
+};
 
 export default class Circle extends Path{
     /**
@@ -26,6 +22,10 @@ export default class Circle extends Path{
      */
     constructor(options){
         super(dataUtil.merge(defaultConfig,options,true));
+        /**
+         * @property {String} type
+         */
+        this.type='circle';
     }
 
     /**

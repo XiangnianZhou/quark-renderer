@@ -105,17 +105,7 @@
                         point[0] + (el.position[0] - point[0]) * ratio,
                         point[1] + (el.position[1] - point[1]) * ratio
                     ];
-
-                    // el.animateTo({
-                    //     position: targetPostion
-                    // }, 3000, 0, 'elasticOut');
-
-                    // el.stopAnimation().animate('')
-                    //     .all(3000, {
-                    //         position: targetPostion
-                    //     })
-                    //     .start('elasticOut');
-
+                    
                     el.stopAnimation().animate('')
                         .when(3000, {
                             position: targetPostion

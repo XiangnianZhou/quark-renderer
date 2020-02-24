@@ -9,10 +9,6 @@ import Path from './Path';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 let defaultConfig={
-    /**
-     * @property {String} type
-     */
-    type: 'compound',
     shape: {
         paths: null
     }
@@ -25,6 +21,10 @@ export default class CompoundPath extends Path{
      */
     constructor(opts){
         super(opts,defaultConfig);
+        /**
+         * @property {String} type
+         */
+        this.type='compound';
     }
 
     /**

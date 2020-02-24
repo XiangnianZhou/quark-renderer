@@ -9,10 +9,6 @@ import * as dataUtil from '../../core/utils/data_structure_util';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 let defaultConfig={
-    /**
-     * @property {String} type
-     */
-    type: 'bezier-curve',
     shape: {
         x1: 0,
         y1: 0,
@@ -53,6 +49,10 @@ export default class BezierCurve extends Path{
      */
     constructor(options){
         super(dataUtil.merge(defaultConfig,options,true));
+        /**
+         * @property {String} type
+         */
+        this.type='bezier-curve';
     }
 
     /**

@@ -22,12 +22,19 @@
             },
             position: [300, 100]
         });
-        text1.animateTo({
+
+        text1.animate('')
+        .when(2000,{
             rotation: Math.PI
-        }, 2000);
-        text2.animateTo({
-            rotation: -Math.PI
-        }, 2000);
+        })
+        .start();
+
+        text2.animate('')
+        .when(2000,{
+            rotation:-Math.PI
+        })
+        .start();
+        
         qr.add(text1);
         qr.add(text2);
     </script>

@@ -7,14 +7,11 @@ import * as dataUtil from '../../core/utils/data_structure_util';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 let defaultConfig={
-    /**
-     * @property {String} type
-     */
-    type: 'ellipse',
-
     shape: {
-        cx: 0, cy: 0,
-        rx: 0, ry: 0
+        cx: 0, 
+        cy: 0,
+        rx: 0, 
+        ry: 0
     }
 };
 
@@ -25,6 +22,10 @@ export default class Droplet extends Path{
      */
     constructor(options){
         super(dataUtil.merge(defaultConfig,options,true));
+        /**
+         * @property {String} type
+         */
+        this.type='ellipse';
     }
 
     /**
