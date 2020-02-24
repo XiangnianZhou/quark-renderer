@@ -1,6 +1,6 @@
 {
   "name": "quark-renderer",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "description": "A lightweight yet powerful canvas (&svg) render engine improved from ZRender.",
   "keywords": [
     "canvas",
