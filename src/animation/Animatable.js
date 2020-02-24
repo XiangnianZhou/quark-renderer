@@ -61,12 +61,7 @@ Animatable.prototype = {
         }
 
         if (!target) {
-            console.log(
-                'Property "'
-                + path
-                + '" is not existed in element '
-                + animatable.id
-            );
+            console.log(`Property ${path} is not existed in element ${animatable.id}`);
             return;
         }
 
