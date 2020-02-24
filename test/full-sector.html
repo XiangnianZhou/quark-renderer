@@ -24,11 +24,11 @@
 
         qr.add(curve);
 
-        curve.animateTo({
-            shape: {
-                percent: 0
-            }
-        });
+        curve.animate('shape')
+        .when(500,{
+            percent:0
+        })
+        .start();
     </script>
     <div id="main" style="width:1000px;height:600px;"></div>
 </body>

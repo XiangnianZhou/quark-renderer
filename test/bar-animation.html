@@ -50,12 +50,12 @@
                 });
                 qr.add(barShape);
 
-                barShape.animateTo({
-                    shape: {
-                        height: h,
-                        y: height - h
-                    }
-                }, 500);
+                barShape.animate('shape')
+                .when(500,{
+                    height: h,
+                    y: height - h
+                })
+                .start();
             }
         }
     </script>

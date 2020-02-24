@@ -54,11 +54,11 @@
         qr.add(polygon);
 
         setTimeout(function () {
-            polygon.animateTo({
-                shape: {
-                    points: circlePoints
-                }
-            }, 1500, 'elasticOut');
+            polygon.animate('shape')
+            .when(1500,{
+                points: circlePoints
+            })
+            .start('elasticOut');
         }, 1000);
     </script>
 </body>
