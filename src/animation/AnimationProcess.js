@@ -13,27 +13,12 @@ import Track from './Track';
  * @method constructor AnimationProcess
  * @param {Object} target 需要进行动画的元素
  * @param {Boolean} loop 动画是否循环播放
- * @param {Function} getter
- * @param {Function} setter
  */
-// let AnimationProcess = function (target, loop, getter, setter) {
-    
-// };
-
-// AnimationProcess.prototype = {};
-
 class AnimationProcess{
-    constructor(target, loop, getter, setter){
+    constructor(target, loop){
         this._trackCacheMap = new Map();
         this._target = target;
         this._loop = loop || false;
-        this._getter = getter || function(target, key) {
-            return target[key];
-        };
-        this._setter = setter || function(target, key, value) {
-            target[key] = value;
-        };
-    
         this._delay = 0;
         this._paused = false;
         this._doneList = [];    //callback list when the entire animation process is finished
@@ -53,10 +38,8 @@ class AnimationProcess{
                 continue;
             }
 
-            // Invalid value
-            let value = this._getter(this._target, propName);
-            if (value == null) {
-                // qrLog('Invalid property ' + propName);
+            let value = this._target[propName];
+            if (value === null || value===undefined) {
                 continue;
             }
 
@@ -64,8 +47,6 @@ class AnimationProcess{
             if(!track){
                 track=new Track({
                     _target:this._target,
-                    _getter:this._getter,
-                    _setter:this._setter,
                     _loop:this._loop,
                     _delay:this._delay
                 });

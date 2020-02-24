@@ -20,8 +20,6 @@ export default class Track{
      */
     constructor(options){
         this._target=options._target;
-        this._getter=options._getter;
-        this._setter=options._setter;
         this._loop=options._loop;
         this._delay=options._delay;
         
@@ -129,8 +127,6 @@ export default class Track{
         let loop=this._loop;
         let delay=this._delay;
         let target=this._target;
-        let getter=this._getter;
-        let setter=this._setter;
         let useSpline = easing === 'spline';
     
         let kfLength = this.keyframes.length;
@@ -196,7 +192,7 @@ export default class Track{
                 }
             }
         }
-        isValueArray && dataUtil.fillArr(getter(target, propName), lastValue, arrDim);
+        isValueArray && dataUtil.fillArr(target[propName], lastValue, arrDim);
     
         // Cache the key of last frame to speed up when
         // animation playback is sequency
@@ -256,7 +252,7 @@ export default class Track{
                 if (isValueArray) {
                     dataUtil.catmullRomInterpolateArray(
                         p0, p1, p2, p3, w, w * w, w * w * w,
-                        getter(target, propName),
+                        target[propName],
                         arrDim
                     );
                 }else {
@@ -275,17 +271,13 @@ export default class Track{
                             p0, p1, p2, p3, w, w * w, w * w * w
                         );
                     }
-                    setter(
-                        target,
-                        propName,
-                        value
-                    );
+                    target[propName]=value;
                 }
             }else {
                 if (isValueArray) {
                     dataUtil.interpolateArray(
                         kfValues[frame], kfValues[frame + 1], w,
-                        getter(target, propName),
+                        target[propName],
                         arrDim
                     );
                 }else {
@@ -302,11 +294,7 @@ export default class Track{
                     }else {
                         value = dataUtil.interpolateNumber(kfValues[frame], kfValues[frame + 1], w);
                     }
-                    setter(
-                        target,
-                        propName,
-                        value
-                    );
+                    target[propName]=value;
                 }
             }
         };

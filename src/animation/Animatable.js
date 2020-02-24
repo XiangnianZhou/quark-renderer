@@ -44,9 +44,8 @@ Animatable.prototype = {
 
         if (path) {
             let pathSplitted = path.split('.');
+            animatingShape = (pathSplitted[0] === 'shape');
             let prop = animatable;
-            // If animating shape
-            animatingShape = pathSplitted[0] === 'shape';
             for (let i = 0, l = pathSplitted.length; i < l; i++) {
                 if (!prop) {
                     continue;
