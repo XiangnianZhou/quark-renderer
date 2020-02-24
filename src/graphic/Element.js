@@ -173,6 +173,12 @@ class Element{
         this.globalScaleRatio=1;
 
         /**
+         * All the AnimationProcesses on this Element.
+         * @property animationProcessList
+         */
+        this.animationProcessList=[];
+
+        /**
          * @private
          * @property {QuarkRenderer} __qr
          * 
@@ -231,6 +237,9 @@ class Element{
         classUtil.inheritProperties(this,Eventful,this.options);
         classUtil.inheritProperties(this,Animatable,this.options);
         classUtil.copyOwnProperties(this,this.options,['style','shape']);
+
+        this.on("addToStorage",this.addToStorageHandler);
+        this.on("delFromStorage",this.delFromStorageHandler);
     }
 
     /**
@@ -315,27 +324,23 @@ class Element{
     /**
      * @method setClipPath
      * 
-     * Set the clip path.
+     * Set clip path dynamicly.
      * 
-     * 设置剪裁路径。
+     * 动态设置剪裁路径。
      * 
      * @param {Path} clipPath
      */
     setClipPath(clipPath) {
-        let qr = this.__qr;
-        if (qr) {
-            clipPath.addToQr(qr);
-        }
-
         // Remove previous clip path
         if (this.clipPath && this.clipPath !== clipPath) {
             this.removeClipPath();
         }
-
+        
         this.clipPath = clipPath;
-        clipPath.__qr = qr;
+        clipPath.__qr = this.__qr;
         clipPath.__clipTarget = this;
-
+        clipPath.trigger("addToStorage",this.__storage);// trigger addToStorage manually
+        
         //TODO: FIX this，子类 Path 中的 dirty() 方法有参数。
         this.dirty();
     }
@@ -343,23 +348,16 @@ class Element{
     /**
      * @method removeClipPath
      * 
-     * Remove the clip path.
+     * Remove clip path dynamicly.
      * 
-     * 删除剪裁路径。
-     * 
+     * 动态删除剪裁路径。
      */
     removeClipPath() {
-        let clipPath = this.clipPath;
-        if (clipPath) {
-            if (clipPath.__qr) {
-                clipPath.removeFromQr(clipPath.__qr);
-            }
-
-            clipPath.__qr = null;
-            clipPath.__clipTarget = null;
+        if(this.clipPath){
+            this.clipPath.__qr = null;
+            this.clipPath.__clipTarget = null;
+            this.clipPath&&this.clipPath.trigger("delFromStorage",this.__storage);
             this.clipPath = null;
-
-            this.dirty();
         }
     }
 
@@ -378,46 +376,38 @@ class Element{
     }
 
     /**
-     * @method addToQr
+     * @method addToStorageHandler
      * Add self to qrenderer instance.
      * Not recursively because it will be invoked when element added to storage.
      * 
      * 把当前对象添加到 qrenderer 实例中去。
      * 不会递归添加，因为当元素被添加到 storage 中的时候会执行递归操作。
+     * @param {Storage} storage
      */
-    addToQr() {
-        let animationProcessList = this.animationProcessList;
-        if (animationProcessList) {
-            for (let i = 0; i < animationProcessList.length; i++) {
-                this.__qr.globalAnimationMgr.addAnimationProcess(animationProcessList[i]);
-            }
-        }
-
-        if (this.clipPath) {
-            this.clipPath.addToQr();
-        }
+    addToStorageHandler(storage) {
+        this.__storage = storage;
+        this.animationProcessList.forEach((item,index)=>{
+            this.__qr.globalAnimationMgr.addAnimationProcess(item);
+        });
+        this.clipPath&&this.clipPath.trigger("addToStorage",this.__storage);
+        this.dirty(false);
     }
 
     /**
-     * @method removeFromQr
+     * @method delFromStorageHandler
      * Remove self from qrenderer instance.
      * 
      * 把当前对象从 qrenderer 实例中删除。
+     * @param {Storage} storage
      */
-    removeFromQr() {
-        let qr=this.__qr;
-        // 移除动画
-        let animationProcessList = this.animationProcessList;
-        if (animationProcessList) {
-            for (let i = 0; i < animationProcessList.length; i++) {
-                qr.globalAnimationMgr.removeAnimationProcess(animationProcessList[i]);
-            }
-        }
-
-        if (this.clipPath) {
-            this.clipPath.removeFromQr(qr);
-        }
+    delFromStorageHandler(storage) {
+        this.animationProcessList.forEach((item,index)=>{
+            this.__qr.globalAnimationMgr.removeAnimationProcess(item);
+        });
+        this.clipPath&&this.clipPath.trigger("delFromStorage",this.__storage);
         this.__qr=null;
+        this.__storage=null;
+        this.dirty(false);
     }
 
     /**

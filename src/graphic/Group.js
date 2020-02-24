@@ -48,54 +48,6 @@ class Group extends Element{
          * @property __storage
          */
         this.__storage = null;
-
-        //对象先添加到了 group ，但是 group 还没有添加到 qr，这里重新设置一遍，确保 API 调用者不需要考虑添加顺序。
-        this.on("add",()=>{
-            this.children.forEach((item,index)=>{
-                item.__qr=this.__qr;
-            });
-        });
-    }
-
-    /**
-     * @method children
-     * @return {Array<Element>}
-     */
-    children() {
-        return this.children.slice();
-    }
-
-    /**
-     * @method childAt
-     * 获取指定 index 的儿子节点
-     * @param  {Number} idx
-     * @return {Element}
-     */
-    childAt(idx) {
-        return this.children[idx];
-    }
-
-    /**
-     * @method childOfName
-     * 获取指定名字的儿子节点
-     * @param  {String} name
-     * @return {Element}
-     */
-    childOfName(name) {
-        let children = this.children;
-        for (let i = 0; i < children.length; i++) {
-            if (children[i].name === name) {
-                return children[i];
-            }
-        }
-    }
-
-    /**
-     * @method childCount
-     * @return {Number}
-     */
-    childCount() {
-        return this.children.length;
     }
 
     /**
@@ -104,7 +56,10 @@ class Group extends Element{
      * @param {Element} child
      */
     add(child) {
-        if (child && child !== this && child.parent !== this) {
+        if (child 
+            && child !== this 
+            && child.parent !== this) {
+            
             this.children.push(child);
             this._doAdd(child);
         }
@@ -118,12 +73,14 @@ class Group extends Element{
      * @param {Element} nextSibling
      */
     addBefore(child, nextSibling) {
-        if (child && child !== this && child.parent !== this
-            && nextSibling && nextSibling.parent === this) {
-
+        if (child 
+            && child !== this 
+            && child.parent !== this
+            && nextSibling 
+            && nextSibling.parent === this) {
+            
             let children = this.children;
             let idx = children.indexOf(nextSibling);
-
             if (idx >= 0) {
                 children.splice(idx, 0, child);
                 this._doAdd(child);
@@ -138,19 +95,9 @@ class Group extends Element{
      * @param {*} child 
      */
     _doAdd(child) {
-        if (child.parent) {
-            child.parent.remove(child);
-        }
-        child.parent = this;//把子节点的 parent 属性指向自己，在事件冒泡的时候会使用 parent 属性。
-        let storage = this.__storage;
-        if (storage && storage !== child.__storage) {
-            storage.addToStorage(child);
-            if (child.type==='group') {
-                child.addChildrenToStorage(storage);
-            }
-        }
-        child.__qr=this.__qr;
-        this.__qr && this.__qr.refresh();
+        child.parent&&child.parent.remove(child);
+        this.__qr&&(child.__qr=this.__qr);
+        this.__storage&&this.__storage.addToStorage(child);
     }
 
     /**
@@ -159,25 +106,11 @@ class Group extends Element{
      * @param {Element} child
      */
     remove(child) {
-        let qr = this.__qr;
-        let storage = this.__storage;
-        let children = this.children;
-
-        let idx = dataUtil.indexOf(children, child);
-        if (idx < 0) {
-            return this;
+        let idx = dataUtil.indexOf(this.children, child);
+        if (idx >= 0) {
+            this.children.splice(idx, 1);
+            this.__storage&&this.__storage.delFromStorage(child);
         }
-        children.splice(idx, 1);
-        child.parent = null;
-
-        if (storage) {
-            storage.delFromStorage(child);
-            if (child.type==='group') {
-                child.delChildrenFromStorage(storage);
-            }
-        }
-
-        qr && qr.refresh();
         return this;
     }
 
@@ -186,22 +119,12 @@ class Group extends Element{
      * 移除所有子节点
      */
     removeAll() {
-        let children = this.children;
         let storage = this.__storage;
-        let child;
-        let i;
-        for (i = 0; i < children.length; i++) {
-            child = children[i];
-            if (storage) {
-                storage.delFromStorage(child);
-                if (child.type==='group') {
-                    child.delChildrenFromStorage(storage);
-                }
-            }
+        this.children.forEach((child,index)=>{
+            storage&&storage.delFromStorage(child);
             child.parent = null;
-        }
-        children.length = 0;
-
+        });
+        this.children.length = 0;
         return this;
     }
 
@@ -212,11 +135,9 @@ class Group extends Element{
      * @param  {Object}   context
      */
     eachChild(cb, context) {
-        let children = this.children;
-        for (let i = 0; i < children.length; i++) {
-            let child = children[i];
-            cb.call(context, child, i);
-        }
+        this.children.forEach((child,index)=>{
+            cb.call(context,child);
+        });
         return this;
     }
 
@@ -227,52 +148,44 @@ class Group extends Element{
      * @param  {Object}   context
      */
     traverse(cb, context) {
-        for (let i = 0; i < this.children.length; i++) {
-            let child = this.children[i];
-            cb.call(context, child);
+        this.children.forEach((child,index)=>{
+            cb.call(context,child);
             if (child.type === 'group') {
                 child.traverse(cb, context);
             }
-        }
+        });
         return this;
     }
 
     /**
-     * @method addChildrenToStorage
+     * @method addToStorage
+     * Override addToStorage method of super class.
      * @param {Storage} storage 
      */
-    addChildrenToStorage(storage) {
-        for (let i = 0; i < this.children.length; i++) {
-            let child = this.children[i];
+    addToStorageHandler(storage) {
+        //首先把子元素添加到 storage
+        this.children.forEach((child,index)=>{
+            child.parent=this;
+            child.__qr=this.__qr;
             storage.addToStorage(child);
-            if (child.type==='group') {
-                child.addChildrenToStorage(storage);
-            }
-        }
+        });
+        //然后在调用父层的处理函数添加自身
+        Element.prototype.addToStorageHandler.call(this,storage);
     }
 
     /**
-     * @method delChildrenFromStorage
+     * @method delFromStorageHandler
+     * Override delFromStorageHandler method of super class.
      * @param {Storage} storage 
      */
-    delChildrenFromStorage(storage) {
-        for (let i = 0; i < this.children.length; i++) {
-            let child = this.children[i];
+    delFromStorageHandler(storage) {
+        //首先把子元素从 storage 中删除
+        this.children.forEach((child,index)=>{
+            child.parent=null;
             storage.delFromStorage(child);
-            if (child.type==='group') {
-                child.delChildrenFromStorage(storage);
-            }
-        }
-    }
-
-    /**
-     * @method dirty
-     * @return {Group}
-     */
-    dirty() {
-        this.__dirty = true;
-        this.__qr && this.__qr.refresh();
-        return this;
+        });
+        //然后在调用父层的处理函数删除自身
+        Element.prototype.delFromStorageHandler.call(this,storage);
     }
 
     /**
