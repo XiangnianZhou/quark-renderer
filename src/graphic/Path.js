@@ -323,19 +323,19 @@ class Path extends Element{
     }
 
     /**
-     * @method attrKV
-     * Overwrite attrKV
+     * @method _attrKV
+     * Overwrite _attrKV
      * @param {*} key 
      * @param {Object} value 
      */
-    attrKV(key, value) {
+    _attrKV(key, value) {
         // FIXME
         if (key === 'shape') {
-            this.setShape(value);
             this.__dirtyPath = true;
             this._rect = null;
+            this.setShape(value);
         }else {
-            Element.prototype.attrKV.call(this, key, value);
+            Element.prototype._attrKV.call(this, key, value);
         }
     }
 

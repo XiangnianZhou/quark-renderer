@@ -276,28 +276,6 @@ class Element{
     traverse(cb, context) {}
 
     /**
-     * @protected
-     * @method attrKV
-     * @param {String} key
-     * @param {Object} value
-     */
-    attrKV(key, value) {
-        if (key === 'position' || key === 'scale' || key === 'origin') {
-            // Copy the array
-            if (value) {
-                let target = this[key];
-                if (!target) {
-                    target = this[key] = [];
-                }
-                target[0] = value[0];
-                target[1] = value[1];
-            }
-        }else {
-            this[key] = value;
-        }
-    }
-
-    /**
      * @method hide
      * 
      * Hide the element.
@@ -489,40 +467,49 @@ class Element{
     }
 
     /**
+     * @protected
+     * @method _attrKV
+     * @param {String} key
+     * @param {Object} value
+     */
+    _attrKV(key, value) {
+        if (key === 'style') {
+            this.setStyle(key,value);
+        }else if (key === 'position' 
+                || key === 'scale' 
+                || key === 'origin'
+                || key === 'skew'
+                || key === 'translate') {
+            let target = this[key]?this[key]:[];
+            target[0] = value[0];
+            target[1] = value[1];
+        }else {
+            this[key] = value;
+        }
+    }
+
+    /**
      * @method attr
      * 
-     * Modify attribute.
+     * Modify attribute, this method will mark current object as dirty.
      * 
-     * 修改对象上的属性。
+     * 修改对象上的属性，使用此方法修改对象上的属性会导致对象被标记成 dirty。
      * 
      * @param {String|Object} key
      * @param {*} value
      */
     attr(key, value) {
-        if (typeof key === 'String') {
-            this.attrKV(key, value);
+        if (dataUtil.isString(key)) {
+            this._attrKV(key, value);
         }else if (dataUtil.isObject(key)) {
             for (let name in key) {
                 if (key.hasOwnProperty(name)) {
-                    this.attrKV(name, key[name]);
+                    this._attrKV(name, key[name]);
                 }
             }
         }
         this.dirty();
         return this;
-    }
-
-    /**
-     * @method attrKV
-     * @param {*} key 
-     * @param {*} value 
-     */
-    attrKV(key, value) {
-        if (key !== 'style') {
-            this.attr(key,value);
-        }else {
-            this.style.set(value);
-        }
     }
 
     /**
