@@ -368,7 +368,7 @@ class Element{
             this.__qr.globalAnimationMgr.addAnimationProcess(item);
         });
         this.clipPath&&this.clipPath.trigger("addToStorage",this.__storage);
-        this.dirty(false);
+        this.dirty();
     }
 
     /**
@@ -385,7 +385,7 @@ class Element{
         this.clipPath&&this.clipPath.trigger("delFromStorage",this.__storage);
         this.__qr=null;
         this.__storage=null;
-        this.dirty(false);
+        this.dirty();
     }
 
     /**
