@@ -206,7 +206,7 @@ class Group extends Element{
 
             let childRect = child.getBoundingRect();
             let transform = child.getLocalTransform();
-            // TODO
+            // TODO:
             // The boundingRect cacluated by transforming original
             // rect may be bigger than the actual bundingRect when rotation
             // is used. (Consider a circle rotated aginst its center, where
