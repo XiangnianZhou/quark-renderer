@@ -40,6 +40,11 @@ Eventful.prototype = {
 
     constructor: Eventful,
 
+    clearAll:function(){
+        this._$handlers = null;
+        this._$eventProcessor = null;
+    },
+
     /**
      * @method
      * The handler can only be triggered once, then removed.

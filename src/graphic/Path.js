@@ -312,16 +312,7 @@ class Path extends Element{
             this.__clipTarget.dirty();
         }
     }
-
-    /**
-     * @method animateShape
-     * Alias for animate('shape')
-     * @param {Boolean} loop
-     */
-    animateShape(loop) {
-        return this.animate('shape', loop);
-    }
-
+    
     /**
      * @method _attrKV
      * Overwrite _attrKV

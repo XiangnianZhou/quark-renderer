@@ -26,7 +26,7 @@
             });
 
             qr.add(circleShape);
-            var ap = circleShape.animate('', true);
+            var ap = circleShape.animate('');
 
             var points = [];
             var point = [
@@ -46,7 +46,7 @@
                 points.push(point);
             }
 
-            ap.start('spline');
+            ap.start(true,'spline');
         }
     </script>
 </body>

@@ -305,7 +305,6 @@ export function cubicProjectPoint(
         out[0] = cubicAt(x0, x1, x2, x3, t);
         out[1] = cubicAt(y0, y1, y2, y3, t);
     }
-    // console.log(interval, i);
     return mathSqrt(d);
 }
 
@@ -497,6 +496,5 @@ export function quadraticProjectPoint(
         out[0] = quadraticAt(x0, x1, x2, t);
         out[1] = quadraticAt(y0, y1, y2, t);
     }
-    // console.log(interval, i);
     return mathSqrt(d);
 }

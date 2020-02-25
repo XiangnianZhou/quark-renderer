@@ -247,10 +247,6 @@ let nodeParsers = {
             width: parseFloat(xmlNode.getAttribute('width') || 0),
             height: parseFloat(xmlNode.getAttribute('height') || 0)
         });
-
-        // console.log(xmlNode.getAttribute('transform'));
-        // console.log(rect.transform);
-
         return rect;
     },
     'circle': function (xmlNode, parentGroup) {

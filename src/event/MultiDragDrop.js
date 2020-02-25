@@ -76,7 +76,6 @@ export default class MultiDragDrop{
         this.handler.on('pagemouseup', this._dragEnd, this);
 
         this.selectionMap.forEach((el,key)=>{
-            console.log(el);
             this.handler.dispatchToElement(this.param(el, e), 'dragstart', e.event);
         });
     }

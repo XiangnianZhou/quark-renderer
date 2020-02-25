@@ -20,7 +20,6 @@ export default class Track{
      */
     constructor(options){
         this._target=options._target;
-        this._loop=options._loop;
         this._delay=options._delay;
         
         this.isFinished=false;
@@ -48,7 +47,7 @@ export default class Track{
             return;
         }
         let result=this.timeline.nextFrame(time,delta);
-        if(dataUtil.isNumeric(result)&&result===1){
+        if(dataUtil.isString(result)&&result==='destroy'){
             this.isFinished=true;
         }
         return result;
@@ -71,13 +70,14 @@ export default class Track{
      * @param {String} propName 属性名称
      * @param {Boolean} forceAnimate 是否强制开启动画 
      */
-    start(easing,propName, forceAnimate){
+    start(propName, loop=false, easing='', forceAnimate=false){
         let options=this._parseKeyFrames(
             easing, 
             propName, 
+            loop,
             forceAnimate
         );
-    
+
         //如果传入的参数不正确，则无法构造实例
         if(!options){
             return null;
@@ -123,8 +123,7 @@ export default class Track{
      * @param {Boolean} forceAnimate 是否强制开启动画 
      * //TODO:try move this into webworker
      */
-    _parseKeyFrames(easing,propName,forceAnimate) {
-        let loop=this._loop;
+    _parseKeyFrames(easing,propName,loop,forceAnimate) {
         let delay=this._delay;
         let target=this._target;
         let useSpline = easing === 'spline';

@@ -47,7 +47,7 @@
         });
         qr.add(circle);
 
-        circle.animate('', true)
+        circle.animate('')
             .when(0, {
                 scale: [1, 1]
             })
@@ -57,7 +57,7 @@
             .when(2000, {
                 scale: [1, 1]
             })
-            .start();
+            .start(true);
 
         document.getElementById('global-scale-ratio').addEventListener('change', function (e) {
             circle.globalScaleRatio = this.value;
