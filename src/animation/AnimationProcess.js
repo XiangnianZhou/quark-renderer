@@ -172,9 +172,9 @@ class AnimationProcess{
         }
 
         if(dataUtil.isNumeric(percent)){
-            for (let i = 0; i < this._onframeList.length; i++) {
-                this._onframeList[i](this._target, percent);
-            }
+            this._onframeList.forEach((cb,index)=>{
+                cb(this._target, percent);
+            });
         }
 
         if(this.isFinished()){
