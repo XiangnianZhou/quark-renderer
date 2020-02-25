@@ -106,11 +106,11 @@
                         point[1] + (el.position[1] - point[1]) * ratio
                     ];
                     
-                    el.stopAnimation().animate('')
+                    el.stopAnimation(true).animate('')
                         .when(3000, {
                             position: targetPostion
                         })
-                        .start('elasticOut');
+                        .start(false,'elasticOut');
                 }
             }, throttleRate);
 

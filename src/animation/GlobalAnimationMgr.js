@@ -47,7 +47,9 @@ class GlobalAnimationMgr{
         let me=this;
         me._animationProcessList.push(animationProcess);
         animationProcess.on('done',()=>{
-            animationProcess.stop();
+            me.removeAnimationProcess(animationProcess);
+        });
+        animationProcess.on('stop',()=>{
             me.removeAnimationProcess(animationProcess);
         });
     }

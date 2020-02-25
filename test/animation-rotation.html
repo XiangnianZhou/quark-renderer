@@ -23,11 +23,24 @@
             position: [300, 100]
         });
 
-        text1.animate('')
+        var ap=text1.animate('')
         .when(2000,{
             rotation: Math.PI
         })
         .start();
+
+        // test animation stop process
+        // setTimeout(() => {
+        //     ap.stop();
+        // }, 800);
+
+        // test animation puase/resume process
+        setTimeout(() => {
+            ap.pause();
+        }, 800);
+        setTimeout(() => {
+            ap.resume();
+        }, 1500);
 
         text2.animate('')
         .when(2000,{

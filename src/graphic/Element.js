@@ -380,8 +380,9 @@ class Element{
      */
     delFromStorageHandler(storage) {
         this.animationProcessList.forEach((item,index)=>{
-            this.__qr.globalAnimationMgr.removeAnimationProcess(item);
+            item.trigger("stop");
         });
+        this.animationProcessList=[];
         this.clipPath&&this.clipPath.trigger("delFromStorage",this.__storage);
         this.__qr=null;
         this.__storage=null;
