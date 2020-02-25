@@ -456,16 +456,7 @@ class Element{
     traverse(cb, context) {
         cb.call(context, this);
     }
-
-    /**
-     * @method animateStyle
-     * Alias for animate('style')
-     * @param {Boolean} loop
-     */
-    animateStyle(loop) {
-        return this.animate('style', loop);
-    }
-
+    
     /**
      * @protected
      * @method _attrKV

@@ -19,6 +19,7 @@
         var qr = QuarkRenderer.init(main);
 
         var N = 10;
+        let counter=0;
 
         for (var i = 0; i < N ; i ++) {
             createShape(i);
@@ -100,10 +101,14 @@
                     break;
             }
 
+            counter++;
+            console.log("loop...");
+
             move.done(function() {
-                    animate(shape);
-                })
-                .start(easing);
+                console.log(`done...${counter}`);
+                animate(shape);
+            })
+            .start(false,easing,true);
         }
 
         function random(max, min) {
