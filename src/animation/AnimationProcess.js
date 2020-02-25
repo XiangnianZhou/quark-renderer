@@ -150,6 +150,7 @@ class AnimationProcess{
             track.stop(this._target, 1);
         });
         this._trackCacheMap=new Map();
+        this._doneCallback();
     }
 
     /**
