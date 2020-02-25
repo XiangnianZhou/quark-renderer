@@ -44,7 +44,12 @@ class GlobalAnimationMgr{
      * @param {qrenderer.animation.GlobalAnimationMgr} animationProcess
      */
     addAnimationProcess(animationProcess) {
-        this._animationProcessList.push(animationProcess);
+        let me=this;
+        me._animationProcessList.push(animationProcess);
+        animationProcess.on('done',()=>{
+            animationProcess.stop();
+            me.removeAnimationProcess(animationProcess);
+        });
     }
 
     /**
@@ -53,7 +58,7 @@ class GlobalAnimationMgr{
      * @param {qrenderer.animation.GlobalAnimationMgr} animationProcess
      */
     removeAnimationProcess(animationProcess) {
-        let index=this._animationProcessList.findIndex(animationProcess);
+        let index=this._animationProcessList.indexOf(animationProcess);
         if(index>=0){
             this._animationProcessList.splice(index,1);
         }

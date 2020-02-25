@@ -47,7 +47,7 @@ export default class Track{
             return;
         }
         let result=this.timeline.nextFrame(time,delta);
-        if(dataUtil.isNumeric(result)&&result===1){
+        if(dataUtil.isString(result)&&result==='destroy'){
             this.isFinished=true;
         }
         return result;
@@ -70,14 +70,14 @@ export default class Track{
      * @param {String} propName 属性名称
      * @param {Boolean} forceAnimate 是否强制开启动画 
      */
-    start(easing, propName, loop=false, forceAnimate=false){
+    start(propName, loop=false, easing='', forceAnimate=false){
         let options=this._parseKeyFrames(
             easing, 
             propName, 
             loop,
             forceAnimate
         );
-    
+
         //如果传入的参数不正确，则无法构造实例
         if(!options){
             return null;

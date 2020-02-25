@@ -38,7 +38,7 @@
         group.add(circle2);
         qr.add(group);
         
-        group.animate('', true)
+        group.animate('')
             .when(1000, {
                 position: [200, 0]
             })
@@ -51,9 +51,9 @@
             .when(4000, {
                 position: [100, 100]
             })
-            .start();
+            .start(true);
 
-        circle.animate('', true)
+        circle.animate('')
             .when(100, {
                 position: [20, 0]
             })
@@ -66,7 +66,7 @@
             .when(400, {
                 position: [0, 0]
             })
-            .start();
+            .start(true);
 
         qr.configLayer(0, {
             // clearColor: 'rgba(255, 255, 255, 0.1)'

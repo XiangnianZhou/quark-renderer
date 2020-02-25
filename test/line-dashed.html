@@ -30,11 +30,11 @@
 
         qr.add(polyline);
 
-        polyline.animate('style', true)
+        polyline.animate('style')
             .when(1000, {
                 lineDashOffset: 20
             })
-            .start();
+            .start(true);
 
         var line = new QuarkRenderer.Line({
             style: {
@@ -50,11 +50,11 @@
         });
         qr.add(line);
 
-        line.animate('style', true)
+        line.animate('style')
             .when(1000, {
                 lineDashOffset: -20
             })
-            .start();
+            .start(true);
 
         var star = new QuarkRenderer.Star({
             style: {
@@ -71,11 +71,11 @@
         });
         qr.add(star);
 
-        star.animate('style', true)
+        star.animate('style')
             .when(1000, {
                 lineDashOffset: 30
             })
-            .start();
+            .start(true);
 
         var curve = new QuarkRenderer.BezierCurve({
             style: {
@@ -92,11 +92,11 @@
 
         qr.add(curve);
 
-        curve.animate('style', true)
+        curve.animate('style')
             .when(1000, {
                 lineDashOffset: -10
             })
-            .start();
+            .start(true);
     </script>
 </body>
 </html>

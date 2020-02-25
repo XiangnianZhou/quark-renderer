@@ -1,5 +1,8 @@
 import * as dataUtil from '../core/utils/data_structure_util';
+import * as classUtil from '../core/utils/class_util';
 import Track from './Track';
+import Eventful from '../event/Eventful';
+
 /**
  * @class qrenderer.animation.AnimationProcess
  * 
@@ -19,8 +22,7 @@ class AnimationProcess{
         this._target = target;
         this._delay = 0;
         this._paused = false;
-        this._doneList = [];    //callback list when the entire animation process is finished
-        this._onframeList = []; //callback list for each frame
+        classUtil.inheritProperties(this,Eventful,this.options);
     }
 
     /**
@@ -73,7 +75,18 @@ class AnimationProcess{
      * @return {qrenderer.animation.AnimationProcess}
      */
     during(callback) {
-        this._onframeList.push(callback);
+        this.on("during",callback);
+        return this;
+    }
+
+    /**
+     * @method done
+     * 添加动画结束的回调
+     * @param  {Function} callback
+     * @return {qrenderer.animation.AnimationProcess}
+     */
+    done(callback) {
+        this.on("done",callback);
         return this;
     }
 
@@ -83,10 +96,9 @@ class AnimationProcess{
      * 动画过程整体结束的时候回调此函数
      */
     _doneCallback() {
-        this._doneList.forEach((fn,index)=>{
-            fn.call(this);
-        });
         this._trackCacheMap = new Map();
+        this.trigger("done");
+        this.clearAll();
     }
 
     /**
@@ -106,20 +118,17 @@ class AnimationProcess{
     /**
      * @method start
      * 开始执行动画
-     * @param  {String|Function} [easing] 缓动函数名称，详见{@link qrenderer.animation.easing 缓动引擎}
      * @param  {Boolean} loop 是否循环
+     * @param  {String|Function} [easing] 缓动函数名称，详见{@link qrenderer.animation.easing 缓动引擎}
      * @param  {Boolean} forceAnimate 是否强制开启动画
      * @return {qrenderer.animation.AnimationProcess}
      */
-    start(easing, loop=false, forceAnimate=false) {
+    start(loop=false, easing='',forceAnimate=false) {
         let self = this;
         let keys=[...this._trackCacheMap.keys()];
         keys.forEach((propName,index)=>{
-            if (!this._trackCacheMap.get(propName)) {
-                return;
-            }
             let track=this._trackCacheMap.get(propName);
-            track.start(easing,propName,loop,forceAnimate);
+            track&&track.start(propName,loop,easing,forceAnimate);
         });
 
         // This optimization will help the case that in the upper application
@@ -170,9 +179,7 @@ class AnimationProcess{
         }
 
         if(dataUtil.isNumeric(percent)){
-            this._onframeList.forEach((cb,index)=>{
-                cb(this._target, percent);
-            });
+            this.trigger("during",this._target, percent);
         }
 
         if(this.isFinished()){
@@ -220,19 +227,7 @@ class AnimationProcess{
         this._delay = time;
         return this;
     }
-    
-    /**
-     * @method done
-     * 添加动画结束的回调
-     * @param  {Function} cb
-     * @return {qrenderer.animation.AnimationProcess}
-     */
-    done(cb) {
-        if (cb) {
-            this._doneList.push(cb);
-        }
-        return this;
-    }
 }
 
+classUtil.mixin(AnimationProcess,Eventful);
 export default AnimationProcess;
