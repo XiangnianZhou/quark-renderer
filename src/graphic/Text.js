@@ -29,8 +29,12 @@ export default class Text extends Element{
         this.__dirty && textUtil.normalizeTextStyle(style, true);
 
         // Use props with prefix 'text'.
-        style.fill = style.stroke = style.shadowBlur = style.shadowColor =
-            style.shadowOffsetX = style.shadowOffsetY = null;
+        style.fill = null;
+        style.stroke = null;
+        style.shadowBlur = null;
+        style.shadowColor = null;
+        style.shadowOffsetX = null;
+        style.shadowOffsetY = null;
 
         let text = style.text;
         // Convert to string

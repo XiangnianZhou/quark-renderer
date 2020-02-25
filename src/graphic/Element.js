@@ -364,9 +364,7 @@ class Element{
      */
     addToStorageHandler(storage) {
         this.__storage = storage;
-        this.animationProcessList.forEach((item,index)=>{
-            this.__qr.globalAnimationMgr.addAnimationProcess(item);
-        });
+        this.__qr.globalAnimationMgr.addAnimatable(this);
         this.clipPath&&this.clipPath.trigger("addToStorage",this.__storage);
         this.dirty();
     }

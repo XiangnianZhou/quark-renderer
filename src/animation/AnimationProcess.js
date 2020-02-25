@@ -6,8 +6,10 @@ import Eventful from '../event/Eventful';
 /**
  * @class qrenderer.animation.AnimationProcess
  * 
- * AnimationProcess 表示一次完整的动画过程，每一个元素（Element）中都有一个列表，用来存储本实例上的动画过程。
- * GlobalAnimationMgr 负责维护和调度所有 AnimationProcess 实例。
+ * AnimationProcess 表示一次完整的动画过程，每一个元素（Element）中都有一个列表，用来存储本实例上的所有动画过程。
+ * 列表中的动画过程按照顺序获得运行机会，在特定的时间点上只有一个 AnimationProcess 处于运行状态，运行过程由 GlobalAnimationMgr 进行调度。 
+ * AnimationProcess 运行完成之后会触发 done 事件，Element 实例在监听到 done 事件之后，会把对应的动画过程从列表中删除。如果 Element 实例
+ * 的动画过程列表中存在多个实例，其中某个过程是无限循环运行的，那么后续所有动画过程都不会获得到运行机会。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */

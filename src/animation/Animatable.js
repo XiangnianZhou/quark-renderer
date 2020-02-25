@@ -75,7 +75,7 @@ Animatable.prototype = {
         });
         animatable.animationProcessList.push(animationProcess);
         if (animatable.__qr) {// If animate after added to the qrenderer
-            animatable.__qr.globalAnimationMgr.addAnimationProcess(animationProcess);
+            animatable.__qr.globalAnimationMgr.addAnimatable(animatable);
         }
         return animationProcess;
     },
@@ -88,12 +88,16 @@ Animatable.prototype = {
     stopAnimation: function (forwardToLast=false) {
         this.animationProcessList.forEach((ap,index)=>{
             ap.stop(forwardToLast);
-            this.removeAnimationProcess(ap);
         });
         this.animationProcessList.length=0;
         return this;
     },
 
+    /**
+     * @method removeAnimationProcess
+     * 删除动画片段
+     * @param {AnimationProcess} animationProcess
+     */
     removeAnimationProcess(animationProcess) {
         let index=this.animationProcessList.indexOf(animationProcess);
         if(index>=0){
