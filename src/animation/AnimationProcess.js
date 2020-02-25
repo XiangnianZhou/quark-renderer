@@ -12,13 +12,11 @@ import Track from './Track';
 /**
  * @method constructor AnimationProcess
  * @param {Object} target 需要进行动画的元素
- * @param {Boolean} loop 动画是否循环播放
  */
 class AnimationProcess{
-    constructor(target, loop){
+    constructor(target){
         this._trackCacheMap = new Map();
         this._target = target;
-        this._loop = loop || false;
         this._delay = 0;
         this._paused = false;
         this._doneList = [];    //callback list when the entire animation process is finished
@@ -47,7 +45,6 @@ class AnimationProcess{
             if(!track){
                 track=new Track({
                     _target:this._target,
-                    _loop:this._loop,
                     _delay:this._delay
                 });
             }
@@ -110,10 +107,11 @@ class AnimationProcess{
      * @method start
      * 开始执行动画
      * @param  {String|Function} [easing] 缓动函数名称，详见{@link qrenderer.animation.easing 缓动引擎}
-     * @param  {Boolean} forceAnimate
+     * @param  {Boolean} loop 是否循环
+     * @param  {Boolean} forceAnimate 是否强制开启动画
      * @return {qrenderer.animation.AnimationProcess}
      */
-    start(easing, forceAnimate) {
+    start(easing, loop=false, forceAnimate=false) {
         let self = this;
         let keys=[...this._trackCacheMap.keys()];
         keys.forEach((propName,index)=>{
@@ -121,7 +119,7 @@ class AnimationProcess{
                 return;
             }
             let track=this._trackCacheMap.get(propName);
-            track.start(easing,propName,forceAnimate);
+            track.start(easing,propName,loop,forceAnimate);
         });
 
         // This optimization will help the case that in the upper application

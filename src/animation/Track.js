@@ -20,7 +20,6 @@ export default class Track{
      */
     constructor(options){
         this._target=options._target;
-        this._loop=options._loop;
         this._delay=options._delay;
         
         this.isFinished=false;
@@ -71,10 +70,11 @@ export default class Track{
      * @param {String} propName 属性名称
      * @param {Boolean} forceAnimate 是否强制开启动画 
      */
-    start(easing,propName, forceAnimate){
+    start(easing, propName, loop=false, forceAnimate=false){
         let options=this._parseKeyFrames(
             easing, 
             propName, 
+            loop,
             forceAnimate
         );
     
@@ -123,8 +123,7 @@ export default class Track{
      * @param {Boolean} forceAnimate 是否强制开启动画 
      * //TODO:try move this into webworker
      */
-    _parseKeyFrames(easing,propName,forceAnimate) {
-        let loop=this._loop;
+    _parseKeyFrames(easing,propName,loop,forceAnimate) {
         let delay=this._delay;
         let target=this._target;
         let useSpline = easing === 'spline';

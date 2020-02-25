@@ -32,12 +32,12 @@ Animatable.prototype = {
      * @param {Boolean} [loop=false] Whether to loop animation.
      * @return {qrenderer.animation.AnimationProcess}
      * @example
-     * el.animate('style', false)
+     * el.animate('style')
      *   .when(1000, {x: 10} )
      *   .done(function(){ // Animation done })
      *   .start()
      */
-    animate: function (path, loop=false) {
+    animate: function (path) {
         let target;
         let animatable = this;
 
@@ -62,7 +62,7 @@ Animatable.prototype = {
             return;
         }
 
-        let animationProcess = new AnimationProcess(target, loop);
+        let animationProcess = new AnimationProcess(target);
         animationProcess.during(function (target) {
             animatable.dirty();
         })
