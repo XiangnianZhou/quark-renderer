@@ -599,6 +599,7 @@ export function interpolateNumber(p0, p1, percent) {
 }
 
 /**
+ * 字符串插值
  * @param  {String} p0
  * @param  {String} p1
  * @param  {Number} percent
@@ -609,6 +610,7 @@ export function interpolateString(p0, p1, percent) {
 }
 
 /**
+ * 数组插值
  * @param  {Array} p0
  * @param  {Array} p1
  * @param  {Number} percent
@@ -634,6 +636,7 @@ export function interpolateArray(p0, p1, percent, out, arrDim) {
             }
         }
     }
+    return out;
 }
 
 // arr0 is source array, arr1 is target array.
