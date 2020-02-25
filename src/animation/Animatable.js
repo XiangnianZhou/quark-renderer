@@ -39,12 +39,10 @@ Animatable.prototype = {
      */
     animate: function (path, loop=false) {
         let target;
-        let animatingShape = false;
         let animatable = this;
 
         if (path) {
             let pathSplitted = path.split('.');
-            animatingShape = (pathSplitted[0] === 'shape');
             let prop = animatable;
             for (let i = 0, l = pathSplitted.length; i < l; i++) {
                 if (!prop) {
@@ -66,7 +64,7 @@ Animatable.prototype = {
 
         let animationProcess = new AnimationProcess(target, loop);
         animationProcess.during(function (target) {
-            animatable.dirty(animatingShape);
+            animatable.dirty();
         })
         .done(function () {
             // FIXME AnimationProcess will not be removed if use `AnimationProcess#stop` to stop animation
