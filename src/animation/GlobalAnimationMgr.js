@@ -9,11 +9,11 @@ import requestAnimationFrame from './utils/request_animation_frame';
  * 
  * Animation manager, global singleton, controls all the animation process.
  * Each QRenderer instance has a GlobalAnimationMgr instance. GlobalAnimationMgr 
- * is designed to manage all the AnimationProcesses inside a qrenderer instance.
+ * is designed to manage all the elements which are animating.
  * 
  * 动画管理器，全局单例，控制和调度所有动画过程。每个 qrenderer 实例中会持有一个 
  * GlobalAnimationMgr 实例。GlobalAnimationMgr 会管理 qrenderer 实例中的所有
- * AnimationProcess。
+ * 正在进行动画的元素。
  * 
  * @author pissang(https://github.com/pissang)
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
@@ -29,7 +29,7 @@ class GlobalAnimationMgr{
      */
     constructor(options){
         options = options || {};
-        this._animationProcessList=[];
+        this._animatableMap=new Map();
         this._running = false;
         this._timestamp;
         this._pausedTime;//ms
@@ -38,30 +38,12 @@ class GlobalAnimationMgr{
         Dispatcher.call(this);
     }
 
-    /**
-     * @method addAnimationProcess
-     * 添加 animationProcess
-     * @param {qrenderer.animation.GlobalAnimationMgr} animationProcess
-     */
-    addAnimationProcess(animationProcess) {
-        let me=this;
-        me._animationProcessList.push(animationProcess);
-        animationProcess.on('done',()=>{
-            animationProcess.stop();
-            me.removeAnimationProcess(animationProcess);
-        });
+    addAnimatable(animatable){
+        this._animatableMap.set(animatable.id,animatable);
     }
 
-    /**
-     * @method removeAnimationProcess
-     * 删除动画片段
-     * @param {qrenderer.animation.GlobalAnimationMgr} animationProcess
-     */
-    removeAnimationProcess(animationProcess) {
-        let index=this._animationProcessList.indexOf(animationProcess);
-        if(index>=0){
-            this._animationProcessList.splice(index,1);
-        }
+    removeAnimatable(animatable) {
+        this._animatableMap.delete(animatable.id);
     }
 
     /**
@@ -72,7 +54,12 @@ class GlobalAnimationMgr{
         let time = new Date().getTime() - this._pausedTime;
         let delta = time - this._timestamp;
 
-        this._animationProcessList.forEach((ap,index)=>{
+        this._animatableMap.forEach((animatable,index,map)=>{
+            let ap=animatable.animationProcessList[0];
+            if(!ap){
+                this.removeAnimatable(animatable);
+                return;
+            }
             ap.nextFrame(time,delta);
         });
 
@@ -111,14 +98,6 @@ class GlobalAnimationMgr{
     }
 
     /**
-     * @method stop
-     * Stop all the animations.
-     */
-    stop() {
-        this._running = false;
-    }
-
-    /**
      * @method pause
      * Pause all the animations.
      */
@@ -145,21 +124,11 @@ class GlobalAnimationMgr{
      * Clear all the animations.
      */
     clear() {
-        this._animationProcessList.length=0;
-    }
-
-    /**
-     * @method isFinished
-     * Whether all the animations have finished.
-     */
-    isFinished(){
-        let finished=true;
-        this._animationProcessList.forEach((animationProcess,index)=>{
-            if(!animationProcess.isFinished()){
-                finished=false;
-            }
+        this._animatableMap.forEach((animatable,index)=>{
+            animatable.stopAnimation();
         });
-        return finished;
+        this._running = false;
+        this._animatableMap=new Map();
     }
 }
 

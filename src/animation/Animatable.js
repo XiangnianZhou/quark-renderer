@@ -5,6 +5,7 @@ import * as dataUtil from '../core/utils/data_structure_util';
  * @class qrenderer.animation.Animatable
  * 
  * 动画接口类，在 Element 类中 mixin 此类提供的功能，为元素提供动画功能。
+ * 混入 Animatable 的类必须同时混入 Eventful ，因为动画过程中需要使用事件机制。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
@@ -65,18 +66,17 @@ Animatable.prototype = {
         let animationProcess = new AnimationProcess(target);
         animationProcess.during(function (target) {
             animatable.dirty();
-        })
-        .done(function () {
-            // FIXME AnimationProcess will not be removed if use `AnimationProcess#stop` to stop animation
-            animatable.animationProcessList.splice(dataUtil.indexOf(animatable.animationProcessList, animationProcess), 1);
+        });
+        animationProcess.on('done',()=>{
+            animatable.removeAnimationProcess(animationProcess);
+        });
+        animationProcess.on('stop',()=>{
+            animatable.removeAnimationProcess(animationProcess);
         });
         animatable.animationProcessList.push(animationProcess);
-
-        // If animate after added to the qrenderer
-        if (this.__qr) {
-            this.__qr.globalAnimationMgr.addAnimationProcess(animationProcess);
+        if (animatable.__qr) {// If animate after added to the qrenderer
+            animatable.__qr.globalAnimationMgr.addAnimatable(animatable);
         }
-
         return animationProcess;
     },
 
@@ -85,12 +85,24 @@ Animatable.prototype = {
      * 停止动画
      * @param {Boolean} forwardToLast If move to last frame before stop
      */
-    stopAnimation: function (forwardToLast) {
+    stopAnimation: function (forwardToLast=false) {
         this.animationProcessList.forEach((ap,index)=>{
             ap.stop(forwardToLast);
         });
         this.animationProcessList.length=0;
         return this;
+    },
+
+    /**
+     * @method removeAnimationProcess
+     * 删除动画片段
+     * @param {AnimationProcess} animationProcess
+     */
+    removeAnimationProcess(animationProcess) {
+        let index=this.animationProcessList.indexOf(animationProcess);
+        if(index>=0){
+            this.animationProcessList.splice(index,1);
+        }
     }
 };
 

@@ -12,22 +12,37 @@
         var qr = QuarkRenderer.init(document.getElementById('main'));
         var text1 = new QuarkRenderer.Text({
             style: {
-                text: 'aaaaaa'
+                text: 'aaaaaa',
+                fontSize:32
             },
-            position: [100, 100]
+            position: [200, 200]
         });
         var text2 = new QuarkRenderer.Text({
             style: {
-                text: 'aaaaaa'
+                text: 'aaaaaa',
+                fontSize:32
             },
-            position: [300, 100]
+            position: [300, 200]
         });
 
-        text1.animate('')
+        var ap=text1.animate('')
         .when(2000,{
             rotation: Math.PI
         })
         .start();
+
+        // test animation stop process
+        // setTimeout(() => {
+        //     ap.stop();
+        // }, 800);
+
+        // test animation puase/resume process
+        setTimeout(() => {
+            ap.pause();
+        }, 800);
+        setTimeout(() => {
+            ap.resume();
+        }, 1500);
 
         text2.animate('')
         .when(2000,{

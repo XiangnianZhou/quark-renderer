@@ -6,8 +6,10 @@ import Eventful from '../event/Eventful';
 /**
  * @class qrenderer.animation.AnimationProcess
  * 
- * AnimationProcess 表示一次完整的动画过程，每一个元素（Element）中都有一个列表，用来存储本实例上的动画过程。
- * GlobalAnimationMgr 负责维护和调度所有 AnimationProcess 实例。
+ * AnimationProcess 表示一次完整的动画过程，每一个元素（Element）中都有一个列表，用来存储本实例上的所有动画过程。
+ * 列表中的动画过程按照顺序获得运行机会，在特定的时间点上只有一个 AnimationProcess 处于运行状态，运行过程由 GlobalAnimationMgr 进行调度。 
+ * AnimationProcess 运行完成之后会触发 done 事件，Element 实例在监听到 done 事件之后，会把对应的动画过程从列表中删除。如果 Element 实例
+ * 的动画过程列表中存在多个实例，其中某个过程是无限循环运行的，那么后续所有动画过程都不会获得到运行机会。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
@@ -21,6 +23,7 @@ class AnimationProcess{
         this._trackCacheMap = new Map();
         this._target = target;
         this._delay = 0;
+        this._running = false;
         this._paused = false;
         classUtil.inheritProperties(this,Eventful,this.options);
     }
@@ -69,96 +72,15 @@ class AnimationProcess{
     }
 
     /**
-     * @method during
-     * 添加动画每一帧的回调函数
-     * @param  {Function} callback
-     * @return {qrenderer.animation.AnimationProcess}
-     */
-    during(callback) {
-        this.on("during",callback);
-        return this;
-    }
-
-    /**
-     * @method done
-     * 添加动画结束的回调
-     * @param  {Function} callback
-     * @return {qrenderer.animation.AnimationProcess}
-     */
-    done(callback) {
-        this.on("done",callback);
-        return this;
-    }
-
-    /**
-     * @private
-     * @method _doneCallback
-     * 动画过程整体结束的时候回调此函数
-     */
-    _doneCallback() {
-        this._trackCacheMap = new Map();
-        this.trigger("done");
-        this.clearAll();
-    }
-
-    /**
-     * @method isFinished
-     * 判断整个动画过程是否已经完成，所有 Track 上的动画都完成则整个动画过程完成
-     */
-    isFinished() {
-        let isFinished=true;
-        [...this._trackCacheMap.values()].forEach((track,index)=>{
-            if(!track.isFinished){
-                isFinished=false;
-            }
-        });
-        return isFinished;
-    }
-
-    /**
-     * @method start
-     * 开始执行动画
-     * @param  {Boolean} loop 是否循环
-     * @param  {String|Function} [easing] 缓动函数名称，详见{@link qrenderer.animation.easing 缓动引擎}
-     * @param  {Boolean} forceAnimate 是否强制开启动画
-     * @return {qrenderer.animation.AnimationProcess}
-     */
-    start(loop=false, easing='',forceAnimate=false) {
-        let self = this;
-        let keys=[...this._trackCacheMap.keys()];
-        keys.forEach((propName,index)=>{
-            let track=this._trackCacheMap.get(propName);
-            track&&track.start(propName,loop,easing,forceAnimate);
-        });
-
-        // This optimization will help the case that in the upper application
-        // the view may be refreshed frequently, where animation will be
-        // called repeatly but nothing changed.
-        if (!keys.length) {
-            this._doneCallback();
-        }
-        return this;
-    }
-
-    /**
-     * @method stop
-     * 停止动画
-     * @param {Boolean} forwardToLast If move to last frame before stop
-     */
-    stop(forwardToLast) {
-        [...this._trackCacheMap.values()].forEach((track,index)=>{
-            track.stop(this._target, 1);
-        });
-        this._trackCacheMap=new Map();
-    }
-
-    /**
      * @method nextFrame
      * 进入下一帧
      * @param {Number} time  当前时间
      * @param {Number} delta 时间偏移量
      */
     nextFrame(time,delta){
+        this._running=true;
+        this._paused=false;
+
         let deferredEvents = [];
         let deferredTracks = [];
         let percent="";
@@ -183,8 +105,51 @@ class AnimationProcess{
         }
 
         if(this.isFinished()){
-            this._doneCallback();
+            this.trigger("done");
         }
+    }
+
+    /**
+     * @method start
+     * 开始执行动画
+     * @param  {Boolean} loop 是否循环
+     * @param  {String|Function} [easing] 缓动函数名称，详见{@link qrenderer.animation.easing 缓动引擎}
+     * @param  {Boolean} forceAnimate 是否强制开启动画
+     * @return {qrenderer.animation.AnimationProcess}
+     */
+    start(loop=false, easing='',forceAnimate=false) {
+        this._running=true;
+        this._paused=false;
+        this.trigger("start");
+
+        let self = this;
+        let keys=[...this._trackCacheMap.keys()];
+        if (!keys.length) {
+            this.trigger("done");
+            return this;
+        }
+        keys.forEach((propName,index)=>{
+            let track=this._trackCacheMap.get(propName);
+            track&&track.start(propName,loop,easing,forceAnimate);
+        });
+        return this;
+    }
+
+    /**
+     * @method stop
+     * 停止动画
+     * @param {Boolean} forwardToLast If move to last frame before stop
+     */
+    stop(forwardToLast) {
+        this._running=false;
+        this._paused=false;
+
+        [...this._trackCacheMap.values()].forEach((track,index)=>{
+            track.stop(this._target, 1);
+        });
+        this._trackCacheMap=new Map();
+        this.trigger("stop");
+        return this;
     }
 
     /**
@@ -192,10 +157,15 @@ class AnimationProcess{
      * 暂停动画
      */
     pause() {
+        this._running=false;
+        this._paused=true;
+
         [...this._trackCacheMap.values()].forEach((track,index)=>{
             track.pause();
         });
-        this._paused = true;
+
+        this.trigger("pause");
+        return this;
     }
 
     /**
@@ -203,10 +173,51 @@ class AnimationProcess{
      * 恢复动画
      */
     resume() {
+        this._running=true;
+        this._paused=false;
+
         [...this._trackCacheMap.values()].forEach((track,index)=>{
             track.resume();
         });
-        this._paused = false;
+
+        this.trigger("resume");
+        return this;
+    }
+
+    /**
+     * @method during
+     * 添加动画每一帧的回调函数，方便链式调用。
+     * @param  {Function} callback
+     * @return {qrenderer.animation.AnimationProcess}
+     */
+    during(callback) {
+        this.on("during",callback);
+        return this;
+    }
+
+    /**
+     * @method done
+     * 添加动画结束的回调，方便链式调用。
+     * @param  {Function} callback
+     * @return {qrenderer.animation.AnimationProcess}
+     */
+    done(callback) {
+        this.on("done",callback);
+        return this;
+    }
+
+    /**
+     * @method isFinished
+     * 判断整个动画过程是否已经完成，所有 Track 上的动画都完成则整个动画过程完成
+     */
+    isFinished() {
+        let isFinished=true;
+        [...this._trackCacheMap.values()].forEach((track,index)=>{
+            if(!track.isFinished){
+                isFinished=false;
+            }
+        });
+        return isFinished;
     }
 
     /**

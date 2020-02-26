@@ -245,7 +245,7 @@ export default class CanvasPainter{
         });
         elMirror.__from = el;
         el.__hoverMir = elMirror;
-        hoverStyle && elMirror.setStyle(hoverStyle);
+        hoverStyle && elMirror.attr({style:hoverStyle});
         this._hoverElements.push(elMirror);
         return elMirror;
     }
