@@ -17,8 +17,6 @@
     <div id="main" style="width:800px;height:600px;"></div>
 
     <script type="text/javascript">
-
-        refresh();
         var qr;
         var throttleRate;
         var count;
@@ -31,6 +29,7 @@
 
             init();
         }
+        refresh();
 
         function init() {
             qr = QuarkRenderer.init(document.getElementById('main'));
@@ -40,16 +39,6 @@
             var record = window.record = [];
             var recordLimit = 300;
             var lastTick = 0;
-
-            // qr.globalAnimationMgr.on('frame', function () {
-            //     if (record.length > recordLimit) {
-            //         record.length = 0;
-            //     }
-            //     var now = +new Date();
-            //     var gap = now - lastTick;
-            //     record.push(gap < 30 ? '-' : gap);
-            //     lastTick = now;
-            // }, this);
 
             var gradient = new QuarkRenderer.LinearGradient();
             gradient.addColorStop(0, 'red');
@@ -106,11 +95,12 @@
                         point[1] + (el.position[1] - point[1]) * ratio
                     ];
                     
-                    el.stopAnimation().animate('')
+                    el.stopAnimation()
+                        .animate('')
                         .when(3000, {
                             position: targetPostion
                         })
-                        .start('elasticOut');
+                        .start(false,'elasticOut');
                 }
             }, throttleRate);
 
@@ -118,7 +108,6 @@
                 update([e.offsetX, e.offsetY]);
             });
         }
-
 
         function throttle(fn, delay, debounce) {
             var currCall;
@@ -151,22 +140,17 @@
 
                 if (thisDebounce) {
                     timer = setTimeout(exec, thisDelay);
-                }
-                else {
+                }else {
                     if (diff >= 0) {
                         exec();
-                    }
-                    else {
+                    }else {
                         timer = setTimeout(exec, -diff);
                     }
                 }
-
                 lastCall = currCall;
             };
-
             return cb;
         }
     </script>
-
 </body>
 </html>

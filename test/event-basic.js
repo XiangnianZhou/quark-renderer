@@ -40,11 +40,11 @@ circle1.on('mouseout', function () {
 });
 
 circle2.on('dragenter', function () {
-    this.setStyle('fill', 'red');
+    this.attr({style:{fill:'red'}});
 }).on('dragleave', function () {
-    this.setStyle('fill', 'black');
+    this.attr({style:{fill:'black'}});
 }).on('drop', function () {
-    this.setStyle('fill', 'green');
+    this.attr({style:{fill:'green'}});
 });
 
 qr.add(circle2);

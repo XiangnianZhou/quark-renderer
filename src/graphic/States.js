@@ -1,6 +1,6 @@
 import * as dataUtil from '../core/utils/data_structure_util';
 import Style from './Style';
-import {copy as vec2Copy} from '../core/utils/vector';
+import {copy as vec2Copy} from '../core/utils/vector_util';
 
 /**
  * @class qrenderer.graphic.GraphicStates

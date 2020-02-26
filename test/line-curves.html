@@ -6,7 +6,7 @@
     <script src="../dist/quark-renderer.js"></script>
 </head>
 <body style='background:-webkit-gradient(linear,0 0, 0 100%, color-stop(0,black), color-stop(0.8, rgb(150,150,150)), color-stop(1, rgb(200,200,200)))'>
-    <div id="main" style="width:600px;height:400px;"></div>
+    <div id="main"></div>
     <script type="text/javascript">
         var w = 1280;
         var h = 800;
@@ -17,10 +17,8 @@
         main.style.height = h + 'px';
 
         var qr = QuarkRenderer.init(main);
-
         var N = 10;
-        let counter=0;
-
+        
         for (var i = 0; i < N ; i ++) {
             createShape(i);
         }
@@ -101,11 +99,7 @@
                     break;
             }
 
-            counter++;
-            console.log("loop...");
-
             move.done(function() {
-                console.log(`done...${counter}`);
                 animate(shape);
             })
             .start(false,easing,true);

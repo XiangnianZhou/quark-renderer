@@ -173,7 +173,7 @@ class QuarkRenderer{
          * @property {boolean}
          * @private
          */
-        this._needRefresh;  
+        this._needRefresh=false;  
     }
 
     /**
@@ -372,14 +372,6 @@ class QuarkRenderer{
 
     /**
      * @method
-     * Stop and clear all animation immediately
-     */
-    clearAnimation() {
-        this.globalAnimationMgr.clear();
-    }
-
-    /**
-     * @method
      * Get container width
      */
     getWidth() {
@@ -456,22 +448,20 @@ class QuarkRenderer{
         this.storage.delFromRoot();
         this.painter.clear();
     }
-
+    
     /**
      * @method
      * Dispose self.
      */
     dispose() {
-        this.globalAnimationMgr.stop();
-
-        this.clear();
+        this.globalAnimationMgr.clear();
         this.storage.dispose();
         this.painter.dispose();
         this.eventHandler.dispose();
 
-        this.globalAnimationMgr =
-        this.storage =
-        this.painter =
+        this.globalAnimationMgr = null;
+        this.storage = null;
+        this.painter = null;
         this.eventHandler = null;
 
         delete instances[this.id];

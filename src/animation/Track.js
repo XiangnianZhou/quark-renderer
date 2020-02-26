@@ -124,7 +124,6 @@ export default class Track{
      * //TODO:try move this into webworker
      */
     _parseKeyFrames(easing,propName,loop,forceAnimate) {
-        let delay=this._delay;
         let target=this._target;
         let useSpline = easing === 'spline';
     
@@ -275,7 +274,9 @@ export default class Track{
             }else {
                 if (isValueArray) {
                     dataUtil.interpolateArray(
-                        kfValues[frame], kfValues[frame + 1], w,
+                        kfValues[frame], 
+                        kfValues[frame + 1], 
+                        w,
                         target[propName],
                         arrDim
                     );
@@ -283,7 +284,9 @@ export default class Track{
                     let value;
                     if (isValueColor) {
                         dataUtil.interpolateArray(
-                            kfValues[frame], kfValues[frame + 1], w,
+                            kfValues[frame], 
+                            kfValues[frame + 1], 
+                            w,
                             rgba, 1
                         );
                         value = dataUtil.rgba2String(rgba);
@@ -302,7 +305,7 @@ export default class Track{
             target:target,
             lifeTime: trackMaxTime,
             loop:loop,
-            delay:delay,
+            delay:this._delay,
             onframe: onframe,
             easing: (easing && easing !== 'spline')?easing:'Linear'
         };
