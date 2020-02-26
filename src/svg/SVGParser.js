@@ -327,12 +327,14 @@ let nodeParsers = {
         inheritStyle(parentGroup, img);
         parseAttributes(xmlNode, img, this._defs);
 
-        img.setStyle({
-            image: xmlNode.getAttribute('xlink:href'),
-            x: xmlNode.getAttribute('x'),
-            y: xmlNode.getAttribute('y'),
-            width: xmlNode.getAttribute('width'),
-            height: xmlNode.getAttribute('height')
+        img.attr({
+            style:{
+                image: xmlNode.getAttribute('xlink:href'),
+                x: xmlNode.getAttribute('x'),
+                y: xmlNode.getAttribute('y'),
+                width: xmlNode.getAttribute('width'),
+                height: xmlNode.getAttribute('height')
+            }
         });
 
         return img;
@@ -476,7 +478,6 @@ let attributesMap = {
     'font-size': 'fontSize',
     'font-style': 'fontStyle',
     'font-weight': 'fontWeight',
-
     'text-align': 'textAlign',
     'alignment-baseline': 'textBaseline'
 };

@@ -173,7 +173,7 @@ class QuarkRenderer{
          * @property {boolean}
          * @private
          */
-        this._needRefresh;  
+        this._needRefresh=false;  
     }
 
     /**
@@ -447,14 +447,14 @@ class QuarkRenderer{
     clear() {
         this.storage.delFromRoot();
         this.painter.clear();
-        this.globalAnimationMgr.clear();
     }
-
+    
     /**
      * @method
      * Dispose self.
      */
     dispose() {
+        this.globalAnimationMgr.clear();
         this.storage.dispose();
         this.painter.dispose();
         this.eventHandler.dispose();

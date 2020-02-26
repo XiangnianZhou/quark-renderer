@@ -4,6 +4,7 @@
 function Diff() {}
 
 Diff.prototype = {
+    //TODO:fix this, 这个工具函数性能有问题，大于10000个元素的时候性能急剧下降。
     diff: function (oldArr, newArr, equals) {
         if (!equals) {
             equals = function (a, b) {

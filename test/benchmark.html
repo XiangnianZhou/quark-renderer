@@ -196,14 +196,11 @@
          * and assigned colors
          */
         function createPoints(numPoints, pointWidth, width, height) {
-            var colorScale = d3.scaleSequential(d3.interpolateViridis)
-                .domain([numPoints - 1, 0]);
-
+            var colorScale = d3.scaleSequential(d3.interpolateViridis).domain([numPoints - 1, 0]);
             var points = d3.range(numPoints).map(id => ({
                 id,
                 color: colorScale(id),
             }));
-
             return randomLayout(points, pointWidth, width, height);
         }
 
@@ -235,7 +232,7 @@
         var layouts = [toSine, toPhyllotaxis, toSpiral, toPhyllotaxis, toGrid];
 
         // animate the points to a given layout
-        function animate(rects, layout) {
+        function doAnimate(rects, layout) {
             // store the source position
             points.forEach(point => {
                 point.sx = point.x;
@@ -274,7 +271,7 @@
                     currLayout = (currLayout + 1) % layouts.length;
 
                     // start animation for next layout
-                    animate(rects, layouts[currLayout]);
+                    doAnimate(rects, layouts[currLayout]);
                 }
 
                 stats.end();
@@ -304,7 +301,7 @@
 
         setTimeout(function () {
             // start the animation
-            animate(rects, layouts[currLayout]);
+            doAnimate(rects, layouts[currLayout]);
         }, 1000);
     </script>
 

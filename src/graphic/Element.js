@@ -364,7 +364,7 @@ class Element{
      */
     addToStorageHandler(storage) {
         this.__storage = storage;
-        this.__qr.globalAnimationMgr.addAnimatable(this);
+        this.__qr&&this.__qr.globalAnimationMgr.addAnimatable(this);
         this.clipPath&&this.clipPath.trigger("addToStorage",this.__storage);
         this.dirty();
     }
@@ -464,7 +464,7 @@ class Element{
      */
     _attrKV(key, value) {
         if (key === 'style') {
-            this.setStyle(key,value);
+            classUtil.copyOwnProperties(this.style,value);
         }else if (key === 'position' 
                 || key === 'scale' 
                 || key === 'origin'
@@ -498,28 +498,6 @@ class Element{
                 }
             }
         }
-        this.dirty();
-        return this;
-    }
-
-    /**
-     * @method setStyle
-     * @param {Object|String} key
-     * @param {*} value
-     */
-    setStyle(key, value) {
-        this.style.set(key, value);
-        this.dirty();
-        return this;
-    }
-
-    /**
-     * @method useStyle
-     * Use given style object
-     * @param  {Object} obj
-     */
-    useStyle(obj) {
-        this.style = new Style(obj, this);
         this.dirty();
         return this;
     }

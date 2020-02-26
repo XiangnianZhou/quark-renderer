@@ -34,14 +34,14 @@
                         fill: 'rgb(0, 0, 180)'
                     },
                     onmouseover: function () {
-                        this.animate('style')
+                        this.stopAnimation().animate('style')
                             .when(200, {
                                 fill: 'rgb(180, 0, 0)'
                             })
                             .start();
                     },
                     onmouseout: function () {
-                        this.animate('style')
+                        this.stopAnimation().animate('style')
                             .when(200, {
                                 fill: 'rgb(0, 0, 180)'
                             })
