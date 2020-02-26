@@ -32,7 +32,7 @@ let Transformable = function (options={}) {
 
     /**
      * @property {Array<Number>} rotation
-     * 旋转角度。
+     * 旋转弧度。
      */
     this.rotation = (options.rotation===null||options.rotation===undefined)?0:options.rotation;
 
@@ -76,7 +76,7 @@ Transformable.prototype={
     /**
      * @method setRotation
      * 设置旋转角度。
-     * @param {Number} rotation 角度
+     * @param {Number} rotation 弧度
      */
     setRotation:function(rotation=0){
         this.rotation=rotation;
