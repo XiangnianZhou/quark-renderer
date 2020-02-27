@@ -380,6 +380,7 @@ export function isNumeric(n) {
 export function isObject(value) {
     // Avoid a V8 JIT bug in Chrome 19-20.
     // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
+    // Note: Modify this implementation might cause some trouble.
     var type = typeof value;
     return type === 'function' || (!!value && type === 'object');
 }
@@ -811,3 +812,55 @@ export function isNotAroundZero(val) {
 export function isAroundZero(val) {
     return !isNotAroundZero(val);
 }
+
+/**
+ * 把一个嵌套多层的对象展平，变成一层结构
+ */
+function _isObject (value) {//TODO:fix me, something might be wrong with isObject() function above.
+    return !!value && typeof value === 'object' && value.constructor === Object;
+}
+export function flattenObj(obj,flattenMap,path=""){
+    for(let p in obj){
+        path+=p;
+        if(_isObject(obj[p])){
+            path+='.';
+            flattenObj(obj[p],flattenMap,path);
+        }else{
+            flattenMap.set(path,obj[p]);
+            path=path.substr(0,path.lastIndexOf('.')+1);
+        }
+    }
+}
+
+export function setAttrByPath(obj,path,value){
+    let arr=path.split(".");
+    arr.forEach((key,index)=>{
+        if(index==arr.length-1){
+            obj[key]=value;            
+        }else{
+            if(!obj[key]){
+                obj[key]={};
+            }
+            obj=obj[key];
+        }
+    });
+}
+
+export function getAttrByPath(obj,path){
+    let arr=path.split(".");
+    for(let i=0;i<arr.length;i++){
+        let key=arr[i];
+        if(i==arr.length-1){
+            return obj[key];            
+        }else{
+            if(obj[key]===null||obj[key]===undefined){
+                return null;
+            }
+            obj=obj[key];
+        }
+    }
+}
+// test case
+// let obj={shape:{style:{x:[1,0]},fill:'#ff0000'}};
+// console.log(getAttrByPath(obj,"shape.style.x"));
+// console.log(getAttrByPath(obj,"shape.style.y"));

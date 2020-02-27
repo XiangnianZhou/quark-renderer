@@ -48,7 +48,7 @@
             });
 
             qr.add(star);
-            var ap = star.animate('');
+            var ap = star.animate();
 
             var points = [];
             var point = [
@@ -84,10 +84,10 @@
 
             ap.start(true,'spline');
         }
-        qr.configLayer(1, {
-            // clearColor: 'rgba(255, 255, 255, 0.1)'
+        qr.configLayer(0, {
+            // clearColor: 'rgba(255, 255, 255, 0.1)',
             motionBlur: true,
-            lastFrameAlpha: 0.9
+            lastFrameAlpha: 0.5
         });
 
         console.profile('render');

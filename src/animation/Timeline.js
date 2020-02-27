@@ -11,7 +11,7 @@ export default class Timeline{
     /**
      * @method constructor Timeline
      * @param {Object} options 
-     * @param {Element} options.target 动画对象，可以是数组，如果是数组的话会批量分发onframe等事件
+     * @param {Element} options.element 正在进行动画的元素
      * @param {Number} options.life(1000) 动画时长
      * @param {Number} options.delay(0) 动画延迟时间
      * @param {Boolean} options.loop(true)
@@ -22,17 +22,17 @@ export default class Timeline{
      * @param {Function} options.onrestart(optional)
      */
     constructor(options){
-        this._target = options.target;
-        this._lifeTime = options.lifeTime || 1000;
-        this._delay = options.delay || 0;
-        this._initialized = false;
+        this.element = options.element;
+        this.lifeTime = options.lifeTime || 1000;
+        this.delay = options.delay || 0;
         this.loop = options.loop == null ? false : options.loop;
         this.gap = options.gap || 0;
         this.easing = options.easing || 'Linear';
         this.onframe = options.onframe;
         this.ondestroy = options.ondestroy;
         this.onrestart = options.onrestart;
-    
+        
+        this._initialized = false;
         this._pausedTime = 0;
         this._paused = false;
     }
@@ -48,7 +48,7 @@ export default class Timeline{
         // Set startTime on first frame, or _startTime may has milleseconds different between clips
         // PENDING
         if (!this._initialized) {
-            this._startTime = globalTime + this._delay;
+            this._startTime = globalTime + this.delay;
             this._initialized = true;
         }
 
@@ -57,7 +57,7 @@ export default class Timeline{
             return;
         }
 
-        let percent = (globalTime - this._startTime - this._pausedTime) / this._lifeTime;
+        let percent = (globalTime - this._startTime - this._pausedTime) / this.lifeTime;
         // 还没开始
         if (percent < 0) {
             return;
@@ -89,7 +89,7 @@ export default class Timeline{
      * @param {Number} globalTime 
      */
     restart(globalTime) {
-        let remainder = (globalTime - this._startTime - this._pausedTime) % this._lifeTime;
+        let remainder = (globalTime - this._startTime - this._pausedTime) % this.lifeTime;
         this._startTime = globalTime - remainder + this.gap;
         this._pausedTime = 0;
     }
@@ -103,7 +103,7 @@ export default class Timeline{
     fire(eventType, arg) {
         eventType = 'on' + eventType;
         if (this[eventType]) {
-            this[eventType](this._target, arg);
+            this[eventType](this.element, arg);
         }
     }
 
