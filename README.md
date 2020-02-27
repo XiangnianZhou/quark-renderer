@@ -56,6 +56,7 @@ Browser example:
     <script type="text/javascript">
         let main = document.getElementById('main');
         let qr = QuarkRenderer.init(main);
+        
         let gradient = new QuarkRenderer.LinearGradient();
         gradient.addColorStop(0, 'red');
         gradient.addColorStop(1, 'black');
@@ -77,10 +78,11 @@ Browser example:
         });
         qr.add(circle);
         
-        let ap=circle.animate('', true)
+        // first animation process
+        circle.animate()
             .when(1000, {
                 position: [200, 0],
-                scale: [2, 2]
+                scale: [2, 1]
             })
             .when(2000, {
                 position: [200, 200],
@@ -88,17 +90,45 @@ Browser example:
             })
             .when(3000, {
                 position: [0, 200],
-                scale: [1, 1]
+                scale: [1, 2]
             })
             .when(4000, {
                 position: [0, 0],
                 scale: [1, 1]
             })
-            .start();
+            .during(function(){
+                console.log(circle.animationProcessList.length);
+            })
+            .done(function(){
+                console.log(circle.animationProcessList.length);
+            })
+            .start();//.start(true)
 
-        setTimeout(()=>{
-            ap.stop();
-        },5000);
+        //second animation process
+        circle.animate()
+            .when(1000, {
+                position: [500, 0],
+                scale: [2, 1]
+            })
+            .when(2000, {
+                position: [200, 200],
+                scale: [1, 1]
+            })
+            .when(3000, {
+                position: [0, 200],
+                scale: [1, 2]
+            })
+            .when(4000, {
+                position: [0, 0],
+                scale: [1, 1]
+            })
+            .during(function(){
+                console.log(circle.animationProcessList.length);
+            })
+            .done(function(){
+                console.log(circle.animationProcessList.length);
+            })
+            .start();//.start(true)
     </script>
 </body>
 </html>
