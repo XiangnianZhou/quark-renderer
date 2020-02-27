@@ -30,9 +30,11 @@
 
         qr.add(polyline);
 
-        polyline.animate('style')
+        polyline.animate()
             .when(1000, {
-                lineDashOffset: 20
+                style:{
+                    lineDashOffset: 20
+                }
             })
             .start(true);
 
@@ -50,9 +52,11 @@
         });
         qr.add(line);
 
-        line.animate('style')
+        line.animate()
             .when(1000, {
-                lineDashOffset: -20
+                style:{
+                    lineDashOffset: -20
+                }
             })
             .start(true);
 
@@ -71,9 +75,11 @@
         });
         qr.add(star);
 
-        star.animate('style')
+        star.animate()
             .when(1000, {
-                lineDashOffset: 30
+                style:{
+                    lineDashOffset: 30
+                }
             })
             .start(true);
 
@@ -92,9 +98,11 @@
 
         qr.add(curve);
 
-        curve.animate('style')
+        curve.animate()
             .when(1000, {
-                lineDashOffset: -10
+                style:{
+                    lineDashOffset: -10
+                }
             })
             .start(true);
     </script>

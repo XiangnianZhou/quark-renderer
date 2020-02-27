@@ -16,12 +16,12 @@ import Eventful from '../event/Eventful';
 
 /**
  * @method constructor AnimationProcess
- * @param {Object} target 需要进行动画的元素
+ * @param {Object} element 需要进行动画的元素
  */
 class AnimationProcess{
-    constructor(target){
+    constructor(element){
+        this.element = element;
         this._trackCacheMap = new Map();
-        this._target = target;
         this._delay = 0;
         this._running = false;
         this._paused = false;
@@ -32,42 +32,39 @@ class AnimationProcess{
      * @method when
      * 为每一种需要进行动画的属性创建一条轨道
      * @param  {Number} time 关键帧时间，单位ms
-     * @param  {Object} props 关键帧的属性值，key-value表示
+     * @param  {Object} config 关键帧的属性值，key-value表示
      * @return {qrenderer.animation.AnimationProcess}
      */
-    when(time, props) {
-        for (let propName in props) {
-            if (!props.hasOwnProperty(propName)) {
-                continue;
-            }
-
-            let value = this._target[propName];
-            if (value === null || value===undefined) {
-                continue;
-            }
-
-            let track=this._trackCacheMap.get(propName);
+    when(time, config) {
+        let flattenMap=new Map();
+        dataUtil.flattenObj(config,flattenMap);
+        flattenMap.forEach((value,key,map)=>{
+            let track=this._trackCacheMap.get(key);
             if(!track){
                 track=new Track({
-                    _target:this._target,
-                    _delay:this._delay
+                    element:this.element,
+                    path:key,
+                    delay:this._delay
                 });
+                //如果参数中没有提供第 0 帧，自动补第 0 帧，以元素上当前的属性值为值
+                if (time !== 0) {
+                    let temp=dataUtil.getAttrByPath(this.element,key);
+                    if(temp==null||temp==undefined){
+                        temp=0;
+                    }
+                    track.addKeyFrame({
+                        time: 0,
+                        value: dataUtil.clone(temp)
+                    });
+                }
+                this._trackCacheMap.set(key,track);
             }
-
-            if (time !== 0) {
-                track.addKeyFrame({
-                    time: 0,
-                    value: dataUtil.cloneValue(value)
-                });
-            }
-
+            
             track.addKeyFrame({
                 time: time,
-                value: props[propName]
+                value: dataUtil.clone(value)
             });
-
-            this._trackCacheMap.set(propName,track);
-        }
+        });
         return this;
     }
 
@@ -84,14 +81,20 @@ class AnimationProcess{
         let deferredEvents = [];
         let deferredTracks = [];
         let percent="";
+        let isFinished=true;
 
-        [...this._trackCacheMap.values()].forEach((track,index)=>{
+        this._trackCacheMap.forEach((track,key,map)=>{
             let result = track.nextFrame(time, delta);
             if (dataUtil.isString(result)) {
                 deferredEvents.push(result);
                 deferredTracks.push(track);
             }else if(dataUtil.isNumeric(result)){
                 percent=result;
+            }
+            isFinished=isFinished&&track.isFinished;
+
+            if(dataUtil.isNumeric(percent)){
+                this.trigger("during",this.element,track._path,track._currentValue,percent);
             }
         });
 
@@ -100,11 +103,7 @@ class AnimationProcess{
             deferredTracks[i].fire(deferredEvents[i]);
         }
 
-        if(dataUtil.isNumeric(percent)){
-            this.trigger("during",this._target, percent);
-        }
-
-        if(this.isFinished()){
+        if(isFinished){
             this.trigger("done");
         }
     }
@@ -123,14 +122,12 @@ class AnimationProcess{
         this.trigger("start");
 
         let self = this;
-        let keys=[...this._trackCacheMap.keys()];
-        if (!keys.length) {
+        if(!this._trackCacheMap.size){
             this.trigger("done");
             return this;
         }
-        keys.forEach((propName,index)=>{
-            let track=this._trackCacheMap.get(propName);
-            track&&track.start(propName,loop,easing,forceAnimate);
+        this._trackCacheMap.forEach((track,key,map)=>{
+            track&&track.start(loop,easing,forceAnimate);
         });
         return this;
     }
@@ -143,9 +140,8 @@ class AnimationProcess{
     stop(forwardToLast) {
         this._running=false;
         this._paused=false;
-
-        [...this._trackCacheMap.values()].forEach((track,index)=>{
-            track.stop(this._target, 1);
+        this._trackCacheMap.forEach((track,key,map)=>{
+            track.stop(this.element, 1);
         });
         this._trackCacheMap=new Map();
         this.trigger("stop");
@@ -159,11 +155,9 @@ class AnimationProcess{
     pause() {
         this._running=false;
         this._paused=true;
-
-        [...this._trackCacheMap.values()].forEach((track,index)=>{
+        this._trackCacheMap.forEach((track,key,map)=>{
             track.pause();
         });
-
         this.trigger("pause");
         return this;
     }
@@ -175,11 +169,9 @@ class AnimationProcess{
     resume() {
         this._running=true;
         this._paused=false;
-
-        [...this._trackCacheMap.values()].forEach((track,index)=>{
+        this._trackCacheMap.forEach((track,key,map)=>{
             track.resume();
         });
-
         this.trigger("resume");
         return this;
     }
@@ -212,7 +204,7 @@ class AnimationProcess{
      */
     isFinished() {
         let isFinished=true;
-        [...this._trackCacheMap.values()].forEach((track,index)=>{
+        this._trackCacheMap.forEach((track,key,map)=>{
             if(!track.isFinished){
                 isFinished=false;
             }

@@ -32,41 +32,10 @@ Animatable.prototype = {
      * @param {String} path The path to fetch value from object, like 'a.b.c'.
      * @param {Boolean} [loop=false] Whether to loop animation.
      * @return {qrenderer.animation.AnimationProcess}
-     * @example
-     * el.animate('style')
-     *   .when(1000, {x: 10} )
-     *   .done(function(){ // Animation done })
-     *   .start()
      */
-    animate: function (path) {
-        let target;
-        let animatable = this;
-
-        if (path) {
-            let pathSplitted = path.split('.');
-            let prop = animatable;
-            for (let i = 0, l = pathSplitted.length; i < l; i++) {
-                if (!prop) {
-                    continue;
-                }
-                prop = prop[pathSplitted[i]];
-            }
-            if (prop) {
-                target = prop;
-            }
-        }else {
-            target = animatable;
-        }
-
-        if (!target) {
-            console.log(`Property ${path} is not existed in element ${animatable.id}`);
-            return;
-        }
-
-        let animationProcess = new AnimationProcess(target);
-        animationProcess.during(function (target) {
-            animatable.dirty();
-        });
+    animate: function () {
+        let animatable=this;
+        let animationProcess = new AnimationProcess(animatable);
         animationProcess.on('done',()=>{
             animatable.removeAnimationProcess(animationProcess);
         });
@@ -79,7 +48,7 @@ Animatable.prototype = {
         }
         return animationProcess;
     },
-
+    
     /**
      * @method
      * 停止动画

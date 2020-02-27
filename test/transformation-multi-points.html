@@ -34,11 +34,13 @@
                 let y = Math.sin(phi) * r + 100;
                 points.push([x, y]);
             }
-            polygon.animate('shape')
-            .when(500,{
-                points: points
-            })
-            .start(false,'cubicOut');
+            polygon.animate()
+                .when(500,{
+                    shape:{
+                        points: points
+                    }
+                })
+                .start(false,'cubicOut');
         }, 1000);
     </script>
 </body>

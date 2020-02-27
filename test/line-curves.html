@@ -64,7 +64,7 @@
                 'BackInOut', 'BounceIn', 'BounceOut', 'BounceInOut'
                 ][0]//[random(30)];
 
-            var move = shape.animate('');
+            var move = shape.animate();
 
             switch (type) {
                 case 0 :
@@ -83,19 +83,28 @@
                     });
                     break;
                 case 3 :
-                    move = shape.animate('shape').when(time, {
-                        r : [random(100, 30)]
-                    });
+                    move = shape.animate()
+                                .when(time, {
+                                    shape:{
+                                        r : [random(100, 30)]
+                                    }
+                                });
                     break;
                 case 4 :
-                    move = shape.animate('shape').when(time, {
-                        k : random(10)
-                    });
+                    move = shape.animate()
+                                .when(time, {
+                                    shape:{
+                                        k : random(10)
+                                    }
+                                });
                     break;
                 case 5 :
-                    move = shape.animate('shape').when(time, {
-                        n : random(5)
-                    });
+                    move = shape.animate()
+                                .when(time, {
+                                    shape:{
+                                        n : random(5)
+                                    }
+                                });
                     break;
             }
 
