@@ -19,9 +19,10 @@ export default class Track{
      * @param {Object} options 
      */
     constructor(options){
-        this._target=options._target;
-        this._delay=options._delay;
-        
+        this.element=options.element;
+        this.path=options.path;
+        this.delay=options.delay;
+        this.currentValue=null;
         this.isFinished=false;
         this.keyframes=[];
         this.timeline;
@@ -43,7 +44,7 @@ export default class Track{
      * @param {Number} delta 时间偏移量
      */
     nextFrame(time, delta){
-        if(!this.timeline){//TODO:fix this, there is something wrong here.
+        if(!this.timeline){
             return;
         }
         let result=this.timeline.nextFrame(time,delta);
@@ -67,13 +68,12 @@ export default class Track{
      * @method start
      * 开始动画
      * @param {String} easing 缓动函数名称
-     * @param {String} propName 属性名称
      * @param {Boolean} forceAnimate 是否强制开启动画 
      */
-    start(propName, loop=false, easing='', forceAnimate=false){
+    start(loop=false, easing='', forceAnimate=false){
         let options=this._parseKeyFrames(
             easing, 
-            propName, 
+            this.path, 
             loop,
             forceAnimate
         );
@@ -94,7 +94,7 @@ export default class Track{
     stop(forwardToLast){
         if (forwardToLast) {
             // Move to last frame before stop
-            this.timeline.onframe(this._target, 1);
+            this.timeline&&this.timeline.onframe(this.element, 1);
         }
     }
 
@@ -119,12 +119,13 @@ export default class Track{
      * @method _parseKeyFrames
      * 解析关键帧，创建时间线
      * @param {String} easing 缓动函数名称
-     * @param {String} propName 属性名称
+     * @param {String} path 属性设置路径，例如："shape.width"
      * @param {Boolean} forceAnimate 是否强制开启动画 
      * //TODO:try move this into webworker
      */
-    _parseKeyFrames(easing,propName,loop,forceAnimate) {
-        let target=this._target;
+    _parseKeyFrames(easing,path,loop,forceAnimate) {
+        let self=this;
+        let element=this.element;
         let useSpline = easing === 'spline';
     
         let kfLength = this.keyframes.length;
@@ -190,8 +191,11 @@ export default class Track{
                 }
             }
         }
-        isValueArray && dataUtil.fillArr(target[propName], lastValue, arrDim);
-    
+        if(isValueArray){
+            let arr=dataUtil.getAttrByPath(element,path)
+            dataUtil.fillArr(arr, lastValue, arrDim);
+        }
+
         // Cache the key of last frame to speed up when
         // animation playback is sequency
         let lastFrame = 0;
@@ -205,7 +209,7 @@ export default class Track{
         let rgba = [0, 0, 0, 0];
     
         //Timeline 每一帧都会回调此方法。
-        let onframe = function (target, percent) {
+        let onframe = function (element, percent) {
             // Find the range keyframes
             // kf1-----kf2---------current--------kf3
             // find kf2 and kf3 and do interpolation
@@ -248,11 +252,14 @@ export default class Track{
                 p2 = kfValues[frame > kfLength - 2 ? kfLength - 1 : frame + 1];
                 p3 = kfValues[frame > kfLength - 3 ? kfLength - 1 : frame + 2];
                 if (isValueArray) {
+                    let arr=dataUtil.getAttrByPath(element,path);
                     dataUtil.catmullRomInterpolateArray(
                         p0, p1, p2, p3, w, w * w, w * w * w,
-                        target[propName],
+                        arr,
                         arrDim
                     );
+                    self.currentValue=arr;
+                    element.dirty();
                 }else {
                     let value;
                     if (isValueColor) {
@@ -263,23 +270,28 @@ export default class Track{
                         value = dataUtil.rgba2String(rgba);
                     }else if (isValueString) {
                         // String is step(0.5)
-                        return dataUtil.interpolateString(p1, p2, w);
+                        value = dataUtil.interpolateString(p1, p2, w);
                     }else {
                         value = dataUtil.catmullRomInterpolate(
                             p0, p1, p2, p3, w, w * w, w * w * w
                         );
                     }
-                    target[propName]=value;
+                    dataUtil.setAttrByPath(element,path,value);
+                    self.currentValue=value;
+                    element.dirty();
                 }
             }else {
                 if (isValueArray) {
+                    let arr=dataUtil.getAttrByPath(element,path);
                     dataUtil.interpolateArray(
                         kfValues[frame], 
                         kfValues[frame + 1], 
                         w,
-                        target[propName],
+                        arr,
                         arrDim
                     );
+                    self.currentValue=arr;
+                    element.dirty();
                 }else {
                     let value;
                     if (isValueColor) {
@@ -292,20 +304,22 @@ export default class Track{
                         value = dataUtil.rgba2String(rgba);
                     }else if (isValueString) {
                         // String is step(0.5)
-                        return dataUtil.interpolateString(kfValues[frame], kfValues[frame + 1], w);
+                        value = dataUtil.interpolateString(kfValues[frame], kfValues[frame + 1], w);
                     }else {
                         value = dataUtil.interpolateNumber(kfValues[frame], kfValues[frame + 1], w);
                     }
-                    target[propName]=value;
+                    dataUtil.setAttrByPath(element,path,value);
+                    self.currentValue=value;
+                    element.dirty();
                 }
             }
         };
         
         let options={
-            target:target,
+            element:this.element,
             lifeTime: trackMaxTime,
             loop:loop,
-            delay:this._delay,
+            delay:this.delay,
             onframe: onframe,
             easing: (easing && easing !== 'spline')?easing:'Linear'
         };

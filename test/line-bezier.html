@@ -28,11 +28,13 @@
 
         qr.add(curve);
 
-        curve.animate('shape')
-        .when(2000,{
-            percent:0
-        })
-        .start();
+        curve.animate()
+            .when(2000,{
+                shape:{
+                    percent:0
+                }
+            })
+            .start();
     </script>
 </body>
 </html>

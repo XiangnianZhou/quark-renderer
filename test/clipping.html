@@ -56,9 +56,16 @@
             }
         }
 
-        circle.animate('shape')
+        circle.animate()
+            .when(0, {
+                shape:{
+                    r: 100
+                }
+            })    
             .when(1000, {
-                r: 300
+                shape:{
+                    r: 300
+                }
             })
             .start();
     </script>

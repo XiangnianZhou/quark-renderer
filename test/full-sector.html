@@ -18,17 +18,20 @@
                 cx: 100,
                 cy: 100,
                 startAngle: -1.5707963267948966,
-                endAngle: 4.71238898038469
+                endAngle: 4.71238898038469,
+                percent:100
             }
         });
 
         qr.add(curve);
 
-        curve.animate('shape')
-        .when(500,{
-            percent:0
-        })
-        .start();
+        curve.animate()
+            .when(500,{
+                shape:{
+                    percent:0
+                }
+            })
+            .start();
     </script>
     <div id="main" style="width:1000px;height:600px;"></div>
 </body>
