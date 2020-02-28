@@ -8,7 +8,8 @@ import * as dataUtil from '../../core/utils/data_structure_util';
  * @abstract
  * @class qrenderer.graphic.Transformable
  * 
- * Provide transformation functions for Element class, such as translate, scale, skew, rotation, shape, style.
+ * Provide transformation functions for Element class, 
+ * such as translate, scale, skew, rotation, shape, style.
  * 
  * 
  * 为 Element 类提供变换功能，例如：平移、缩放、扭曲、旋转、翻转、形状、样式。
@@ -71,7 +72,8 @@ let Transformable = function (options={}) {
 
     /**
      * @property {Matrix} transform
-     * The transform matri. To work with the animation system better, do NOT modify transform directly, except SVGPainter.
+     * The transform matri. To work with the animation system better, 
+     * do NOT modify transform directly, except SVGPainter.
      * 
      * 
      * 变换矩阵。为了能和动画机制很好地配合，请不要直接修改 transform 属性， SVGPainter 除外。
@@ -178,7 +180,8 @@ Transformable.prototype={
      *      .start();
      * 
      * There is a big disadvantage of this implementation, it can not coordinate with the 
-     * transform attribute in SVG tags. For example: <path transform="rotation(Math.PI);scale(2,2);">,
+     * transform attribute in SVG tags. 
+     * For example: <path transform="rotation(Math.PI);scale(2,2);">,
      * means apply some rotation first, then apply scale, this require
      * strict operation orders of affine, but the implementation here can NOT support it.
      * 
@@ -240,7 +243,8 @@ Transformable.prototype={
 
     /**
      * @method composeLocalTransform
-     * Compose all the parameters, including skew, scale, roration, position, transform matrix of parent node, global scale,
+     * Compose all the parameters, including skew, scale, roration, position, 
+     * transform matrix of parent node, global scale,
      * and generate a new transform matrix of local element.
      * 
      * 
