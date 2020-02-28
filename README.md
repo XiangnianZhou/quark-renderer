@@ -204,6 +204,11 @@ Wechat mini-program example:
 
 <img src="./docs/images/4.gif">
 
+## Resources
+
+[https://cloud.tencent.com/edu/learning/live-1902?ADTAG=xyj ](https://cloud.tencent.com/edu/learning/live-1902?ADTAG=xyj )
+
+
 ## License
 
 BSD 3-Clause License
