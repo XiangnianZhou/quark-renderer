@@ -253,10 +253,28 @@ Transformable.prototype={
         m[4] -= origin[0];
         m[5] -= origin[1];
         
-        //TODO:这里的实现有问题，缩放、旋转、斜切、位移是有顺序的。
+        // Note: 这里的实现没有考虑仿射变换中的矩阵乘法顺序，因为 API 调用者
+        // 在提供配置项时并不会计算数学意义上的变换参数，而总是采用的直觉意义
+        // 上的变换顺序 skew->scale->rotation->position ，例如：
+        // 
+        // rect.animate()
+        // .when(1000,{
+        //     position:[100,100],
+        //     skew:[2,2],
+        //     scale:[2,2],
+        //     rotate:Math.PI
+        // })
+        // .when(2000,{
+        //     position:[200,100],
+        //     scale:[1,1],
+        //     skew:[1,1],
+        //     rotate:-Math.PI
+        // })
+        // .start();
+
+        m = matrixUtil.skew(m, skew);
         m = matrixUtil.scale(m, scale);
         m = matrixUtil.rotate(m, rotation);
-        // m = matrixUtil.skew(m,skew);
 
         //原点移回去
         m[4] += origin[0];
@@ -343,7 +361,9 @@ Transformable.prototype={
     },
 
     /**
+     * @deprecated
      * @method decomposeLocalTransform
+     * NOTE: 这个算法不准确，因为仿射变换矩阵分解到各项参数时没有唯一解，这个方法提供的解法只是其中之一。
      * 把 transform 矩阵分解到 position、scale、skew、rotation 上去，此操作与 composeLocalTransform 是互逆的。
      */
     decomposeLocalTransform:function () {

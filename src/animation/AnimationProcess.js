@@ -36,6 +36,7 @@ class AnimationProcess{
      * @return {qrenderer.animation.AnimationProcess}
      */
     when(time, config) {
+        //TODO:这里需要重构，仿射变换的参数是有顺序的
         let flattenMap=new Map();
         dataUtil.flattenObj(config,flattenMap);
         flattenMap.forEach((value,key,map)=>{
