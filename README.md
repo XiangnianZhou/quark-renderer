@@ -22,11 +22,13 @@ Here are the key improvements compare to the original ZRender:
 - Added multi drag-drop feature.
 - Refactored the structure of js files and directories for better understanding.
 - Refactored some implementation details for better understanding.
-- Fixed some bugs in /test directory.
+- Fixed some bugs in /test directory, added a few test cases.
 - Use [jsduck](https://github.com/senchalabs/jsduck) for better API document.
 - Refactored all the comments for jsduck.
 - Support Wechat mini-program directly, do not need any hack.
+- Support node-canvas environment directly, do not need any hack.
 - Removed VML engine, because the marketshare of IE is already very small now. 
+- Add skew feature for transformation system.
 
 ## Usage
 
@@ -193,6 +195,10 @@ The document is in /api directory, open /api/index.html in your browser then you
 <img src="./docs/images/2.gif">
 <br/>
 <img src="./docs/images/3.gif">
+<br/>
+<img src="./docs/images/5.gif">
+<br/>
+<img src="./docs/images/6.gif">
 
 Wechat mini-program example:
 
