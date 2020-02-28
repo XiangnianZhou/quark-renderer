@@ -244,10 +244,10 @@ class QuarkRenderer{
     refreshImmediately() {
         // Clear needsRefresh ahead to avoid something wrong happens in refresh
         // Or it will cause qrenderer refreshes again and again.
-        this._needRefresh = this._needRefreshHover = false;
+        this._needRefresh = this._needsRefreshHover = false;
         this.painter.refresh();
         // Avoid trigger qr.refresh in Element#beforeUpdate hook
-        this._needRefresh = this._needRefreshHover = false;
+        this._needRefresh = this._needsRefreshHover = false;
     }
 
     /**
@@ -271,7 +271,7 @@ class QuarkRenderer{
             triggerRendered = true;
             this.refreshImmediately();
         }
-        if (this._needRefreshHover) { //只重绘特定的元素，提升性能
+        if (this._needsRefreshHover) { //只重绘特定的元素，提升性能
             triggerRendered = true;
             this.refreshHoverImmediately();
         }
@@ -343,7 +343,7 @@ class QuarkRenderer{
      * Refresh hover in next frame
      */
     refreshHover() {
-        this._needRefreshHover = true;
+        this._needsRefreshHover = true;
     }
 
     /**
@@ -352,7 +352,7 @@ class QuarkRenderer{
      * Refresh hover immediately
      */
     refreshHoverImmediately() {
-        this._needRefreshHover = false;
+        this._needsRefreshHover = false;
         this.painter.refreshHover && this.painter.refreshHover();
     }
 

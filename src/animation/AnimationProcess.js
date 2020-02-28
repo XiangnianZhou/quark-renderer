@@ -70,6 +70,30 @@ class AnimationProcess{
     }
 
     /**
+     * @method start
+     * 开始执行动画
+     * @param  {Boolean} loop 是否循环
+     * @param  {String|Function} [easing] 缓动函数名称，详见{@link qrenderer.animation.easing 缓动引擎}
+     * @param  {Boolean} forceAnimate 是否强制开启动画
+     * @return {qrenderer.animation.AnimationProcess}
+     */
+    start(loop=false, easing='',forceAnimate=false) {
+        this._running=true;
+        this._paused=false;
+        this.trigger("start");
+
+        let self = this;
+        if(!this._trackCacheMap.size){
+            this.trigger("done");
+            return this;
+        }
+        this._trackCacheMap.forEach((track,key,map)=>{
+            track&&track.start(loop,easing,forceAnimate);
+        });
+        return this;
+    }
+
+    /**
      * @method nextFrame
      * 进入下一帧
      * @param {Number} time  当前时间
@@ -107,30 +131,6 @@ class AnimationProcess{
         if(isFinished){
             this.trigger("done");
         }
-    }
-
-    /**
-     * @method start
-     * 开始执行动画
-     * @param  {Boolean} loop 是否循环
-     * @param  {String|Function} [easing] 缓动函数名称，详见{@link qrenderer.animation.easing 缓动引擎}
-     * @param  {Boolean} forceAnimate 是否强制开启动画
-     * @return {qrenderer.animation.AnimationProcess}
-     */
-    start(loop=false, easing='',forceAnimate=false) {
-        this._running=true;
-        this._paused=false;
-        this.trigger("start");
-
-        let self = this;
-        if(!this._trackCacheMap.size){
-            this.trigger("done");
-            return this;
-        }
-        this._trackCacheMap.forEach((track,key,map)=>{
-            track&&track.start(loop,easing,forceAnimate);
-        });
-        return this;
     }
 
     /**
