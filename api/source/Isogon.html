@@ -49,10 +49,6 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 var defaultConfig = {
-<span id='qrenderer-graphic-shape-Isogon-property-type'>  /**
-</span>   * @property {String} type
-   */
-  type: &#39;isogon&#39;,
   shape: {
     x: 0,
     y: 0,
@@ -71,9 +67,17 @@ function (_Path) {
    * @param {Object} options 
    */
   function Isogon(options) {
+    var _this;
+
     _classCallCheck(this, Isogon);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Isogon).call(this, dataUtil.merge(defaultConfig, options, true)));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Isogon).call(this, dataUtil.merge(defaultConfig, options, true)));
+<span id='qrenderer-graphic-shape-Isogon-property-type'>    /**
+</span>     * @property {String} type
+     */
+
+    _this.type = &#39;isogon&#39;;
+    return _this;
   }
 <span id='qrenderer-graphic-shape-Isogon-method-buildPath'>  /**
 </span>   * @method buildPath

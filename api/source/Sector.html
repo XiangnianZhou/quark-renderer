@@ -52,10 +52,6 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 var defaultConfig = {
-<span id='qrenderer-graphic-shape-Sector-property-type'>  /**
-</span>   * @property {String} type
-   */
-  type: &#39;sector&#39;,
   shape: {
     cx: 0,
     cy: 0,
@@ -82,6 +78,11 @@ function (_Path) {
     _classCallCheck(this, Sector);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Sector).call(this, dataUtil.merge(defaultConfig, options, true)));
+<span id='qrenderer-graphic-shape-Sector-property-type'>    /**
+</span>     * @property {String} type
+     */
+
+    _this.type = &#39;sector&#39;;
     _this.brush = fixClipWithShadow(Path.prototype.brush);
     return _this;
   }

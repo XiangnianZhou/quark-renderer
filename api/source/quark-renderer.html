@@ -62,7 +62,7 @@ var instances = {};
 </span> * @property {String}
  */
 
-var version = &#39;1.0.11&#39;;
+var version = &#39;1.0.24&#39;;
 <span id='qrenderer-core-QuarkRenderer-method-qrenderer'>/**
 </span> * @method qrenderer.init()
  * Global entry for creating a qrenderer instance.
@@ -209,12 +209,12 @@ function () {
       self.flush();
     });
     this.globalAnimationMgr.start();
-<span id='qrenderer-core-QuarkRenderer-property-'>    /**
+<span id='qrenderer-core-QuarkRenderer-property-_needRefresh'>    /**
 </span>     * @property {boolean}
      * @private
      */
 
-    this._needRefresh;
+    this._needRefresh = false;
   }
 <span id='qrenderer-core-QuarkRenderer-method-'>  /**
 </span>   * @method
@@ -448,16 +448,6 @@ function () {
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @method
-     * Stop and clear all animation immediately
-     */
-
-  }, {
-    key: &quot;clearAnimation&quot;,
-    value: function clearAnimation() {
-      this.globalAnimationMgr.clear();
-    }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @method
      * Get container width
      */
 
@@ -559,12 +549,14 @@ function () {
   }, {
     key: &quot;dispose&quot;,
     value: function dispose() {
-      this.globalAnimationMgr.stop();
-      this.clear();
+      this.globalAnimationMgr.clear();
       this.storage.dispose();
       this.painter.dispose();
       this.eventHandler.dispose();
-      this.globalAnimationMgr = this.storage = this.painter = this.eventHandler = null;
+      this.globalAnimationMgr = null;
+      this.storage = null;
+      this.painter = null;
+      this.eventHandler = null;
       delete instances[this.id];
     }
   }]);

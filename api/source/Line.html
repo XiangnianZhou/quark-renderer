@@ -48,15 +48,9 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  */
 //TODO:Avoid create repeatly.
 var defaultConfig = {
-<span id='qrenderer-graphic-shape-Line-property-type'>  /**
-</span>   * @property {String} type
-   */
-  type: &#39;line&#39;,
   shape: {
-    // Start point
     x1: 0,
     y1: 0,
-    // End point
     x2: 0,
     y2: 0,
     percent: 1
@@ -77,9 +71,17 @@ function (_Path) {
    * @param {Object} options 
    */
   function Line(options) {
+    var _this;
+
     _classCallCheck(this, Line);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Line).call(this, dataUtil.merge(defaultConfig, options, true)));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Line).call(this, dataUtil.merge(defaultConfig, options, true)));
+<span id='qrenderer-graphic-shape-Line-property-type'>    /**
+</span>     * @property {String} type
+     */
+
+    _this.type = &#39;line&#39;;
+    return _this;
   }
 <span id='qrenderer-graphic-shape-Line-method-buildPath'>  /**
 </span>   * @method buildPath

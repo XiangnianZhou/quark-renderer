@@ -1,5 +1,5 @@
 /**
- * @class qrenderer.graphic.Control
+ * @class qrenderer.graphic.transform.Control
  * 
  * Transform control.
  * 

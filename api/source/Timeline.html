@@ -38,7 +38,7 @@ function () {
 <span id='qrenderer-animation-Timeline-method-constructor'>  /**
 </span>   * @method constructor Timeline
    * @param {Object} options 
-   * @param {Element} options.target 动画对象，可以是数组，如果是数组的话会批量分发onframe等事件
+   * @param {Element} options.element 正在进行动画的元素
    * @param {Number} options.life(1000) 动画时长
    * @param {Number} options.delay(0) 动画延迟时间
    * @param {Boolean} options.loop(true)
@@ -51,16 +51,16 @@ function () {
   function Timeline(options) {
     _classCallCheck(this, Timeline);
 
-    this._target = options.target;
-    this._lifeTime = options.lifeTime || 1000;
-    this._delay = options.delay || 0;
-    this._initialized = false;
+    this.element = options.element;
+    this.lifeTime = options.lifeTime || 1000;
+    this.delay = options.delay || 0;
     this.loop = options.loop == null ? false : options.loop;
     this.gap = options.gap || 0;
     this.easing = options.easing || &#39;Linear&#39;;
     this.onframe = options.onframe;
     this.ondestroy = options.ondestroy;
     this.onrestart = options.onrestart;
+    this._initialized = false;
     this._pausedTime = 0;
     this._paused = false;
   }
@@ -79,7 +79,7 @@ function () {
       // Set startTime on first frame, or _startTime may has milleseconds different between clips
       // PENDING
       if (!this._initialized) {
-        this._startTime = globalTime + this._delay;
+        this._startTime = globalTime + this.delay;
         this._initialized = true;
       }
 
@@ -88,7 +88,7 @@ function () {
         return;
       }
 
-      var percent = (globalTime - this._startTime - this._pausedTime) / this._lifeTime; // 还没开始
+      var percent = (globalTime - this._startTime - this._pausedTime) / this.lifeTime; // 还没开始
 
       if (percent &lt; 0) {
         return;
@@ -120,7 +120,7 @@ function () {
   }, {
     key: &quot;restart&quot;,
     value: function restart(globalTime) {
-      var remainder = (globalTime - this._startTime - this._pausedTime) % this._lifeTime;
+      var remainder = (globalTime - this._startTime - this._pausedTime) % this.lifeTime;
       this._startTime = globalTime - remainder + this.gap;
       this._pausedTime = 0;
     }
@@ -137,7 +137,7 @@ function () {
       eventType = &#39;on&#39; + eventType;
 
       if (this[eventType]) {
-        this[eventType](this._target, arg);
+        this[eventType](this.element, arg);
       }
     }
 <span id='qrenderer-animation-Timeline-method-pause'>    /**

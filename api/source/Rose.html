@@ -49,10 +49,6 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  */
 var radian = Math.PI / 180;
 var defaultConfig = {
-<span id='qrenderer-graphic-shape-Rose-property-type'>  /**
-</span>   * @property {String} type
-   */
-  type: &#39;rose&#39;,
   shape: {
     cx: 0,
     cy: 0,
@@ -76,9 +72,17 @@ function (_Path) {
    * @param {Object} options 
    */
   function Rose(options) {
+    var _this;
+
     _classCallCheck(this, Rose);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Rose).call(this, dataUtil.merge(defaultConfig, options, true)));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Rose).call(this, dataUtil.merge(defaultConfig, options, true)));
+<span id='qrenderer-graphic-shape-Rose-property-type'>    /**
+</span>     * @property {String} type
+     */
+
+    _this.type = &#39;rose&#39;;
+    return _this;
   }
 <span id='qrenderer-graphic-shape-Rose-method-buildPath'>  /**
 </span>   * @method buildPath

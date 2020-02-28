@@ -44,7 +44,11 @@ function () {
     // Should do nothing more in this constructor. Because gradient can be
     // declard by `color: {image: ...}`, where this constructor will not be called.
     this.image = image;
-    this.repeat = repeat; // Can be cloned
+    this.repeat = repeat;
+    this.type = &#39;pattern&#39;;
+<span id='qrenderer-graphic-Pattern-property-type'>    /**
+</span>     * @property {String} type
+     */
 
     this.type = &#39;pattern&#39;;
   }

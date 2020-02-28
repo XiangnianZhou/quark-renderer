@@ -6,7 +6,7 @@ import * as dataUtil from '../../core/utils/data_structure_util';
 
 /**
  * @abstract
- * @class qrenderer.graphic.Transformable
+ * @class qrenderer.graphic.transform.Transformable
  * 
  * Provide transformation functions for Element class, 
  * such as translate, scale, skew, rotation, shape, style.

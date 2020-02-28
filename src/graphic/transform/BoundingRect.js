@@ -3,7 +3,7 @@ import * as matrixUtil from '../../core/utils/affine_matrix_util';
 import {mathMin,mathMax} from '../constants';
 
 /**
- * @class qrenderer.core.BoundingRect
+ * @class qrenderer.graphic.transform.BoundingRect
  * 
  * Bounding Rect.
  * 

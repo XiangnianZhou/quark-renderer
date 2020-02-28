@@ -50,11 +50,10 @@ function () {
   function Track(options) {
     _classCallCheck(this, Track);
 
-    this._target = options._target;
-    this._getter = options._getter;
-    this._setter = options._setter;
-    this._loop = options._loop;
-    this._delay = options._delay;
+    this.element = options.element;
+    this.path = options.path;
+    this.delay = options.delay;
+    this.currentValue = null;
     this.isFinished = false;
     this.keyframes = [];
     this.timeline;
@@ -82,13 +81,12 @@ function () {
     key: &quot;nextFrame&quot;,
     value: function nextFrame(time, delta) {
       if (!this.timeline) {
-        //TODO:fix this, there is something wrong here.
         return;
       }
 
       var result = this.timeline.nextFrame(time, delta);
 
-      if (dataUtil.isNumeric(result) &amp;&amp; result === 1) {
+      if (dataUtil.isString(result) &amp;&amp; result === &#39;destroy&#39;) {
         this.isFinished = true;
       }
 
@@ -110,14 +108,17 @@ function () {
 </span>     * @method start
      * 开始动画
      * @param {String} easing 缓动函数名称
-     * @param {String} propName 属性名称
      * @param {Boolean} forceAnimate 是否强制开启动画 
      */
 
   }, {
     key: &quot;start&quot;,
-    value: function start(easing, propName, forceAnimate) {
-      var options = this._parseKeyFrames(easing, propName, forceAnimate); //如果传入的参数不正确，则无法构造实例
+    value: function start() {
+      var loop = arguments.length &gt; 0 &amp;&amp; arguments[0] !== undefined ? arguments[0] : false;
+      var easing = arguments.length &gt; 1 &amp;&amp; arguments[1] !== undefined ? arguments[1] : &#39;&#39;;
+      var forceAnimate = arguments.length &gt; 2 &amp;&amp; arguments[2] !== undefined ? arguments[2] : false;
+
+      var options = this._parseKeyFrames(easing, this.path, loop, forceAnimate); //如果传入的参数不正确，则无法构造实例
 
 
       if (!options) {
@@ -138,7 +139,7 @@ function () {
     value: function stop(forwardToLast) {
       if (forwardToLast) {
         // Move to last frame before stop
-        this.timeline.onframe(this._target, 1);
+        this.timeline &amp;&amp; this.timeline.onframe(this.element, 1);
       }
     }
 <span id='qrenderer-animation-Track-method-pause'>    /**
@@ -166,19 +167,16 @@ function () {
      * @method _parseKeyFrames
      * 解析关键帧，创建时间线
      * @param {String} easing 缓动函数名称
-     * @param {String} propName 属性名称
+     * @param {String} path 属性设置路径，例如：&quot;shape.width&quot;
      * @param {Boolean} forceAnimate 是否强制开启动画 
      * //TODO:try move this into webworker
      */
 
   }, {
     key: &quot;_parseKeyFrames&quot;,
-    value: function _parseKeyFrames(easing, propName, forceAnimate) {
-      var loop = this._loop;
-      var delay = this._delay;
-      var target = this._target;
-      var getter = this._getter;
-      var setter = this._setter;
+    value: function _parseKeyFrames(easing, path, loop, forceAnimate) {
+      var self = this;
+      var element = this.element;
       var useSpline = easing === &#39;spline&#39;;
       var kfLength = this.keyframes.length;
 
@@ -243,8 +241,12 @@ function () {
         }
       }
 
-      isValueArray &amp;&amp; dataUtil.fillArr(getter(target, propName), lastValue, arrDim); // Cache the key of last frame to speed up when
+      if (isValueArray) {
+        var arr = dataUtil.getAttrByPath(element, path);
+        dataUtil.fillArr(arr, lastValue, arrDim);
+      } // Cache the key of last frame to speed up when
       // animation playback is sequency
+
 
       var lastFrame = 0;
       var lastFramePercent = 0;
@@ -256,7 +258,7 @@ function () {
       var p3;
       var rgba = [0, 0, 0, 0]; //Timeline 每一帧都会回调此方法。
 
-      var onframe = function onframe(target, percent) {
+      var onframe = function onframe(element, percent) {
         // Find the range keyframes
         // kf1-----kf2---------current--------kf3
         // find kf2 and kf3 and do interpolation
@@ -304,7 +306,11 @@ function () {
           p3 = kfValues[frame &gt; kfLength - 3 ? kfLength - 1 : frame + 2];
 
           if (isValueArray) {
-            dataUtil.catmullRomInterpolateArray(p0, p1, p2, p3, w, w * w, w * w * w, getter(target, propName), arrDim);
+            var _arr = dataUtil.getAttrByPath(element, path);
+
+            dataUtil.catmullRomInterpolateArray(p0, p1, p2, p3, w, w * w, w * w * w, _arr, arrDim);
+            self.currentValue = _arr;
+            element.dirty();
           } else {
             var _value;
 
@@ -313,16 +319,22 @@ function () {
               _value = dataUtil.rgba2String(rgba);
             } else if (isValueString) {
               // String is step(0.5)
-              return dataUtil.interpolateString(p1, p2, w);
+              _value = dataUtil.interpolateString(p1, p2, w);
             } else {
               _value = dataUtil.catmullRomInterpolate(p0, p1, p2, p3, w, w * w, w * w * w);
             }
 
-            setter(target, propName, _value);
+            dataUtil.setAttrByPath(element, path, _value);
+            self.currentValue = _value;
+            element.dirty();
           }
         } else {
           if (isValueArray) {
-            dataUtil.interpolateArray(kfValues[frame], kfValues[frame + 1], w, getter(target, propName), arrDim);
+            var _arr2 = dataUtil.getAttrByPath(element, path);
+
+            dataUtil.interpolateArray(kfValues[frame], kfValues[frame + 1], w, _arr2, arrDim);
+            self.currentValue = _arr2;
+            element.dirty();
           } else {
             var _value2;
 
@@ -331,21 +343,23 @@ function () {
               _value2 = dataUtil.rgba2String(rgba);
             } else if (isValueString) {
               // String is step(0.5)
-              return dataUtil.interpolateString(kfValues[frame], kfValues[frame + 1], w);
+              _value2 = dataUtil.interpolateString(kfValues[frame], kfValues[frame + 1], w);
             } else {
               _value2 = dataUtil.interpolateNumber(kfValues[frame], kfValues[frame + 1], w);
             }
 
-            setter(target, propName, _value2);
+            dataUtil.setAttrByPath(element, path, _value2);
+            self.currentValue = _value2;
+            element.dirty();
           }
         }
       };
 
       var options = {
-        target: target,
+        element: this.element,
         lifeTime: trackMaxTime,
         loop: loop,
-        delay: delay,
+        delay: this.delay,
         onframe: onframe,
         easing: easing &amp;&amp; easing !== &#39;spline&#39; ? easing : &#39;Linear&#39;
       };

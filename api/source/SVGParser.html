@@ -39,7 +39,7 @@ var LinearGradient = require(&quot;../graphic/gradient/LinearGradient&quot;);
 
 var Style = require(&quot;../graphic/Style&quot;);
 
-var matrixUtil = require(&quot;../core/utils/matrix_util&quot;);
+var matrixUtil = require(&quot;../core/utils/affine_matrix_util&quot;);
 
 var _path_util = require(&quot;../core/utils/path_util&quot;);
 
@@ -296,9 +296,7 @@ var nodeParsers = {
       y: parseFloat(xmlNode.getAttribute(&#39;y&#39;) || 0),
       width: parseFloat(xmlNode.getAttribute(&#39;width&#39;) || 0),
       height: parseFloat(xmlNode.getAttribute(&#39;height&#39;) || 0)
-    }); // console.log(xmlNode.getAttribute(&#39;transform&#39;));
-    // console.log(rect.transform);
-
+    });
     return rect;
   },
   &#39;circle&#39;: function circle(xmlNode, parentGroup) {
@@ -373,12 +371,14 @@ var nodeParsers = {
     var img = new QImage();
     inheritStyle(parentGroup, img);
     parseAttributes(xmlNode, img, this._defs);
-    img.setStyle({
-      image: xmlNode.getAttribute(&#39;xlink:href&#39;),
-      x: xmlNode.getAttribute(&#39;x&#39;),
-      y: xmlNode.getAttribute(&#39;y&#39;),
-      width: xmlNode.getAttribute(&#39;width&#39;),
-      height: xmlNode.getAttribute(&#39;height&#39;)
+    img.attr({
+      style: {
+        image: xmlNode.getAttribute(&#39;xlink:href&#39;),
+        x: xmlNode.getAttribute(&#39;x&#39;),
+        y: xmlNode.getAttribute(&#39;y&#39;),
+        width: xmlNode.getAttribute(&#39;width&#39;),
+        height: xmlNode.getAttribute(&#39;height&#39;)
+      }
     });
     return img;
   },
@@ -614,22 +614,29 @@ function parseTransformAttribute(xmlNode, node) {
       switch (type) {
         case &#39;translate&#39;:
           value = trim(value).split(DILIMITER_REG);
-          matrixUtil.translate(m, m, [parseFloat(value[0]), parseFloat(value[1] || 0)]);
+          var px = m.position[0] + parseFloat(value[0]);
+          var py = m.position[1] + parseFloat(value[1] || 0);
+          node.position = [px, py];
           break;
 
         case &#39;scale&#39;:
           value = trim(value).split(DILIMITER_REG);
-          matrixUtil.scale(m, m, [parseFloat(value[0]), parseFloat(value[1] || value[0])]);
+          var sx = parseFloat(value[0]);
+          var sy = parseFloat(value[1] || value[0]);
+          node.scale = [sx, sy];
           break;
 
         case &#39;rotate&#39;:
           value = trim(value).split(DILIMITER_REG);
-          matrixUtil.rotate(m, m, parseFloat(value[0]));
+          var rotation = parseFloat(value[0]);
+          node.rotation = rotation;
           break;
 
         case &#39;skew&#39;:
           value = trim(value).split(DILIMITER_REG);
-          console.warn(&#39;Skew transform is not supported yet&#39;);
+          var skewX = parseFloat(value[0]);
+          var skewY = parseFloat(value[1] || value[0]);
+          node.skew = [skewX, skewY];
           break;
 
         case &#39;matrix&#39;:
@@ -640,11 +647,10 @@ function parseTransformAttribute(xmlNode, node) {
           m[3] = parseFloat(value[3]);
           m[4] = parseFloat(value[4]);
           m[5] = parseFloat(value[5]);
+          node.transform = m;
           break;
       }
     }
-
-    node.setLocalTransform(m);
   }
 } // Value may contain space.
 

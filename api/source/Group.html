@@ -97,74 +97,17 @@ function (_Element) {
      * @property __storage
      */
 
-    _this.__storage = null; //对象先添加到了 group ，但是 group 还没有添加到 qr，这里重新设置一遍，确保 API 调用者不需要考虑添加顺序。
-
-    _this.on(&quot;add&quot;, function () {
-      _this.children.forEach(function (item, index) {
-        item.__qr = _this.__qr;
-      });
-    });
-
+    _this.__storage = null;
     return _this;
   }
-<span id='qrenderer-graphic-Group-method-children'>  /**
-</span>   * @method children
-   * @return {Array&lt;Element&gt;}
+<span id='qrenderer-graphic-Group-method-add'>  /**
+</span>   * @method add
+   * 添加子节点到最后
+   * @param {Element} child
    */
 
 
   _createClass(Group, [{
-    key: &quot;children&quot;,
-    value: function children() {
-      return this.children.slice();
-    }
-<span id='qrenderer-graphic-Group-method-childAt'>    /**
-</span>     * @method childAt
-     * 获取指定 index 的儿子节点
-     * @param  {Number} idx
-     * @return {Element}
-     */
-
-  }, {
-    key: &quot;childAt&quot;,
-    value: function childAt(idx) {
-      return this.children[idx];
-    }
-<span id='qrenderer-graphic-Group-method-childOfName'>    /**
-</span>     * @method childOfName
-     * 获取指定名字的儿子节点
-     * @param  {String} name
-     * @return {Element}
-     */
-
-  }, {
-    key: &quot;childOfName&quot;,
-    value: function childOfName(name) {
-      var children = this.children;
-
-      for (var i = 0; i &lt; children.length; i++) {
-        if (children[i].name === name) {
-          return children[i];
-        }
-      }
-    }
-<span id='qrenderer-graphic-Group-method-childCount'>    /**
-</span>     * @method childCount
-     * @return {Number}
-     */
-
-  }, {
-    key: &quot;childCount&quot;,
-    value: function childCount() {
-      return this.children.length;
-    }
-<span id='qrenderer-graphic-Group-method-add'>    /**
-</span>     * @method add
-     * 添加子节点到最后
-     * @param {Element} child
-     */
-
-  }, {
     key: &quot;add&quot;,
     value: function add(child) {
       if (child &amp;&amp; child !== this &amp;&amp; child.parent !== this) {
@@ -207,24 +150,9 @@ function (_Element) {
   }, {
     key: &quot;_doAdd&quot;,
     value: function _doAdd(child) {
-      if (child.parent) {
-        child.parent.remove(child);
-      }
-
-      child.parent = this; //把子节点的 parent 属性指向自己，在事件冒泡的时候会使用 parent 属性。
-
-      var storage = this.__storage;
-
-      if (storage &amp;&amp; storage !== child.__storage) {
-        storage.addToStorage(child);
-
-        if (child.type === &#39;group&#39;) {
-          child.addChildrenToStorage(storage);
-        }
-      }
-
-      child.__qr = this.__qr;
-      this.__qr &amp;&amp; this.__qr.refresh();
+      child.parent &amp;&amp; child.parent.remove(child);
+      this.__qr &amp;&amp; (child.__qr = this.__qr);
+      this.__storage &amp;&amp; this.__storage.addToStorage(child);
     }
 <span id='qrenderer-graphic-Group-method-remove'>    /**
 </span>     * @method remove
@@ -235,27 +163,13 @@ function (_Element) {
   }, {
     key: &quot;remove&quot;,
     value: function remove(child) {
-      var qr = this.__qr;
-      var storage = this.__storage;
-      var children = this.children;
-      var idx = dataUtil.indexOf(children, child);
+      var idx = dataUtil.indexOf(this.children, child);
 
-      if (idx &lt; 0) {
-        return this;
+      if (idx &gt;= 0) {
+        this.children.splice(idx, 1);
+        this.__storage &amp;&amp; this.__storage.delFromStorage(child);
       }
 
-      children.splice(idx, 1);
-      child.parent = null;
-
-      if (storage) {
-        storage.delFromStorage(child);
-
-        if (child.type === &#39;group&#39;) {
-          child.delChildrenFromStorage(storage);
-        }
-      }
-
-      qr &amp;&amp; qr.refresh();
       return this;
     }
 <span id='qrenderer-graphic-Group-method-removeAll'>    /**
@@ -266,26 +180,12 @@ function (_Element) {
   }, {
     key: &quot;removeAll&quot;,
     value: function removeAll() {
-      var children = this.children;
       var storage = this.__storage;
-      var child;
-      var i;
-
-      for (i = 0; i &lt; children.length; i++) {
-        child = children[i];
-
-        if (storage) {
-          storage.delFromStorage(child);
-
-          if (child.type === &#39;group&#39;) {
-            child.delChildrenFromStorage(storage);
-          }
-        }
-
+      this.children.forEach(function (child, index) {
+        storage &amp;&amp; storage.delFromStorage(child);
         child.parent = null;
-      }
-
-      children.length = 0;
+      });
+      this.children.length = 0;
       return this;
     }
 <span id='qrenderer-graphic-Group-method-eachChild'>    /**
@@ -298,13 +198,9 @@ function (_Element) {
   }, {
     key: &quot;eachChild&quot;,
     value: function eachChild(cb, context) {
-      var children = this.children;
-
-      for (var i = 0; i &lt; children.length; i++) {
-        var child = children[i];
-        cb.call(context, child, i);
-      }
-
+      this.children.forEach(function (child, index) {
+        cb.call(context, child);
+      });
       return this;
     }
 <span id='qrenderer-graphic-Group-method-traverse'>    /**
@@ -317,62 +213,51 @@ function (_Element) {
   }, {
     key: &quot;traverse&quot;,
     value: function traverse(cb, context) {
-      for (var i = 0; i &lt; this.children.length; i++) {
-        var child = this.children[i];
+      this.children.forEach(function (child, index) {
         cb.call(context, child);
 
         if (child.type === &#39;group&#39;) {
           child.traverse(cb, context);
         }
-      }
-
+      });
       return this;
     }
-<span id='qrenderer-graphic-Group-method-addChildrenToStorage'>    /**
-</span>     * @method addChildrenToStorage
+<span id='qrenderer-graphic-Group-method-addToStorage'>    /**
+</span>     * @method addToStorage
+     * Override addToStorage method of super class.
      * @param {Storage} storage 
      */
 
   }, {
-    key: &quot;addChildrenToStorage&quot;,
-    value: function addChildrenToStorage(storage) {
-      for (var i = 0; i &lt; this.children.length; i++) {
-        var child = this.children[i];
+    key: &quot;addToStorageHandler&quot;,
+    value: function addToStorageHandler(storage) {
+      var _this2 = this;
+
+      //首先把子元素添加到 storage
+      this.children.forEach(function (child, index) {
+        child.parent = _this2;
+        child.__qr = _this2.__qr;
         storage.addToStorage(child);
+      }); //然后在调用父层的处理函数添加自身
 
-        if (child.type === &#39;group&#39;) {
-          child.addChildrenToStorage(storage);
-        }
-      }
+      Element.prototype.addToStorageHandler.call(this, storage);
     }
-<span id='qrenderer-graphic-Group-method-delChildrenFromStorage'>    /**
-</span>     * @method delChildrenFromStorage
+<span id='qrenderer-graphic-Group-method-delFromStorageHandler'>    /**
+</span>     * @method delFromStorageHandler
+     * Override delFromStorageHandler method of super class.
      * @param {Storage} storage 
      */
 
   }, {
-    key: &quot;delChildrenFromStorage&quot;,
-    value: function delChildrenFromStorage(storage) {
-      for (var i = 0; i &lt; this.children.length; i++) {
-        var child = this.children[i];
+    key: &quot;delFromStorageHandler&quot;,
+    value: function delFromStorageHandler(storage) {
+      //首先把子元素从 storage 中删除
+      this.children.forEach(function (child, index) {
+        child.parent = null;
         storage.delFromStorage(child);
+      }); //然后在调用父层的处理函数删除自身
 
-        if (child.type === &#39;group&#39;) {
-          child.delChildrenFromStorage(storage);
-        }
-      }
-    }
-<span id='qrenderer-graphic-Group-method-dirty'>    /**
-</span>     * @method dirty
-     * @return {Group}
-     */
-
-  }, {
-    key: &quot;dirty&quot;,
-    value: function dirty() {
-      this.__dirty = true;
-      this.__qr &amp;&amp; this.__qr.refresh();
-      return this;
+      Element.prototype.delFromStorageHandler.call(this, storage);
     }
 <span id='qrenderer-graphic-Group-method-getBoundingRect'>    /**
 </span>     * @method getBoundingRect
@@ -395,7 +280,7 @@ function (_Element) {
         }
 
         var childRect = child.getBoundingRect();
-        var transform = child.getLocalTransform(); // TODO
+        var transform = child.getLocalTransform(); // TODO:
         // The boundingRect cacluated by transforming original
         // rect may be bigger than the actual bundingRect when rotation
         // is used. (Consider a circle rotated aginst its center, where

@@ -45,10 +45,6 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 var defaultConfig = {
-<span id='qrenderer-graphic-CompoundPath-property-type'>  /**
-</span>   * @property {String} type
-   */
-  type: &#39;compound&#39;,
   shape: {
     paths: null
   }
@@ -64,9 +60,17 @@ function (_Path) {
    * @param {Object} opts 
    */
   function CompoundPath(opts) {
+    var _this;
+
     _classCallCheck(this, CompoundPath);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(CompoundPath).call(this, opts, defaultConfig));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(CompoundPath).call(this, opts, defaultConfig));
+<span id='qrenderer-graphic-CompoundPath-property-type'>    /**
+</span>     * @property {String} type
+     */
+
+    _this.type = &#39;compound&#39;;
+    return _this;
   }
 <span id='qrenderer-graphic-CompoundPath-method-_updatePathDirty'>  /**
 </span>   * @private

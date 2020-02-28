@@ -54,6 +54,10 @@ var Eventful = function Eventful(eventProcessor) {
 
 Eventful.prototype = {
   constructor: Eventful,
+  clearAll: function clearAll() {
+    this._$handlers = null;
+    this._$eventProcessor = null;
+  },
 
 <span id='qrenderer-event-Eventful-method-one'>  /**
 </span>   * @method

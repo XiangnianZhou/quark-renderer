@@ -373,44 +373,31 @@ function (_Element) {
 
       if (dirtyPath) {
         this.__dirtyPath = dirtyPath;
-        this._rect = null;
       }
 
-      this.__dirty = this.__dirtyText = true;
-      this.__qr &amp;&amp; this.__qr.refresh(); // Used as a clipping path
+      Element.prototype.dirty.call(this); // Used as a clipping path
 
       if (this.__clipTarget) {
         this.__clipTarget.dirty();
       }
     }
-<span id='qrenderer-graphic-Path-method-animateShape'>    /**
-</span>     * @method animateShape
-     * Alias for animate(&#39;shape&#39;)
-     * @param {Boolean} loop
-     */
-
-  }, {
-    key: &quot;animateShape&quot;,
-    value: function animateShape(loop) {
-      return this.animate(&#39;shape&#39;, loop);
-    }
-<span id='qrenderer-graphic-Path-method-attrKV'>    /**
-</span>     * @method attrKV
-     * Overwrite attrKV
+<span id='qrenderer-graphic-Path-method-_attrKV'>    /**
+</span>     * @method _attrKV
+     * Overwrite _attrKV
      * @param {*} key 
      * @param {Object} value 
      */
 
   }, {
-    key: &quot;attrKV&quot;,
-    value: function attrKV(key, value) {
+    key: &quot;_attrKV&quot;,
+    value: function _attrKV(key, value) {
       // FIXME
       if (key === &#39;shape&#39;) {
-        this.setShape(value);
         this.__dirtyPath = true;
         this._rect = null;
+        this.setShape(value);
       } else {
-        Element.prototype.attrKV.call(this, key, value);
+        Element.prototype._attrKV.call(this, key, value);
       }
     }
 <span id='qrenderer-graphic-Path-method-setShape'>    /**

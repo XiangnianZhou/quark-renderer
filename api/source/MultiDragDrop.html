@@ -118,8 +118,6 @@ function () {
       this.handler.on(&#39;pagemousemove&#39;, this._drag, this);
       this.handler.on(&#39;pagemouseup&#39;, this._dragEnd, this);
       this.selectionMap.forEach(function (el, key) {
-        console.log(el);
-
         _this.handler.dispatchToElement(_this.param(el, e), &#39;dragstart&#39;, e.event);
       });
     }

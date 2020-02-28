@@ -37,11 +37,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * 
  * Animation manager, global singleton, controls all the animation process.
  * Each QRenderer instance has a GlobalAnimationMgr instance. GlobalAnimationMgr 
- * is designed to manage all the AnimationProcesses inside a qrenderer instance.
+ * is designed to manage all the elements which are animating.
  * 
  * 动画管理器，全局单例，控制和调度所有动画过程。每个 qrenderer 实例中会持有一个 
  * GlobalAnimationMgr 实例。GlobalAnimationMgr 会管理 qrenderer 实例中的所有
- * AnimationProcess。
+ * 正在进行动画的元素。
  * 
  * @author pissang(https://github.com/pissang)
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
@@ -60,7 +60,7 @@ function () {
     _classCallCheck(this, GlobalAnimationMgr);
 
     options = options || {};
-    this._animationProcessList = [];
+    this._animatableMap = new Map();
     this._running = false;
     this._timestamp;
     this._pausedTime; //ms
@@ -69,32 +69,16 @@ function () {
     this._paused = false;
     Dispatcher.call(this);
   }
-<span id='qrenderer-animation-GlobalAnimationMgr-method-addAnimationProcess'>  /**
-</span>   * @method addAnimationProcess
-   * 添加 animationProcess
-   * @param {qrenderer.animation.GlobalAnimationMgr} animationProcess
-   */
-
 
   _createClass(GlobalAnimationMgr, [{
-    key: &quot;addAnimationProcess&quot;,
-    value: function addAnimationProcess(animationProcess) {
-      this._animationProcessList.push(animationProcess);
+    key: &quot;addAnimatable&quot;,
+    value: function addAnimatable(animatable) {
+      this._animatableMap.set(animatable.id, animatable);
     }
-<span id='qrenderer-animation-GlobalAnimationMgr-method-removeAnimationProcess'>    /**
-</span>     * @method removeAnimationProcess
-     * 删除动画片段
-     * @param {qrenderer.animation.GlobalAnimationMgr} animationProcess
-     */
-
   }, {
-    key: &quot;removeAnimationProcess&quot;,
-    value: function removeAnimationProcess(animationProcess) {
-      var index = this._animationProcessList.findIndex(animationProcess);
-
-      if (index &gt;= 0) {
-        this._animationProcessList.splice(index, 1);
-      }
+    key: &quot;removeAnimatable&quot;,
+    value: function removeAnimatable(animatable) {
+      this._animatableMap[&quot;delete&quot;](animatable.id);
     }
 <span id='qrenderer-animation-GlobalAnimationMgr-method-_update'>    /**
 </span>     * @private
@@ -104,11 +88,21 @@ function () {
   }, {
     key: &quot;_update&quot;,
     value: function _update() {
+      var _this = this;
+
       var time = new Date().getTime() - this._pausedTime;
 
       var delta = time - this._timestamp;
 
-      this._animationProcessList.forEach(function (ap, index) {
+      this._animatableMap.forEach(function (animatable, index, map) {
+        var ap = animatable.animationProcessList[0];
+
+        if (!ap) {
+          _this.removeAnimatable(animatable);
+
+          return;
+        }
+
         ap.nextFrame(time, delta);
       });
 
@@ -152,16 +146,6 @@ function () {
 
       this._startLoop();
     }
-<span id='qrenderer-animation-GlobalAnimationMgr-method-stop'>    /**
-</span>     * @method stop
-     * Stop all the animations.
-     */
-
-  }, {
-    key: &quot;stop&quot;,
-    value: function stop() {
-      this._running = false;
-    }
 <span id='qrenderer-animation-GlobalAnimationMgr-method-pause'>    /**
 </span>     * @method pause
      * Pause all the animations.
@@ -196,25 +180,12 @@ function () {
   }, {
     key: &quot;clear&quot;,
     value: function clear() {
-      this._animationProcessList.length = 0;
-    }
-<span id='qrenderer-animation-GlobalAnimationMgr-method-isFinished'>    /**
-</span>     * @method isFinished
-     * Whether all the animations have finished.
-     */
-
-  }, {
-    key: &quot;isFinished&quot;,
-    value: function isFinished() {
-      var finished = true;
-
-      this._animationProcessList.forEach(function (animationProcess, index) {
-        if (!animationProcess.isFinished()) {
-          finished = false;
-        }
+      this._animatableMap.forEach(function (animatable, index) {
+        animatable.stopAnimation();
       });
 
-      return finished;
+      this._running = false;
+      this._animatableMap = new Map();
     }
   }]);
 

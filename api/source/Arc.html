@@ -51,10 +51,6 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 var defaultConfig = {
-<span id='qrenderer-graphic-shape-Arc-property-type'>  /**
-</span>   * @property {String} type
-   */
-  type: &#39;arc&#39;,
   shape: {
     cx: 0,
     cy: 0,
@@ -79,9 +75,17 @@ function (_Path) {
    * @param {Object} options 
    */
   function Arc(options) {
+    var _this;
+
     _classCallCheck(this, Arc);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Arc).call(this, dataUtil.merge(defaultConfig, options, true)));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Arc).call(this, dataUtil.merge(defaultConfig, options, true)));
+<span id='qrenderer-graphic-shape-Arc-property-type'>    /**
+</span>     * @property {String} type
+     */
+
+    _this.type = &#39;arc&#39;;
+    return _this;
   }
 <span id='qrenderer-graphic-shape-Arc-method-buildPath'>  /**
 </span>   * @method buildPath

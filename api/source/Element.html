@@ -29,7 +29,9 @@ var dataUtil = require(&quot;../core/utils/data_structure_util&quot;);
 
 var classUtil = require(&quot;../core/utils/class_util&quot;);
 
-var matrixUtil = require(&quot;../core/utils/matrix_util&quot;);
+var matrixUtil = require(&quot;../core/utils/affine_matrix_util&quot;);
+
+var vectorUtil = require(&quot;../core/utils/vector_util&quot;);
 
 var guid = require(&quot;../core/utils/guid&quot;);
 
@@ -207,6 +209,12 @@ function () {
      */
 
     this.globalScaleRatio = 1;
+<span id='qrenderer-graphic-Element-property-animationProcessList'>    /**
+</span>     * All the AnimationProcesses on this Element.
+     * @property animationProcessList
+     */
+
+    this.animationProcessList = [];
 <span id='qrenderer-graphic-Element-property-__qr'>    /**
 </span>     * @private
      * @property {QuarkRenderer} __qr
@@ -267,6 +275,8 @@ function () {
     classUtil.inheritProperties(this, Eventful, this.options);
     classUtil.inheritProperties(this, Animatable, this.options);
     classUtil.copyOwnProperties(this, this.options, [&#39;style&#39;, &#39;shape&#39;]);
+    this.on(&quot;addToStorage&quot;, this.addToStorageHandler);
+    this.on(&quot;delFromStorage&quot;, this.delFromStorageHandler);
   }
 <span id='qrenderer-graphic-Element-method-'>  /**
 </span>   * @method
@@ -293,9 +303,7 @@ function () {
           break;
       }
 
-      this.transform[4] += dx;
-      this.transform[5] += dy;
-      this.decomposeLocalTransform();
+      vectorUtil.add(this.position, this.position, [dx, dy]);
       this.dirty();
     }
 <span id='qrenderer-graphic-Element-property-traverse'>    /**
@@ -307,32 +315,6 @@ function () {
   }, {
     key: &quot;traverse&quot;,
     value: function traverse(cb, context) {}
-<span id='qrenderer-graphic-Element-method-attrKV'>    /**
-</span>     * @protected
-     * @method attrKV
-     * @param {String} key
-     * @param {Object} value
-     */
-
-  }, {
-    key: &quot;attrKV&quot;,
-    value: function attrKV(key, value) {
-      if (key === &#39;position&#39; || key === &#39;scale&#39; || key === &#39;origin&#39;) {
-        // Copy the array
-        if (value) {
-          var target = this[key];
-
-          if (!target) {
-            target = this[key] = [];
-          }
-
-          target[0] = value[0];
-          target[1] = value[1];
-        }
-      } else {
-        this[key] = value;
-      }
-    }
 <span id='qrenderer-graphic-Element-method-hide'>    /**
 </span>     * @method hide
      * 
@@ -364,9 +346,9 @@ function () {
 <span id='qrenderer-graphic-Element-method-setClipPath'>    /**
 </span>     * @method setClipPath
      * 
-     * Set the clip path.
+     * Set clip path dynamicly.
      * 
-     * 设置剪裁路径。
+     * 动态设置剪裁路径。
      * 
      * @param {Path} clipPath
      */
@@ -374,46 +356,35 @@ function () {
   }, {
     key: &quot;setClipPath&quot;,
     value: function setClipPath(clipPath) {
-      var qr = this.__qr;
-
-      if (qr) {
-        clipPath.addToQr(qr);
-      } // Remove previous clip path
-
-
+      // Remove previous clip path
       if (this.clipPath &amp;&amp; this.clipPath !== clipPath) {
         this.removeClipPath();
       }
 
       this.clipPath = clipPath;
-      clipPath.__qr = qr;
-      clipPath.__clipTarget = this; //TODO: FIX this，子类 Path 中的 dirty() 方法有参数。
+      clipPath.__qr = this.__qr;
+      clipPath.__clipTarget = this;
+      clipPath.trigger(&quot;addToStorage&quot;, this.__storage); // trigger addToStorage manually
+      //TODO: FIX this，子类 Path 中的 dirty() 方法有参数。
 
       this.dirty();
     }
 <span id='qrenderer-graphic-Element-method-removeClipPath'>    /**
 </span>     * @method removeClipPath
      * 
-     * Remove the clip path.
+     * Remove clip path dynamicly.
      * 
-     * 删除剪裁路径。
-     * 
+     * 动态删除剪裁路径。
      */
 
   }, {
     key: &quot;removeClipPath&quot;,
     value: function removeClipPath() {
-      var clipPath = this.clipPath;
-
-      if (clipPath) {
-        if (clipPath.__qr) {
-          clipPath.removeFromQr(clipPath.__qr);
-        }
-
-        clipPath.__qr = null;
-        clipPath.__clipTarget = null;
+      if (this.clipPath) {
+        this.clipPath.__qr = null;
+        this.clipPath.__clipTarget = null;
+        this.clipPath &amp;&amp; this.clipPath.trigger(&quot;delFromStorage&quot;, this.__storage);
         this.clipPath = null;
-        this.dirty();
       }
     }
 <span id='qrenderer-graphic-Element-method-dirty'>    /**
@@ -432,55 +403,43 @@ function () {
       this._rect = null;
       this.__qr &amp;&amp; this.__qr.refresh();
     }
-<span id='qrenderer-graphic-Element-method-addToQr'>    /**
-</span>     * @method addToQr
+<span id='qrenderer-graphic-Element-method-addToStorageHandler'>    /**
+</span>     * @method addToStorageHandler
      * Add self to qrenderer instance.
      * Not recursively because it will be invoked when element added to storage.
      * 
      * 把当前对象添加到 qrenderer 实例中去。
      * 不会递归添加，因为当元素被添加到 storage 中的时候会执行递归操作。
+     * @param {Storage} storage
      */
 
   }, {
-    key: &quot;addToQr&quot;,
-    value: function addToQr() {
-      var animationProcessList = this.animationProcessList;
-
-      if (animationProcessList) {
-        for (var i = 0; i &lt; animationProcessList.length; i++) {
-          this.__qr.globalAnimationMgr.addAnimationProcess(animationProcessList[i]);
-        }
-      }
-
-      if (this.clipPath) {
-        this.clipPath.addToQr();
-      }
+    key: &quot;addToStorageHandler&quot;,
+    value: function addToStorageHandler(storage) {
+      this.__storage = storage;
+      this.__qr &amp;&amp; this.__qr.globalAnimationMgr.addAnimatable(this);
+      this.clipPath &amp;&amp; this.clipPath.trigger(&quot;addToStorage&quot;, this.__storage);
+      this.dirty();
     }
-<span id='qrenderer-graphic-Element-method-removeFromQr'>    /**
-</span>     * @method removeFromQr
+<span id='qrenderer-graphic-Element-method-delFromStorageHandler'>    /**
+</span>     * @method delFromStorageHandler
      * Remove self from qrenderer instance.
      * 
      * 把当前对象从 qrenderer 实例中删除。
+     * @param {Storage} storage
      */
 
   }, {
-    key: &quot;removeFromQr&quot;,
-    value: function removeFromQr() {
-      var qr = this.__qr; // 移除动画
-
-      var animationProcessList = this.animationProcessList;
-
-      if (animationProcessList) {
-        for (var i = 0; i &lt; animationProcessList.length; i++) {
-          qr.globalAnimationMgr.removeAnimationProcess(animationProcessList[i]);
-        }
-      }
-
-      if (this.clipPath) {
-        this.clipPath.removeFromQr(qr);
-      }
-
+    key: &quot;delFromStorageHandler&quot;,
+    value: function delFromStorageHandler(storage) {
+      this.animationProcessList.forEach(function (item, index) {
+        item.trigger(&quot;stop&quot;);
+      });
+      this.animationProcessList = [];
+      this.clipPath &amp;&amp; this.clipPath.trigger(&quot;delFromStorage&quot;, this.__storage);
       this.__qr = null;
+      this.__storage = null;
+      this.dirty();
     }
 <span id='qrenderer-graphic-Element-method-beforeBrush'>    /**
 </span>     * @protected
@@ -565,23 +524,32 @@ function () {
     value: function traverse(cb, context) {
       cb.call(context, this);
     }
-<span id='qrenderer-graphic-Element-method-animateStyle'>    /**
-</span>     * @method animateStyle
-     * Alias for animate(&#39;style&#39;)
-     * @param {Boolean} loop
+<span id='qrenderer-graphic-Element-method-_attrKV'>    /**
+</span>     * @protected
+     * @method _attrKV
+     * @param {String} key
+     * @param {Object} value
      */
 
   }, {
-    key: &quot;animateStyle&quot;,
-    value: function animateStyle(loop) {
-      return this.animate(&#39;style&#39;, loop);
+    key: &quot;_attrKV&quot;,
+    value: function _attrKV(key, value) {
+      if (key === &#39;style&#39;) {
+        classUtil.copyOwnProperties(this.style, value);
+      } else if (key === &#39;position&#39; || key === &#39;scale&#39; || key === &#39;origin&#39; || key === &#39;skew&#39; || key === &#39;translate&#39;) {
+        var target = this[key] ? this[key] : [];
+        target[0] = value[0];
+        target[1] = value[1];
+      } else {
+        this[key] = value;
+      }
     }
 <span id='qrenderer-graphic-Element-method-attr'>    /**
 </span>     * @method attr
      * 
-     * Modify attribute.
+     * Modify attribute, this method will mark current object as dirty.
      * 
-     * 修改对象上的属性。
+     * 修改对象上的属性，使用此方法修改对象上的属性会导致对象被标记成 dirty。
      * 
      * @param {String|Object} key
      * @param {*} value
@@ -590,57 +558,16 @@ function () {
   }, {
     key: &quot;attr&quot;,
     value: function attr(key, value) {
-      if (typeof key === &#39;String&#39;) {
-        this.attrKV(key, value);
+      if (dataUtil.isString(key)) {
+        this._attrKV(key, value);
       } else if (dataUtil.isObject(key)) {
         for (var name in key) {
           if (key.hasOwnProperty(name)) {
-            this.attrKV(name, key[name]);
+            this._attrKV(name, key[name]);
           }
         }
       }
 
-      this.dirty();
-      return this;
-    }
-<span id='qrenderer-graphic-Element-method-attrKV'>    /**
-</span>     * @method attrKV
-     * @param {*} key 
-     * @param {*} value 
-     */
-
-  }, {
-    key: &quot;attrKV&quot;,
-    value: function attrKV(key, value) {
-      if (key !== &#39;style&#39;) {
-        this.attr(key, value);
-      } else {
-        this.style.set(value);
-      }
-    }
-<span id='qrenderer-graphic-Element-method-setStyle'>    /**
-</span>     * @method setStyle
-     * @param {Object|String} key
-     * @param {*} value
-     */
-
-  }, {
-    key: &quot;setStyle&quot;,
-    value: function setStyle(key, value) {
-      this.style.set(key, value);
-      this.dirty();
-      return this;
-    }
-<span id='qrenderer-graphic-Element-method-useStyle'>    /**
-</span>     * @method useStyle
-     * Use given style object
-     * @param  {Object} obj
-     */
-
-  }, {
-    key: &quot;useStyle&quot;,
-    value: function useStyle(obj) {
-      this.style = new Style(obj, this);
       this.dirty();
       return this;
     }

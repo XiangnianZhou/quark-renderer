@@ -47,10 +47,6 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 var defaultConfig = {
-<span id='qrenderer-graphic-shape-BezierCurve-property-type'>  /**
-</span>   * @property {String} type
-   */
-  type: &#39;bezier-curve&#39;,
   shape: {
     x1: 0,
     y1: 0,
@@ -88,9 +84,17 @@ function (_Path) {
    * @param {Object} options 
    */
   function BezierCurve(options) {
+    var _this;
+
     _classCallCheck(this, BezierCurve);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(BezierCurve).call(this, dataUtil.merge(defaultConfig, options, true)));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(BezierCurve).call(this, dataUtil.merge(defaultConfig, options, true)));
+<span id='qrenderer-graphic-shape-BezierCurve-property-type'>    /**
+</span>     * @property {String} type
+     */
+
+    _this.type = &#39;bezier-curve&#39;;
+    return _this;
   }
 <span id='qrenderer-graphic-shape-BezierCurve-method-buildPath'>  /**
 </span>   * @method buildPath

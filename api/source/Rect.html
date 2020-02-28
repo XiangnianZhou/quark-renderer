@@ -51,10 +51,6 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 // Avoid create repeatly.
 var subPixelOptimizeOutputShape = {};
 var defaultConfig = {
-<span id='qrenderer-graphic-shape-Rect-property-type'>  /**
-</span>   * @property {String} type
-   */
-  type: &#39;rect&#39;,
   shape: {
     // 左上、右上、右下、左下角的半径依次为r1、r2、r3、r4
     // r缩写为1         相当于 [1, 1, 1, 1]
@@ -79,9 +75,17 @@ function (_Path) {
    * @param {Object} options 
    */
   function Rect(options) {
+    var _this;
+
     _classCallCheck(this, Rect);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Rect).call(this, dataUtil.merge(defaultConfig, options, true)));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Rect).call(this, dataUtil.merge(defaultConfig, options, true)));
+<span id='qrenderer-graphic-shape-Rect-property-type'>    /**
+</span>     * @property {String} type
+     */
+
+    _this.type = &#39;rect&#39;;
+    return _this;
   }
 <span id='qrenderer-graphic-shape-Rect-method-buildPath'>  /**
 </span>   * @method buildPath

@@ -45,10 +45,6 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 var defaultConfig = {
-<span id='qrenderer-graphic-shape-Polyline-property-type'>  /**
-</span>   * @property {String} type
-   */
-  type: &#39;polyline&#39;,
   shape: {
     points: null,
     smooth: false,
@@ -70,9 +66,17 @@ function (_Path) {
    * @param {Object} options 
    */
   function Polyline(options) {
+    var _this;
+
     _classCallCheck(this, Polyline);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Polyline).call(this, dataUtil.merge(defaultConfig, options, true)));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Polyline).call(this, dataUtil.merge(defaultConfig, options, true)));
+<span id='qrenderer-graphic-shape-Polyline-property-type'>    /**
+</span>     * @property {String} type
+     */
+
+    _this.type = &#39;polyline&#39;;
+    return _this;
   }
 <span id='qrenderer-graphic-shape-Polyline-method-buildPath'>  /**
 </span>   * @method buildPath

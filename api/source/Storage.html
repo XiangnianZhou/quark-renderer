@@ -190,18 +190,9 @@ Storage.prototype = {
       return;
     }
 
-    if (el.type === &#39;group&#39;) {
-      el.addChildrenToStorage(this);
-    }
-
-    this.trigger(&quot;beforeAdd&quot;, el);
-    el.trigger(&quot;beforeAdd&quot;, el);
+    this.trigger(&quot;beforeAddToRoot&quot;, el);
+    el.trigger(&quot;beforeAddToRoot&quot;, el);
     this.addToStorage(el);
-
-    this._roots.set(el.id, el);
-
-    this.trigger(&quot;add&quot;, el);
-    el.trigger(&quot;add&quot;, el);
   },
 
 <span id='qrenderer-core-Storage-method-delFromRoot'>  /**
@@ -213,11 +204,9 @@ Storage.prototype = {
     var _this2 = this;
 
     if (el == null) {
-      //全部清空
-      this._roots.forEach(function (item, id, map) {
-        if (item &amp;&amp; item.type === &#39;group&#39;) {
-          item.delChildrenFromStorage(_this2);
-        }
+      // Clear all.
+      this._roots.forEach(function (el, id, map) {
+        _this2.delFromStorage(el);
       });
 
       this._roots = new Map();
@@ -226,26 +215,15 @@ Storage.prototype = {
       return;
     }
 
-    if (el instanceof Array) {
-      for (var i = 0, l = el.length; i &lt; l; i++) {
-        this.delFromRoot(el[i]);
-      }
-
+    if (el.forEach) {
+      // Array like.
+      el.forEach(function (item, index) {
+        _this2.delFromRoot(item);
+      });
       return;
     }
 
-    if (this._roots.get(el.id)) {
-      this.delFromStorage(el);
-
-      this._roots[&quot;delete&quot;](el.id);
-
-      if (el.type === &#39;group&#39;) {
-        el.delChildrenFromStorage(this);
-      }
-
-      this.trigger(&quot;del&quot;, el);
-      el.trigger(&quot;del&quot;, el);
-    }
+    this.delFromStorage(el);
   },
 
 <span id='qrenderer-core-Storage-method-addToStorage'>  /**
@@ -253,12 +231,10 @@ Storage.prototype = {
    * @param {Element} el 
    */
   addToStorage: function addToStorage(el) {
-    if (el) {
-      el.__storage = this;
-      el.addToQr();
-      el.dirty(false);
-    }
+    this._roots.set(el.id, el);
 
+    this.trigger(&quot;addToStorage&quot;, el);
+    el.trigger(&quot;addToStorage&quot;, this);
     return this;
   },
 
@@ -267,9 +243,11 @@ Storage.prototype = {
    * @param {Element} el 
    */
   delFromStorage: function delFromStorage(el) {
-    if (el) {
-      el.__storage = null;
-      el.removeFromQr();
+    if (this._roots.get(el.id)) {
+      this._roots[&quot;delete&quot;](el.id);
+
+      this.trigger(&quot;delFromStorage&quot;, el);
+      el.trigger(&quot;delFromStorage&quot;, this);
     }
 
     return this;

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var vectorUtil = require(&quot;../../core/utils/vector_util&quot;);
+
+var matrixUtil = require(&quot;../../core/utils/affine_matrix_util&quot;);
+
+var _constants = require(&quot;../constants&quot;);
+
+var mathMin = _constants.mathMin;
+var mathMax = _constants.mathMax;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
+
+function _defineProperties(target, props) { for (var i = 0; i &lt; props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (&quot;value&quot; in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+<span id='qrenderer-graphic-transform-BoundingRect'>/**
+</span> * @class qrenderer.graphic.transform.BoundingRect
+ * 
+ * Bounding Rect.
+ * 
+ * 边界矩形。
+ * 
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+var v2ApplyTransform = vectorUtil.applyTransform;
+var lt = [];
+var rb = [];
+var lb = [];
+var rt = [];
+
+var BoundingRect =
+/*#__PURE__*/
+function () {
+<span id='qrenderer-graphic-transform-BoundingRect-method-constructor'>  /**
+</span>   * @method constructor BoundingRect
+   */
+  function BoundingRect(x, y, width, height) {
+    _classCallCheck(this, BoundingRect);
+
+    if (width &lt; 0) {
+      x = x + width;
+      width = -width;
+    }
+
+    if (height &lt; 0) {
+      y = y + height;
+      height = -height;
+    }
+<span id='qrenderer-graphic-transform-BoundingRect-property-x'>    /**
+</span>     * @property {Number}
+     */
+
+
+    this.x = x;
+<span id='qrenderer-graphic-transform-BoundingRect-property-y'>    /**
+</span>     * @property {Number}
+     */
+
+    this.y = y;
+<span id='qrenderer-graphic-transform-BoundingRect-property-width'>    /**
+</span>     * @property {Number}
+     */
+
+    this.width = width;
+<span id='qrenderer-graphic-transform-BoundingRect-property-height'>    /**
+</span>     * @property {Number}
+     */
+
+    this.height = height;
+  }
+<span id='qrenderer-graphic-transform-BoundingRect-method-'>  /**
+</span>   * @param {Object|BoundingRect} rect
+   * @param {Number} rect.x
+   * @param {Number} rect.y
+   * @param {Number} rect.width
+   * @param {Number} rect.height
+   * @return {BoundingRect}
+   */
+
+
+  _createClass(BoundingRect, [{
+    key: &quot;union&quot;,
+
+<span id='qrenderer-graphic-transform-BoundingRect-method-union'>    /**
+</span>     * @method union
+     * @param {BoundingRect} other
+     */
+    value: function union(other) {
+      var x = mathMin(other.x, this.x);
+      var y = mathMin(other.y, this.y);
+      this.width = mathMax(other.x + other.width, this.x + this.width) - x;
+      this.height = mathMax(other.y + other.height, this.y + this.height) - y;
+      this.x = x;
+      this.y = y;
+    }
+<span id='qrenderer-graphic-transform-BoundingRect-method-applyTransform'>    /**
+</span>     * @method applyTransform
+     * @param {Array&lt;Number&gt;}
+     */
+
+  }, {
+    key: &quot;applyTransform&quot;,
+    value: function applyTransform(m) {
+      // In case usage like this
+      // el.getBoundingRect().applyTransform(el.transform)
+      // And element has no transform
+      if (!m) {
+        return;
+      }
+
+      lt[0] = lb[0] = this.x;
+      lt[1] = rt[1] = this.y;
+      rb[0] = rt[0] = this.x + this.width;
+      rb[1] = lb[1] = this.y + this.height;
+      v2ApplyTransform(lt, lt, m);
+      v2ApplyTransform(rb, rb, m);
+      v2ApplyTransform(lb, lb, m);
+      v2ApplyTransform(rt, rt, m);
+      this.x = mathMin(lt[0], rb[0], lb[0], rt[0]);
+      this.y = mathMin(lt[1], rb[1], lb[1], rt[1]);
+      var maxX = mathMax(lt[0], rb[0], lb[0], rt[0]);
+      var maxY = mathMax(lt[1], rb[1], lb[1], rt[1]);
+      this.width = maxX - this.x;
+      this.height = maxY - this.y;
+    }
+<span id='qrenderer-graphic-transform-BoundingRect-method-calculateTransform'>    /**
+</span>     * @method calculateTransform
+     * Calculate matrix of transforming from self to target rect
+     * @param  {BoundingRect} b
+     * @return {Array&lt;Number&gt;}
+     */
+
+  }, {
+    key: &quot;calculateTransform&quot;,
+    value: function calculateTransform(b) {
+      var a = this;
+      var sx = b.width / a.width;
+      var sy = b.height / a.height;
+      var m = matrixUtil.create();
+      m = matrixUtil.translate(m, [-a.x, -a.y]);
+      m = matrixUtil.scale(m, [sx, sy]);
+      m = matrixUtil.translate(m, [b.x, b.y]);
+      return m;
+    }
+<span id='qrenderer-graphic-transform-BoundingRect-method-intersect'>    /**
+</span>     * @method intersect
+     * @param {(BoundingRect|Object)} b
+     * @return {boolean}
+     */
+
+  }, {
+    key: &quot;intersect&quot;,
+    value: function intersect(b) {
+      if (!b) {
+        return false;
+      }
+
+      if (!(b instanceof BoundingRect)) {
+        // Normalize negative width/height.
+        b = BoundingRect.create(b);
+      }
+
+      var a = this;
+      var ax0 = a.x;
+      var ax1 = a.x + a.width;
+      var ay0 = a.y;
+      var ay1 = a.y + a.height;
+      var bx0 = b.x;
+      var bx1 = b.x + b.width;
+      var by0 = b.y;
+      var by1 = b.y + b.height;
+      return !(ax1 &lt; bx0 || bx1 &lt; ax0 || ay1 &lt; by0 || by1 &lt; ay0);
+    }
+<span id='qrenderer-graphic-transform-BoundingRect-method-contain'>    /**
+</span>     * @method contain
+     * @param {*} x 
+     * @param {*} y 
+     */
+
+  }, {
+    key: &quot;contain&quot;,
+    value: function contain(x, y) {
+      var rect = this;
+      return x &gt;= rect.x &amp;&amp; x &lt;= rect.x + rect.width &amp;&amp; y &gt;= rect.y &amp;&amp; y &lt;= rect.y + rect.height;
+    }
+<span id='qrenderer-graphic-transform-BoundingRect-method-clone'>    /**
+</span>     * @method clone
+     * @return {BoundingRect}
+     */
+
+  }, {
+    key: &quot;clone&quot;,
+    value: function clone() {
+      return new BoundingRect(this.x, this.y, this.width, this.height);
+    }
+<span id='qrenderer-graphic-transform-BoundingRect-method-copy'>    /**
+</span>     * @method copy
+     * Copy from another rect
+     * @param other
+     */
+
+  }, {
+    key: &quot;copy&quot;,
+    value: function copy(other) {
+      this.x = other.x;
+      this.y = other.y;
+      this.width = other.width;
+      this.height = other.height;
+    }
+<span id='qrenderer-graphic-transform-BoundingRect-method-plain'>    /**
+</span>     * @method plain
+     */
+
+  }, {
+    key: &quot;plain&quot;,
+    value: function plain() {
+      return {
+        x: this.x,
+        y: this.y,
+        width: this.width,
+        height: this.height
+      };
+    }
+  }], [{
+    key: &quot;create&quot;,
+    value: function create(rect) {
+      return new BoundingRect(rect.x, rect.y, rect.width, rect.height);
+    }
+  }]);
+
+  return BoundingRect;
+}();
+
+var _default = BoundingRect;
+module.exports = _default;</pre>
+</body>
+</html>

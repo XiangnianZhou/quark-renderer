@@ -80,7 +80,12 @@ function (_Element) {
 
       this.__dirty &amp;&amp; textUtil.normalizeTextStyle(style, true); // Use props with prefix &#39;text&#39;.
 
-      style.fill = style.stroke = style.shadowBlur = style.shadowColor = style.shadowOffsetX = style.shadowOffsetY = null;
+      style.fill = null;
+      style.stroke = null;
+      style.shadowBlur = null;
+      style.shadowColor = null;
+      style.shadowOffsetX = null;
+      style.shadowOffsetY = null;
       var text = style.text; // Convert to string
 
       text != null &amp;&amp; (text += &#39;&#39;); // Do not apply style.bind in Text node. Because the real bind job
