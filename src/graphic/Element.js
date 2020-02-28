@@ -6,6 +6,7 @@ import RectText from './RectText';
 import * as dataUtil from '../core/utils/data_structure_util';
 import * as classUtil from '../core/utils/class_util';
 import * as matrixUtil from '../core/utils/affine_matrix_util';
+import * as vectorUtil from '../core/utils/vector_util';
 import guid from '../core/utils/guid';
 
 /**
@@ -261,10 +262,7 @@ class Element{
                 dx = 0;
                 break;
         }
-
-        this.transform[4]+=dx;
-        this.transform[5]+=dy;
-        this.decomposeLocalTransform();
+        vectorUtil.add(this.position,this.position,[dx,dy]);
         this.dirty();
     }
 

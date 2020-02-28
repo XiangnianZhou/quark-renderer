@@ -50,15 +50,15 @@ let Transformable = function (options={}) {
 
     /**
      * @property {Array<Number>} skew
-     * 扭曲，二维数组。
+     * 斜切，二维数组。
      */
     this.skew = (options.skew===null||options.skew===undefined)?[0, 0]:options.skew;
 
     /**
      * @property {Matrix} transform
-     * 变换矩阵。
+     * 变换矩阵。为了能和动画机制很好地配合，请不要直接操作 transform 属性， SVGPainter 除外。
      */
-    this.transform=matrixUtil.create();;
+    this.transform=matrixUtil.create();
 
     /**
      * @property {Matrix} inverseTransform
@@ -72,123 +72,6 @@ let Transformable = function (options={}) {
 
 Transformable.prototype={
     constructor:Transformable,
-
-    /**
-     * @method setRotation
-     * 设置旋转角度。
-     * @param {Number} rotation 弧度
-     */
-    setRotation:function(rotation=0){
-        this.rotation=rotation;
-    },
-
-    /**
-     * @method setOrigin
-     * 设置变换原点。
-     * @param {Array<Number>} origin 二维数组
-     */
-    setOrigin:function(origin=[0,0]){
-        this.origin=origin;
-    },
-
-    /**
-     * @method setOriginX
-     * 单独设置 X 轴原点。
-     * @param {Number} originX 数值
-     */
-    setOriginX:function(originX=0){
-        this.origin[0]=originX;
-    },
-
-    /**
-     * @method setOriginY
-     * 单独设置 Y 轴原点。
-     * @param {Number} originY 数值
-     */
-    setOriginY:function(originY=0){
-        this.origin[1]=originY;
-    },
-
-    /**
-     * @method setPosition
-     * 设置位置。
-     * @param {Array<Number>} position 二维数组
-     */
-    setPosition:function(position=[0,0]){
-        this.position=position;
-    },
-
-    /**
-     * @method setX
-     * 单独设置 X 轴位置。
-     * @param {Number} x 数值
-     */
-    setX:function(x=0){
-        this.position[0]=x;
-    },
-
-    /**
-     * @method setY
-     * 单独设置 Y 轴位置。
-     * @param {Number} y 数值
-     */
-    setY:function(y){
-        this.position[1]=y;
-    },
-
-    /**
-     * @method setScale
-     * 设置缩放。
-     * @param {Array<Number>} scale 二维数组
-     */
-    setScale:function(scale=[1,1]){
-        this.scale=scale;
-    },
-
-    /**
-     * @method setScaleWidth
-     * 单独设置 X 轴方向上的缩放。
-     * @param {Number} scaleWidth 数值
-     */
-    setScaleWidth:function(scaleWidth=1){
-        this.scale[0]=scaleWidth;
-    },
-
-    /**
-     * @method setScaleHeight
-     * 单独设置 Y 轴方向上的缩放。
-     * @param {Number} scaleHeight 数值
-     */
-    setScaleHeight:function(scaleHeight=1){
-        this.scale[1]=scaleHeight;
-    },
-
-    /**
-     * @method setSkew
-     * 设置扭曲。
-     * @param {Array<Number>} skew 二维数组
-     */
-    setSkew:function(skew=[1,1]){
-        this.skew=skew;
-    },
-
-    /**
-     * @method setSkewX
-     * 单独设置 X 轴方向上的扭曲。
-     * @param {Number} skewX 数值
-     */
-    setSkewX:function(skewX){
-        this.skew[0]=skewX;
-    },
-
-    /**
-     * @method setSkewY
-     * 单独设置 Y 轴方向上的扭曲。
-     * @param {Number} skewY 数值
-     */
-    setSkewY:function(skewY){
-        this.skew[1]=skewY;
-    },
 
     /**
      * @method needLocalTransform
@@ -239,6 +122,32 @@ Transformable.prototype={
     /**
      * @method getLocalTransform
      * 获取本地变换矩阵。
+     * 
+     * Note: 这里的实现没有考虑仿射变换中的矩阵乘法顺序，因为 API 调用者
+     * 在提供配置项时并不会留意数学意义上的变换顺序，而总是采用的直觉意义
+     * 上的变换顺序 skew->scale->rotation->position 。
+     * 
+     *      @example
+     *      rect.animate()
+     *      .when(1000,{
+     *          position:[100,100],
+     *          skew:[2,2],
+     *          scale:[2,2],
+     *          rotate:Math.PI
+     *      })
+     *      .when(2000,{
+     *          position:[200,100],
+     *          scale:[1,1],
+     *          skew:[1,1],
+     *          rotate:-Math.PI
+     *      })
+     *      .start();
+     * 
+     * 
+     * 这种实现方式有一个重大的缺点，它不能很好地对应 SVG 中的 transform 机制，
+     * 比如：<path transform="rotation(Math.PI);scale(2,2);">
+     * 这个 transform 属性表达的意思是：先 rotation ，然后 scale ，这就要求严格按照
+     * 仿射变换的顺序来进行矩阵运算。
      */
     getLocalTransform:function () {
         let origin = this.origin || [0,0];
@@ -246,17 +155,15 @@ Transformable.prototype={
         let position = this.position || [0,0];
         let scale = this.scale || [1,1];
         let skew = this.skew || [0,0];
-        
-        let m=matrixUtil.create();
 
+        let m=matrixUtil.create();
         //移动原点
         m[4] -= origin[0];
         m[5] -= origin[1];
         
-        //TODO:这里的实现有问题，缩放、旋转、斜切、位移是有顺序的。
+        m = matrixUtil.skew(m, skew);
         m = matrixUtil.scale(m, scale);
         m = matrixUtil.rotate(m, rotation);
-        // m = matrixUtil.skew(m,skew);
 
         //原点移回去
         m[4] += origin[0];
@@ -267,30 +174,6 @@ Transformable.prototype={
         m[5] += position[1];
 
         return m;
-    },
-
-    /**
-     * @method setLocalTransform
-     * 设置本地变换矩阵。
-     * @param {Matrix} m 
-     */
-    setLocalTransform:function (m) {
-        let sx = mathSqrt(m[0] * m[0] + m[1] * m[1]);
-        let sy = mathSqrt(m[2] * m[2] + m[3] * m[3]);
-        if (m[0] < 0) {
-            sx = -sx;
-        }
-        if (m[3] < 0) {
-            sy = -sy;
-        }
-
-        this.rotation = mathAtan2(-m[1] / sy, m[0] / sx);
-        this.position[0] = m[4];
-        this.position[1] = m[5];
-        this.scale[0] = sx;
-        this.scale[1] = sy;
-        this.skew[0]=m[1];
-        this.skew[1]=m[2];
     },
 
     /**
@@ -340,31 +223,6 @@ Transformable.prototype={
         //计算逆变换矩阵
         this.inverseTransform = this.inverseTransform || matrixUtil.create();
         this.inverseTransform = matrixUtil.invert(this.inverseTransform, m);
-    },
-
-    /**
-     * @method decomposeLocalTransform
-     * 把 transform 矩阵分解到 position、scale、skew、rotation 上去，此操作与 composeLocalTransform 是互逆的。
-     */
-    decomposeLocalTransform:function () {
-        let m = this.transform;
-        let transformTmp=matrixUtil.create();
-        if (this.parent && this.parent.transform) {
-            m=transformTmp=matrixUtil.mul(this.parent.inverseTransform, m);
-        }
-
-        let origin = this.origin;
-        let originTransform = matrixUtil.create();
-        if (origin && (origin[0] || origin[1])) {
-            originTransform[4] = origin[0];
-            originTransform[5] = origin[1];
-            transformTmp=matrixUtil.mul(m, originTransform);
-            transformTmp[4] -= origin[0];
-            transformTmp[5] -= origin[1];
-            m = transformTmp;
-        }
-
-        this.setLocalTransform(m);
     },
 
     /**
