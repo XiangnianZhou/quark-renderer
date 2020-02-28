@@ -1062,7 +1062,6 @@ export default class CanvasPainter{
             rotation: path.rotation,
             scale: path.scale
         };
-        //TODO: refactor this using setTransform directly.
         path.position = [leftMargin - rect.x, topMargin - rect.y];
         path.rotation = 0;
         path.scale = [1,1];
