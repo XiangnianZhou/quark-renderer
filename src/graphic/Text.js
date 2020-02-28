@@ -22,7 +22,7 @@ export default class Text extends Element{
         this.type='text';
     }
 
-    brush(ctx, prevEl) {
+    render(ctx, prevEl) {
         let style = this.style;
 
         // Optimize, avoid normalize every time.

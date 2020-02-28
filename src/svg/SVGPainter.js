@@ -177,7 +177,7 @@ SVGPainter.prototype = {
                 || getTextSvgElement(displayable);
             if (!displayable.invisible) {
                 if (displayable.__dirty) {
-                    svgProxy && svgProxy.brush(displayable);
+                    svgProxy && svgProxy.render(displayable);
 
                     // Update clipPath
                     this.clipPathManager.update(displayable);

@@ -28,7 +28,7 @@ class Element{
          * @protected
          * @property options 配置项
          */
-        this.options=options;
+        this.options = options;
     
         /**
          * @property {String} id
@@ -38,17 +38,17 @@ class Element{
         /**
          * @property {String} type 元素类型
          */
-        this.type='element';
+        this.type = 'element';
     
         /**
          * @property {String} name 元素名字
          */
-        this.name='';
+        this.name = '';
 
         /**
          * @property {Element} parent 父节点，添加到 Group 的元素存在父节点。
          */
-        this.parent=null;
+        this.parent = null;
     
         /**
          * @property {Boolean} ignore
@@ -57,7 +57,7 @@ class Element{
          * 
          * 为 true 时忽略图形的绘制以及事件触发
          */
-        this.ignore=false;
+        this.ignore = false;
     
         /**
          * @property {Path} clipPath
@@ -70,7 +70,7 @@ class Element{
          * @readOnly
          * @see http://www.w3.org/TR/2dcontext/#clipping-region
          */
-        this.clipPath=null;
+        this.clipPath = null;
 
         // FIXME Stateful must be mixined after style is setted
         // Stateful.call(this, options);
@@ -94,90 +94,92 @@ class Element{
          *             textVerticalAlign: String. optional. use style.textVerticalAlign by default.
          *         }
          */
-        this.calculateTextPosition=null;
+        this.calculateTextPosition = null;
 
         /**
          * @property {Boolean} invisible
          * Whether the displayable object is visible. when it is true, the displayable object
          * is not drawn, but the mouse event can still trigger the object.
          */
-        this.invisible=false;
+        this.invisible = false;
 
         /**
          * @property {Number} z
          */
-        this.z=0;
+        this.z = 0;
 
         /**
          * @property {Number} z2
          */
-        this.z2=0;
+        this.z2 = 0;
 
         /**
          * @property {Number} qlevel
          * The q level determines the displayable object can be drawn in which layer canvas.
          */
-        this.qlevel=0;
+        this.qlevel = 0;
 
         /**
          * @property {Boolean} draggable
          * Whether it can be dragged.
          */
-        this.draggable=false;
+        this.draggable = false;
 
         /**
          * @property {Boolean} dragging
          * Whether is it dragging.
          */
-        this.dragging=false;
+        this.dragging = false;
+
+        this.hasControls = true;
 
         /**
          * @property {Boolean} silent
          * Whether to respond to mouse events.
          */
-        this.silent=false;
+        this.silent = false;
 
         /**
          * @property {Boolean} culling
          * If enable culling
          */
-        this.culling=false;
+        this.culling = false;
 
         /**
          * @property {String} cursor
          * Mouse cursor when hovered
          */
-        this.cursor='move';
+        this.cursor = 'move';
 
         /**
          * @property {String} rectHover
          * If hover area is bounding rect
          */
-        this.rectHover=false;
+        this.rectHover = false;
 
         /**
          * @property {Boolean} progressive
          * Render the element progressively when the value >= 0,
          * usefull for large data.
          */
-        this.progressive=false;
+        this.progressive = false;
 
         /**
          * @property {Boolean} incremental
          */
-        this.incremental=false;
+        this.incremental = false;
 
         /**
          * @property {Boolean} globalScaleRatio
          * Scale ratio for global scale.
          */
-        this.globalScaleRatio=1;
+        this.globalScaleRatio = 1;
 
         /**
          * All the AnimationProcesses on this Element.
          * @property animationProcessList
          */
-        this.animationProcessList=[];
+        this.animationProcessList = [];
 
         /**
          * @private
@@ -187,7 +189,7 @@ class Element{
          * 
          * QuarkRenderer 实例对象，会在 element 添加到 qrenderer 实例中后自动赋值
          */
-        this.__qr=null;
+        this.__qr = null;
     
         /**
          * @private
@@ -197,13 +199,13 @@ class Element{
          * 
          * 这是一个非常重要的标志位，在绘制大量对象的时候，把 __dirty 标记为 false 可以节省大量操作。
          */
-        this.__dirty=true;
+        this.__dirty = true;
     
         /**
          * @private
          * @property  _rect
          */
-        this._rect=null;
+        this._rect = null;
         
         /**
          * @private
@@ -222,7 +224,7 @@ class Element{
         /**
          * @property {Object} shape 形状
          */
-        this.shape={};
+        this.shape = {};
     
         // Extend default shape
         let defaultShape = this.options.shape;
@@ -387,22 +389,22 @@ class Element{
 
     /**
      * @protected
-     * @method beforeBrush
+     * @method beforeRender
      */
-    beforeBrush(ctx) {}
+    beforeRender(ctx) {}
 
     /**
      * @protected
-     * @method brush
-     * Callback during brush.
+     * @method render
+     * Callback during render.
      */
-    brush(ctx, prevEl) {}
+    render(ctx, prevEl) {}
 
     /**
      * @protected
-     * @method afterBrush
+     * @method afterRender
      */
-    afterBrush(ctx) {}
+    afterRender(ctx) {}
 
     /**
      * @protected

@@ -102,18 +102,18 @@ class ClippathManager extends Definable{
                     clipPath.transform
                 );
     
-                // Transform back from parent, and brush path
+                // Transform back from parent, and render path
                 clipPath.transform=matrixUtil.mul(
                     clipPath.parent.inverseTransform,
                     clipPath.transform
                 );
-                svgProxy.brush(clipPath);
+                svgProxy.render(clipPath);
     
                 // Set back transform of clipPath
                 clipPath.transform = transform;
             }
             else {
-                svgProxy.brush(clipPath);
+                svgProxy.render(clipPath);
             }
     
             let pathEl = this.getSvgElement(clipPath);

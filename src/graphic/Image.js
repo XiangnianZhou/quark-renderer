@@ -21,11 +21,11 @@ export default class QImage extends Element{
     }
 
     /**
-     * @method brush
+     * @method render
      * @param {Object} ctx 
      * @param {Element} prevEl 
      */
-    brush(ctx, prevEl) {
+    render(ctx, prevEl) {
         let style = this.style;
         let src = style.image;
 

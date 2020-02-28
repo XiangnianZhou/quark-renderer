@@ -56,11 +56,11 @@ class Path extends Element{
     }
 
     /**
-     * @method brush
+     * @method render
      * @param {Object} ctx 
      * @param {Element} prevEl 
      */
-    brush(ctx, prevEl) {
+    render(ctx, prevEl) {
         let path = this.path || new PathProxy(true);
         let hasStroke = this.style.hasStroke();
         let hasFill = this.style.hasFill();
