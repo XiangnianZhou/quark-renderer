@@ -19,7 +19,6 @@ import * as dataUtil from '../../core/utils/data_structure_util';
  */
 
 let scaleTmp = [];
-let transformTmp = [];
 
 /**
  * @method constructor Transformable
@@ -27,47 +26,74 @@ let transformTmp = [];
 let Transformable = function (options={}) {
     /**
      * @property {Array<Number>} origin
-     * 几何变换的原点，默认为最左上角的(0,0)点。
+     * The origin point of transformation, default as (0,0) of canvas.
+     * 
+     * 
+     * 几何变换的原点，默认为 canvas 最左上角的(0,0)点。
      */
     this.origin = (options.origin===null||options.origin===undefined)?[0, 0]:options.origin;
 
     /**
      * @property {Array<Number>} rotation
+     * The rotation in radian.
+     * 
+     * 
      * 旋转弧度。
      */
     this.rotation = (options.rotation===null||options.rotation===undefined)?0:options.rotation;
 
     /**
      * @property {Array<Number>} position
-     * 平移，二维数组。
+     * The translate array.
+     * 
+     * 
+     * 平移，数组。
      */
     this.position = (options.position===null||options.position===undefined)?[0, 0]:options.position;
     
     /**
      * @property {Array<Number>} scale
-     * 缩放，二维数组。
+     * The scale array.
+     * 
+     * 
+     * 缩放，数组。
      */
     this.scale = (options.scale===null||options.scale===undefined)?[1, 1]:options.scale;
 
     /**
      * @property {Array<Number>} skew
-     * 斜切，二维数组。
+     * The skew array.
+     * 
+     * 
+     * 斜切，数组。
      */
     this.skew = (options.skew===null||options.skew===undefined)?[0, 0]:options.skew;
 
     /**
      * @property {Matrix} transform
-     * 变换矩阵。为了能和动画机制很好地配合，请不要直接操作 transform 属性， SVGPainter 除外。
+     * The transform matri. To work with the animation system better, do NOT modify transform directly, except SVGPainter.
+     * 
+     * 
+     * 变换矩阵。为了能和动画机制很好地配合，请不要直接修改 transform 属性， SVGPainter 除外。
      */
     this.transform=matrixUtil.create();
 
     /**
      * @property {Matrix} inverseTransform
+     * The inverse transform matrix.
+     * 
+     * 
      * 逆变换矩阵。
      */
     this.inverseTransform=null;
 
-    //全局缩放比例
+    /**
+     * @property {Number} globalScaleRatio
+     * The global scale ratio.
+     * 
+     * 
+     * 全局缩放比例
+     */
     this.globalScaleRatio=1;
 };
 
@@ -76,6 +102,8 @@ Transformable.prototype={
 
     /**
      * @method needLocalTransform
+     * If the change is less than 5e-5(0.00005), there is no need to do any transform.
+     * 
      * 
      * 如果变化的值小于5e-5（0.00005），则不需要变换。
      * 
@@ -94,9 +122,10 @@ Transformable.prototype={
     /**
      * @method applyTransform
      * 
-     * Apply this.transform matrix to context.
+     * Apply this.transform matrix to canvas context.
      * 
-     * 将自己的 transform 应用到 context 上。
+     * 
+     * 将 this.transform 应用到 canvas context 上。
      * 
      * @param {CanvasRenderingContext2D} ctx
      */
@@ -112,6 +141,9 @@ Transformable.prototype={
 
     /**
      * @method restoreTransform
+     * Restore the transform matrix.
+     * 
+     * 
      * 重置变换矩阵。
      * @param {Context} ctx 
      */
@@ -122,9 +154,38 @@ Transformable.prototype={
 
     /**
      * @method getLocalTransform
+     * Get local transform matrix.
+     * 
+     * Note: This implementation did NOT consider the matrix multiplication order of 
+     * affine, because the API invoker will not notice the transform order when provide
+     * the config object, but always use the transform order of intuitive sense, that is:
+     * skew->scale->rotation->position.
+     * 
+     *      @example
+     *      rect.animate()
+     *      .when(1000,{
+     *          position:[100,100],
+     *          skew:[2,2],
+     *          scale:[2,2],
+     *          rotate:Math.PI
+     *      })
+     *      .when(2000,{
+     *          position:[200,100],
+     *          scale:[1,1],
+     *          skew:[1,1],
+     *          rotate:-Math.PI
+     *      })
+     *      .start();
+     * 
+     * There is a big disadvantage of this implementation, it can not coordinate with the 
+     * transform attribute in SVG tags. For example: <path transform="rotation(Math.PI);scale(2,2);">,
+     * means apply some rotation first, then apply scale, this require
+     * strict operation orders of affine, but the implementation here can NOT support it.
+     * 
+     * 
      * 获取本地变换矩阵。
      * 
-     * Note: 这里的实现没有考虑仿射变换中的矩阵乘法顺序，因为 API 调用者
+     * 注意：这里的实现没有考虑仿射变换中的矩阵乘法顺序，因为 API 调用者
      * 在提供配置项时并不会留意数学意义上的变换顺序，而总是采用的直觉意义
      * 上的变换顺序 skew->scale->rotation->position 。
      * 
@@ -148,7 +209,7 @@ Transformable.prototype={
      * 这种实现方式有一个重大的缺点，它不能很好地对应 SVG 中的 transform 机制，
      * 比如：<path transform="rotation(Math.PI);scale(2,2);">
      * 这个 transform 属性表达的意思是：先 rotation ，然后 scale ，这就要求严格按照
-     * 仿射变换的顺序来进行矩阵运算。
+     * 仿射变换的顺序来进行矩阵运算，但是这里的实现不能支持这种操作。
      */
     getLocalTransform:function () {
         let origin = this.origin || [0,0];
@@ -179,8 +240,12 @@ Transformable.prototype={
 
     /**
      * @method composeLocalTransform
+     * Compose all the parameters, including skew, scale, roration, position, transform matrix of parent node, global scale,
+     * and generate a new transform matrix of local element.
+     * 
+     * 
      * 把各项参数，包括：scale、position、skew、rotation、父层的变换矩阵、全局缩放，全部
-     * 结合在一起，计算出一个新的本地变换矩阵，此操作是 decomposeLocalTransform 是互逆的。
+     * 结合在一起，计算出一个新的本地变换矩阵。
      */
     composeLocalTransform:function () {
         let parent = this.parent;
@@ -228,7 +293,10 @@ Transformable.prototype={
 
     /**
      * @method getGlobalScale
-     * Get global scale
+     * Get global scale.
+     * 
+     * 
+     * 获取全局缩放比例。
      * @return {Array<Number>}
      */
     getGlobalScale:function (out=[]) {
@@ -246,6 +314,9 @@ Transformable.prototype={
 
     /**
      * @method globalToLocal
+     * Tanslate global coordinate to local space of shape.
+     * 
+     * 
      * 变换坐标位置到 shape 的局部坐标空间。
      * @param {Number} x
      * @param {Number} y
@@ -262,7 +333,10 @@ Transformable.prototype={
 
     /**
      * @method localToGlobal
-     * 变换局部坐标位置到全局坐标空间
+     * Translate local coordinate of element to global space.
+     * 
+     * 
+     * 变换局部坐标位置到全局坐标空间。
      * @param {Number} x
      * @param {Number} y
      * @return {Array<Number>}
