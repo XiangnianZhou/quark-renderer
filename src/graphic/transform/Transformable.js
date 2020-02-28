@@ -8,9 +8,10 @@ import * as dataUtil from '../../core/utils/data_structure_util';
  * @abstract
  * @class qrenderer.graphic.Transformable
  * 
- * Provide geometric transformation functions for Element, such as position, scale, skew, rotation.
+ * Provide transformation functions for Element class, such as translate, scale, skew, rotation, shape, style.
  * 
- * 为 Element 提供几何变换功能，例如：平移、缩放、扭曲、旋转、翻转。
+ * 
+ * 为 Element 类提供变换功能，例如：平移、缩放、扭曲、旋转、翻转、形状、样式。
  * 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
  * @author pissang (https://www.github.com/pissang)
