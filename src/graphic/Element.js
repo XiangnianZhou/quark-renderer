@@ -147,7 +147,7 @@ class Element{
          * @property {String} cursor
          * Mouse cursor when hovered
          */
-        this.cursor='pointer';
+        this.cursor='move';
 
         /**
          * @property {String} rectHover
