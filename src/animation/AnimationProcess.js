@@ -36,6 +36,7 @@ class AnimationProcess{
      * @return {qrenderer.animation.AnimationProcess}
      */
     when(time, config) {
+        //TODO:这里需要重构，仿射变换的参数是有顺序的
         let flattenMap=new Map();
         dataUtil.flattenObj(config,flattenMap);
         flattenMap.forEach((value,key,map)=>{
@@ -64,6 +65,30 @@ class AnimationProcess{
                 time: time,
                 value: dataUtil.clone(value)
             });
+        });
+        return this;
+    }
+
+    /**
+     * @method start
+     * 开始执行动画
+     * @param  {Boolean} loop 是否循环
+     * @param  {String|Function} [easing] 缓动函数名称，详见{@link qrenderer.animation.easing 缓动引擎}
+     * @param  {Boolean} forceAnimate 是否强制开启动画
+     * @return {qrenderer.animation.AnimationProcess}
+     */
+    start(loop=false, easing='',forceAnimate=false) {
+        this._running=true;
+        this._paused=false;
+        this.trigger("start");
+
+        let self = this;
+        if(!this._trackCacheMap.size){
+            this.trigger("done");
+            return this;
+        }
+        this._trackCacheMap.forEach((track,key,map)=>{
+            track&&track.start(loop,easing,forceAnimate);
         });
         return this;
     }
@@ -106,30 +131,6 @@ class AnimationProcess{
         if(isFinished){
             this.trigger("done");
         }
-    }
-
-    /**
-     * @method start
-     * 开始执行动画
-     * @param  {Boolean} loop 是否循环
-     * @param  {String|Function} [easing] 缓动函数名称，详见{@link qrenderer.animation.easing 缓动引擎}
-     * @param  {Boolean} forceAnimate 是否强制开启动画
-     * @return {qrenderer.animation.AnimationProcess}
-     */
-    start(loop=false, easing='',forceAnimate=false) {
-        this._running=true;
-        this._paused=false;
-        this.trigger("start");
-
-        let self = this;
-        if(!this._trackCacheMap.size){
-            this.trigger("done");
-            return this;
-        }
-        this._trackCacheMap.forEach((track,key,map)=>{
-            track&&track.start(loop,easing,forceAnimate);
-        });
-        return this;
     }
 
     /**

@@ -583,19 +583,26 @@ function parseTransformAttribute(xmlNode, node) {
             switch (type) {
                 case 'translate':
                     value = trim(value).split(DILIMITER_REG);
-                    m = matrixUtil.translate(m, [parseFloat(value[0]), parseFloat(value[1] || 0)]);
+                    let px=m.position[0]+parseFloat(value[0]);
+                    let py=m.position[1]+parseFloat(value[1] || 0);
+                    node.position=[px,py];
                     break;
                 case 'scale':
                     value = trim(value).split(DILIMITER_REG);
-                    m = matrixUtil.scale(m, [parseFloat(value[0]), parseFloat(value[1] || value[0])]);
+                    let sx=parseFloat(value[0]);
+                    let sy=parseFloat(value[1] || value[0]);
+                    node.scale=[sx,sy];
                     break;
                 case 'rotate':
                     value = trim(value).split(DILIMITER_REG);
-                    m = matrixUtil.rotate(m, parseFloat(value[0]));
+                    let rotation=parseFloat(value[0]);
+                    node.rotation=rotation;
                     break;
                 case 'skew':
                     value = trim(value).split(DILIMITER_REG);
-                    console.warn('Skew transform is not supported yet');
+                    let skewX=parseFloat(value[0]);
+                    let skewY=parseFloat(value[1] || value[0]);
+                    node.skew=[skewX,skewY];
                     break;
                 case 'matrix':
                     value = trim(value).split(DILIMITER_REG);
@@ -605,10 +612,10 @@ function parseTransformAttribute(xmlNode, node) {
                     m[3] = parseFloat(value[3]);
                     m[4] = parseFloat(value[4]);
                     m[5] = parseFloat(value[5]);
+                    node.transform=m;
                     break;
             }
         }
-        node.setLocalTransform(m);
     }
 }
 

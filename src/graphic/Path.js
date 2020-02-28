@@ -300,12 +300,9 @@ class Path extends Element{
         // Only mark dirty, not mark clean
         if (dirtyPath) {
             this.__dirtyPath = dirtyPath;
-            this._rect = null;
         }
-
-        this.__dirty = this.__dirtyText = true;
-
-        this.__qr && this.__qr.refresh();
+        
+        Element.prototype.dirty.call(this);
 
         // Used as a clipping path
         if (this.__clipTarget) {
