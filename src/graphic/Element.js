@@ -153,7 +153,7 @@ class Element{
 
         this.controlStrokeStyle = '#000000';
 
-        this.controlLineWidth = 3;
+        this.controlLineWidth = 2;
 
         /**
          * @property {Boolean} silent
@@ -439,26 +439,22 @@ class Element{
             this.controls.push(control);
         });
 
+        let globalScale = this.getGlobalScale();
+        //draw bounding rect
         let rect=this.getBoundingRect();
-        console.log(rect);
-        // ctx.resetTransform();
-        ctx.lineWidth = this.controlLineWidth;
+        ctx.lineWidth = this.controlLineWidth/globalScale;
         ctx.fillStyle = this.controlFillStyle;
         ctx.strokeStyle = this.controlStrokeStyle;
         ctx.strokeRect(rect.x,rect.y,rect.width,rect.height);
         ctx.closePath();
-        // ctx.resetTransform();
+        
+        //draw connet line
         ctx.beginPath();
-        ctx.moveTo(this.controls[1].x+this.controls[1].width/2,this.controls[1].y);
-        ctx.lineTo(this.controls[8].x+this.controls[8].width/2,this.controls[8].y+this.controls[8].height);
+        ctx.moveTo(this.controls[1].x+this.controls[1].width/2,this.controls[1].y/globalScale[1]);
+        ctx.lineTo(this.controls[8].x+this.controls[8].width/2,this.controls[8].y+this.controls[8].height/globalScale[1]);
         ctx.stroke();
     }
-
-    clearControls(){
-        //TODO:clear controls
-        this.controls=[];
-    }
-
+    
     /**
      * @protected
      * @method afterRender

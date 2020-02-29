@@ -45,10 +45,11 @@ let Transformable = function (options={}) {
 
     /**
      * @property {Array<Number>} position
-     * The translate array.
+     * The translate array, for better understanding, we use position to replace the
+     * word translate defined in W3C canvas standard.
      * 
      * 
-     * 平移，数组。
+     * 平移，数组。为了方便理解，用 position 这个名字来替代 W3C canvas 标准里面的 translate 。
      */
     this.position = (options.position===null||options.position===undefined)?[0, 0]:options.position;
     
@@ -305,8 +306,8 @@ Transformable.prototype={
      */
     getGlobalScale:function (out=[]) {
         let m = this.transform;
-        out[0] = mathSqrt(m[0] * m[0] + m[1] * m[1]);
-        out[1] = mathSqrt(m[2] * m[2] + m[3] * m[3]);
+        out[0] = mathSqrt(m[0] * m[0] + m[1] * m[1]);// scale in X axis
+        out[1] = mathSqrt(m[2] * m[2] + m[3] * m[3]);// scale in Y axis
         if (m[0] < 0) {
             out[0] = -out[0];
         }

@@ -1,3 +1,5 @@
+import * as classUtil from '../../core/utils/class_util';
+
 /**
  * @class qrenderer.graphic.Control
  * 
@@ -17,10 +19,11 @@ export default class TransformControl {
         this.hasControls = false;
         this.shape = 'square'; //square, circle
         this.action = 'scale'; //scale, rotate
-        this.lineWidth = 3;
         this.fillStyle = '#0000ff';
         this.strokeStyle = '#000000';
-        this.position = options.position?options.position:'TL';   //TL, T, TR, L, R, BL, B, BR, TT
+        this.lineWidth = 2;
+        this.position = 'TL';   //TL, T, TR, L, R, BL, B, BR, TT
+        classUtil.copyOwnProperties(this,options);
     }
 
     render(ctx,prevEl){
@@ -33,6 +36,10 @@ export default class TransformControl {
     }
 
     _calcCoordinate(){
+        let globalScale = this.host.getGlobalScale();
+        this.width=this.width/globalScale[0];
+        this.height=this.height/globalScale[1];
+
         let boundingRect = this.host.getBoundingRect();
         switch(this.position){
             case 'TL':
@@ -69,7 +76,7 @@ export default class TransformControl {
                 break;
             case 'TT':// rotation control
                 this.x = boundingRect.width/2-this.width/2;
-                this.y = -80;
+                this.y = -50;
                 break;
             default:
                 this.x = -this.width/2;
@@ -80,7 +87,8 @@ export default class TransformControl {
     }
     
     _renderSquareControl(ctx,prevEl){
-        ctx.lineWidth = this.lineWidth;
+        let globalScale = this.host.getGlobalScale();
+        ctx.lineWidth = this.lineWidth/globalScale[0];
         ctx.fillStyle = this.fillStyle;
         ctx.strokeStyle = this.strokeStyle;
         ctx.strokeRect(...this._calcCoordinate());
