@@ -401,7 +401,7 @@ class QuarkRenderer{
     /**
      * @method
      * Set default cursor
-     * @param {String} [cursorStyle='default'] 例如 crosshair
+     * @param {String} [cursorStyle='move']
      */
     setCursorStyle(cursorStyle) {
         this.eventHandler.setCursorStyle(cursorStyle);

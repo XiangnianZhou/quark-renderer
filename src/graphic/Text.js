@@ -53,10 +53,10 @@ export default class Text extends Element{
         }
 
         this.applyTransform(ctx);
-
         textUtil.renderText(this, ctx, text, style, null, prevEl);
-
         this.restoreTransform(ctx);
+        
+        Element.prototype.render.call(this,ctx,prevEl);
     }
 
     getBoundingRect() {

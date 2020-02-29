@@ -1,5 +1,6 @@
 import Eventful from '../event/Eventful';
 import Transformable from './transform/Transformable';
+import TransformControl from './transform/TransformControl';
 import Animatable from '../animation/Animatable';
 import Style from './Style';
 import RectText from './RectText';
@@ -131,7 +132,28 @@ class Element{
          */
         this.dragging = false;
 
+        /**
+         * @property {Boolean} hasControls
+         * Whether this object has transform controls.
+         * 
+         * 是否带有变换控制点。
+         */
         this.hasControls = true;
+
+        /**
+         * @property {Array<TransformControl>} controls
+         * Transform controls.
+         * 
+         * 
+         * 变换控制工具。
+         */
+        this.controls = [];
+
+        this.controlFillStyle = '#0000ff';
+
+        this.controlStrokeStyle = '#000000';
+
+        this.controlLineWidth = 3;
 
         /**
          * @property {Boolean} silent
@@ -149,7 +171,7 @@ class Element{
          * @property {String} cursor
          * Mouse cursor when hovered
          */
-        this.cursor = 'move';
+        this.cursor = this.options.draggable?'move':'default';
 
         /**
          * @property {String} rectHover
@@ -398,7 +420,44 @@ class Element{
      * @method render
      * Callback during render.
      */
-    render(ctx, prevEl) {}
+    render(ctx, prevEl) {
+        if(this.hasControls){
+            this.renderControls(ctx, prevEl);
+        }
+    }
+
+    renderControls(ctx, prevEl){
+        let positions = ['TL','T','TR','L','R','BL','B','BR','TT'];
+        positions.forEach((p,index)=>{
+            let control = new TransformControl({
+                el:this,
+                position:p,
+                fillStyle:this.controlFillStyle,
+                strokeStyle:this.controlStrokeStyle,
+                lineWidth:this.controlLineWidth
+            }).render(ctx, prevEl);
+            this.controls.push(control);
+        });
+
+        let rect=this.getBoundingRect();
+        console.log(rect);
+        // ctx.resetTransform();
+        ctx.lineWidth = this.controlLineWidth;
+        ctx.fillStyle = this.controlFillStyle;
+        ctx.strokeStyle = this.controlStrokeStyle;
+        ctx.strokeRect(rect.x,rect.y,rect.width,rect.height);
+        ctx.closePath();
+        // ctx.resetTransform();
+        ctx.beginPath();
+        ctx.moveTo(this.controls[1].x+this.controls[1].width/2,this.controls[1].y);
+        ctx.lineTo(this.controls[8].x+this.controls[8].width/2,this.controls[8].y+this.controls[8].height);
+        ctx.stroke();
+    }
+
+    clearControls(){
+        //TODO:clear controls
+        this.controls=[];
+    }
 
     /**
      * @protected

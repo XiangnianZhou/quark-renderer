@@ -88,6 +88,8 @@ export default class QImage extends Element{
             this.restoreTransform(ctx);
             this.drawRectText(ctx, this.getBoundingRect());
         }
+
+        Element.prototype.render.call(this,ctx,prevEl);
     }
 
     /**

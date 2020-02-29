@@ -103,7 +103,6 @@ class Path extends Element{
 
         let lineDash = this.style.lineDash;
         let lineDashOffset = this.style.lineDashOffset;
-
         let ctxLineDash = !!ctx.setLineDash;
 
         // Update path sx, sy
@@ -167,6 +166,8 @@ class Path extends Element{
             ctx.setLineDash([]);
         }
 
+        Element.prototype.render.call(this,ctx,prevEl);
+        
         // Draw rect text
         if (this.style.text != null) {
             // Only restore transform when needs draw text.

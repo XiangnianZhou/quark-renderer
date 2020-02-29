@@ -14,7 +14,7 @@ import GestureMgr from './GestureMgr';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
-var SILENT = 'silent';
+let SILENT = 'silent';
 
 /**
  * @private
@@ -58,7 +58,7 @@ function stopEvent(event) {
 function EmptyProxy() {}
 EmptyProxy.prototype.dispose = function () {};
 
-var handlerNames = [
+let handlerNames = [
     'click', 'dblclick', 'mousewheel', 'mouseout',
     'mouseup', 'mousedown', 'mousemove', 'contextmenu',
     'pagemousemove', 'pagemouseup',
@@ -84,8 +84,8 @@ function pageEventHandler(pageEventName, event) {
  */
 function isHover(displayable, x, y) {
     if (displayable[displayable.rectHover ? 'rectContain' : 'contain'](x, y)) {
-        var el = displayable;
-        var isSilent;
+        let el = displayable;
+        let isSilent;
         while (el) {
             // If clipped by ancestor.
             // FIXME: If clipPath has neither stroke nor fill,
@@ -100,7 +100,6 @@ function isHover(displayable, x, y) {
         }
         return isSilent ? SILENT : true;
     }
-
     return false;
 }
 
@@ -111,11 +110,11 @@ function isHover(displayable, x, y) {
  */
 function afterListenerChanged(handlerInstance) {
     //监听整个页面上的事件
-    var allSilent = handlerInstance.isSilent('pagemousemove')
+    let allSilent = handlerInstance.isSilent('pagemousemove')
         && handlerInstance.isSilent('pagemouseup')
         && handlerInstance.isSilent('pagekeydown')
         && handlerInstance.isSilent('pagekeyup');
-    var proxy = handlerInstance.proxy;
+    let proxy = handlerInstance.proxy;
     proxy && proxy.togglePageEvent && proxy.togglePageEvent(!allSilent);
 }
 
@@ -126,7 +125,7 @@ function afterListenerChanged(handlerInstance) {
  * @param {HandlerProxy} proxy HandlerProxy instance.
  * @param {HTMLElement} painterRoot painter.root (not painter.getViewportRoot()).
  */
-var QRendererEventHandler = function (storage, painter, proxy, painterRoot) {
+let QRendererEventHandler = function (storage, painter, proxy, painterRoot) {
     Eventful.call(this, {
         afterListenerChanged: dataUtil.bind(afterListenerChanged, null, this)
     });
@@ -218,11 +217,11 @@ QRendererEventHandler.prototype = {
      * @param {*} proxy 
      */
     mousemove: function (event) {
-        var x = event.qrX;
-        var y = event.qrY;
+        let x = event.qrX;
+        let y = event.qrY;
 
-        var lastHovered = this._hovered;
-        var lastHoveredTarget = lastHovered.target;
+        let lastHovered = this._hovered;
+        let lastHoveredTarget = lastHovered.target;
 
         // If lastHoveredTarget is removed from qr (detected by '__qr') by some API call
         // (like 'setOption' or 'dispatchAction') in event handlers, we should find
@@ -233,10 +232,10 @@ QRendererEventHandler.prototype = {
             lastHoveredTarget = lastHovered.target;
         }
 
-        var hovered = this._hovered = this.findHover(x, y);
-        var hoveredTarget = hovered.target;
+        let hovered = this._hovered = this.findHover(x, y);
+        let hoveredTarget = hovered.target;
 
-        var proxy = this.proxy;
+        let proxy = this.proxy;
         proxy.setCursor && proxy.setCursor(hoveredTarget ? hoveredTarget.cursor : 'default');
 
         // Mouse out on previous hovered element
@@ -265,8 +264,8 @@ QRendererEventHandler.prototype = {
         // dom created by echarts), where 'globalout' event should not
         // be triggered when mouse enters these doms. (But 'mouseout'
         // should be triggered at the original hovered element as usual).
-        var element = event.toElement || event.relatedTarget;
-        var innerDom;
+        let element = event.toElement || event.relatedTarget;
+        let innerDom;
         do {
             element = element && element.parentNode;
         }
@@ -300,7 +299,7 @@ QRendererEventHandler.prototype = {
      * @param {Event} eventArgs
      */
     dispatch: function (eventName, eventArgs) {
-        var handler = this[eventName];
+        let handler = this[eventName];
         handler && handler.call(this, eventArgs);
     },
 
@@ -320,8 +319,7 @@ QRendererEventHandler.prototype = {
      * @param {String} [cursorStyle='default'] 例如 crosshair
      */
     setCursorStyle: function (cursorStyle) {
-        var proxy = this.proxy;
-        proxy.setCursor && proxy.setCursor(cursorStyle);
+        this.proxy.setCursor && this.proxy.setCursor(cursorStyle);
     },
 
     /**
@@ -335,22 +333,18 @@ QRendererEventHandler.prototype = {
      */
     dispatchToElement: function (targetInfo, eventName, event) {
         targetInfo = targetInfo || {};
-        var el = targetInfo.target;
+        let el = targetInfo.target;
         if (el && el.silent) {
             return;
         }
-        var eventHandler = 'on' + eventName;
-        var eventPacket = makeEventPacket(eventName, targetInfo, event);
+        let eventHandler = 'on' + eventName;
+        let eventPacket = makeEventPacket(eventName, targetInfo, event);
 
         //模拟DOM中的事件冒泡行为，事件一直向上层传播，直到没有父层节点为止。
         while (el) {
-            el[eventHandler]
-                && (eventPacket.cancelBubble = el[eventHandler].call(el, eventPacket));
-
+            el[eventHandler]&& (eventPacket.cancelBubble = el[eventHandler].call(el, eventPacket));
             el.trigger(eventName, eventPacket);
-
             el = el.parent;
-
             if (eventPacket.cancelBubble) {
                 break;
             }
@@ -380,12 +374,12 @@ QRendererEventHandler.prototype = {
      * @return {Element}
      */
     findHover: function (x, y, exclude) {
-        var list = this.storage.getDisplayList();
-        var out = {x: x, y: y};
+        let list = this.storage.getDisplayList();
+        let out = {x: x, y: y};
 
-        //NOTE: 在元素数量非常庞大的时候，如 100 万个元素，这里的 for 循环会很慢，基本不能响应鼠标事件。
-        for (var i = list.length - 1; i >= 0; i--) {
-            var hoverCheckResult;
+        //FIXME:在元素数量非常庞大的时候，如 100 万个元素，这里的 for 循环会很慢，基本不能响应鼠标事件。
+        for (let i = list.length - 1; i >= 0; i--) {
+            let hoverCheckResult;
             if (list[i] !== exclude
                 && !list[i].ignore
                 && (hoverCheckResult = isHover(list[i], x, y))
@@ -410,23 +404,19 @@ QRendererEventHandler.prototype = {
         if (!this._gestureMgr) {
             this._gestureMgr = new GestureMgr();
         }
-        var gestureMgr = this._gestureMgr;
-
+        let gestureMgr = this._gestureMgr;
         phase === 'start' && gestureMgr.clear();
-
-        var gestureInfo = gestureMgr.recognize(
+        let gestureInfo = gestureMgr.recognize(
             event,
             this.findHover(event.qrX, event.qrY, null).target,
             this.proxy.dom
         );
-
         phase === 'end' && gestureMgr.clear();
 
         // Do not do any preventDefault here. Upper application do that if necessary.
         if (gestureInfo) {
-            var type = gestureInfo.type;
+            let type = gestureInfo.type;
             event.gestureEvent = type;
-
             this.dispatchToElement({target: gestureInfo.target}, type, gestureInfo.event);
         }
     }
@@ -438,8 +428,8 @@ dataUtil.each(['click', 'mousedown',
     'dblclick', 'contextmenu'], function (name) {
     QRendererEventHandler.prototype[name] = function (event) {
         // Find hover again to avoid click event is dispatched manually. Or click is triggered without mouseover
-        var hovered = this.findHover(event.qrX, event.qrY);
-        var hoveredTarget = hovered.target;
+        let hovered = this.findHover(event.qrX, event.qrY);
+        let hoveredTarget = hovered.target;
 
         if (name === 'mousedown') {
             this._downEl = hoveredTarget;

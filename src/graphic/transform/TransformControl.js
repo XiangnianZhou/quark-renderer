@@ -76,8 +76,6 @@ export default class TransformControl {
                 this.y = -this.height/2;
                 break;
         }
-        this.x += this.host.position[0];
-        this.y += this.host.position[1];
         return [this.x,this.y,this.width,this.height];
     }
     
