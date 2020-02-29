@@ -427,6 +427,7 @@ class Element{
     }
 
     renderControls(ctx, prevEl){
+        //TopLeft, Top, TopRight, Left, Right, BottomLeft, Bottom, BottomRight, TopTop
         let positions = ['TL','T','TR','L','R','BL','B','BR','TT'];
         positions.forEach((p,index)=>{
             let control = new TransformControl({
@@ -454,7 +455,7 @@ class Element{
         ctx.lineTo(this.controls[8].x+this.controls[8].width/2,this.controls[8].y+this.controls[8].height/globalScale[1]);
         ctx.stroke();
     }
-    
+
     /**
      * @protected
      * @method afterRender

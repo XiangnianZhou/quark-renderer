@@ -6,16 +6,15 @@ import env from '../core/env';
 
 /**
  * @class qrenderer.event.DomEventProxy
- * DomEventProxy 的主要功能是：把原生的 DOM 事件代理（转发）到 QuarkRender 实例上，
- * 在 QuarkRendererEventHandler 类中会把事件进一步分发给 canvas 中绘制的元素。
- * 需要转发的大部分 DOM 事件挂载在 canvas 的外层容器 div 上面，例如：click, dbclick ；
- * 少部分 DOM 事件挂载在 document 对象上，例如：mousemove, mouseout。因为在实现拖拽和
+ * DomEventProxy 的主要功能是：拦截 DOM 标签上的原生事件，转发到 QuarkRender 实例上，
+ * 在 QuarkRendererEventHandler 类中会把事件进一步分发给 canvas 内部的元素。
+ * 需要转发的大部分 DOM 事件挂载在 canvas 的外层容器 div 上面，例如：click, dbclick, contextmenu 等；
+ * 少部分 DOM 事件直接挂载在 document 对象上，例如：mousemove, mouseout。因为在实现拖拽和
  * 键盘交互的过程中，鼠标指针可能已经脱离了 canvas 所在的区域。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
 let TOUCH_CLICK_DELAY = 300;
-// "page event" is defined in the comment of `[Page Event]`.
 let pageEventSupported = env.domSupported;
 
 /**
@@ -365,7 +364,7 @@ function mountDOMEventListeners(instance, scope, nativeListenerNames, localOrGlo
             });
         });
 
-        // FIXME
+        // FIXME:
         // Note: MS Gesture require CSS touch-action set. But touch-action is not reliable,
         // which does not prevent defuault behavior occasionally (which may cause view port
         // zoomed in but use can not zoom it back). And event.preventDefault() does not work.
