@@ -97,11 +97,11 @@ export default class QImage extends Element{
      */
     getBoundingRect() {
         let style = this.style;
-        if (!this._boundRect) {
-            this._boundRect = new BoundingRect(
+        if (!this._boundingRect) {
+            this._boundingRect = new BoundingRect(
                 style.x || 0, style.y || 0, style.width || 0, style.height || 0
             );
         }
-        return this._boundRect;
+        return this._boundingRect;
     }
 }

@@ -203,7 +203,7 @@ class Path extends Element{
      * @method getBoundingRect
      */
     getBoundingRect() {
-        let rect = this._boundRect;
+        let rect = this._boundingRect;
         let needsUpdateRect = !rect;
         if (needsUpdateRect) {
             let path = this.path;
@@ -217,13 +217,13 @@ class Path extends Element{
             }
             rect = path.getBoundingRect();
         }
-        this._boundRect = rect;
+        this._boundingRect = rect;
 
         if (this.style.hasStroke()) {
             // Update rect with stroke lineWidth when
             // 1. Element changes scale or lineWidth
             // 2. Shape is changed
-            let rectWithStroke = this._boundRectWithStroke || (this._boundRectWithStroke = rect.clone());
+            let rectWithStroke = this._boundingRectWithStroke || (this._boundingRectWithStroke = rect.clone());
             if (this.__dirty || needsUpdateRect) {
                 rectWithStroke.copy(rect);
                 // FIXME Must after composeLocalTransform
@@ -321,7 +321,7 @@ class Path extends Element{
         // FIXME
         if (key === 'shape') {
             this.__dirtyPath = true;
-            this._boundRect = null;
+            this._boundingRect = null;
             this.setShape(value);
         }else {
             Element.prototype._attrKV.call(this, key, value);

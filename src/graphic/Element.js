@@ -225,9 +225,9 @@ class Element{
     
         /**
          * @private
-         * @property  _boundRect
+         * @property  _boundingRect
          */
-        this._boundRect = null;
+        this._boundingRect = null;
         
         /**
          * @private
@@ -371,7 +371,7 @@ class Element{
      */
     dirty() {
         this.__dirty = this.__dirtyText = true;
-        this._boundRect = null;
+        this._boundingRect = null;
         this.__qr && this.__qr.refresh();
     }
 
