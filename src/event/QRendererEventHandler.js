@@ -8,13 +8,12 @@ import GestureMgr from './GestureMgr';
 
 /**
  * @class qrenderer.event.QRendererEventHandler
- * Canvas 内置的API只在 canvas 实例本身上面触发事件，对画布内部的画出来的元素没有提供事件支持。
- * QRendererEventHandler.js 用来封装画布内部元素的事件处理逻辑，核心思路是，在 canvas 收到事件之后，派发给指定的元素，
- * 然后再进行冒泡，从而模拟出原生 DOM 事件的行为。
+ * 
+ * 
+ * Canvas API 没有提供画布内部的事件系统，QRendererEventHandler.js 用来封装画布内部元素的事件处理逻辑，
+ * 此实现的整体概念模型与 W3C 定义的 DOM 事件系统一致。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-let SILENT = 'silent';
 
 /**
  * @private
@@ -78,14 +77,14 @@ function pageEventHandler(pageEventName, event) {
 /**
  * @method
  * 鼠标是否在指定的元素上方。
- * @param {Displayable} displayable 
+ * @param {Element} element 
  * @param {Number} x 
  * @param {Number} y 
  */
-function isHover(displayable, x, y) {
-    if (displayable[displayable.rectHover ? 'rectContain' : 'contain'](x, y)) {
-        let el = displayable;
-        let isSilent;
+function isHover(element, x, y) {
+    if (element[element.rectHover ? 'rectContain' : 'contain'](x, y)) {
+        let el = element;
+        let isSilent = false;
         while (el) {
             // If clipped by ancestor.
             // FIXME: If clipPath has neither stroke nor fill,
@@ -98,7 +97,7 @@ function isHover(displayable, x, y) {
             }
             el = el.parent;
         }
-        return isSilent ? SILENT : true;
+        return isSilent ? 'silent' : true;
     }
     return false;
 }
@@ -385,7 +384,7 @@ QRendererEventHandler.prototype = {
                 && (hoverCheckResult = isHover(list[i], x, y))
             ) {
                 !out.topTarget && (out.topTarget = list[i]);
-                if (hoverCheckResult !== SILENT) {
+                if (hoverCheckResult !== 'silent') {
                     out.target = list[i];
                     break;
                 }

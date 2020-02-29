@@ -11,9 +11,11 @@ import * as classUtil from '../../core/utils/class_util';
  */
 export default class TransformControl {
     constructor(options={}){
-        this.host=options.el;
-        this.x = 0;
-        this.y = 0;
+        this.el=null;
+        this.xMin = 0;
+        this.yMin = 0;
+        this.xMax = 0;
+        this.yMax = 0;
         this.width = 20;
         this.height = 20;
         this.hasControls = false;
@@ -23,6 +25,7 @@ export default class TransformControl {
         this.strokeStyle = '#000000';
         this.lineWidth = 2;
         this.position = 'TL';   //TL, T, TR, L, R, BL, B, BR, TT
+        this.cursor = 'corsshair';
         classUtil.copyOwnProperties(this,options);
     }
 
@@ -34,65 +37,108 @@ export default class TransformControl {
         }
         return this;
     }
-
-    _calcCoordinate(){
-        let globalScale = this.host.getGlobalScale();
-        this.width=this.width/globalScale[0];
-        this.height=this.height/globalScale[1];
-
-        let boundingRect = this.host.getBoundingRect();
-        switch(this.position){
-            case 'TL':
-                this.x = -this.width/2;
-                this.y = -this.height/2;
-                break;
-            case 'T':
-                this.x = boundingRect.width/2-this.width/2;
-                this.y = -this.height/2;
-                break;
-            case 'TR':
-                this.x = boundingRect.width-this.width/2;
-                this.y = -this.height/2;
-                break;
-            case 'L':
-                this.x = -this.width/2;
-                this.y = boundingRect.height/2-this.height/2;
-                break;
-            case 'R':
-                this.x = boundingRect.width-this.width/2;
-                this.y = boundingRect.height/2-this.height/2;
-                break;
-            case 'BL':
-                this.x = -this.width/2;
-                this.y = boundingRect.height-this.height/2;
-                break;
-            case 'B':
-                this.x = boundingRect.width/2-this.width/2;
-                this.y = boundingRect.height-this.height/2;
-                break;
-            case 'BR':
-                this.x = boundingRect.width-this.width/2;
-                this.y = boundingRect.height-this.height/2;
-                break;
-            case 'TT':// rotation control
-                this.x = boundingRect.width/2-this.width/2;
-                this.y = -50;
-                break;
-            default:
-                this.x = -this.width/2;
-                this.y = -this.height/2;
-                break;
-        }
-        return [this.x,this.y,this.width,this.height];
-    }
     
     _renderSquareControl(ctx,prevEl){
-        let globalScale = this.host.getGlobalScale();
+        let globalScale = this.el.getGlobalScale();
         ctx.lineWidth = this.lineWidth/globalScale[0];
         ctx.fillStyle = this.fillStyle;
         ctx.strokeStyle = this.strokeStyle;
         ctx.strokeRect(...this._calcCoordinate());
         ctx.closePath();
+
+        this.ctx=ctx;
+    }
+
+    _calcCoordinate(){
+        let globalScale = this.el.getGlobalScale();
+        this.width=this.width/globalScale[0];
+        this.height=this.height/globalScale[1];
+
+        let boundingRect = this.el.getBoundingRect();
+        switch(this.position){
+            case 'TL':
+                this.cursor = 'nwse-resize';
+                this.xMin = -this.width/2;
+                this.yMin = -this.height/2;
+                this.xMax = this.width/2;
+                this.yMax = this.height/2;
+                break;
+            case 'T':
+                this.cursor = 'ns-resize';
+                this.xMin = boundingRect.width/2-this.width/2;
+                this.yMin = -this.height/2;
+                this.xMax = boundingRect.width/2+this.width/2;
+                this.yMax = this.height/2;
+                break;
+            case 'TR':
+                this.cursor = 'nesw-resize';
+                this.xMin = boundingRect.width-this.width/2;
+                this.yMin = -this.height/2;
+                this.xMax = boundingRect.width+this.width/2;
+                this.yMax = this.height/2;
+                break;
+            case 'L':
+                this.cursor = 'ew-resize';
+                this.xMin = -this.width/2;
+                this.yMin = boundingRect.height/2-this.height/2;
+                this.xMax = this.width/2;
+                this.yMax = boundingRect.height/2+this.height/2;
+                break;
+            case 'R':
+                this.cursor = 'ew-resize';
+                this.xMin = boundingRect.width-this.width/2;
+                this.yMin = boundingRect.height/2-this.height/2;
+                this.xMax = boundingRect.width+this.width/2;
+                this.yMax = boundingRect.height/2+this.height/2;
+                break;
+            case 'BL':
+                this.cursor = 'nesw-resize';
+                this.xMin = -this.width/2;
+                this.yMin = boundingRect.height-this.height/2;
+                this.xMax = this.width/2;
+                this.yMax = boundingRect.height+this.height/2;
+                break;
+            case 'B':
+                this.cursor = 'ns-resize';
+                this.xMin = boundingRect.width/2-this.width/2;
+                this.yMin = boundingRect.height-this.height/2;
+                this.xMax = boundingRect.width/2+this.width/2;
+                this.yMax = boundingRect.height+this.height/2;
+                break;
+            case 'BR':
+                this.cursor = 'nwse-resize';
+                this.xMin = boundingRect.width-this.width/2;
+                this.yMin = boundingRect.height-this.height/2;
+                this.xMax = boundingRect.width+this.width/2;
+                this.yMax = boundingRect.height+this.height/2;
+                break;
+            case 'TT':// rotation control
+                this.cursor = 'crosshair';
+                this.xMin = boundingRect.width/2-this.width/2;
+                this.yMin = -50;
+                this.xMax = boundingRect.width/2+this.width/2;
+                this.yMax = -50+this.height/2;
+                break;
+            default:
+                this.xMin = -this.width/2;
+                this.yMin = -this.height/2;
+                this.xMax = this.width/2;
+                this.yMax = this.height/2;
+                break;
+        }
+        return [this.xMin,this.yMin,this.width,this.height];
+    }
+
+    isHover(x,y){
+        let p0 = [this.xMin,this.yMin];
+        let p1 = [this.xMax,this.yMax];
+        p0 = this.el.localToGlobal(...p0);
+        p1 = this.el.localToGlobal(...p1);
+
+        if(x>p0[0]&&x<p1[0]&&y>p0[1]&&y<p1[1]){
+            return true;
+        }
+        return false;
     }
 
     _renderCircleControl(ctx,prevEl){

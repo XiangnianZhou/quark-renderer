@@ -136,7 +136,7 @@ class Element{
          * @property {Boolean} hasControls
          * Whether this object has transform controls.
          * 
-         * 是否带有变换控制点。
+         * 是否带有变换控制工具。
          */
         this.hasControls = true;
 
@@ -423,6 +423,8 @@ class Element{
     render(ctx, prevEl) {
         if(this.hasControls){
             this.renderControls(ctx, prevEl);
+        }else{
+            this.__qr&&this.__qr.off("pagemousemove",this.controlActionHandler);
         }
     }
 
@@ -451,9 +453,21 @@ class Element{
         
         //draw connet line
         ctx.beginPath();
-        ctx.moveTo(this.controls[1].x+this.controls[1].width/2,this.controls[1].y/globalScale[1]);
-        ctx.lineTo(this.controls[8].x+this.controls[8].width/2,this.controls[8].y+this.controls[8].height/globalScale[1]);
+        ctx.moveTo(this.controls[1].xMin+this.controls[1].width/2,this.controls[1].yMin/globalScale[1]);
+        ctx.lineTo(this.controls[8].xMin+this.controls[8].width/2,this.controls[8].yMin+this.controls[8].height/globalScale[1]);
         ctx.stroke();
+
+        this.__qr&&this.__qr.on("pagemousemove",this.controlActionHandler,this);
+    }
+
+    controlActionHandler(e){
+        let qrX = e.event.qrX;
+        let qrY = e.event.qrY;
+        this.controls.forEach((control,index)=>{
+            if(control.isHover(qrX,qrY)){
+                this.__qr.eventHandler.proxy.setCursor(control.cursor);
+            }
+        });
     }
 
     /**

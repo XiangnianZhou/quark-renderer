@@ -202,20 +202,6 @@ class Path extends Element{
      * @protected
      * @method getBoundingRect
      */
-    // getBoundingRect() {
-    //     let path = this.path || new PathProxy();
-    //     path.beginPath();
-    //     this.buildPath(path, this.shape, false);
-    //     this._boundingRect = path.getBoundingRect();
-    //     let transform = this.getLocalTransform();
-    //     console.log(transform);
-    //     console.log(this.position);
-    //     console.log(this.scale);
-    //     console.log(this.skew);
-    //     console.log(this.rotation);
-    //     return this._boundingRect;
-    // }
-
     getBoundingRect() {
         let rect = this._boundingRect;
         let needsUpdateRect = !rect;
