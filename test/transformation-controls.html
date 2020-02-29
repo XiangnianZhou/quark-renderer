@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Transform</title>
+    <script src="../dist/quark-renderer.js"></script>
+</head>
+<body>
+    <div id="main" style="width:1000px;height:600px;"></div>
+
+    <script type="text/javascript">
+        let qr = QuarkRenderer.init(document.getElementById('main'));
+        let circle=new QuarkRenderer.Rect({
+            hasControls:true,
+            position:[200,200],
+            shape:{
+                width:200,
+                height:200
+            },
+            style:{
+                fill:'#ff0000'
+            }
+        });
+        qr.add(circle);
+    </script>
+</body>
+</html>
