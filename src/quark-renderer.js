@@ -178,15 +178,6 @@ class QuarkRenderer{
 
     /**
      * @method
-     * 获取实例唯一标识
-     * @return {String}
-     */
-    getId() {
-        return this.id;
-    }
-
-    /**
-     * @method
      * 添加元素
      * @param  {qrenderer/Element} el
      */
@@ -204,35 +195,6 @@ class QuarkRenderer{
     remove(el) {
         this.storage.delFromRoot(el);
         el.__qr=null;
-        this.refresh();
-    }
-
-    /**
-     * @private
-     * @method
-     * Change configuration of layer
-     * @param {String} qLevel
-     * @param {Object} [config]
-     * @param {String} [config.clearColor=0] Clear color
-     * @param {String} [config.motionBlur=false] If enable motion blur
-     * @param {Number} [config.lastFrameAlpha=0.7] Motion blur factor. Larger value cause longer trailer
-    */
-    configLayer(qLevel, config) {
-        if (this.painter.configLayer) {
-            this.painter.configLayer(qLevel, config);
-        }
-        this.refresh();
-    }
-
-    /**
-     * @method
-     * Set background color
-     * @param {String} backgroundColor
-     */
-    setBackgroundColor(backgroundColor) {
-        if (this.painter.setBackgroundColor) {
-            this.painter.setBackgroundColor(backgroundColor);
-        }
         this.refresh();
     }
 
@@ -368,6 +330,35 @@ class QuarkRenderer{
      */
     getHeight() {
         return this.painter.getHeight();
+    }
+
+    /**
+     * @private
+     * @method
+     * Change configuration of layer
+     * @param {String} qLevel
+     * @param {Object} [config]
+     * @param {String} [config.clearColor=0] Clear color
+     * @param {String} [config.motionBlur=false] If enable motion blur
+     * @param {Number} [config.lastFrameAlpha=0.7] Motion blur factor. Larger value cause longer trailer
+    */
+    configLayer(qLevel, config) {
+        if (this.painter.configLayer) {
+            this.painter.configLayer(qLevel, config);
+        }
+        this.refresh();
+    }
+
+    /**
+     * @method
+     * Set background color
+     * @param {String} backgroundColor
+     */
+    setBackgroundColor(backgroundColor) {
+        if (this.painter.setBackgroundColor) {
+            this.painter.setBackgroundColor(backgroundColor);
+        }
+        this.refresh();
     }
 
     /**
