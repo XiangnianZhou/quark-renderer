@@ -244,7 +244,7 @@ class QuarkRenderer{
      */
     flush() {
         console.log("--->"+this._needRefresh);
-        if (this._needRefresh) {      //是否需要全部重绘
+        if (this._needRefresh) {        //refresh all elements
             // Clear needsRefresh ahead to avoid something wrong happens in refresh
             // Or it will cause qrenderer refreshes again and again.
             this._needRefresh = this._needRefreshHover = false;
@@ -253,7 +253,7 @@ class QuarkRenderer{
             this._needRefresh = this._needRefreshHover = false;
             this.trigger('rendered');
         }
-        if (this._needRefreshHover) { //只重绘特定的元素，提升性能
+        if (this._needRefreshHover) {   //refresh hovered elements
             this._needRefresh = this._needRefreshHover = false;
             this.painter.refreshHover && this.painter.refreshHover();
             this._needRefresh = this._needRefreshHover = false;
