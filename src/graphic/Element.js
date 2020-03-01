@@ -465,6 +465,7 @@ class Element{
         let qrY = e.event.qrY;
         this.controls.forEach((control,index)=>{
             if(control.isHover(qrX,qrY)){
+                console.log("controlActionHandler...");
                 this.__qr.eventHandler.proxy.setCursor(control.cursor);
                 this.__qr.on("mousedown",this.controlMouseDown,control);
             }
@@ -472,28 +473,36 @@ class Element{
     }
 
     controlMouseDown(event){
+        console.log("control mouse down...");
         //NOTE: this here is point to Control, not Element.
+        this.el.__qr.off("pagemousemove",this.el.controlActionHandler);
         this.el.__qr.on("pagemousemove",this.el.controlMouseMove,this);
         this.el.__qr.on("pagemouseup",this.el.controlMouseUp,this);
     }
 
     controlMouseMove(event){
         //NOTE: this here is point to Control, not Element.
+        // let globalScale = this.el.getGlobalScale();
         let e=event.event;
-        console.log(`${e.movementX}---${e.movementY}`);
-        // console.log(this.position);
-        // this.el.scale[0]=this.el.scale[0]+e.movementX;
-        // this.el.scale[1]=this.el.scale[1]+e.movementY;
-        console.log(this.el.scale);
-        vectorUtil.add(this.el.scale,this.el.scale,[e.movementX,e.movementY]);
-        console.log(this.el.scale);
-        this.el.dirty(true);
+        let dx=e.movementX;
+        let dy=e.movementY;
+        let sx=this.el.scale[0];
+        let sy=this.el.scale[1];
+        let deltaSx=dx/sx;
+        let deltaSy=dy/sy;
+        let newSx=sx+deltaSx;
+        let newSy=sy+deltaSy;
+        console.log(`${newSx}---${newSy}`);
+        this.el.scale=[newSx,newSy];
+        this.el.dirty();
     }
 
     controlMouseUp(event){
+        console.log("control mouse up...");
         this.el.__qr.off("mousedown",this.el.controlMouseDown);
         this.el.__qr.off("pagemousemove",this.el.controlMouseMove);
         this.el.__qr.off("pagemouseup",this.el.controlMouseUp);
+        this.el.__qr.on("pagemousemove",this.el.controlActionHandler,this.el);
     }
 
     /**
