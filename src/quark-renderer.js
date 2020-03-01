@@ -239,12 +239,16 @@ class QuarkRenderer{
     /**
      * @private
      * @method
-     * Perform all refresh
-     * 刷新 canvas 画面，此方法会在 window.requestAnimationFrame 方法中被不断调用。
+     * Perform refresh operation, this method will be called by window.requestAnimationFrame contantly, 
+     * if there is no elment need to be repaint, this method just do nothing. Please do NOT call this 
+     * method directly.
+     * 
+     * 
+     * 刷新 canvas 画面，此方法会在 window.requestAnimationFrame 方法中被不断调用，如果没有元素需要被重绘，
+     * 这个方法什么都不做。请不要直接调用此方法。
      */
     flush() {
-        console.log("--->"+this._needRefresh);
-        if (this._needRefresh) {        //refresh all elements
+        if (this._needRefresh) {//try refreshing all elements
             // Clear needsRefresh ahead to avoid something wrong happens in refresh
             // Or it will cause qrenderer refreshes again and again.
             this._needRefresh = this._needRefreshHover = false;
@@ -253,7 +257,7 @@ class QuarkRenderer{
             this._needRefresh = this._needRefreshHover = false;
             this.trigger('rendered');
         }
-        if (this._needRefreshHover) {   //refresh hovered elements
+        if (this._needRefreshHover) {//only try refreshing hovered elements
             this._needRefresh = this._needRefreshHover = false;
             this.painter.refreshHover && this.painter.refreshHover();
             this._needRefresh = this._needRefreshHover = false;
