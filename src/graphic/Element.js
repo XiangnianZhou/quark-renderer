@@ -466,8 +466,34 @@ class Element{
         this.controls.forEach((control,index)=>{
             if(control.isHover(qrX,qrY)){
                 this.__qr.eventHandler.proxy.setCursor(control.cursor);
+                this.__qr.on("mousedown",this.controlMouseDown,control);
             }
         });
+    }
+
+    controlMouseDown(event){
+        //NOTE: this here is point to Control, not Element.
+        this.el.__qr.on("pagemousemove",this.el.controlMouseMove,this);
+        this.el.__qr.on("pagemouseup",this.el.controlMouseUp,this);
+    }
+
+    controlMouseMove(event){
+        //NOTE: this here is point to Control, not Element.
+        let e=event.event;
+        console.log(`${e.movementX}---${e.movementY}`);
+        // console.log(this.position);
+        // this.el.scale[0]=this.el.scale[0]+e.movementX;
+        // this.el.scale[1]=this.el.scale[1]+e.movementY;
+        console.log(this.el.scale);
+        vectorUtil.add(this.el.scale,this.el.scale,[e.movementX,e.movementY]);
+        console.log(this.el.scale);
+        this.el.dirty(true);
+    }
+
+    controlMouseUp(event){
+        this.el.__qr.off("mousedown",this.el.controlMouseDown);
+        this.el.__qr.off("pagemousemove",this.el.controlMouseMove);
+        this.el.__qr.off("pagemouseup",this.el.controlMouseUp);
     }
 
     /**

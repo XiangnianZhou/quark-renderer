@@ -34,6 +34,7 @@ let arrySlice = Array.prototype.slice;
 let Eventful = function (eventProcessor) {
     this._$handlers = {};
     this._$eventProcessor = eventProcessor;
+    this._$suspends = new Set();
 };
 
 Eventful.prototype = {
@@ -41,8 +42,9 @@ Eventful.prototype = {
     constructor: Eventful,
 
     clearAll:function(){
-        this._$handlers = null;
+        this._$handlers = {};
         this._$eventProcessor = null;
+        this._$suspends = new Set();
     },
 
     /**
@@ -94,12 +96,10 @@ Eventful.prototype = {
      */
     off: function (event, handler) {
         let _h = this._$handlers;
-
         if (!event) {
             this._$handlers = {};
             return this;
         }
-
         if (handler) {
             if (_h[event]) {
                 let newList = [];
@@ -110,30 +110,28 @@ Eventful.prototype = {
                 }
                 _h[event] = newList;
             }
-
             if (_h[event] && _h[event].length === 0) {
                 delete _h[event];
             }
-        }
-        else {
+        }else {
             delete _h[event];
         }
-
         callListenerChanged(this, event);
-
         return this;
     },
 
     /**
      * @method
-     * Dispatch a event.
+     * Trigger an event.
      *
-     * @param {String} type The event name.
+     * @param {String} eventName The event name.
      */
-    trigger: function (type) {
-        let _h = this._$handlers[type];
+    trigger: function (eventName) {
+        if(this._$suspends.has(eventName)){
+            return;
+        }
+        let _h = this._$handlers[eventName];
         let eventProcessor = this._$eventProcessor;
-
         if (_h) {
             let args = arguments;
             let argLen = args.length;
@@ -148,7 +146,7 @@ Eventful.prototype = {
                 if (eventProcessor
                     && eventProcessor.filter
                     && hItem.query != null
-                    && !eventProcessor.filter(type, hItem.query)
+                    && !eventProcessor.filter(eventName, hItem.query)
                 ) {
                     i++;
                     continue;
@@ -165,8 +163,13 @@ Eventful.prototype = {
                     case 3:
                         hItem.h.call(hItem.ctx, args[1], args[2]);
                         break;
+                    case 4:
+                        hItem.h.call(hItem.ctx, args[1], args[2], args[3]);
+                        break;
+                    case 5:
+                        hItem.h.call(hItem.ctx, args[1], args[2], args[3], args[4]);
+                        break;
                     default:
-                        // have more than 2 given arguments
                         hItem.h.apply(hItem.ctx, args);
                         break;
                 }
@@ -174,27 +177,40 @@ Eventful.prototype = {
                 if (hItem.one) {
                     _h.splice(i, 1);
                     len--;
-                }
-                else {
+                }else {
                     i++;
                 }
             }
         }
 
-        eventProcessor && eventProcessor.afterTrigger
-            && eventProcessor.afterTrigger(type);
-
+        eventProcessor && eventProcessor.afterTrigger && eventProcessor.afterTrigger(eventName);
         return this;
+    },
+
+    /**
+     * 被挂起的事件不会触发。在鼠标和触摸屏交互的过程中，经常需要把某个事件临时挂起，避免误触。
+     * @param {String} eventName 
+     */
+    suspend:function(eventName){
+        this._$suspends.add(eventName);
+    },
+
+    /**
+     * 恢复触发。
+     * @param {String} eventName 
+     */
+    resume:function(eventName){
+        this._$suspends.delete(eventName);
     },
 
     /**
      * @method
      * Dispatch a event with context, which is specified at the last parameter.
      *
-     * @param {String} type The event name.
+     * @param {String} eventName The event name.
      */
-    triggerWithContext: function (type) {
-        let _h = this._$handlers[type];
+    triggerWithContext: function (eventName) {
+        let _h = this._$handlers[eventName];
         let eventProcessor = this._$eventProcessor;
 
         if (_h) {
@@ -212,7 +228,7 @@ Eventful.prototype = {
                 if (eventProcessor
                     && eventProcessor.filter
                     && hItem.query != null
-                    && !eventProcessor.filter(type, hItem.query)
+                    && !eventProcessor.filter(eventName, hItem.query)
                 ) {
                     i++;
                     continue;
@@ -229,8 +245,13 @@ Eventful.prototype = {
                     case 3:
                         hItem.h.call(ctx, args[1], args[2]);
                         break;
+                    case 4:
+                        hItem.h.call(ctx, args[1], args[2], args[3]);
+                        break;
+                    case 5:
+                        hItem.h.call(ctx, args[1], args[2], args[3], args[4]);
+                        break;
                     default:
-                        // have more than 2 given arguments
                         hItem.h.apply(ctx, args);
                         break;
                 }
@@ -238,16 +259,13 @@ Eventful.prototype = {
                 if (hItem.one) {
                     _h.splice(i, 1);
                     len--;
-                }
-                else {
+                }else {
                     i++;
                 }
             }
         }
 
-        eventProcessor && eventProcessor.afterTrigger
-            && eventProcessor.afterTrigger(type);
-
+        eventProcessor && eventProcessor.afterTrigger && eventProcessor.afterTrigger(eventName);
         return this;
     }
 };

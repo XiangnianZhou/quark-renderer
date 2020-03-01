@@ -239,15 +239,26 @@ class QuarkRenderer{
     /**
      * @private
      * @method
-     * Repaint the canvas immediately
+     * Perform all refresh
+     * 刷新 canvas 画面，此方法会在 window.requestAnimationFrame 方法中被不断调用。
      */
-    refreshImmediately() {
-        // Clear needsRefresh ahead to avoid something wrong happens in refresh
-        // Or it will cause qrenderer refreshes again and again.
-        this._needRefresh = this._needsRefreshHover = false;
-        this.painter.refresh();
-        // Avoid trigger qr.refresh in Element#beforeUpdate hook
-        this._needRefresh = this._needsRefreshHover = false;
+    flush() {
+        console.log("--->"+this._needRefresh);
+        if (this._needRefresh) {      //是否需要全部重绘
+            // Clear needsRefresh ahead to avoid something wrong happens in refresh
+            // Or it will cause qrenderer refreshes again and again.
+            this._needRefresh = this._needRefreshHover = false;
+            this.painter.refresh && this.painter.refresh();
+            // Avoid trigger qr.refresh in Element#beforeUpdate hook
+            this._needRefresh = this._needRefreshHover = false;
+            this.trigger('rendered');
+        }
+        if (this._needRefreshHover) { //只重绘特定的元素，提升性能
+            this._needRefresh = this._needRefreshHover = false;
+            this.painter.refreshHover && this.painter.refreshHover();
+            this._needRefresh = this._needRefreshHover = false;
+            this.trigger('rendered');
+        }
     }
 
     /**
@@ -256,27 +267,6 @@ class QuarkRenderer{
      */
     refresh() {
         this._needRefresh = true;
-    }
-
-    /**
-     * @private
-     * @method
-     * Perform all refresh
-     * 刷新 canvas 画面，此方法会在 window.requestAnimationFrame 方法中被不断调用。
-     */
-    flush() {
-        let triggerRendered;
-
-        if (this._needRefresh) {      //是否需要全部重绘
-            triggerRendered = true;
-            this.refreshImmediately();
-        }
-        if (this._needsRefreshHover) { //只重绘特定的元素，提升性能
-            triggerRendered = true;
-            this.refreshHoverImmediately();
-        }
-
-        triggerRendered && this.trigger('rendered');
     }
 
     /**
@@ -343,17 +333,7 @@ class QuarkRenderer{
      * Refresh hover in next frame
      */
     refreshHover() {
-        this._needsRefreshHover = true;
-    }
-
-    /**
-     * @private
-     * @method
-     * Refresh hover immediately
-     */
-    refreshHoverImmediately() {
-        this._needsRefreshHover = false;
-        this.painter.refreshHover && this.painter.refreshHover();
+        this._needRefreshHover = true;
     }
 
     /**
