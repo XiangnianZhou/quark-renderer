@@ -2,7 +2,7 @@ import * as dataUtil from '../core/utils/data_structure_util';
 import * as classUtil from '../core/utils/class_util';
 import * as vectorUtil from '../core/utils/vector_util';
 import * as eventTool from '../core/utils/event_util';
-import MultiDragDrop from './MultiDragDrop';
+import DragDropMgr from './DragDropMgr';
 import Eventful from './Eventful';
 import GestureMgr from './GestureMgr';
 
@@ -182,7 +182,7 @@ let GlobalEventDispatcher = function (storage, painter, proxy, painterRoot) {
      */
     this._gestureMgr;
 
-    new MultiDragDrop(this);
+    new DragDropMgr(this);
 
     this.setHandlerProxy(proxy);
 };

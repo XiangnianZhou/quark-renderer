@@ -1,13 +1,13 @@
 /**
- * @class qrenderer.event.MultiDragDrop
+ * @class qrenderer.event.DragDropMgr
  * 支持同时拖拽多个元素，按住 Ctrl 键可以多选。
  * 
  * @author 大漠穷秋 <damoqiongqiu@126.com>
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default class MultiDragDrop{
+export default class DragDropMgr{
     /**
-     * @method constructor MultiDragDrop
+     * @method constructor DragDropMgr
      * @param {GlobalEventDispatcher} handler 
      */
     constructor(handler){
