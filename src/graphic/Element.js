@@ -466,7 +466,7 @@ class Element{
         this.controls.forEach((control,index)=>{
             if(control.isHover(qrX,qrY)){
                 console.log("controlActionHandler...");
-                this.__qr.eventHandler.proxy.setCursor(control.cursor);
+                this.__qr.eventDispatcher.interceptor.setCursor(control.cursor);
                 this.__qr.on("mousedown",this.controlMouseDown,control);
             }
         });

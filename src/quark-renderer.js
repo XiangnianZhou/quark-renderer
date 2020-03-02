@@ -140,10 +140,10 @@ class QuarkRenderer{
         this.painter = new painterMap[rendererType](this.host, this.storage, options, this.id);
 
         //利用代理拦截 DOM 事件，转发到 QuarkRenderer 自己封装的事件机制。
-        let handerProxy =null;
+        let eventInterceptor =null;
         if(typeof this.host.moveTo!=='function'){
             if(!env.node && !env.worker && !env.wxa){
-                handerProxy=new DomEventInterceptor(this.painter.getHost());
+                eventInterceptor=new DomEventInterceptor(this.painter.getHost());
             }
         }else{
             // host is Context instance, override function.
@@ -154,10 +154,10 @@ class QuarkRenderer{
         }
         /**
          * @private
-         * @property {GlobalEventDispatcher} eventHandler
+         * @property {GlobalEventDispatcher} eventDispatcher
          * QuarkRenderer 自己封装的事件机制，这是画布内部的事件系统。
          */
-        this.eventHandler = new GlobalEventDispatcher(this.storage, this.painter, handerProxy, this.painter.root);
+        this.eventDispatcher = new GlobalEventDispatcher(this.storage, this.painter, eventInterceptor, this.painter.root);
     
         /**
          * @property {GlobalAnimationMgr}
@@ -277,7 +277,7 @@ class QuarkRenderer{
      * @return {Object} {target, topTarget}
      */
     findHover(x, y) {
-        return this.eventHandler.findHover(x, y);
+        return this.eventDispatcher.findHover(x, y);
     }
 
     /**
@@ -313,7 +313,7 @@ class QuarkRenderer{
     resize(options) {
         options = options || {};
         this.painter.resize(options.width, options.height);
-        this.eventHandler.resize();
+        this.eventDispatcher.resize();
     }
 
     /**
@@ -379,7 +379,7 @@ class QuarkRenderer{
      * @param {String} [cursorStyle='move']
      */
     setCursorStyle(cursorStyle) {
-        this.eventHandler.setCursorStyle(cursorStyle);
+        this.eventDispatcher.setCursorStyle(cursorStyle);
     }
 
     /**
@@ -387,21 +387,21 @@ class QuarkRenderer{
      * Bind event
      *
      * @param {String} eventName Event name
-     * @param {Function} eventHandler Handler function
+     * @param {Function} eventDispatcher Handler function
      * @param {Object} [context] Context object
      */
-    on(eventName, eventHandler, context) {
-        this.eventHandler.on(eventName, eventHandler, context);
+    on(eventName, eventDispatcher, context) {
+        this.eventDispatcher.on(eventName, eventDispatcher, context);
     }
 
     /**
      * @method
      * Unbind event
      * @param {String} eventName Event name
-     * @param {Function} [eventHandler] Handler function
+     * @param {Function} [eventDispatcher] Handler function
      */
-    off(eventName, eventHandler) {
-        this.eventHandler.off(eventName, eventHandler);
+    off(eventName, eventDispatcher) {
+        this.eventDispatcher.off(eventName, eventDispatcher);
     }
 
     /**
@@ -412,7 +412,7 @@ class QuarkRenderer{
      * @param {event=} event Event object
      */
     trigger(eventName, event) {
-        this.eventHandler.trigger(eventName, event);
+        this.eventDispatcher.trigger(eventName, event);
     }
 
     /**
@@ -432,12 +432,12 @@ class QuarkRenderer{
         this.globalAnimationMgr.clear();
         this.storage.dispose();
         this.painter.dispose();
-        this.eventHandler.dispose();
+        this.eventDispatcher.dispose();
 
         this.globalAnimationMgr = null;
         this.storage = null;
         this.painter = null;
-        this.eventHandler = null;
+        this.eventDispatcher = null;
 
         delete instances[this.id];
     }

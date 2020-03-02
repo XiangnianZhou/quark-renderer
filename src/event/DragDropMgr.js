@@ -16,7 +16,106 @@ export default class DragDropMgr{
     constructor(dispatcher){
         this.selectionMap=new Map();
         this.dispatcher=dispatcher;
-        this.dispatcher.on('mousedown', this._dragStart, this);
+        this.dispatcher.on('mousedown', this.dragStart, this);
+    }
+
+    /**
+     * @private
+     * @method dragStart
+     * Start dragging.
+     * 
+     * 
+     * 开始拖动。
+     * @param {Event} e 
+     */
+    dragStart(e) {
+        let el = e.target;
+        let event = e.event;
+        this._draggingItem=el;
+
+        if(!el){
+            this.clearSelectionMap();
+            return;
+        }
+
+        if(!el.draggable){
+            return;
+        }
+
+        if(!event.ctrlKey&&!this.selectionMap.get(el.id)){
+            this.clearSelectionMap();
+        }
+        el.dragging=true;
+        this.selectionMap.set(el.id,el);
+
+        this._x = e.offsetX;
+        this._y = e.offsetY;
+        this.dispatcher.on('pagemousemove', this.dragging, this);
+        this.dispatcher.on('pagemouseup', this.dragEnd, this);
+
+        this.selectionMap.forEach((el,key)=>{
+            this.dispatcher.dispatchToElement(this.normalizeParam(el, e), 'dragstart', e.event);
+        });
+    }
+
+    /**
+     * @private
+     * @method dragging
+     * Dragging.
+     * 
+     * 
+     * 拖动过程中。
+     * @param {Event} e 
+     */
+    dragging(e) {
+        let x = e.offsetX;
+        let y = e.offsetY;
+        let dx = x - this._x;
+        let dy = y - this._y;
+        this._x = x;
+        this._y = y;
+
+        this.selectionMap.forEach((el,key)=>{
+            el.drift(dx, dy, e);
+            this.dispatcher.dispatchToElement(this.normalizeParam(el, e), 'drag', e.event);
+        });
+
+        let dropTarget = this.dispatcher.findHover(x, y, this._draggingItem).target;
+        let lastDropTarget = this._dropTarget;
+        this._dropTarget = dropTarget;
+
+        if (this._draggingItem !== dropTarget) {
+            if (lastDropTarget && dropTarget !== lastDropTarget) {
+                this.dispatcher.dispatchToElement(this.normalizeParam(lastDropTarget, e), 'dragleave', e.event);
+            }
+            if (dropTarget && dropTarget !== lastDropTarget) {
+                this.dispatcher.dispatchToElement(this.normalizeParam(dropTarget, e), 'dragenter', e.event);
+            }
+        }
+    }
+
+    /**
+     * @private
+     * @method dragEnd
+     * Drag end.
+     * 
+     * 
+     * 拖动结束。
+     * @param {Event} e 
+     */
+    dragEnd(e) {
+        this.selectionMap.forEach((el,key)=>{
+            el.dragging=false;
+            this.dispatcher.dispatchToElement(this.normalizeParam(el, e), 'dragend', e.event);
+        });
+        this.dispatcher.off('pagemousemove', this.dragging);
+        this.dispatcher.off('pagemouseup', this.dragEnd);
+
+        if (this._dropTarget) {
+            this.dispatcher.dispatchToElement(this.normalizeParam(this._dropTarget, e), 'drop', e.event);
+        }
+
+        this._dropTarget = null;
     }
 
     /**
@@ -51,104 +150,5 @@ export default class DragDropMgr{
     clearSelectionMap(){
         this.selectionMap.forEach((el,key)=>{el.dragging=false;});
         this.selectionMap.clear();
-    }
-
-    /**
-     * @private
-     * @method _dragStart
-     * Start dragging.
-     * 
-     * 
-     * 开始拖动。
-     * @param {Event} e 
-     */
-    _dragStart(e) {
-        let el = e.target;
-        let event = e.event;
-        this._draggingItem=el;
-
-        if(!el){
-            this.clearSelectionMap();
-            return;
-        }
-
-        if(!el.draggable){
-            return;
-        }
-
-        if(!event.ctrlKey&&!this.selectionMap.get(el.id)){
-            this.clearSelectionMap();
-        }
-        el.dragging=true;
-        this.selectionMap.set(el.id,el);
-
-        this._x = e.offsetX;
-        this._y = e.offsetY;
-        this.dispatcher.on('pagemousemove', this._drag, this);
-        this.dispatcher.on('pagemouseup', this._dragEnd, this);
-
-        this.selectionMap.forEach((el,key)=>{
-            this.dispatcher.dispatchToElement(this.normalizeParam(el, e), 'dragstart', e.event);
-        });
-    }
-
-    /**
-     * @private
-     * @method _drag
-     * Dragging.
-     * 
-     * 
-     * 拖动过程中。
-     * @param {Event} e 
-     */
-    _drag(e) {
-        let x = e.offsetX;
-        let y = e.offsetY;
-        let dx = x - this._x;
-        let dy = y - this._y;
-        this._x = x;
-        this._y = y;
-
-        this.selectionMap.forEach((el,key)=>{
-            el.drift(dx, dy, e);
-            this.dispatcher.dispatchToElement(this.normalizeParam(el, e), 'drag', e.event);
-        });
-
-        let dropTarget = this.dispatcher.findHover(x, y, this._draggingItem).target;
-        let lastDropTarget = this._dropTarget;
-        this._dropTarget = dropTarget;
-
-        if (this._draggingItem !== dropTarget) {
-            if (lastDropTarget && dropTarget !== lastDropTarget) {
-                this.dispatcher.dispatchToElement(this.normalizeParam(lastDropTarget, e), 'dragleave', e.event);
-            }
-            if (dropTarget && dropTarget !== lastDropTarget) {
-                this.dispatcher.dispatchToElement(this.normalizeParam(dropTarget, e), 'dragenter', e.event);
-            }
-        }
-    }
-
-    /**
-     * @private
-     * @method _dragEnd
-     * Drag end.
-     * 
-     * 
-     * 拖动结束。
-     * @param {Event} e 
-     */
-    _dragEnd(e) {
-        this.selectionMap.forEach((el,key)=>{
-            el.dragging=false;
-            this.dispatcher.dispatchToElement(this.normalizeParam(el, e), 'dragend', e.event);
-        });
-        this.dispatcher.off('pagemousemove', this._drag);
-        this.dispatcher.off('pagemouseup', this._dragEnd);
-
-        if (this._dropTarget) {
-            this.dispatcher.dispatchToElement(this.normalizeParam(this._dropTarget, e), 'drop', e.event);
-        }
-
-        this._dropTarget = null;
     }
 }

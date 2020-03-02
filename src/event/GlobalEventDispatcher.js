@@ -3,6 +3,7 @@ import * as classUtil from '../core/utils/class_util';
 import * as vectorUtil from '../core/utils/vector_util';
 import * as eventTool from '../core/utils/event_util';
 import DragDropMgr from './DragDropMgr';
+import TransformEventMgr from '../graphic/transform/TransformEventMgr';
 import Eventful from './Eventful';
 import GestureMgr from './GestureMgr';
 
@@ -54,8 +55,8 @@ function stopEvent(event) {
     eventTool.stop(this.event);
 }
 
-function EmptyProxy() {}
-EmptyProxy.prototype.dispose = function () {};
+function EmptyInterceptor() {}
+EmptyInterceptor.prototype.dispose = function () {};
 
 let handlerNames = [
     'click', 'dblclick', 'mousewheel', 'mouseout',
@@ -113,18 +114,18 @@ function afterListenerChanged(handlerInstance) {
         && handlerInstance.isSilent('pagemouseup')
         && handlerInstance.isSilent('pagekeydown')
         && handlerInstance.isSilent('pagekeyup');
-    let proxy = handlerInstance.proxy;
-    proxy && proxy.togglePageEvent && proxy.togglePageEvent(!allSilent);
+    let interceptor = handlerInstance.interceptor;
+    interceptor && interceptor.togglePageEvent && interceptor.togglePageEvent(!allSilent);
 }
 
 /**
  * @method constructor GlobalEventDispatcher
  * @param {Storage} storage Storage instance.
  * @param {Painter} painter Painter instance.
- * @param {HandlerProxy} proxy HandlerProxy instance.
+ * @param {HandlerProxy} interceptor HandlerProxy instance.
  * @param {HTMLElement} painterRoot painter.root (not painter.getViewportRoot()).
  */
-let GlobalEventDispatcher = function (storage, painter, proxy, painterRoot) {
+let GlobalEventDispatcher = function (storage, painter, interceptor, painterRoot) {
     Eventful.call(this, {
         afterListenerChanged: dataUtil.bind(afterListenerChanged, null, this)
     });
@@ -144,13 +145,12 @@ let GlobalEventDispatcher = function (storage, painter, proxy, painterRoot) {
      */
     this.painterRoot = painterRoot;
 
-    proxy = proxy || new EmptyProxy();
+    interceptor = interceptor || new EmptyInterceptor();
 
     /**
-     * @property proxy
-     * Proxy of event. can be Dom, WebGLSurface, etc.
+     * @property interceptor
      */
-    this.proxy = null;
+    this.interceptor = null;
 
     /**
      * @private 
@@ -182,9 +182,13 @@ let GlobalEventDispatcher = function (storage, painter, proxy, painterRoot) {
      */
     this._gestureMgr;
 
+    //start drag-drop manager.
     new DragDropMgr(this);
 
-    this.setHandlerProxy(proxy);
+    //start transform manager.
+    new TransformEventMgr(this);
+
+    this.setHandlerProxy(interceptor);
 };
 
 GlobalEventDispatcher.prototype = {
@@ -193,27 +197,27 @@ GlobalEventDispatcher.prototype = {
 
     /**
      * @method setHandlerProxy
-     * @param {*} proxy 
+     * @param {*} interceptor 
      */
-    setHandlerProxy: function (proxy) {
-        if (this.proxy) {
-            this.proxy.dispose();
+    setHandlerProxy: function (interceptor) {
+        if (this.interceptor) {
+            this.interceptor.dispose();
         }
 
-        if (proxy) {
+        if (interceptor) {
             dataUtil.each(handlerNames, function (name) {
                 // 监听 Proxy 上面派发的原生DOM事件，转发给本类的处理方法。
-                proxy.on && proxy.on(name, this[name], this);
+                interceptor.on && interceptor.on(name, this[name], this);
             }, this);
             // Attach handler
-            proxy.handler = this;
+            interceptor.handler = this;
         }
-        this.proxy = proxy;
+        this.interceptor = interceptor;
     },
 
     /**
      * @method mousemove
-     * @param {*} proxy 
+     * @param {*} interceptor 
      */
     mousemove: function (event) {
         let x = event.qrX;
@@ -234,8 +238,8 @@ GlobalEventDispatcher.prototype = {
         let hovered = this._hovered = this.findHover(x, y);
         let hoveredTarget = hovered.target;
 
-        let proxy = this.proxy;
-        proxy.setCursor && proxy.setCursor(hoveredTarget ? hoveredTarget.cursor : 'default');
+        let interceptor = this.interceptor;
+        interceptor.setCursor && interceptor.setCursor(hoveredTarget ? hoveredTarget.cursor : 'default');
 
         // Mouse out on previous hovered element
         if (lastHoveredTarget && hoveredTarget !== lastHoveredTarget) {
@@ -253,7 +257,7 @@ GlobalEventDispatcher.prototype = {
 
     /**
      * @method mouseout
-     * @param {*} proxy 
+     * @param {*} interceptor 
      */
     mouseout: function (event) {
         this.dispatchToElement(this._hovered, 'mouseout', event);
@@ -306,9 +310,9 @@ GlobalEventDispatcher.prototype = {
      * @method dispose
      */
     dispose: function () {
-        this.proxy.dispose();
+        this.interceptor.dispose();
         this.storage = null;
-        this.proxy = null;
+        this.interceptor = null;
         this.painter = null;
     },
 
@@ -318,7 +322,7 @@ GlobalEventDispatcher.prototype = {
      * @param {String} [cursorStyle='default'] 例如 crosshair
      */
     setCursorStyle: function (cursorStyle) {
-        this.proxy.setCursor && this.proxy.setCursor(cursorStyle);
+        this.interceptor.setCursor && this.interceptor.setCursor(cursorStyle);
     },
 
     /**
@@ -408,7 +412,7 @@ GlobalEventDispatcher.prototype = {
         let gestureInfo = gestureMgr.recognize(
             event,
             this.findHover(event.qrX, event.qrY, null).target,
-            this.proxy.dom
+            this.interceptor.dom
         );
         phase === 'end' && gestureMgr.clear();
 
