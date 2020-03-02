@@ -94,29 +94,34 @@ export default class TransformEventMgr{
     mouseMoveHandler2(e){
         let x=e.offsetX;
         let y=e.offsetY;
-        console.log(`offsetX=${x}---offsetY=${y}`);
-        let dx=x-this._x;
-        let dy=y-this._y;
-        //let rect=this.selectedEl.getBoundingRect();
-        let dsx=dx/this._x;
-        let dsy=dy/this._y;
-        console.log(`dsx=${dsx}---dsy=${dsy}`);
-        this._x=x;
-        this._y=y;
+        let width=this.selectedEl.shape.width;
+        let height=this.selectedEl.shape.height;
+        let local=this.selectedEl.globalToLocal(x,y);
+        let dsx=(local[0]-width)/width;
+        let dsy=(local[1]-height)/height;
         let sx=this.selectedEl.scale[0];
         let sy=this.selectedEl.scale[1];
         let newSx=sx+dsx;
         let newSy=sy+dsy;
-        console.log(`${newSx}---${newSy}`);
+
         let position=this.lastHoveredControl.position;
+        console.log(`dsx=${dsx},dsy=${dsy}`);
+        console.log(`newSx=${newSx},newSy=${newSy}`);
         if(position==='T'||position==='B'){
             this.selectedEl.scale=[sx,newSy];
-        }else if(position==='L'||position==='R'){
+        }else if(position==='R'){
+            let origin=this.selectedEl.origin;
+            this.selectedEl.origin=[0,0];
             this.selectedEl.scale=[newSx,sy];
+            this.selectedEl.origin=origin;
+        }else if(position==='L'){
+            let origin=this.selectedEl.origin;
+            this.selectedEl.origin=[width,0];
+            this.selectedEl.scale=[newSx,sy];
+            this.selectedEl.origin=origin;
         }else if(position==='TL'||position==='TR'||position==='BL'||position==='BR'){
             this.selectedEl.scale=[newSx,newSy];
         }
-        // this.selectedEl.origin=[0,0];
         this.selectedEl.dirty();
     }
 
