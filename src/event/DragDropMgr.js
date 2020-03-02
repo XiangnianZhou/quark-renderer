@@ -1,6 +1,9 @@
 /**
  * @class qrenderer.event.DragDropMgr
- * 支持同时拖拽多个元素，按住 Ctrl 键可以多选。
+ * Global drag-drop manager, hold Ctrl for multi-selection.
+ * 
+ * 
+ * 全局拖拽管理器，支持同时拖拽多个元素，按住 Ctrl 键可以多选。
  * 
  * @author 大漠穷秋 <damoqiongqiu@126.com>
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
@@ -8,27 +11,30 @@
 export default class DragDropMgr{
     /**
      * @method constructor DragDropMgr
-     * @param {GlobalEventDispatcher} handler 
+     * @param {GlobalEventDispatcher} dispatcher 
      */
-    constructor(handler){
+    constructor(dispatcher){
         this.selectionMap=new Map();
-        this.handler=handler;
-        this.handler.on('mousedown', this._dragStart, this);
+        this.dispatcher=dispatcher;
+        this.dispatcher.on('mousedown', this._dragStart, this);
     }
 
     /**
      * @private
-     * @method param
+     * @method normalizeParam
      * @param {Element} target 
      * @param {Event} e 
      */
-    param(target, e) {
+    normalizeParam(target, e) {
         return {target: target, topTarget: e && e.topTarget};
     }
 
     /**
      * @method getSelectedItems
-     * 获取当前选中的元素
+     * Get all selected items.
+     * 
+     * 
+     * 获取当前选中的所有元素。
      * @return {Map} selectionMap
      */
     getSelectedItems(){
@@ -37,7 +43,10 @@ export default class DragDropMgr{
 
     /**
      * @method clearSelectionMap
-     * 清除选中
+     * Clear all selected items.
+     * 
+     * 
+     * 清除选中。
      */
     clearSelectionMap(){
         this.selectionMap.forEach((el,key)=>{el.dragging=false;});
@@ -47,7 +56,10 @@ export default class DragDropMgr{
     /**
      * @private
      * @method _dragStart
-     * 开始拖动
+     * Start dragging.
+     * 
+     * 
+     * 开始拖动。
      * @param {Event} e 
      */
     _dragStart(e) {
@@ -72,18 +84,21 @@ export default class DragDropMgr{
 
         this._x = e.offsetX;
         this._y = e.offsetY;
-        this.handler.on('pagemousemove', this._drag, this);
-        this.handler.on('pagemouseup', this._dragEnd, this);
+        this.dispatcher.on('pagemousemove', this._drag, this);
+        this.dispatcher.on('pagemouseup', this._dragEnd, this);
 
         this.selectionMap.forEach((el,key)=>{
-            this.handler.dispatchToElement(this.param(el, e), 'dragstart', e.event);
+            this.dispatcher.dispatchToElement(this.normalizeParam(el, e), 'dragstart', e.event);
         });
     }
 
     /**
      * @private
      * @method _drag
-     * 拖动过程中
+     * Dragging.
+     * 
+     * 
+     * 拖动过程中。
      * @param {Event} e 
      */
     _drag(e) {
@@ -96,19 +111,19 @@ export default class DragDropMgr{
 
         this.selectionMap.forEach((el,key)=>{
             el.drift(dx, dy, e);
-            this.handler.dispatchToElement(this.param(el, e), 'drag', e.event);
+            this.dispatcher.dispatchToElement(this.normalizeParam(el, e), 'drag', e.event);
         });
 
-        let dropTarget = this.handler.findHover(x, y, this._draggingItem).target;
+        let dropTarget = this.dispatcher.findHover(x, y, this._draggingItem).target;
         let lastDropTarget = this._dropTarget;
         this._dropTarget = dropTarget;
 
         if (this._draggingItem !== dropTarget) {
             if (lastDropTarget && dropTarget !== lastDropTarget) {
-                this.handler.dispatchToElement(this.param(lastDropTarget, e), 'dragleave', e.event);
+                this.dispatcher.dispatchToElement(this.normalizeParam(lastDropTarget, e), 'dragleave', e.event);
             }
             if (dropTarget && dropTarget !== lastDropTarget) {
-                this.handler.dispatchToElement(this.param(dropTarget, e), 'dragenter', e.event);
+                this.dispatcher.dispatchToElement(this.normalizeParam(dropTarget, e), 'dragenter', e.event);
             }
         }
     }
@@ -116,19 +131,22 @@ export default class DragDropMgr{
     /**
      * @private
      * @method _dragEnd
-     * 拖动结束
+     * Drag end.
+     * 
+     * 
+     * 拖动结束。
      * @param {Event} e 
      */
     _dragEnd(e) {
         this.selectionMap.forEach((el,key)=>{
             el.dragging=false;
-            this.handler.dispatchToElement(this.param(el, e), 'dragend', e.event);
+            this.dispatcher.dispatchToElement(this.normalizeParam(el, e), 'dragend', e.event);
         });
-        this.handler.off('pagemousemove', this._drag);
-        this.handler.off('pagemouseup', this._dragEnd);
+        this.dispatcher.off('pagemousemove', this._drag);
+        this.dispatcher.off('pagemouseup', this._dragEnd);
 
         if (this._dropTarget) {
-            this.handler.dispatchToElement(this.param(this._dropTarget, e), 'drop', e.event);
+            this.dispatcher.dispatchToElement(this.normalizeParam(this._dropTarget, e), 'drop', e.event);
         }
 
         this._dropTarget = null;
