@@ -8,7 +8,7 @@
 export default class MultiDragDrop{
     /**
      * @method constructor MultiDragDrop
-     * @param {QRendererEventHandler} handler 
+     * @param {GlobalEventDispatcher} handler 
      */
     constructor(handler){
         this.selectionMap=new Map();

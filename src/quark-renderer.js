@@ -1,4 +1,4 @@
-import QRendererEventHandler from './event/QRendererEventHandler';
+import GlobalEventDispatcher from './event/GlobalEventDispatcher';
 import CanvasPainter from './canvas/CanvasPainter';
 import GlobalAnimationMgr from './animation/GlobalAnimationMgr';
 import DomEventInterceptor from './event/DomEventInterceptor';
@@ -154,10 +154,10 @@ class QuarkRenderer{
         }
         /**
          * @private
-         * @property {QRendererEventHandler} eventHandler
+         * @property {GlobalEventDispatcher} eventHandler
          * QuarkRenderer 自己封装的事件机制，这是画布内部的事件系统。
          */
-        this.eventHandler = new QRendererEventHandler(this.storage, this.painter, handerProxy, this.painter.root);
+        this.eventHandler = new GlobalEventDispatcher(this.storage, this.painter, handerProxy, this.painter.root);
     
         /**
          * @property {GlobalAnimationMgr}

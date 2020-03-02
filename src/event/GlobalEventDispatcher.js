@@ -7,10 +7,10 @@ import Eventful from './Eventful';
 import GestureMgr from './GestureMgr';
 
 /**
- * @class qrenderer.event.QRendererEventHandler
+ * @class qrenderer.event.GlobalEventDispatcher
  * 
  * 
- * Canvas API 没有提供画布内部的事件系统，QRendererEventHandler.js 用来封装画布内部元素的事件处理逻辑，
+ * Canvas API 没有提供画布内部的事件系统，GlobalEventDispatcher.js 用来封装画布内部元素的事件处理逻辑，
  * 此实现的整体概念模型与 W3C 定义的 DOM 事件系统一致。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
@@ -118,13 +118,13 @@ function afterListenerChanged(handlerInstance) {
 }
 
 /**
- * @method constructor QRendererEventHandler
+ * @method constructor GlobalEventDispatcher
  * @param {Storage} storage Storage instance.
  * @param {Painter} painter Painter instance.
  * @param {HandlerProxy} proxy HandlerProxy instance.
  * @param {HTMLElement} painterRoot painter.root (not painter.getViewportRoot()).
  */
-let QRendererEventHandler = function (storage, painter, proxy, painterRoot) {
+let GlobalEventDispatcher = function (storage, painter, proxy, painterRoot) {
     Eventful.call(this, {
         afterListenerChanged: dataUtil.bind(afterListenerChanged, null, this)
     });
@@ -187,9 +187,9 @@ let QRendererEventHandler = function (storage, painter, proxy, painterRoot) {
     this.setHandlerProxy(proxy);
 };
 
-QRendererEventHandler.prototype = {
+GlobalEventDispatcher.prototype = {
 
-    constructor: QRendererEventHandler,
+    constructor: GlobalEventDispatcher,
 
     /**
      * @method setHandlerProxy
@@ -425,7 +425,7 @@ QRendererEventHandler.prototype = {
 dataUtil.each(['click', 'mousedown', 
     'mouseup', 'mousewheel', 
     'dblclick', 'contextmenu'], function (name) {
-    QRendererEventHandler.prototype[name] = function (event) {
+    GlobalEventDispatcher.prototype[name] = function (event) {
         // Find hover again to avoid click event is dispatched manually. Or click is triggered without mouseover
         let hovered = this.findHover(event.qrX, event.qrY);
         let hoveredTarget = hovered.target;
@@ -459,6 +459,6 @@ dataUtil.each(['click', 'mousedown',
     };
 });
 
-classUtil.mixin(QRendererEventHandler, Eventful);
+classUtil.mixin(GlobalEventDispatcher, Eventful);
 
-export default QRendererEventHandler;
+export default GlobalEventDispatcher;
