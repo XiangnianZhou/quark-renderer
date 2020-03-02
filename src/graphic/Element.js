@@ -1,13 +1,13 @@
+import * as dataUtil from '../core/utils/data_structure_util';
+import * as classUtil from '../core/utils/class_util';
+import * as matrixUtil from '../core/utils/affine_matrix_util';
+import * as vectorUtil from '../core/utils/vector_util';
 import Eventful from '../event/Eventful';
 import Transformable from './transform/Transformable';
 import TransformControl from './transform/TransformControl';
 import Animatable from '../animation/Animatable';
 import Style from './Style';
 import RectText from './RectText';
-import * as dataUtil from '../core/utils/data_structure_util';
-import * as classUtil from '../core/utils/class_util';
-import * as matrixUtil from '../core/utils/affine_matrix_util';
-import * as vectorUtil from '../core/utils/vector_util';
 import guid from '../core/utils/guid';
 
 /**
@@ -132,13 +132,15 @@ class Element{
          */
         this.dragging = false;
 
+        this.transformable = true;
+
         /**
          * @property {Boolean} hasControls
          * Whether this object has transform controls.
          * 
          * 是否带有变换控制工具。
          */
-        this.hasControls = true;
+        this.hasControls = false;
 
         /**
          * @property {Array<TransformControl>} controls
@@ -429,18 +431,26 @@ class Element{
     }
 
     renderControls(ctx, prevEl){
-        //TopLeft, Top, TopRight, Left, Right, BottomLeft, Bottom, BottomRight, TopTop
-        let positions = ['TL','T','TR','L','R','BL','B','BR','TT'];
-        positions.forEach((p,index)=>{
-            let control = new TransformControl({
-                el:this,
-                position:p,
-                fillStyle:this.controlFillStyle,
-                strokeStyle:this.controlStrokeStyle,
-                lineWidth:this.controlLineWidth
-            }).render(ctx, prevEl);
-            this.controls.push(control);
-        });
+        // if(!this.controls.length){
+            this.controls=[];
+            //TopLeft, Top, TopRight, Left, Right, BottomLeft, Bottom, BottomRight, TopTop
+            let positions = ['TL','T','TR','L','R','BL','B','BR','TT'];
+            positions.forEach((p,index)=>{
+                let control = new TransformControl({
+                    el:this,
+                    position:p,
+                    fillStyle:this.controlFillStyle,
+                    strokeStyle:this.controlStrokeStyle,
+                    lineWidth:this.controlLineWidth
+                }).render(ctx, prevEl);
+                this.controls.push(control);
+            });
+        // }else{
+        //     this.controls.forEach((control,index)=>{
+        //         console.log("render control...");
+        //         control.render(ctx,prevEl);
+        //     });
+        // }
 
         let globalScale = this.getGlobalScale();
         //draw bounding rect
@@ -453,56 +463,9 @@ class Element{
         
         //draw connet line
         ctx.beginPath();
-        ctx.moveTo(this.controls[1].xMin+this.controls[1].width/2,this.controls[1].yMin/globalScale[1]);
-        ctx.lineTo(this.controls[8].xMin+this.controls[8].width/2,this.controls[8].yMin+this.controls[8].height/globalScale[1]);
+        ctx.moveTo(this.controls[1].xMin+this.controls[1].width/2,this.controls[1].yMin);
+        ctx.lineTo(this.controls[8].xMin+this.controls[8].width/2,this.controls[8].yMin+this.controls[8].height);
         ctx.stroke();
-
-        this.__qr&&this.__qr.on("pagemousemove",this.controlActionHandler,this);
-    }
-
-    controlActionHandler(e){
-        let qrX = e.event.qrX;
-        let qrY = e.event.qrY;
-        this.controls.forEach((control,index)=>{
-            if(control.isHover(qrX,qrY)){
-                console.log("controlActionHandler...");
-                this.__qr.eventDispatcher.interceptor.setCursor(control.cursor);
-                this.__qr.on("mousedown",this.controlMouseDown,control);
-            }
-        });
-    }
-
-    controlMouseDown(event){
-        console.log("control mouse down...");
-        //NOTE: this here is point to Control, not Element.
-        this.el.__qr.off("pagemousemove",this.el.controlActionHandler);
-        this.el.__qr.on("pagemousemove",this.el.controlMouseMove,this);
-        this.el.__qr.on("pagemouseup",this.el.controlMouseUp,this);
-    }
-
-    controlMouseMove(event){
-        //NOTE: this here is point to Control, not Element.
-        // let globalScale = this.el.getGlobalScale();
-        let e=event.event;
-        let dx=e.movementX;
-        let dy=e.movementY;
-        let sx=this.el.scale[0];
-        let sy=this.el.scale[1];
-        let deltaSx=dx/sx;
-        let deltaSy=dy/sy;
-        let newSx=sx+deltaSx;
-        let newSy=sy+deltaSy;
-        console.log(`${newSx}---${newSy}`);
-        this.el.scale=[newSx,newSy];
-        this.el.dirty();
-    }
-
-    controlMouseUp(event){
-        console.log("control mouse up...");
-        this.el.__qr.off("mousedown",this.el.controlMouseDown);
-        this.el.__qr.off("pagemousemove",this.el.controlMouseMove);
-        this.el.__qr.off("pagemouseup",this.el.controlMouseUp);
-        this.el.__qr.on("pagemousemove",this.el.controlActionHandler,this.el);
     }
 
     /**

@@ -45,8 +45,6 @@ export default class TransformControl {
         ctx.strokeStyle = this.strokeStyle;
         ctx.strokeRect(...this._calcCoordinate());
         ctx.closePath();
-
-        this.ctx=ctx;
     }
 
     _calcCoordinate(){
@@ -143,9 +141,5 @@ export default class TransformControl {
 
     _renderCircleControl(ctx,prevEl){
         ctx.arc(0,0,10,0,PI2,true);
-    }
-    
-    _actionHandler(event){
-
     }
 }
