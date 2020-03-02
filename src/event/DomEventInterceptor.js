@@ -5,8 +5,8 @@ import * as classUtil from '../core/utils/class_util';
 import env from '../core/env';
 
 /**
- * @class qrenderer.event.DomEventProxy
- * DomEventProxy 的主要功能是：拦截 DOM 标签上的原生事件，转发到 QuarkRender 实例上，
+ * @class qrenderer.event.DomEventInterceptor
+ * DomEventInterceptor 的主要功能是：拦截 DOM 标签上的原生事件，转发到 QuarkRender 实例上，
  * 在 QuarkRendererEventHandler 类中会把事件进一步分发给 canvas 内部的元素。
  * 需要转发的大部分 DOM 事件挂载在 canvas 的外层容器 div 上面，例如：click, dbclick, contextmenu 等；
  * 少部分 DOM 事件直接挂载在 document 对象上，例如：mousemove, mouseout。因为在实现拖拽和
@@ -140,7 +140,7 @@ function markTouch(event) {
 /**
  * Local 指的是 Canvas 内部的区域。
  * Local DOM Handlers
- * @this {DomEventProxy}
+ * @this {DomEventInterceptor}
  */
 let localDOMHandlers = {
 
@@ -259,7 +259,7 @@ let localDOMHandlers = {
 /**
  * Othere DOM UI Event handlers for qr dom.
  * QuarkRender 内部的 DOM 结构默认支持以下7个事件。
- * @this {DomEventProxy}
+ * @this {DomEventInterceptor}
  */
 dataUtil.each(['click', 'mousemove', 'mousedown', 
     'mouseup', 'mousewheel', 'dblclick', 'contextmenu'], function (name) {
@@ -281,7 +281,7 @@ dataUtil.each(['click', 'mousemove', 'mousedown',
  * 监听外层 HTML 上的 mousemove 和 mouseup，绕开这种问题。
  * 
  * Page DOM UI Event handlers for global page.
- * @this {DomEventProxy}
+ * @this {DomEventInterceptor}
  */
 let globalDOMHandlers = {
 
@@ -339,7 +339,7 @@ let globalDOMHandlers = {
 /**
  * @private
  * @method mountDOMEventListeners
- * @param {DomEventProxy} domEventProxy
+ * @param {DomEventInterceptor} domEventInterceptor
  * @param {DOMHandlerScope} domHandlerScope
  * @param {Object} nativeListenerNames {mouse: Array<String>, touch: Array<String>, poiner: Array<String>}
  * @param {Boolean} localOrGlobal `true`: target local, `false`: target global.
@@ -459,7 +459,7 @@ function DOMHandlerScope(domTarget, domHandlers) {
  * @method constructor
  * @param dom 被代理的 DOM 节点
  */
-function DomEventProxy(dom) {
+function DomEventInterceptor(dom) {
     Eventful.call(this);
 
     /**
@@ -487,7 +487,7 @@ function DomEventProxy(dom) {
      */
     this._pageEventEnabled = false;
 
-    //在构造 DomEventProxy 实例的时候，挂载 DOM 事件监听器。
+    //在构造 DomEventInterceptor 实例的时候，挂载 DOM 事件监听器。
     mountDOMEventListeners(this, this._localHandlerScope, localNativeListenerNames, true);
 }
 
@@ -495,7 +495,7 @@ function DomEventProxy(dom) {
  * @private
  * @method dispose
  */
-DomEventProxy.prototype.dispose = function () {
+DomEventInterceptor.prototype.dispose = function () {
     unmountDOMEventListeners(this._localHandlerScope);
     if (pageEventSupported) {
         unmountDOMEventListeners(this._globalHandlerScope);
@@ -506,7 +506,7 @@ DomEventProxy.prototype.dispose = function () {
  * @private
  * @method setCursor
  */
-DomEventProxy.prototype.setCursor = function (cursorStyle) {
+DomEventInterceptor.prototype.setCursor = function (cursorStyle) {
     this.dom.style && (this.dom.style.cursor = cursorStyle || 'default');
 };
 
@@ -518,7 +518,7 @@ DomEventProxy.prototype.setCursor = function (cursorStyle) {
  * listeners when do not need them to escape unexpected side-effect.
  * @param {Boolean} enableOrDisable `true`: enable page event. `false`: disable page event.
  */
-DomEventProxy.prototype.togglePageEvent = function (enableOrDisable) {
+DomEventInterceptor.prototype.togglePageEvent = function (enableOrDisable) {
     dataUtil.assert(enableOrDisable != null);
 
     if (pageEventSupported && (this._pageEventEnabled ^ enableOrDisable)) {
@@ -531,7 +531,7 @@ DomEventProxy.prototype.togglePageEvent = function (enableOrDisable) {
     }
 };
 
-//注意，DomEventProxy 也混入了 Eventful 里面提供的事件处理工具。
-classUtil.mixin(DomEventProxy, Eventful);
+//注意，DomEventInterceptor 也混入了 Eventful 里面提供的事件处理工具。
+classUtil.mixin(DomEventInterceptor, Eventful);
 
-export default DomEventProxy;
+export default DomEventInterceptor;

@@ -1,7 +1,7 @@
 import QRendererEventHandler from './event/QRendererEventHandler';
 import CanvasPainter from './canvas/CanvasPainter';
 import GlobalAnimationMgr from './animation/GlobalAnimationMgr';
-import DomEventProxy from './event/DomEventProxy';
+import DomEventInterceptor from './event/DomEventInterceptor';
 import Storage from './Storage';
 import * as textContain from './core/contain/text';
 import guid from './core/utils/guid';
@@ -143,7 +143,7 @@ class QuarkRenderer{
         let handerProxy =null;
         if(typeof this.host.moveTo!=='function'){
             if(!env.node && !env.worker && !env.wxa){
-                handerProxy=new DomEventProxy(this.painter.getHost());
+                handerProxy=new DomEventInterceptor(this.painter.getHost());
             }
         }else{
             // host is Context instance, override function.
