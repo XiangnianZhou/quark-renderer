@@ -156,3 +156,30 @@ export function scale(a, v) {
 export function skew(a, v) {
     return mul([1,v[1],v[0],1,0,0],a);
 }
+
+/**
+ * @method sinx
+ * @param {*} x x position 
+ * @param {*} y y position
+ */
+export function sinx(x,y){
+    return y/(Math.sqrt(x*x+y*y));
+}
+
+/**
+ * @method cosx
+ * @param {*} x x position 
+ * @param {*} y y position
+ */
+export function cosx(x,y){
+    return x/(Math.sqrt(x*x+y*y));
+}
+
+/**
+ * @method atanx
+ * @param {*} x x position 
+ * @param {*} y y position
+ */
+export function atanx(x,y){
+    return Math.atan(y/x);
+}

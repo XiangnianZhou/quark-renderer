@@ -105,8 +105,8 @@ export default class TransformEventMgr{
         let newSy=sy+dsy;
 
         let position=this.lastHoveredControl.position;
-        console.log(`dsx=${dsx},dsy=${dsy}`);
-        console.log(`newSx=${newSx},newSy=${newSy}`);
+        // console.log(`dsx=${dsx},dsy=${dsy}`);
+        // console.log(`newSx=${newSx},newSy=${newSy}`);
         if(position==='T'||position==='B'){
             this.selectedEl.scale=[sx,newSy];
         }else if(position==='R'){

@@ -438,7 +438,7 @@ class Element{
             positions.forEach((p,index)=>{
                 let control = new TransformControl({
                     el:this,
-                    position:p,
+                    name:p,
                     fillStyle:this.controlFillStyle,
                     strokeStyle:this.controlStrokeStyle,
                     lineWidth:this.controlLineWidth
@@ -452,20 +452,23 @@ class Element{
         //     });
         // }
 
-        let globalScale = this.getGlobalScale();
         //draw bounding rect
         let rect=this.getBoundingRect();
-        ctx.lineWidth = this.controlLineWidth/globalScale;
+        let p=[rect.x,rect.y];
+        p=this.localToGlobal(p[0],p[1]);
+        ctx.save();
+        ctx.setTransform(1,0,0,1,0,0);
+        ctx.lineWidth = this.controlLineWidth;
         ctx.fillStyle = this.controlFillStyle;
         ctx.strokeStyle = this.controlStrokeStyle;
-        ctx.strokeRect(rect.x,rect.y,rect.width,rect.height);
-        ctx.closePath();
-        
+        ctx.strokeRect(p[0],p[1],rect.width,rect.height);
+        ctx.closePath(); 
         //draw connet line
         ctx.beginPath();
         ctx.moveTo(this.controls[1].xMin+this.controls[1].width/2,this.controls[1].yMin);
         ctx.lineTo(this.controls[8].xMin+this.controls[8].width/2,this.controls[8].yMin+this.controls[8].height);
         ctx.stroke();
+        ctx.restore();
     }
 
     /**
