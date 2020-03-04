@@ -199,8 +199,13 @@ class Path extends Element{
     }
 
     /**
-     * @protected
      * @method getBoundingRect
+     * Get bounding rect of this element.
+     * NOTE: this method will return the bounding rect without transforming.
+     * 
+     * 
+     * 获取当前元素的边界矩形。
+     * 注意：此方法返回的是没有经过 transform 处理的边界矩形。
      */
     getBoundingRect() {
         let rect = this._boundingRect;
