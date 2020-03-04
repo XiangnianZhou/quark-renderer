@@ -1,5 +1,6 @@
 import * as classUtil from '../../core/utils/class_util';
 import * as matrixUtil from '../../core/utils/affine_matrix_util';
+import * as vectorUtil from '../../core/utils/vector_util';
 import * as colorUtil from '../../core/utils/color_util';
 
 /**
@@ -14,25 +15,30 @@ import * as colorUtil from '../../core/utils/color_util';
 export default class TransformControl {
     constructor(options={}){
         this.el=null;
-        this.xMin = 0;
-        this.yMin = 0;
-        this.xMax = 0;
-        this.yMax = 0;
+        //4 points at the corners
+        this.x1 = 0;
+        this.y1 = 0;
+        this.x2 = 0;
+        this.y2 = 0;
+        this.x3 = 0;
+        this.y3 = 0;
+        this.x4 = 0;
+        this.y4 = 0;
         this.width = 20;
         this.height = 20;
         this.hasControls = false;
         this.shape = 'square'; //square, circle
         this.action = 'scale'; //scale, rotate
-        this.fillStyle = colorUtil.parse("#ff0000");
-        this.strokeStyle = colorUtil.parse("#ff0000");
         this.lineWidth = 2;
         this.name = 'TL';   //TL, T, TR, L, R, BL, B, BR, TT
         this.cursor = 'corsshair';
         this.pointCache = new Map();
         this.rotation=0;
         this.translate=[0,0];
-        
+
         classUtil.copyOwnProperties(this,options);
+        this.fillStyle = colorUtil.parse(this.fillStyle);
+        this.strokeStyle = colorUtil.parse(this.strokeStyle);
     }
 
     render(ctx,prevEl){
@@ -126,25 +132,55 @@ export default class TransformControl {
 
         //4.return result object
         point=this.pointCache.get(this.name);
-        this.xMin=point.position[0];
-        this.xMax=this.xMin+this.width;
-        this.yMin=point.position[1];
-        this.yMax=this.yMin+this.height;
+        this.x1=point.position[0];
+        this.y1=point.position[1];
+        this.x2=this.x1+this.width;
+        this.y2=this.y1;
+        this.x3=this.x2;
+        this.y3=this.y1+this.height;
+        this.x4=this.x1;
+        this.y4=this.y3;
         this.cursor=point.cursor;
 
         return point;
     }
 
     isHover(x,y){
-        let p0 = [this.xMin,this.yMin];
-        let p1 = [this.xMax,this.yMax];
-        // p0 = this.el.localToGlobal(...p0);
-        // p1 = this.el.localToGlobal(...p1);
-
-        if(x>p0[0]&&x<p1[0]&&y>p0[1]&&y<p1[1]){
-            return true;
+        console.log(`x=${x},y=${y}`);
+        let globalScale=this.el.getGlobalScale();
+        let m, xMin, xMax, yMin, yMax;
+        let points=[[this.x1,this.y1],[this.x2,this.y2],[this.x3,this.y3],[this.x4,this.y4]];
+        points.forEach((point,index)=>{
+            //reverse scale
+            point[0]=point[0]/globalScale[0];
+            point[1]=point[1]/globalScale[1];
+            point=this.el.localToGlobal(point[0],point[1]);
+            points[index]=point;
+            
+            if(index==0){
+                xMin=xMax=point[0];
+                yMin=yMax=point[1];
+            }else{
+                if(point[0]<xMin){
+                    xMin=point[0];
+                }
+                if(point[0]>xMax){
+                    xMax=point[0];
+                }
+                if(point[1]<yMin){
+                    yMin=point[1];
+                }
+                if(point[1]>yMax){
+                    yMax=point[1];
+                }
+            }
+        });
+        
+        if(x<xMin||x>xMax||y<yMin||y>yMax){
+            return false;
         }
-        return false;
+
+        return vectorUtil.isInsideRect(...points,[x,y]);
     }
 
     _renderCircleControl(ctx,prevEl){

@@ -1,4 +1,4 @@
-import windingLine from './windingLine';
+import windingLine from './winding_line';
 
 let EPSILON = 1e-8;
 

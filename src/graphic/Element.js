@@ -140,7 +140,7 @@ class Element{
          * 
          * 是否带有变换控制工具。
          */
-        this.hasControls = true;
+        this.hasControls = false;
 
         /**
          * @property {Array<TransformControl>} controls
@@ -448,8 +448,8 @@ class Element{
         //draw bounding rect
         let control0=this.controls[0];
         let control4=this.controls[4];
-        let p1=[control0.xMax-control0.width/2,control0.yMax-control0.height/2];
-        let p2=[control4.xMin+control4.width/2,control4.yMin+control4.height/2];
+        let p1=[control0.x3-control0.width/2,control0.y3-control0.height/2];
+        let p2=[control4.x1+control4.width/2,control4.y1+control4.height/2];
         let w=p2[0]-p1[0];
         let h=p2[1]-p1[1];
         ctx.save();
@@ -464,8 +464,8 @@ class Element{
 
         //draw connet line
         ctx.beginPath();
-        ctx.moveTo(this.controls[1].xMin+this.controls[1].width/2,this.controls[1].yMin);
-        ctx.lineTo(this.controls[8].xMin+this.controls[8].width/2,this.controls[8].yMin+this.controls[8].height);
+        ctx.moveTo(this.controls[1].x1+this.controls[1].width/2,this.controls[1].y1);
+        ctx.lineTo(this.controls[8].x1+this.controls[8].width/2,this.controls[8].y1+this.controls[8].height);
         ctx.stroke();
         ctx.restore();
     }
