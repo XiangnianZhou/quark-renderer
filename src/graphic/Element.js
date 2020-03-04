@@ -140,7 +140,7 @@ class Element{
          * 
          * 是否带有变换控制工具。
          */
-        this.hasControls = false;
+        this.hasControls = true;
 
         /**
          * @property {Array<TransformControl>} controls
@@ -431,8 +431,8 @@ class Element{
     }
 
     renderControls(ctx, prevEl){
+        //draw transform controls
         this.controls=[];
-        //TopLeft, Top, TopRight, Left, Right, BottomLeft, Bottom, BottomRight, TopTop
         let positions = ['TL','T','TR','R','BR','B','BL','L','TT'];
         positions.forEach((p,index)=>{
             let control = new TransformControl({
@@ -457,6 +457,8 @@ class Element{
         ctx.lineWidth = this.controlLineWidth;
         ctx.fillStyle = this.controlFillStyle;
         ctx.strokeStyle = this.controlStrokeStyle;
+        ctx.translate(control0.translate[0],control0.translate[1]);
+        ctx.rotate(control0.rotation);
         ctx.strokeRect(p1[0],p1[1],w,h);
         ctx.closePath();
 

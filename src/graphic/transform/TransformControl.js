@@ -29,6 +29,9 @@ export default class TransformControl {
         this.name = 'TL';   //TL, T, TR, L, R, BL, B, BR, TT
         this.cursor = 'corsshair';
         this.pointCache = new Map();
+        this.rotation=0;
+        this.translate=[0,0];
+        
         classUtil.copyOwnProperties(this,options);
     }
 
@@ -48,14 +51,16 @@ export default class TransformControl {
         ctx.lineWidth = this.lineWidth;
         ctx.fillStyle = this.fillStyle;
         ctx.strokeStyle = this.strokeStyle;
-        ctx.rotate(param.rotation);
-        ctx.strokeRect(...[...param.point.position,this.width,this.height]);
+        ctx.translate(this.translate[0],this.translate[1]);
+        ctx.rotate(this.rotation);
+        ctx.strokeRect(...[...param.position,this.width,this.height]);
         ctx.closePath();
         ctx.restore();
     }
 
     _calcParameters(){
         let transform=this.el.getLocalTransform();
+        let globalScale=this.el.getGlobalScale();
         let boundingRect = this.el.getBoundingRect();
         let x=boundingRect.x;
         let y=boundingRect.y;
@@ -64,18 +69,17 @@ export default class TransformControl {
         let c=[x+w/2,y+w/2];//center point of bounding rect
 
         //1.cache 9 points of boundingrect
-        this.pointCache.set("TL",{position:[x,y],name:"TL",cursor:'nwse-resize'});
-        this.pointCache.set("T",{position:[x+w/2,y],name:'T',cursor:'ns-resize'});
-        this.pointCache.set("TR",{position:[x+w,y],name:'TR',cursor:'nesw-resize'});
-        this.pointCache.set("R",{position:[x+w,y+h/2],name:'R',cursor:'ew-resize'});
-        this.pointCache.set("BR",{position:[x+w,y+h],name:'BR',cursor:'nwse-resize'});
-        this.pointCache.set("B",{position:[x+w/2,y+h],name:'B',cursor:'ns-resize'});
-        this.pointCache.set("BL",{position:[x,y+h],name:'BL',cursor:'nesw-resize'});
-        this.pointCache.set("L",{position:[x,y+h/2],name:"L",cursor:'ew-resize'});
-        this.pointCache.set("TT",{position:[x+w/2,y-50],name:'TT',cursor:'crosshair'});
+        this.pointCache.set("TL",{position:[0,0],cursor:'nwse-resize'});
+        this.pointCache.set("T",{position:[w/2,0],cursor:'ns-resize'});
+        this.pointCache.set("TR",{position:[w,0],cursor:'nesw-resize'});
+        this.pointCache.set("R",{position:[w,h/2],cursor:'ew-resize'});
+        this.pointCache.set("BR",{position:[w,h],cursor:'nwse-resize'});
+        this.pointCache.set("B",{position:[w/2,h],cursor:'ns-resize'});
+        this.pointCache.set("BL",{position:[0,h],cursor:'nesw-resize'});
+        this.pointCache.set("L",{position:[0,h/2],cursor:'ew-resize'});
+        this.pointCache.set("TT",{position:[w/2,-50],cursor:'crosshair'});
 
         //2.calc coordinates of this control, apply transform matrix
-        let result=[];
         let sinp=0;
         let cosp=0;
         let p=null;
@@ -85,24 +89,20 @@ export default class TransformControl {
         let halfW=width/2;
         let rotation=0;
         let point=null;
-        let matrix=null;
 
         this.pointCache.forEach((point,key,map)=>{
             p=point.position;
-
+            //apply transform
+            p[0]=p[0]*globalScale[0];
+            p[1]=p[1]*globalScale[1];
+            
             //move origin to the center point of boundingrect
             p[0]=p[0]-c[0];
             p[1]=p[1]-c[1];
+            
+            //translate, minus this.width or this.height
             sinp=matrixUtil.sinx(p[0],p[1]);
             cosp=matrixUtil.cosx(p[0],p[1]);
-            //move origin back
-            p[0]=p[0]+c[0];
-            p[1]=p[1]+c[1];
-            //apply transform
-            matrix=matrixUtil.mul(transform,[1,0,0,1,p[0],p[1]]);
-            p[0]=matrix[4];
-            p[1]=matrix[5];
-            //translate, minus this.width or this.height
             if(cosp<0){
                 p[0]=p[0]-width;
             }else if(cosp==0){
@@ -113,10 +113,16 @@ export default class TransformControl {
             }else if(sinp==0){
                 p[1]=p[1]-halfH;
             }
+
+            //move origin back
+            p[0]=p[0]+c[0];
+            p[1]=p[1]+c[1];
         });
 
         //3.calc rotation
         rotation=matrixUtil.atanx(transform[0],transform[1]);
+        this.rotation=rotation;
+        this.translate=[this.el.position[0],this.el.position[1]];
 
         //4.return result object
         point=this.pointCache.get(this.name);
@@ -126,10 +132,7 @@ export default class TransformControl {
         this.yMax=this.yMin+this.height;
         this.cursor=point.cursor;
 
-        return {
-            rotation:rotation,
-            point:point
-        };
+        return point;
     }
 
     isHover(x,y){
