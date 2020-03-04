@@ -1,5 +1,6 @@
 import * as classUtil from '../../core/utils/class_util';
 import * as matrixUtil from '../../core/utils/affine_matrix_util';
+import * as colorUtil from '../../core/utils/color_util';
 
 /**
  * @class qrenderer.graphic.Control
@@ -22,8 +23,8 @@ export default class TransformControl {
         this.hasControls = false;
         this.shape = 'square'; //square, circle
         this.action = 'scale'; //scale, rotate
-        this.fillStyle = 'blue';
-        this.strokeStyle = 'red';
+        this.fillStyle = colorUtil.parse("#ff0000");
+        this.strokeStyle = colorUtil.parse("#ff0000");
         this.lineWidth = 2;
         this.name = 'TL';   //TL, T, TR, L, R, BL, B, BR, TT
         this.cursor = 'corsshair';
@@ -44,7 +45,6 @@ export default class TransformControl {
         let param=this._calcParameters();
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
-        console.log(ctx.getTransform());
         ctx.lineWidth = this.lineWidth;
         ctx.fillStyle = this.fillStyle;
         ctx.strokeStyle = this.strokeStyle;

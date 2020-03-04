@@ -431,38 +431,35 @@ class Element{
     }
 
     renderControls(ctx, prevEl){
-        // if(!this.controls.length){
-            this.controls=[];
-            //TopLeft, Top, TopRight, Left, Right, BottomLeft, Bottom, BottomRight, TopTop
-            let positions = ['TL','T','TR','L','R','BL','B','BR','TT'];
-            positions.forEach((p,index)=>{
-                let control = new TransformControl({
-                    el:this,
-                    name:p,
-                    fillStyle:this.controlFillStyle,
-                    strokeStyle:this.controlStrokeStyle,
-                    lineWidth:this.controlLineWidth
-                }).render(ctx, prevEl);
-                this.controls.push(control);
-            });
-        // }else{
-        //     this.controls.forEach((control,index)=>{
-        //         console.log("render control...");
-        //         control.render(ctx,prevEl);
-        //     });
-        // }
+        this.controls=[];
+        //TopLeft, Top, TopRight, Left, Right, BottomLeft, Bottom, BottomRight, TopTop
+        let positions = ['TL','T','TR','R','BR','B','BL','L','TT'];
+        positions.forEach((p,index)=>{
+            let control = new TransformControl({
+                el:this,
+                name:p,
+                fillStyle:this.controlFillStyle,
+                strokeStyle:this.controlStrokeStyle,
+                lineWidth:this.controlLineWidth
+            }).render(ctx, prevEl);
+            this.controls.push(control);
+        });
 
         //draw bounding rect
-        let rect=this.getBoundingRect();
-        let p=[rect.x,rect.y];
-        p=this.localToGlobal(p[0],p[1]);
+        let control0=this.controls[0];
+        let control4=this.controls[4];
+        let p1=[control0.xMax-control0.width/2,control0.yMax-control0.height/2];
+        let p2=[control4.xMin+control4.width/2,control4.yMin+control4.height/2];
+        let w=p2[0]-p1[0];
+        let h=p2[1]-p1[1];
         ctx.save();
         ctx.setTransform(1,0,0,1,0,0);
         ctx.lineWidth = this.controlLineWidth;
         ctx.fillStyle = this.controlFillStyle;
         ctx.strokeStyle = this.controlStrokeStyle;
-        ctx.strokeRect(p[0],p[1],rect.width,rect.height);
-        ctx.closePath(); 
+        ctx.strokeRect(p1[0],p1[1],w,h);
+        ctx.closePath();
+
         //draw connet line
         ctx.beginPath();
         ctx.moveTo(this.controls[1].xMin+this.controls[1].width/2,this.controls[1].yMin);
