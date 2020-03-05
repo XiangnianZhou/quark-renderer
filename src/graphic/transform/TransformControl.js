@@ -146,39 +146,17 @@ export default class TransformControl {
     }
 
     isHover(x,y){
-        console.log(`x=${x},y=${y}`);
         let globalScale=this.el.getGlobalScale();
         let m, xMin, xMax, yMin, yMax;
         let points=[[this.x1,this.y1],[this.x2,this.y2],[this.x3,this.y3],[this.x4,this.y4]];
+        
+        //reverse scale transform
         points.forEach((point,index)=>{
-            //reverse scale
             point[0]=point[0]/globalScale[0];
             point[1]=point[1]/globalScale[1];
             point=this.el.localToGlobal(point[0],point[1]);
             points[index]=point;
-            
-            if(index==0){
-                xMin=xMax=point[0];
-                yMin=yMax=point[1];
-            }else{
-                if(point[0]<xMin){
-                    xMin=point[0];
-                }
-                if(point[0]>xMax){
-                    xMax=point[0];
-                }
-                if(point[1]<yMin){
-                    yMin=point[1];
-                }
-                if(point[1]>yMax){
-                    yMax=point[1];
-                }
-            }
         });
-        
-        if(x<xMin||x>xMax||y<yMin||y>yMax){
-            return false;
-        }
 
         return vectorUtil.isInsideRect(...points,[x,y]);
     }

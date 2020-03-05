@@ -9,6 +9,8 @@ export default class TransformEventMgr{
     startListen(){
         //incase there was a selected element
         this._restoreSelection();
+        this.selectedEl=null;
+        this.lastHoveredControl=null;
         //cache x axis
         this._x=0;
         //cache y axis
@@ -58,8 +60,6 @@ export default class TransformEventMgr{
             this.dispatcher.on("mousemove",this.mouseMoveHandler1,this);
             this.dispatcher.on("mousedown",this.mouseDownHandler2,this);
         }
-        this.selectedEl=null;
-        this.lastHoveredControl=null;
     }
 
     mouseMoveHandler1(e){
@@ -105,8 +105,6 @@ export default class TransformEventMgr{
         let newSy=sy+dsy;
 
         let position=this.lastHoveredControl.position;
-        // console.log(`dsx=${dsx},dsy=${dsy}`);
-        // console.log(`newSx=${newSx},newSy=${newSy}`);
         if(position==='T'||position==='B'){
             this.selectedEl.scale=[sx,newSy];
         }else if(position==='R'){
@@ -126,7 +124,10 @@ export default class TransformEventMgr{
     }
 
     mouseUpHandler(e){
-        console.log("control mouse up...");
-        this.startListen();
+        this.dispatcher.off("mousedown",this.mouseDownHandler1);
+        this.dispatcher.off("pagemousemove",this.mouseMoveHandler2);
+        this.dispatcher.off("pagemouseup",this.mouseUpHandler);
+        this.dispatcher.on("mousemove",this.mouseMoveHandler1,this);
+        this.dispatcher.on("mousedown",this.mouseDownHandler2,this);
     }
 }
