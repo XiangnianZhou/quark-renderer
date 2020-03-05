@@ -99,16 +99,56 @@ export default class TransformEventMgr{
     }
 
     mouseMoveHandler2(e){
+        let gs=this.selectedEl.getGlobalScale();
+        let gsx=gs[0];  //global scale in x direction
+        let gsy=gs[1];  //global scale in y direction
         let mouseX=e.offsetX;    //x position of mouse
         let mouseY=e.offsetY;    //y position of mouse
         let width=this.selectedEl.shape.width;      //original width without transforming
         let height=this.selectedEl.shape.height;    //original height without transforming
+        
+        //four corner points
+        let origin0=this.selectedEl.localToGlobal(0,0);
+        let origin1=this.selectedEl.localToGlobal(width,0);
+        let origin2=this.selectedEl.localToGlobal(width,height);
+        let origin3=this.selectedEl.localToGlobal(0,height);
+        
+        //calculate newSx, newSy, elX, elY
+        let sx=this.selectedEl.scale[0];
+        let sy=this.selectedEl.scale[1];
+        let newSx=sx;
+        let newSy=sy;
+        let name=this.lastHoveredControl.name;
         let elX=this.selectedEl.position[0];         //current x position in global space
         let elY=this.selectedEl.position[1];         //current y position in global space
-        
-        //calculate newSx and newSy
-        let newSx=(mouseX-elX)/width;
-        let newSy=(mouseY-elY)/height;
+        if(name==='TL'){
+            elX=mouseX;
+            elY=mouseY;
+            newSx=-(mouseX-origin2[0])/width;
+            newSy=-(mouseY-origin2[1])/height;
+        }else if(name==='T'){
+            elY=mouseY;
+            newSy=-(mouseY-origin2[1])/height;
+        }else if(name==='TR'){
+            elY=mouseY;
+            newSx=(mouseX-origin3[0])/width;
+            newSy=-(mouseY-origin3[1])/height;
+        }else if(name==='R'){
+            newSx=(mouseX-origin0[0])/width;
+        }else if(name==='BR'){
+            newSx=(mouseX-origin0[0])/width;
+            newSy=(mouseY-origin0[1])/height;
+        }else if(name==='B'){
+            newSy=(mouseY-origin0[1])/height;
+        }else if(name==='BL'){
+            newSx=-(mouseX-origin1[0])/width;
+            newSy=(mouseY-origin1[1])/height;
+            elX=mouseX;
+        }else if(name==='L'){
+            newSx=-(mouseX-origin1[0])/width;
+            elX=mouseX;
+        }
+
         if(mathAbs(newSx)<EPSILON){
             newSx=0;
         }
@@ -116,27 +156,8 @@ export default class TransformEventMgr{
             newSy=0;
         }
 
-        let sx=this.selectedEl.scale[0];
-        let sy=this.selectedEl.scale[1];
-
-        let name=this.lastHoveredControl.name;
-        if(name==='T'){
-            this.selectedEl.scale=[sx,newSy];
-        }else if(name==='B'){
-            this.selectedEl.scale=[sx,newSy];
-        }else if(name==='R'){
-            this.selectedEl.scale=[newSx,sy];
-        }else if(name==='L'){
-            this.selectedEl.scale=[newSx,sy];
-        }else if(name==='BR'){
-            this.selectedEl.scale=[newSx,newSy];
-        }else if(name==='TL'){
-            this.selectedEl.scale=[newSx,newSy];
-        }else if(name==='TR'){
-            this.selectedEl.scale=[newSx,newSy];
-        }else if(name==='BL'){
-            this.selectedEl.scale=[newSx,newSy];
-        }
+        this.selectedEl.position=[elX,elY];
+        this.selectedEl.scale=[newSx,newSy];
         this.selectedEl.dirty();
     }
 
