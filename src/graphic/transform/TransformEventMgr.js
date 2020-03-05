@@ -99,34 +99,25 @@ export default class TransformEventMgr{
     }
 
     mouseMoveHandler2(e){
-        let x=e.offsetX;
-        let y=e.offsetY;
-        let width=this.selectedEl.shape.width;
-        let height=this.selectedEl.shape.height;
-        let local=this.selectedEl.globalToLocal(x,y);
-        console.log(`local=${local}`);
-        let localX=local[0];
-        let localY=local[1];
-        // let flagX=localX<=0?1:-1;
-        // let flagY=localY<=0?1:-1;
-        let dsx=(localX-width)/width;
-        let dsy=(localY-height)/height;
-        if(mathAbs(dsx)<EPSILON){
-            dsx=0;
+        let x=e.offsetX;    //x position of mouse
+        let y=e.offsetY;    //y position of mouse
+        let width=this.selectedEl.shape.width;      //original width without transforming
+        let height=this.selectedEl.shape.height;    //original height without transforming
+        let p0=this.selectedEl.position[0];         //current x position in global space
+        let p1=this.selectedEl.position[1];         //current y position in global space
+        
+        //calculate newSx and newSy
+        let newSx=(x-p0)/width;
+        let newSy=(y-p1)/height;
+        if(mathAbs(newSx)<EPSILON){
+            newSx=0;
         }
-        if(mathAbs(dsy)<EPSILON){
-            dsy=0;
+        if(mathAbs(newSy)<EPSILON){
+            newSy=0;
         }
-        // console.log(`dsx=${dsx},dsy=${dsy}`);
-        // return;
 
         let sx=this.selectedEl.scale[0];
         let sy=this.selectedEl.scale[1];
-        let newSx=sx+dsx;
-        let newSy=sy+dsy;
-
-        // console.log(`sx=${sx},sy=${sy}`);
-        console.log(`newSx=${newSx},newSy=${newSy}`);
 
         let name=this.lastHoveredControl.name;
         if(name==='T'){
@@ -134,19 +125,11 @@ export default class TransformEventMgr{
         }else if(name==='B'){
             this.selectedEl.scale=[sx,newSy];
         }else if(name==='R'){
-            // let origin=this.selectedEl.origin;
-            // this.selectedEl.origin=[0,0];
             this.selectedEl.scale=[newSx,sy];
-            // this.selectedEl.origin=origin;
         }else if(name==='L'){
-            // let origin=this.selectedEl.origin;
-            // this.selectedEl.origin=[width,0];
             this.selectedEl.scale=[newSx,sy];
-            // this.selectedEl.origin=origin;
         }else if(name==='BR'){
-            // let origin=this.selectedEl.origin;
             this.selectedEl.scale=[newSx,newSy];
-            // this.selectedEl.origin=origin;
         }else if(name==='TL'){
             this.selectedEl.scale=[newSx,newSy];
         }else if(name==='TR'){
