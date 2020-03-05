@@ -155,7 +155,7 @@ class Element{
 
         this.controlStrokeStyle = '#000000';
 
-        this.controlLineWidth = 2;
+        this.controlLineWidth = 1;
 
         /**
          * @property {Boolean} silent

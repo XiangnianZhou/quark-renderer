@@ -4,6 +4,8 @@ export let ContextCachedBy = {
     PLAIN_TEXT: 2
 };
 
+export let EPSILON = 1e-8; //0.00000001
+
 export let WILL_BE_RESTORED = 9;
 
 export let E=Math.E;

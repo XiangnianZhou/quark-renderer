@@ -1,3 +1,4 @@
+import {EPSILON,mathAbs} from '../constants';
 
 /**
  * @class qrenderer.graphic.TransformEventMgr
@@ -103,27 +104,54 @@ export default class TransformEventMgr{
         let width=this.selectedEl.shape.width;
         let height=this.selectedEl.shape.height;
         let local=this.selectedEl.globalToLocal(x,y);
-        let dsx=(local[0]-width)/width;
-        let dsy=(local[1]-height)/height;
+        console.log(`local=${local}`);
+        let localX=local[0];
+        let localY=local[1];
+        // let flagX=localX<=0?1:-1;
+        // let flagY=localY<=0?1:-1;
+        let dsx=(localX-width)/width;
+        let dsy=(localY-height)/height;
+        if(mathAbs(dsx)<EPSILON){
+            dsx=0;
+        }
+        if(mathAbs(dsy)<EPSILON){
+            dsy=0;
+        }
+        // console.log(`dsx=${dsx},dsy=${dsy}`);
+        // return;
+
         let sx=this.selectedEl.scale[0];
         let sy=this.selectedEl.scale[1];
         let newSx=sx+dsx;
         let newSy=sy+dsy;
 
+        // console.log(`sx=${sx},sy=${sy}`);
+        console.log(`newSx=${newSx},newSy=${newSy}`);
+
         let name=this.lastHoveredControl.name;
-        if(name==='T'||name==='B'){
+        if(name==='T'){
+            this.selectedEl.scale=[sx,newSy];
+        }else if(name==='B'){
             this.selectedEl.scale=[sx,newSy];
         }else if(name==='R'){
-            let origin=this.selectedEl.origin;
-            this.selectedEl.origin=[0,0];
+            // let origin=this.selectedEl.origin;
+            // this.selectedEl.origin=[0,0];
             this.selectedEl.scale=[newSx,sy];
-            this.selectedEl.origin=origin;
+            // this.selectedEl.origin=origin;
         }else if(name==='L'){
-            let origin=this.selectedEl.origin;
-            this.selectedEl.origin=[width,0];
+            // let origin=this.selectedEl.origin;
+            // this.selectedEl.origin=[width,0];
             this.selectedEl.scale=[newSx,sy];
-            this.selectedEl.origin=origin;
-        }else if(name==='TL'||name==='TR'||name==='BL'||name==='BR'){
+            // this.selectedEl.origin=origin;
+        }else if(name==='BR'){
+            // let origin=this.selectedEl.origin;
+            this.selectedEl.scale=[newSx,newSy];
+            // this.selectedEl.origin=origin;
+        }else if(name==='TL'){
+            this.selectedEl.scale=[newSx,newSy];
+        }else if(name==='TR'){
+            this.selectedEl.scale=[newSx,newSy];
+        }else if(name==='BL'){
             this.selectedEl.scale=[newSx,newSy];
         }
         this.selectedEl.dirty();

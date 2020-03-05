@@ -65,16 +65,16 @@ export default class TransformControl {
     }
 
     _calcParameters(){
-        let transform=this.el.getLocalTransform();
+        let transform=this.el.composeLocalTransform();
         let globalScale=this.el.getGlobalScale();
         let boundingRect = this.el.getBoundingRect();
         let x=boundingRect.x;
         let y=boundingRect.y;
         let w=boundingRect.width;
         let h=boundingRect.height;
-        let c=[x+w/2,y+w/2];//center point of bounding rect
+        let c=[w/2*globalScale[0],h/2*globalScale[1]];//center point of bounding rect
 
-        //1.cache 9 points of boundingrect
+        //step-1: cache 9 points of boundingrect, cursor style https://developer.mozilla.org/en-US/docs/Web/CSS/cursor
         this.pointCache.set("TL",{position:[0,0],cursor:'nwse-resize',name:"TL"});
         this.pointCache.set("T",{position:[w/2,0],cursor:'ns-resize',name:"T"});
         this.pointCache.set("TR",{position:[w,0],cursor:'nesw-resize',name:"TR"});
@@ -85,7 +85,7 @@ export default class TransformControl {
         this.pointCache.set("L",{position:[0,h/2],cursor:'ew-resize',name:"L"});
         this.pointCache.set("TT",{position:[w/2,-60],cursor:'crosshair',name:"TT"});
 
-        //2.calc coordinates of this control, apply transform matrix
+        //step-2: calc coordinates of this control, apply transform matrix
         let sinp=0;
         let cosp=0;
         let p=null;
@@ -99,7 +99,7 @@ export default class TransformControl {
         this.pointCache.forEach((point,key,map)=>{
             p=point.position;
 
-            //apply transform
+            //apply scale to point
             p[0]=p[0]*globalScale[0];
             if(point.name!=='TT'){
                 p[1]=p[1]*globalScale[1];
@@ -112,6 +112,8 @@ export default class TransformControl {
             //translate, minus this.width or this.height
             sinp=matrixUtil.sinx(p[0],p[1]);
             cosp=matrixUtil.cosx(p[0],p[1]);
+            // console.log(`name=${point.name},sinp=${sinp},cosp=${cosp}`);
+
             if(cosp<0){
                 p[0]=p[0]-width;
             }else if(cosp==0){
@@ -128,12 +130,12 @@ export default class TransformControl {
             p[1]=p[1]+c[1];
         });
 
-        //3.calc rotation
+        //step-3: calc rotation of this.el
         rotation=matrixUtil.atanx(transform[0],transform[1]);
         this.rotation=rotation;
         this.translate=[this.el.position[0],this.el.position[1]];
 
-        //4.return result object
+        //step-4: return result
         point=this.pointCache.get(this.name);
         this.x1=point.position[0];
         this.y1=point.position[1];
@@ -153,7 +155,7 @@ export default class TransformControl {
         let m, xMin, xMax, yMin, yMax;
         let points=[[this.x1,this.y1],[this.x2,this.y2],[this.x3,this.y3],[this.x4,this.y4]];
         
-        //reverse scale transform
+        //reverse scale
         points.forEach((point,index)=>{
             point[0]=point[0]/globalScale[0];
             point[1]=point[1]/globalScale[1];
