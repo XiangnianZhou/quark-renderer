@@ -99,16 +99,16 @@ export default class TransformEventMgr{
     }
 
     mouseMoveHandler2(e){
-        let x=e.offsetX;    //x position of mouse
-        let y=e.offsetY;    //y position of mouse
+        let mouseX=e.offsetX;    //x position of mouse
+        let mouseY=e.offsetY;    //y position of mouse
         let width=this.selectedEl.shape.width;      //original width without transforming
         let height=this.selectedEl.shape.height;    //original height without transforming
-        let p0=this.selectedEl.position[0];         //current x position in global space
-        let p1=this.selectedEl.position[1];         //current y position in global space
+        let elX=this.selectedEl.position[0];         //current x position in global space
+        let elY=this.selectedEl.position[1];         //current y position in global space
         
         //calculate newSx and newSy
-        let newSx=(x-p0)/width;
-        let newSy=(y-p1)/height;
+        let newSx=(mouseX-elX)/width;
+        let newSy=(mouseY-elY)/height;
         if(mathAbs(newSx)<EPSILON){
             newSx=0;
         }
