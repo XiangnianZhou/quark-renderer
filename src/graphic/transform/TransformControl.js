@@ -75,15 +75,15 @@ export default class TransformControl {
         let c=[x+w/2,y+w/2];//center point of bounding rect
 
         //1.cache 9 points of boundingrect
-        this.pointCache.set("TL",{position:[0,0],cursor:'nwse-resize'});
-        this.pointCache.set("T",{position:[w/2,0],cursor:'ns-resize'});
-        this.pointCache.set("TR",{position:[w,0],cursor:'nesw-resize'});
-        this.pointCache.set("R",{position:[w,h/2],cursor:'ew-resize'});
-        this.pointCache.set("BR",{position:[w,h],cursor:'nwse-resize'});
-        this.pointCache.set("B",{position:[w/2,h],cursor:'ns-resize'});
-        this.pointCache.set("BL",{position:[0,h],cursor:'nesw-resize'});
-        this.pointCache.set("L",{position:[0,h/2],cursor:'ew-resize'});
-        this.pointCache.set("TT",{position:[w/2,-50],cursor:'crosshair'});
+        this.pointCache.set("TL",{position:[0,0],cursor:'nwse-resize',name:"TL"});
+        this.pointCache.set("T",{position:[w/2,0],cursor:'ns-resize',name:"T"});
+        this.pointCache.set("TR",{position:[w,0],cursor:'nesw-resize',name:"TR"});
+        this.pointCache.set("R",{position:[w,h/2],cursor:'ew-resize',name:"R"});
+        this.pointCache.set("BR",{position:[w,h],cursor:'nwse-resize',name:"BR"});
+        this.pointCache.set("B",{position:[w/2,h],cursor:'ns-resize',name:"B"});
+        this.pointCache.set("BL",{position:[0,h],cursor:'nesw-resize',name:"BL"});
+        this.pointCache.set("L",{position:[0,h/2],cursor:'ew-resize',name:"L"});
+        this.pointCache.set("TT",{position:[w/2,-60],cursor:'crosshair',name:"TT"});
 
         //2.calc coordinates of this control, apply transform matrix
         let sinp=0;
@@ -98,9 +98,12 @@ export default class TransformControl {
 
         this.pointCache.forEach((point,key,map)=>{
             p=point.position;
+
             //apply transform
             p[0]=p[0]*globalScale[0];
-            p[1]=p[1]*globalScale[1];
+            if(point.name!=='TT'){
+                p[1]=p[1]*globalScale[1];
+            }
             
             //move origin to the center point of boundingrect
             p[0]=p[0]-c[0];

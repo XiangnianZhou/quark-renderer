@@ -1,5 +1,11 @@
 
-
+/**
+ * @class qrenderer.graphic.TransformEventMgr
+ * 
+ * Transform event manager. When use select the transform control and begin dragging, the manager will manage the events for this process.
+ * 
+ * 变换事件管理器。当用户选中元素，开始拖动变换控制杆时，此管理器负责分发事件。
+ */
 export default class TransformEventMgr{
     constructor(dispatcher){
         this.dispatcher=dispatcher;
@@ -83,7 +89,7 @@ export default class TransformEventMgr{
             this.dispatcher.off("mousemove",this.mouseMoveHandler1);//lockdown current clicked control, do not look for hovered control
             this.dispatcher.on("pagemousemove",this.mouseMoveHandler2,this);
             this.dispatcher.on("pagemouseup",this.mouseUpHandler,this);
-        }else if(target&&target.id&&target.id.indexOf("el-")!=-1){//click on an element, FIXME:how to decide target is an element?
+        }else if(target&&target.id&&target.id.indexOf("el-")!=-1){//click on an element, FIXME:better way to determine whether the target is an element?
             this._clickElement(target);
         }else{//click on anywhere else
             this._hasControls=false;
@@ -104,26 +110,27 @@ export default class TransformEventMgr{
         let newSx=sx+dsx;
         let newSy=sy+dsy;
 
-        let position=this.lastHoveredControl.position;
-        if(position==='T'||position==='B'){
+        let name=this.lastHoveredControl.name;
+        if(name==='T'||name==='B'){
             this.selectedEl.scale=[sx,newSy];
-        }else if(position==='R'){
+        }else if(name==='R'){
             let origin=this.selectedEl.origin;
             this.selectedEl.origin=[0,0];
             this.selectedEl.scale=[newSx,sy];
             this.selectedEl.origin=origin;
-        }else if(position==='L'){
+        }else if(name==='L'){
             let origin=this.selectedEl.origin;
             this.selectedEl.origin=[width,0];
             this.selectedEl.scale=[newSx,sy];
             this.selectedEl.origin=origin;
-        }else if(position==='TL'||position==='TR'||position==='BL'||position==='BR'){
+        }else if(name==='TL'||name==='TR'||name==='BL'||name==='BR'){
             this.selectedEl.scale=[newSx,newSy];
         }
         this.selectedEl.dirty();
     }
 
     mouseUpHandler(e){
+        this.selectedEl.draggable=this._elDraggable;
         this.dispatcher.off("mousedown",this.mouseDownHandler1);
         this.dispatcher.off("pagemousemove",this.mouseMoveHandler2);
         this.dispatcher.off("pagemouseup",this.mouseUpHandler);
