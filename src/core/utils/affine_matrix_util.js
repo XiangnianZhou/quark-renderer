@@ -185,8 +185,12 @@ export function atanx(x,y){
 }
 
 
-export function vectorAdd(v1,v2){
+export function addVector(v1,v2){
     return [v1[0]+v2[0],v1[1]+v2[1]];
+}
+
+export function minusVector(v1,v2){
+    return [v1[0]-v2[0],v1[1]-v2[1]];
 }
 
 /**
@@ -196,6 +200,22 @@ export function vectorAdd(v1,v2){
  * @param {*} v 
  * @param {*} radian 
  */
-export function vectorRotate(v,radian){
+export function rotateVector(v,radian){
     return [v[0]*mathCos(radian)+v[1]*mathSin(radian),-v[0]*mathSin(radian)+v[1]*mathCos(radian)];
+}
+
+/**
+ * 矩阵左乘向量
+ */
+export function transformVector(v, m) {
+    var x = v[0];
+    var y = v[1];
+    let out=[];
+    out[0] = m[0] * x + m[2] * y + m[4];
+    out[1] = m[1] * x + m[3] * y + m[5];
+    return out;
+}
+
+export function dot(v1, v2) {
+    return v1[0] * v2[0] + v1[1] * v2[1];
 }

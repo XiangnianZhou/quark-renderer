@@ -108,20 +108,26 @@ export default class TransformEventMgr{
         let width=this.selectedEl.shape.width;      //original width without transforming
         let height=this.selectedEl.shape.height;    //original height without transforming
         
-        //four corner points
-        let origin0=this.selectedEl.localToGlobal(0,0);
-        let origin1=this.selectedEl.localToGlobal(width,0);
-        let origin2=this.selectedEl.localToGlobal(width,height);
-        let origin3=this.selectedEl.localToGlobal(0,height);
-        
         //calculate newSx, newSy, elX, elY
         let sx=this.selectedEl.scale[0];
         let sy=this.selectedEl.scale[1];
         let newSx=sx;
         let newSy=sy;
-        let name=this.lastHoveredControl.name;
         let elX=this.selectedEl.position[0];         //current x position in global space
         let elY=this.selectedEl.position[1];         //current y position in global space
+
+        //four corner points
+        let origin0=this.selectedEl.localToGlobal(0,0);
+        let origin1=this.selectedEl.localToGlobal(width,0);
+        let origin2=this.selectedEl.localToGlobal(width,height);
+        let origin3=this.selectedEl.localToGlobal(0,height);
+
+        [mouseX,mouseY]=matrixUtil.minusVector([mouseX,mouseY],origin0);
+        [mouseX,mouseY]=matrixUtil.rotateVector([mouseX,mouseY],this.lastHoveredControl.rotation);
+        [mouseX,mouseY]=matrixUtil.addVector([mouseX,mouseY],origin0);
+        console.log(`newX=${mouseX},newY=${mouseY}`);
+
+        let name=this.lastHoveredControl.name;
         if(name==='TL'){
             elX=mouseX;
             elY=mouseY;
