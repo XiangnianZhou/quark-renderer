@@ -150,38 +150,38 @@ export default class TransformEventMgr{
         let origin2=this.selectedEl.localToGlobal(width,height);
         let origin3=this.selectedEl.localToGlobal(0,height);
 
-        [mouseX,mouseY]=matrixUtil.minusVector([mouseX,mouseY],origin0);
-        [mouseX,mouseY]=matrixUtil.rotateVector([mouseX,mouseY],this.lastHoveredControl.rotation);
-        [mouseX,mouseY]=matrixUtil.addVector([mouseX,mouseY],origin0);
-        console.log(`newX=${mouseX},newY=${mouseY}`);
+        let [rotatedX,rotatedY]=matrixUtil.minusVector([mouseX,mouseY],origin0);
+        [rotatedX,rotatedY]=matrixUtil.rotateVector([rotatedX,rotatedY],this.lastHoveredControl.rotation);
+        [rotatedX,rotatedY]=matrixUtil.addVector([rotatedX,rotatedY],origin0);
 
         let name=this.lastHoveredControl.name;
         if(name==='TL'){
             elX=mouseX;
             elY=mouseY;
-            newSx=-(mouseX-origin2[0])/width;
-            newSy=-(mouseY-origin2[1])/height;
+            newSx=-(rotatedX-origin2[0])/width;
+            newSy=-(rotatedY-origin2[1])/height;
         }else if(name==='T'){
-            elY=mouseY;
-            newSy=-(mouseY-origin2[1])/height;
+            elX=mouseX;
+            newSy=-(rotatedY-origin2[1])/height;
+            console.log(`newSx=${newSx},newSy=${newSy}`);
         }else if(name==='TR'){
             elY=mouseY;
-            newSx=(mouseX-origin3[0])/width;
-            newSy=-(mouseY-origin3[1])/height;
+            newSx=(rotatedX-origin3[0])/width;
+            newSy=-(rotatedY-origin3[1])/height;
         }else if(name==='R'){
-            newSx=(mouseX-origin0[0])/width;
+            newSx=(rotatedX-origin0[0])/width;
         }else if(name==='BR'){
-            newSx=(mouseX-origin0[0])/width;
-            newSy=(mouseY-origin0[1])/height;
+            newSx=(rotatedX-origin0[0])/width;
+            newSy=(rotatedY-origin0[1])/height;
         }else if(name==='B'){
-            newSy=(mouseY-origin0[1])/height;
+            newSy=(rotatedY-origin0[1])/height;
         }else if(name==='BL'){
-            newSx=-(mouseX-origin1[0])/width;
-            newSy=(mouseY-origin1[1])/height;
             elX=mouseX;
+            newSx=-(rotatedX-origin1[0])/width;
+            newSy=(rotatedY-origin1[1])/height;
         }else if(name==='L'){
-            newSx=-(mouseX-origin1[0])/width;
             elX=mouseX;
+            newSx=-(rotatedX-origin1[0])/width;
         }
 
         if(mathAbs(newSx)<EPSILON){
