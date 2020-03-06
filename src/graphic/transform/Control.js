@@ -8,7 +8,10 @@ import * as colorUtil from '../../core/utils/color_util';
  * 
  * Transform control.
  * 
- * 变换控制点。
+ * 变换控制点。目前的实现有两个限制：
+ * 
+ * - 1.只支持缩放、旋转，不支持斜切。
+ * - 2.当元素发生斜切时，变换控制点的位置不正确，因为没有把斜切参数计算进去。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
