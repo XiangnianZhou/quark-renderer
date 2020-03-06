@@ -161,7 +161,8 @@ export default class TransformEventMgr{
             newSx=-(rotatedX-origin2[0])/width;
             newSy=-(rotatedY-origin2[1])/height;
         }else if(name==='T'){
-            elX=mouseX;
+            // elX=mouseX;
+            elY=mouseY;
             newSy=-(rotatedY-origin2[1])/height;
             console.log(`newSx=${newSx},newSy=${newSy}`);
         }else if(name==='TR'){
