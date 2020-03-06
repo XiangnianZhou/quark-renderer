@@ -156,17 +156,15 @@ export default class TransformEventMgr{
 
         let name=this.lastHoveredControl.name;
         if(name==='TL'){
-            elX=mouseX;
-            elY=mouseY;
+            elX=rotatedX;
+            elY=rotatedY;
             newSx=-(rotatedX-origin2[0])/width;
             newSy=-(rotatedY-origin2[1])/height;
         }else if(name==='T'){
-            // elX=mouseX;
-            elY=mouseY;
+            elY=rotatedY;
             newSy=-(rotatedY-origin2[1])/height;
-            console.log(`newSx=${newSx},newSy=${newSy}`);
         }else if(name==='TR'){
-            elY=mouseY;
+            elY=rotatedY;
             newSx=(rotatedX-origin3[0])/width;
             newSy=-(rotatedY-origin3[1])/height;
         }else if(name==='R'){
@@ -177,11 +175,11 @@ export default class TransformEventMgr{
         }else if(name==='B'){
             newSy=(rotatedY-origin0[1])/height;
         }else if(name==='BL'){
-            elX=mouseX;
+            elX=rotatedX;
             newSx=-(rotatedX-origin1[0])/width;
             newSy=(rotatedY-origin1[1])/height;
         }else if(name==='L'){
-            elX=mouseX;
+            elX=rotatedX;
             newSx=-(rotatedX-origin1[0])/width;
         }
 
