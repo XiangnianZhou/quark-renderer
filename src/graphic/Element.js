@@ -4,7 +4,7 @@ import * as matrixUtil from '../core/utils/affine_matrix_util';
 import * as vectorUtil from '../core/utils/vector_util';
 import Eventful from '../event/Eventful';
 import Transformable from './transform/Transformable';
-import TransformControl from './transform/TransformControl';
+import Control from './transform/Control';
 import Animatable from '../animation/Animatable';
 import Style from './Style';
 import RectText from './RectText';
@@ -143,7 +143,7 @@ class Element{
         this.hasControls = false;
 
         /**
-         * @property {Array<TransformControl>} controls
+         * @property {Array<Control>} controls
          * Transform controls.
          * 
          * 
@@ -449,7 +449,7 @@ class Element{
         this.controls=[];
         let positions = ['TL','T','TR','R','BR','B','BL','L','TT'];
         positions.forEach((p,index)=>{
-            let control = new TransformControl({
+            let control = new Control({
                 el:this,
                 name:p,
                 fillStyle:this.controlFillStyle,

@@ -12,7 +12,7 @@ import * as colorUtil from '../../core/utils/color_util';
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default class TransformControl {
+export default class Control {
     constructor(options={}){
         this.el=null;
         //4 points at the corners
@@ -27,8 +27,6 @@ export default class TransformControl {
         this.width = 20;
         this.height = 20;
         this.hasControls = false;
-        this.shape = 'square'; //square, circle
-        this.action = 'scale'; //scale, rotate
         this.lineWidth = 2;
         this.name = 'TL';   //TL, T, TR, L, R, BL, B, BR, TT
         this.cursor = 'corsshair';
@@ -43,11 +41,7 @@ export default class TransformControl {
     }
 
     render(ctx,prevEl){
-        if(this.shape == 'square'){
-            this._renderSquareControl(ctx,prevEl);
-        }else if(this.shape == 'circle'){
-            this._renderCircleControl(ctx,prevEl);
-        }
+        this._renderSquareControl(ctx,prevEl);
         return this;
     }
     
@@ -137,6 +131,15 @@ export default class TransformControl {
         this.rotation=rotation;
         this.translate=[this.el.position[0],this.el.position[1]];
 
+        cosp=matrixUtil.cosx(transform[0],transform[1]);
+        sinp=matrixUtil.sinx(transform[2],transform[3]);
+        if(cosp<0){
+            this.el.flipX=true;
+        }
+        if(sinp<0){
+            this.el.flipY=true;
+        }
+
         //step-4: return result
         point=this.pointCache.get(this.name);
         this.x1=point.position[0];
@@ -166,9 +169,5 @@ export default class TransformControl {
         });
 
         return vectorUtil.isInsideRect(...points,[x,y]);
-    }
-
-    _renderCircleControl(ctx,prevEl){
-        ctx.arc(0,0,10,0,PI2,true);
     }
 }
