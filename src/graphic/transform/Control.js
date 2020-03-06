@@ -15,7 +15,6 @@ import * as colorUtil from '../../core/utils/color_util';
 export default class Control {
     constructor(options={}){
         this.el=null;
-        //4 points at the corners
         this.x1 = 0;
         this.y1 = 0;
         this.x2 = 0;
@@ -95,20 +94,19 @@ export default class Control {
         this.pointCache.forEach((point,key,map)=>{
             p=point.position;
 
-            //apply scale to point
+            // apply scale to point
             p[0]=p[0]*globalScale[0];
             if(point.name!=='TT'){
                 p[1]=p[1]*globalScale[1];
             }
             
-            //move origin to the center point of boundingrect
+            // move origin to the center point of boundingrect
             p[0]=p[0]-c[0];
             p[1]=p[1]-c[1];
             
-            //translate, minus this.width or this.height
+            // translate, minus this.width or this.height
             sinp=matrixUtil.sinx(p[0],p[1]);
             cosp=matrixUtil.cosx(p[0],p[1]);
-            // console.log(`name=${point.name},sinp=${sinp},cosp=${cosp}`);
 
             if(cosp<0){
                 p[0]=p[0]-width;
