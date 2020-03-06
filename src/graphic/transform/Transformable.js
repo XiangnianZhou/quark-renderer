@@ -327,7 +327,6 @@ Transformable.prototype={
      * @return {Array<Number>}
      */
     globalToLocal:function (x, y) {
-        this.composeLocalTransform();
         let v2 = [x, y];
         let inverseTransform = this.inverseTransform;
         if (inverseTransform) {
@@ -347,7 +346,6 @@ Transformable.prototype={
      * @return {Array<Number>}
      */
     localToGlobal:function (x, y) {
-        this.composeLocalTransform();
         let v2 = [x, y];
         let transform = this.transform;
         if (transform) {
