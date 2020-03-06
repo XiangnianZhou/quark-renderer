@@ -327,12 +327,7 @@ Transformable.prototype={
      * @return {Array<Number>}
      */
     globalToLocal:function (x, y) {
-        let v2 = [x, y];
-        let inverseTransform = this.inverseTransform;
-        if (inverseTransform) {
-            vectorUtil.applyTransform(v2, v2, inverseTransform);//FIXME:something might be wrong with the inverse transform at distinct points
-        }
-        return v2;
+        return matrixUtil.transformVector([x,y],this.inverseTransform);//FIXME:something might be wrong while continually invoke this
     },
 
     /**
