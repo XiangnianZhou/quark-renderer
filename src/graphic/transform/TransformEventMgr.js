@@ -108,6 +108,7 @@ export default class TransformEventMgr{
         let height=this.selectedEl.shape.height;    //original height without transforming
         
         //four corner points
+        console.log(`transform->${this.selectedEl.transform}`);
         let origin0=this.selectedEl.localToGlobal(0,0);
         let origin1=this.selectedEl.localToGlobal(width,0);
         let origin2=this.selectedEl.localToGlobal(width,height);
