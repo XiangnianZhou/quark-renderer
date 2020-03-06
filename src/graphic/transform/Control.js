@@ -60,7 +60,7 @@ export default class Control {
     }
 
     _calcParameters(){
-        let transform=this.el.composeLocalTransform();
+        let transform=this.el.transform;
         let globalScale=this.el.getGlobalScale();
         let boundingRect = this.el.getBoundingRect();
         let x=boundingRect.x;

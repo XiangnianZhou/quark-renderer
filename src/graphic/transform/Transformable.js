@@ -346,12 +346,7 @@ Transformable.prototype={
      * @return {Array<Number>}
      */
     localToGlobal:function (x, y) {
-        let v2 = [x, y];
-        let transform = this.transform;
-        if (transform) {
-            vectorUtil.applyTransform(v2, v2, transform);
-        }
-        return v2;
+        return matrixUtil.transformVector([x,y],this.transform);//FIXME:something might be wrong while continually invoke this
     }
 }
 

@@ -128,59 +128,58 @@ export default class TransformEventMgr{
      * @param {*} e 
      */
     mouseMoveHandler2(e){
-        let gs=this.selectedEl.getGlobalScale();
-        let gsx=gs[0];  //global scale in x direction
-        let gsy=gs[1];  //global scale in y direction
         let mouseX=e.offsetX;    //x position of mouse
         let mouseY=e.offsetY;    //y position of mouse
         let width=this.selectedEl.shape.width;      //original width without transforming
         let height=this.selectedEl.shape.height;    //original height without transforming
-        
-        //calculate newSx, newSy, elX, elY
+        let halfWidth=width/2;
+        let halfHeight=height/2;
         let sx=this.selectedEl.scale[0];
         let sy=this.selectedEl.scale[1];
         let newSx=sx;
         let newSy=sy;
         let elX=this.selectedEl.position[0];         //current x position in global space
         let elY=this.selectedEl.position[1];         //current y position in global space
+        console.log([halfWidth,halfHeight]);
+        console.log(`transform->${this.selectedEl.transform}`);//FIXME:为什么 transform 会出现抖动的现象？这个值忽大忽小。
+        let center=this.selectedEl.localToGlobal(halfWidth,halfHeight);
+        let centerX=center[0];
+        let centerY=center[1];
 
-        //four corner points
-        let origin0=this.selectedEl.localToGlobal(0,0);
-        let origin1=this.selectedEl.localToGlobal(width,0);
-        let origin2=this.selectedEl.localToGlobal(width,height);
-        let origin3=this.selectedEl.localToGlobal(0,height);
-
-        let [rotatedX,rotatedY]=matrixUtil.minusVector([mouseX,mouseY],origin0);
+        let [rotatedX,rotatedY]=matrixUtil.minusVector([mouseX,mouseY],center);
         [rotatedX,rotatedY]=matrixUtil.rotateVector([rotatedX,rotatedY],this.lastHoveredControl.rotation);
-        [rotatedX,rotatedY]=matrixUtil.addVector([rotatedX,rotatedY],origin0);
+        [rotatedX,rotatedY]=matrixUtil.addVector([rotatedX,rotatedY],center);
 
         let name=this.lastHoveredControl.name;
         if(name==='TL'){
             elX=rotatedX;
             elY=rotatedY;
-            newSx=-(rotatedX-origin2[0])/width;
-            newSy=-(rotatedY-origin2[1])/height;
+            newSx=-(rotatedX-centerX)/halfWidth;
+            newSy=-(rotatedY-centerY)/halfHeight;
         }else if(name==='T'){
             elY=rotatedY;
-            newSy=-(rotatedY-origin2[1])/height;
+            newSy=-(rotatedY-centerY)/halfHeight;
         }else if(name==='TR'){
             elY=rotatedY;
-            newSx=(rotatedX-origin3[0])/width;
-            newSy=-(rotatedY-origin3[1])/height;
+            newSx=(rotatedX-centerX)/halfWidth;
+            newSy=-(rotatedY-centerY)/halfHeight;
         }else if(name==='R'){
-            newSx=(rotatedX-origin0[0])/width;
+            console.log(`halfWidth=${halfWidth}`);
+            console.log(`centerX=${centerX}`);
+            console.log(`rotatedX=${rotatedX}`);
+            newSx=(rotatedX-centerX)/halfWidth;
         }else if(name==='BR'){
-            newSx=(rotatedX-origin0[0])/width;
-            newSy=(rotatedY-origin0[1])/height;
+            newSx=(rotatedX-centerX)/halfWidth;
+            newSy=(rotatedY-centerY)/halfHeight;
         }else if(name==='B'){
-            newSy=(rotatedY-origin0[1])/height;
+            newSy=(rotatedY-centerY)/halfHeight;
         }else if(name==='BL'){
             elX=rotatedX;
-            newSx=-(rotatedX-origin1[0])/width;
-            newSy=(rotatedY-origin1[1])/height;
+            newSx=-(rotatedX-centerX)/halfWidth;
+            newSy=(rotatedY-centerY)/halfHeight;
         }else if(name==='L'){
             elX=rotatedX;
-            newSx=-(rotatedX-origin1[0])/width;
+            newSx=-(rotatedX-centerX)/halfWidth;
         }
 
         if(mathAbs(newSx)<EPSILON){
@@ -189,6 +188,7 @@ export default class TransformEventMgr{
         if(mathAbs(newSy)<EPSILON){
             newSy=0;
         }
+        console.log(`newSx=${newSx},newSy=${newSy}`);
 
         this.selectedEl.position=[elX,elY];
         this.selectedEl.scale=[newSx,newSy];
