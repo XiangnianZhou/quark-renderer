@@ -35,6 +35,7 @@ export default class TransformControl {
         this.pointCache = new Map();
         this.rotation=0;
         this.translate=[0,0];
+        this.scaleControlOffset=-60;
 
         classUtil.copyOwnProperties(this,options);
         this.fillStyle = colorUtil.parse(this.fillStyle);
@@ -73,6 +74,7 @@ export default class TransformControl {
         let w=boundingRect.width;
         let h=boundingRect.height;
         let c=[w/2*globalScale[0],h/2*globalScale[1]];//center point of bounding rect
+        let flag=this.el.flipY?-1:1;
 
         //step-1: cache 9 points of boundingrect, cursor style https://developer.mozilla.org/en-US/docs/Web/CSS/cursor
         this.pointCache.set("TL",{position:[0,0],cursor:'nwse-resize',name:"TL"});
@@ -83,7 +85,7 @@ export default class TransformControl {
         this.pointCache.set("B",{position:[w/2,h],cursor:'ns-resize',name:"B"});
         this.pointCache.set("BL",{position:[0,h],cursor:'nesw-resize',name:"BL"});
         this.pointCache.set("L",{position:[0,h/2],cursor:'ew-resize',name:"L"});
-        this.pointCache.set("TT",{position:[w/2,-60],cursor:'crosshair',name:"TT"});
+        this.pointCache.set("TT",{position:[w/2,flag*this.scaleControlOffset],cursor:'crosshair',name:"TT"});
 
         //step-2: calc coordinates of this control, apply transform matrix
         let sinp=0;

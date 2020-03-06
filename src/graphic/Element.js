@@ -158,6 +158,20 @@ class Element{
         this.controlLineWidth = 1;
 
         /**
+         * @property {Boolean} flipX
+         * 
+         * 是否发生了X轴方向的翻转。
+         */
+        this.flipX=false;
+
+        /**
+         * @property {Boolean} flipY
+         * 
+         * 是否发生了Y轴方向的翻转。
+         */
+        this.flipY=false;
+
+        /**
          * @property {Boolean} silent
          * Whether to respond to mouse events.
          */

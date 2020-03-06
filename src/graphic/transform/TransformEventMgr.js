@@ -156,6 +156,8 @@ export default class TransformEventMgr{
             newSy=0;
         }
 
+        this.selectedEl.flipX=newSx<0?true:false;
+        this.selectedEl.flipY=newSy<0?true:false;
         this.selectedEl.position=[elX,elY];
         this.selectedEl.scale=[newSx,newSy];
         this.selectedEl.dirty();
