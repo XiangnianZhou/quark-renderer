@@ -6,7 +6,11 @@ import * as colorUtil from '../../core/utils/color_util';
 /**
  * @class qrenderer.graphic.Control
  * 
- * Transform control.
+ * Transform control. There are two constraints in this implementation:
+ * 
+ * - 1. Only support scale, rotate, skew is not supported.
+ * - 2. When the element is skewed, the position of control is not right, because skew is not considered.
+ * 
  * 
  * 变换控制点。目前的实现有两个限制：
  * 
