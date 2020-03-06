@@ -1,4 +1,4 @@
-import {mathSin,mathCos} from '../../graphic/constants';
+import {mathSin,mathCos,mathSqrt,mathAtan} from '../../graphic/constants';
 
 /**
  * @class core.utils.affine_matrix_util
@@ -163,7 +163,7 @@ export function skew(a, v) {
  * @param {*} y y position
  */
 export function sinx(x,y){
-    return y/(Math.sqrt(x*x+y*y));
+    return y/(mathSqrt(x*x+y*y));
 }
 
 /**
@@ -172,7 +172,7 @@ export function sinx(x,y){
  * @param {*} y y position
  */
 export function cosx(x,y){
-    return x/(Math.sqrt(x*x+y*y));
+    return x/(mathSqrt(x*x+y*y));
 }
 
 /**
@@ -181,5 +181,21 @@ export function cosx(x,y){
  * @param {*} y y position
  */
 export function atanx(x,y){
-    return Math.atan(y/x);
+    return mathAtan(y/x);
+}
+
+
+export function vectorAdd(v1,v2){
+    return [v1[0]+v2[0],v1[1]+v2[1]];
+}
+
+/**
+ * @method vectorRotate
+ * Roate vector to an angel.
+ * 
+ * @param {*} v 
+ * @param {*} radian 
+ */
+export function vectorRotate(v,radian){
+    return [v[0]*mathCos(radian)+v[1]*mathSin(radian),-v[0]*mathSin(radian)+v[1]*mathCos(radian)];
 }
