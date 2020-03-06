@@ -33,10 +33,17 @@ export default class TransformEventMgr{
         this.dispatcher.off("mousemove",this.mouseMoveHandler1);
         this.dispatcher.off("pagemousemove",this.mouseMoveHandler2);
         this.dispatcher.off("pagemouseup",this.mouseUpHandler);
-        //just keep one mousedown listener
+        //just keep the first mousedown listener
         this.dispatcher.on("mousedown",this.mouseDownHandler1,this);
     }
 
+    /**
+     * @private
+     * @method mouseDownHandler1
+     * The firt mouse down handler.
+     * 
+     * @param {*} e 
+     */
     mouseDownHandler1(e){
         let el=e.target;
         if(el&&el.transformable){//click on an element
@@ -70,6 +77,13 @@ export default class TransformEventMgr{
         }
     }
 
+    /**
+     * @private
+     * @method mouseMoveHandler1
+     * The firt mouse move handler.
+     * 
+     * @param {*} e 
+     */
     mouseMoveHandler1(e){
         let qrX = e.event.qrX;
         let qrY = e.event.qrY;
@@ -82,6 +96,13 @@ export default class TransformEventMgr{
         });
     }
 
+    /**
+     * @private
+     * @method mouseMoveHandler2
+     * The second mouse down handler.
+     * 
+     * @param {*} e 
+     */
     mouseDownHandler2(e){
         let target=e.target;
         if(this.lastHoveredControl){//click on a transform control
@@ -99,6 +120,13 @@ export default class TransformEventMgr{
         }
     }
 
+    /**
+     * @private
+     * @method mouseMoveHandler2
+     * The second mouse move handler.
+     * 
+     * @param {*} e 
+     */
     mouseMoveHandler2(e){
         let gs=this.selectedEl.getGlobalScale();
         let gsx=gs[0];  //global scale in x direction
