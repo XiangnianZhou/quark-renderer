@@ -1,5 +1,4 @@
 import {EPSILON,mathAbs} from '../constants';
-import * as matrixUtil from '../../core/utils/affine_matrix_util';
 
 /**
  * @class qrenderer.graphic.TransformEventMgr
@@ -33,17 +32,10 @@ export default class TransformEventMgr{
         this.dispatcher.off("mousemove",this.mouseMoveHandler1);
         this.dispatcher.off("pagemousemove",this.mouseMoveHandler2);
         this.dispatcher.off("pagemouseup",this.mouseUpHandler);
-        //just keep the first mousedown listener
+        //just keep one mousedown listener
         this.dispatcher.on("mousedown",this.mouseDownHandler1,this);
     }
 
-    /**
-     * @private
-     * @method mouseDownHandler1
-     * The firt mouse down handler.
-     * 
-     * @param {*} e 
-     */
     mouseDownHandler1(e){
         let el=e.target;
         if(el&&el.transformable){//click on an element
@@ -77,13 +69,6 @@ export default class TransformEventMgr{
         }
     }
 
-    /**
-     * @private
-     * @method mouseMoveHandler1
-     * The firt mouse move handler.
-     * 
-     * @param {*} e 
-     */
     mouseMoveHandler1(e){
         let qrX = e.event.qrX;
         let qrY = e.event.qrY;
@@ -96,13 +81,6 @@ export default class TransformEventMgr{
         });
     }
 
-    /**
-     * @private
-     * @method mouseMoveHandler2
-     * The second mouse down handler.
-     * 
-     * @param {*} e 
-     */
     mouseDownHandler2(e){
         let target=e.target;
         if(this.lastHoveredControl){//click on a transform control
@@ -120,66 +98,56 @@ export default class TransformEventMgr{
         }
     }
 
-    /**
-     * @private
-     * @method mouseMoveHandler2
-     * The second mouse move handler.
-     * 
-     * @param {*} e 
-     */
     mouseMoveHandler2(e){
+        let gs=this.selectedEl.getGlobalScale();
+        let gsx=gs[0];  //global scale in x direction
+        let gsy=gs[1];  //global scale in y direction
         let mouseX=e.offsetX;    //x position of mouse
         let mouseY=e.offsetY;    //y position of mouse
         let width=this.selectedEl.shape.width;      //original width without transforming
         let height=this.selectedEl.shape.height;    //original height without transforming
-        let halfWidth=width/2;
-        let halfHeight=height/2;
+        
+        //four corner points
+        console.log(`transform->${this.selectedEl.transform}`);
+        let origin0=this.selectedEl.localToGlobal(0,0);
+        let origin1=this.selectedEl.localToGlobal(width,0);
+        let origin2=this.selectedEl.localToGlobal(width,height);
+        let origin3=this.selectedEl.localToGlobal(0,height);
+        
+        //calculate newSx, newSy, elX, elY
         let sx=this.selectedEl.scale[0];
         let sy=this.selectedEl.scale[1];
         let newSx=sx;
         let newSy=sy;
+        let name=this.lastHoveredControl.name;
         let elX=this.selectedEl.position[0];         //current x position in global space
         let elY=this.selectedEl.position[1];         //current y position in global space
-        console.log([halfWidth,halfHeight]);
-        console.log(`transform->${this.selectedEl.transform}`);//FIXME:为什么 transform 会出现抖动的现象？这个值忽大忽小。
-        let center=this.selectedEl.localToGlobal(halfWidth,halfHeight);
-        let centerX=center[0];
-        let centerY=center[1];
-
-        let [rotatedX,rotatedY]=matrixUtil.minusVector([mouseX,mouseY],center);
-        [rotatedX,rotatedY]=matrixUtil.rotateVector([rotatedX,rotatedY],this.lastHoveredControl.rotation);
-        [rotatedX,rotatedY]=matrixUtil.addVector([rotatedX,rotatedY],center);
-
-        let name=this.lastHoveredControl.name;
         if(name==='TL'){
-            elX=rotatedX;
-            elY=rotatedY;
-            newSx=-(rotatedX-centerX)/halfWidth;
-            newSy=-(rotatedY-centerY)/halfHeight;
+            elX=mouseX;
+            elY=mouseY;
+            newSx=-(mouseX-origin2[0])/width;
+            newSy=-(mouseY-origin2[1])/height;
         }else if(name==='T'){
-            elY=rotatedY;
-            newSy=-(rotatedY-centerY)/halfHeight;
+            elY=mouseY;
+            newSy=-(mouseY-origin2[1])/height;
         }else if(name==='TR'){
-            elY=rotatedY;
-            newSx=(rotatedX-centerX)/halfWidth;
-            newSy=-(rotatedY-centerY)/halfHeight;
+            elY=mouseY;
+            newSx=(mouseX-origin3[0])/width;
+            newSy=-(mouseY-origin3[1])/height;
         }else if(name==='R'){
-            console.log(`halfWidth=${halfWidth}`);
-            console.log(`centerX=${centerX}`);
-            console.log(`rotatedX=${rotatedX}`);
-            newSx=(rotatedX-centerX)/halfWidth;
+            newSx=(mouseX-origin0[0])/width;
         }else if(name==='BR'){
-            newSx=(rotatedX-centerX)/halfWidth;
-            newSy=(rotatedY-centerY)/halfHeight;
+            newSx=(mouseX-origin0[0])/width;
+            newSy=(mouseY-origin0[1])/height;
         }else if(name==='B'){
-            newSy=(rotatedY-centerY)/halfHeight;
+            newSy=(mouseY-origin0[1])/height;
         }else if(name==='BL'){
-            elX=rotatedX;
-            newSx=-(rotatedX-centerX)/halfWidth;
-            newSy=(rotatedY-centerY)/halfHeight;
+            newSx=-(mouseX-origin1[0])/width;
+            newSy=(mouseY-origin1[1])/height;
+            elX=mouseX;
         }else if(name==='L'){
-            elX=rotatedX;
-            newSx=-(rotatedX-centerX)/halfWidth;
+            newSx=-(mouseX-origin1[0])/width;
+            elX=mouseX;
         }
 
         if(mathAbs(newSx)<EPSILON){
@@ -188,8 +156,9 @@ export default class TransformEventMgr{
         if(mathAbs(newSy)<EPSILON){
             newSy=0;
         }
-        console.log(`newSx=${newSx},newSy=${newSy}`);
 
+        this.selectedEl.flipX=newSx<0?true:false;
+        this.selectedEl.flipY=newSy<0?true:false;
         this.selectedEl.position=[elX,elY];
         this.selectedEl.scale=[newSx,newSy];
         this.selectedEl.dirty();
