@@ -113,6 +113,10 @@ export default class TransformEventMgr{
         let origin1=this.selectedEl.localToGlobal(width,0);
         let origin2=this.selectedEl.localToGlobal(width,height);
         let origin3=this.selectedEl.localToGlobal(0,height);
+        let oldOriginOfEl=this.selectedEl.origin;
+        console.log(`oldOriginOfEl=${oldOriginOfEl}`);
+        // let newPosition=this.selectedEl.globalToLocal(mouseX,mouseY);
+        // console.log(`newPosition=${newPosition}`);
         
         //calculate newSx, newSy, elX, elY
         let sx=this.selectedEl.scale[0];
@@ -157,11 +161,13 @@ export default class TransformEventMgr{
             newSy=0;
         }
 
-        this.selectedEl.flipX=newSx<0?true:false;
-        this.selectedEl.flipY=newSy<0?true:false;
+        console.log(`elX=${elX},elY=${elY}`);
+        // this.selectedEl.flipX=newSx<0?true:false;
+        // this.selectedEl.flipY=newSy<0?true:false;
         this.selectedEl.position=[elX,elY];
         this.selectedEl.scale=[newSx,newSy];
         this.selectedEl.dirty();
+        // this.selectedEl.origin=oldOriginOfEl;
     }
 
     mouseUpHandler(e){
