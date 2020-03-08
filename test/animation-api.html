@@ -34,7 +34,6 @@
         // - skewX changes to 2 between 2000ms and 3000ms.
         // - rotation changes to -Math.PI/2 between 3000ms and 4000ms.
         // - all the paramaters keep for 1000ms.
-        rect.origin=[100,100];
         rect.animate()
             .when(1000,{
                 scale:[1,1],
@@ -61,21 +60,6 @@
             //     skew:[2,0],
             //     rotation:-Math.PI/2
             // })
-            .start();
-
-        rect.origin=[100,0];
-        
-        rect.animate()
-            .when(1000,{
-                scale:[1,1],
-                skew:[0,0],
-                rotation:0
-            })
-            .when(2000,{
-                scale:[2,2],
-                skew:[0,0],
-                rotation:0
-            })
             .start();
     </script>
 </body>
