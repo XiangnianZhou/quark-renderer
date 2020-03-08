@@ -87,7 +87,7 @@ export default class Control {
         this.pointCache.set("L",{position:[0,h/2],cursor:'ew-resize',name:"L"});
         this.pointCache.set("TT",{position:[w/2,flag*this.scaleControlOffset],cursor:'crosshair',name:"TT"});
 
-        //step-2: calc coordinates of this control, apply transform matrix
+        //step-2: calc coordinates of this control
         let sinp=0;
         let cosp=0;
         let p=null;

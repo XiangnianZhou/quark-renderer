@@ -1,4 +1,5 @@
 import {EPSILON,mathAbs} from '../constants';
+import * as matrixUtil from '../../core/utils/affine_matrix_util';
 
 /**
  * @class qrenderer.graphic.TransformEventMgr
@@ -22,6 +23,8 @@ export default class TransformEventMgr{
         this._x=0;
         //cache y axis
         this._y=0;
+        //cache center point of bounding rect
+        this._center=[0,0];
         this._originCursor='default';
         //cache original draggable flag of element
         this._elDraggable=false;
@@ -99,64 +102,49 @@ export default class TransformEventMgr{
     }
 
     mouseMoveHandler2(e){
-        let gs=this.selectedEl.getGlobalScale();
-        let gsx=gs[0];  //global scale in x direction
-        let gsy=gs[1];  //global scale in y direction
-        let mouseX=e.offsetX;    //x position of mouse
-        let mouseY=e.offsetY;    //y position of mouse
-        let width=this.selectedEl.shape.width;      //original width without transforming
-        let height=this.selectedEl.shape.height;    //original height without transforming
-        
-        //four corner points
-        let origin0=this.selectedEl.localToGlobal(0,0);
-        let origin1=this.selectedEl.localToGlobal(width,0);
-        let origin2=this.selectedEl.localToGlobal(width,height);
-        let origin3=this.selectedEl.localToGlobal(0,height);
-        
-        //calculate newSx, newSy, positionX, positionY
-        let sx=this.selectedEl.scale[0];
-        let sy=this.selectedEl.scale[1];
-        let newSx=sx;
-        let newSy=sy;
+        let mouseX=e.offsetX;    //x position of mouse in global space
+        let mouseY=e.offsetY;    //y position of mouse in global space
+        let bps=this.getTransformedBoundingRect();
+        let [tmx,tmy]=this.transformMousePoint(mouseX,mouseY);
+        let width=this.selectedEl.shape.width;              //original width without transforming
+        let height=this.selectedEl.shape.height;            //original height without transforming
+        let [sx,sy]=this.selectedEl.scale;
+        let newSx=mathAbs(tmx/(width/2));
+        let newSy=mathAbs(tmy/(height/2));
+
         let name=this.lastHoveredControl.name;
-        let positionX=this.selectedEl.position[0];         //current x position in global space
-        let positionY=this.selectedEl.position[1];         //current y position in global space
-        if(name==='TL'){
-            positionX=mouseX;
-            positionY=mouseY;
-            newSx=-(mouseX-origin2[0])/width;
-            newSy=-(mouseY-origin2[1])/height;
-        }else if(name==='T'){
-            positionY=mouseY;
-            newSy=-(mouseY-origin2[1])/height;
-        }else if(name==='TR'){
-            positionY=mouseY;
-            newSx=(mouseX-origin3[0])/width;
-            newSy=-(mouseY-origin3[1])/height;
-        }else if(name==='R'){
-            newSx=(mouseX-origin0[0])/width;
-        }else if(name==='BR'){
-            newSx=(mouseX-origin0[0])/width;
-            newSy=(mouseY-origin0[1])/height;
-        }else if(name==='B'){
-            newSy=(mouseY-origin0[1])/height;
-        }else if(name==='BL'){
-            newSx=-(mouseX-origin1[0])/width;
-            newSy=(mouseY-origin1[1])/height;
-            positionX=mouseX;
-        }else if(name==='L'){
-            newSx=-(mouseX-origin1[0])/width;
-            positionX=mouseX;
+        if(name.indexOf("T")!=-1){
+            newSy=(tmy>=0?-newSy:newSy);
+        }else if(name.indexOf("B")!=-1){
+            newSy=(tmy>=0?newSy:-newSy);
+        }else{
+            newSy=sy;
         }
 
-        if(mathAbs(newSx)<EPSILON){
-            newSx=0;
-        }
-        if(mathAbs(newSy)<EPSILON){
-            newSy=0;
+        if(name.indexOf("L")!=-1){
+            newSx=(tmx>=0?-newSx:newSx);
+        }else if(name.indexOf("R")!=-1){
+            newSx=(tmx>=0?newSx:-newSx);
+        }else{
+            newSx=sx;
         }
 
-        this.selectedEl.position=[positionX,positionY];
+        let point=bps[0];
+        if(name.indexOf("R")!=-1){
+            point[0]=-tmx;
+        }else if(name.indexOf("L")!=-1){
+            point[0]=tmx;
+        }
+        if(name.indexOf("B")!=-1){
+            point[1]=-tmy;
+        }else if(name.indexOf("T")!=-1){
+            point[1]=tmy;
+        }
+
+        let rotation=this.selectedEl.rotation;
+        point=matrixUtil.rotateVector(point,rotation);
+        point=matrixUtil.addVector(point,this._center);
+        this.selectedEl.position=point;
         this.selectedEl.scale=[newSx,newSy];
         this.selectedEl.dirty();
     }
@@ -168,5 +156,57 @@ export default class TransformEventMgr{
         this.dispatcher.off("pagemouseup",this.mouseUpHandler);
         this.dispatcher.on("mousemove",this.mouseMoveHandler1,this);
         this.dispatcher.on("mousedown",this.mouseDownHandler2,this);
+    }
+
+    getControlMatrix(){
+        let scale=this.selectedEl.scale;
+        let rotation=this.selectedEl.rotation;
+        let position=this.selectedEl.position;
+        let m=matrixUtil.create();
+        m=matrixUtil.scale(m,scale);
+        m=matrixUtil.rotate(m,rotation);
+        m=matrixUtil.translate(m,position);
+        return m;
+    }
+
+    getTransformedBoundingRect(){
+        let transform=this.getControlMatrix();
+        let width=this.selectedEl.shape.width;              //original width without transforming
+        let height=this.selectedEl.shape.height;            //original height without transforming
+        let rotation=this.selectedEl.rotation;
+        
+        let p0=[0,0];
+        let p1=[width,0];
+        let p2=[width,height];
+        let p3=[0,height];
+        this._center=[width/2,height/2];
+        // console.log(transform);
+        // covert coordinate to global space
+        p0=matrixUtil.transformVector(p0,transform);
+        p1=matrixUtil.transformVector(p1,transform);
+        p2=matrixUtil.transformVector(p2,transform);
+        p3=matrixUtil.transformVector(p3,transform);
+        this._center=matrixUtil.transformVector(this._center,transform);
+
+        // move origin to this._center point
+        p0=matrixUtil.minusVector(p0,this._center);
+        p1=matrixUtil.minusVector(p1,this._center);
+        p2=matrixUtil.minusVector(p2,this._center);
+        p3=matrixUtil.minusVector(p3,this._center);
+
+        // rotate with element's rotation
+        p0=matrixUtil.rotateVector(p0,-rotation);
+        p1=matrixUtil.rotateVector(p1,-rotation);
+        p2=matrixUtil.rotateVector(p2,-rotation);
+        p3=matrixUtil.rotateVector(p3,-rotation);
+
+        return [p0,p1,p2,p3,this._center];
+    }
+
+    transformMousePoint(x,y){
+        let rotation=this.selectedEl.rotation;
+        [x,y]=matrixUtil.minusVector([x,y],this._center);
+        [x,y]=matrixUtil.rotateVector([x,y],-rotation);//为什么这里的旋转是反向的？
+        return [x,y];
     }
 }
