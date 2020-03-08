@@ -184,11 +184,20 @@ export function atanx(x,y){
     return mathAtan(y/x);
 }
 
-
+/**
+ * 向量加法
+ * @param {*} v1 
+ * @param {*} v2 
+ */
 export function addVector(v1,v2){
     return [v1[0]+v2[0],v1[1]+v2[1]];
 }
 
+/**
+ * 向量减法
+ * @param {*} v1 
+ * @param {*} v2 
+ */
 export function minusVector(v1,v2){
     return [v1[0]-v2[0],v1[1]-v2[1]];
 }
@@ -216,6 +225,21 @@ export function transformVector(v, m) {
     return out;
 }
 
+/**
+ * 点乘
+ * @param {*} v1 
+ * @param {*} v2 
+ */
 export function dot(v1, v2) {
     return v1[0] * v2[0] + v1[1] * v2[1];
+}
+
+/**
+ * Change origin from fromOrigin to toOrigin.
+ * @param {Array} fromOrigin    Origin1 coordinate in global space.
+ * @param {Array} toOrigin      Origin2 coordinate in global space.
+ * @param {Array} point         The point coordinate in fromOrigin.
+ */
+export function changeOrigin(fromOrigin,toOrigin,point){
+    return [point[0]+fromOrigin[0]-toOrigin[0],point[1]+fromOrigin[1]-toOrigin[1]];
 }
