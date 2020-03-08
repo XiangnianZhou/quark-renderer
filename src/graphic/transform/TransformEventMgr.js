@@ -113,24 +113,24 @@ export default class TransformEventMgr{
         let origin2=this.selectedEl.localToGlobal(width,height);
         let origin3=this.selectedEl.localToGlobal(0,height);
         
-        //calculate newSx, newSy, elX, elY
+        //calculate newSx, newSy, positionX, positionY
         let sx=this.selectedEl.scale[0];
         let sy=this.selectedEl.scale[1];
         let newSx=sx;
         let newSy=sy;
         let name=this.lastHoveredControl.name;
-        let elX=this.selectedEl.position[0];         //current x position in global space
-        let elY=this.selectedEl.position[1];         //current y position in global space
+        let positionX=this.selectedEl.position[0];         //current x position in global space
+        let positionY=this.selectedEl.position[1];         //current y position in global space
         if(name==='TL'){
-            elX=mouseX;
-            elY=mouseY;
+            positionX=mouseX;
+            positionY=mouseY;
             newSx=-(mouseX-origin2[0])/width;
             newSy=-(mouseY-origin2[1])/height;
         }else if(name==='T'){
-            elY=mouseY;
+            positionY=mouseY;
             newSy=-(mouseY-origin2[1])/height;
         }else if(name==='TR'){
-            elY=mouseY;
+            positionY=mouseY;
             newSx=(mouseX-origin3[0])/width;
             newSy=-(mouseY-origin3[1])/height;
         }else if(name==='R'){
@@ -143,10 +143,10 @@ export default class TransformEventMgr{
         }else if(name==='BL'){
             newSx=-(mouseX-origin1[0])/width;
             newSy=(mouseY-origin1[1])/height;
-            elX=mouseX;
+            positionX=mouseX;
         }else if(name==='L'){
             newSx=-(mouseX-origin1[0])/width;
-            elX=mouseX;
+            positionX=mouseX;
         }
 
         if(mathAbs(newSx)<EPSILON){
@@ -156,7 +156,7 @@ export default class TransformEventMgr{
             newSy=0;
         }
 
-        this.selectedEl.position=[elX,elY];
+        this.selectedEl.position=[positionX,positionY];
         this.selectedEl.scale=[newSx,newSy];
         this.selectedEl.dirty();
     }
