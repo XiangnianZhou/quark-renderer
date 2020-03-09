@@ -2,7 +2,7 @@ import * as classUtil from '../../core/utils/class_util';
 import * as matrixUtil from '../../core/utils/affine_matrix_util';
 import * as vectorUtil from '../../core/utils/vector_util';
 import * as colorUtil from '../../core/utils/color_util';
-import {mathSin} from '../core/utils/constraints';
+import {mathSin} from '../../graphic/constants';
 
 /**
  * @class qrenderer.graphic.Control
@@ -75,7 +75,6 @@ export default class Control {
         let y=boundingRect.y;
         let w=boundingRect.width;
         let h=boundingRect.height;
-
         let c=[w/2*scale[0],h/2*scale[1]];//center point of bounding rect
 
         //step-1: cache 9 points of boundingrect, cursor style https://developer.mozilla.org/en-US/docs/Web/CSS/cursor
