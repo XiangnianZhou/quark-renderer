@@ -39,7 +39,7 @@ export default class Control {
         this.pointCache = new Map();
         this.rotation=0;
         this.translate=[0,0];
-        this.scaleControlOffset=-60;
+        this.scaleControlOffset=-30;
 
         classUtil.copyOwnProperties(this,options);
         this.fillStyle = colorUtil.parse(this.fillStyle);
@@ -120,10 +120,14 @@ export default class Control {
             }else if(cosp==0){
                 p[0]=p[0]-halfW;
             }
-            if(sinp<0){
-                p[1]=p[1]-height;
-            }else if(sinp==0){
-                p[1]=p[1]-halfH;
+            if(point.name==='SPIN'){
+                p[1]=p[1]-height+this.scaleControlOffset;
+            }else{
+                if(sinp<0){
+                    p[1]=p[1]-height;
+                }else if(sinp==0){
+                    p[1]=p[1]-halfH;
+                }
             }
 
             //move origin back
