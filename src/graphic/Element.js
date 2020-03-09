@@ -447,7 +447,7 @@ class Element{
     renderControls(ctx, prevEl){
         //draw transform controls
         this.controls=[];
-        let positions = ['TL','T','TR','R','BR','B','BL','L','TT'];
+        let positions = ['TL','T','TR','R','BR','B','BL','L','SPIN'];
         positions.forEach((p,index)=>{
             let control = new Control({
                 el:this,

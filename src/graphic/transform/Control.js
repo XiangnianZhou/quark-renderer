@@ -34,7 +34,7 @@ export default class Control {
         this.height = 20;
         this.hasControls = false;
         this.lineWidth = 2;
-        this.name = 'TL';   //TL, T, TR, L, R, BL, B, BR, TT
+        this.name = 'TL';   //TL, T, TR, L, R, BL, B, BR, SPIN
         this.cursor = 'corsshair';
         this.pointCache = new Map();
         this.rotation=0;
@@ -85,7 +85,7 @@ export default class Control {
         this.pointCache.set("B",{position:[w/2,h],cursor:'ns-resize',name:"B"});
         this.pointCache.set("BL",{position:[0,h],cursor:'nesw-resize',name:"BL"});
         this.pointCache.set("L",{position:[0,h/2],cursor:'ew-resize',name:"L"});
-        this.pointCache.set("TT",{position:[w/2,flag*this.scaleControlOffset],cursor:'crosshair',name:"TT"});
+        this.pointCache.set("SPIN",{position:[w/2,flag*this.scaleControlOffset],cursor:'crosshair',name:"SPIN"});
 
         //step-2: calc coordinates of this control
         let sinp=0;
@@ -103,7 +103,7 @@ export default class Control {
 
             // apply scale to point
             p[0]=p[0]*globalScale[0];
-            if(point.name!=='TT'){
+            if(point.name!=='SPIN'){
                 p[1]=p[1]*globalScale[1];
             }
             
