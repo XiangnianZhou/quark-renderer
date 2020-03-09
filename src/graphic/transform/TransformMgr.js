@@ -16,34 +16,29 @@ export default class TransformMgr{
     }
     
     startListen(){
-        //incase there was a selected element
-        this._restoreSelection();
+        this._restoreSelection();   //incase there was a selected element
         this.selectedEl=null;
         this.lastHoveredControl=null;
-        //cache x axis
-        this._x=0;
-        //cache y axis
-        this._y=0;
-        //cache center point of bounding rect
-        this._center=[0,0];
+        this._x=0;                  //cache x axis
+        this._y=0;                  //cache y axis
+        this._center=[0,0];         //cache center point of bounding rect
         this._position;
         this._scale;
         this._rotation;
         this._width;
         this._height;
         this._transform;
-        //cache cursor type
-        this._cursor='default';
-        //cache original draggable flag of element
-        this._elDraggable=false;
-        //whether this.el has controls
-        this._hasControls=false;
+        this._cursor='default';     //cache cursor type
+        this._elDraggable=false;    //cache original draggable flag of element
+        this._hasControls=false;    //whether this.el has controls
+        
         //remove all event listeners
         this.dispatcher.off("mousedown",this.mouseDownHandler1);
         this.dispatcher.off("mousedown",this.mouseDownHandler2);
         this.dispatcher.off("mousemove",this.mouseMoveHandler1);
         this.dispatcher.off("pagemousemove",this.mouseMoveHandler2);
         this.dispatcher.off("pagemouseup",this.mouseUpHandler);
+        
         //just keep one mousedown listener
         this.dispatcher.on("mousedown",this.mouseDownHandler1,this);
     }
@@ -99,10 +94,10 @@ export default class TransformMgr{
             this.selectedEl.draggable=false;
             this._x=e.offsetX;
             this._y=e.offsetY;
-            this.dispatcher.off("mousemove",this.mouseMoveHandler1);//lockdown current clicked control, do not look for hovered control
+            this.dispatcher.off("mousemove",this.mouseMoveHandler1);    //lockdown current clicked control, do not look for hovered control
             this.dispatcher.on("pagemousemove",this.mouseMoveHandler2,this);
             this.dispatcher.on("pagemouseup",this.mouseUpHandler,this);
-        }else if(target&&target.id&&target.id.indexOf("el-")!=-1){//click on an element, FIXME:better way to determine whether the target is an element?
+        }else if(target&&target.id&&target.id.indexOf("el-")!=-1){      //click on an element, FIXME:better way to determine whether the target is an element?
             this._clickElement(target);
         }else{//click on anywhere else
             this._hasControls=false;
@@ -266,12 +261,12 @@ export default class TransformMgr{
      * 计算与 this.selectedEl 有关的参数。
      */
     calcParams(){
-        this._position=this.selectedEl.position;
-        this._scale=this.selectedEl.scale;
-        this._width=this.selectedEl.shape.width;              //original width without transforming
-        this._height=this.selectedEl.shape.height;            //original height without transforming
-        this._rotation=this.selectedEl.rotation;
-        this._center=[this._width/2,this._height/2];
+        this._position=this.selectedEl.position;                //current position in global space
+        this._scale=this.selectedEl.scale;                      //current scale in global space
+        this._width=this.selectedEl.shape.width;                //original width without transforming
+        this._height=this.selectedEl.shape.height;              //original height without transforming
+        this._rotation=this.selectedEl.rotation;                //current rotation in global space
+        this._center=[this._width/2,this._height/2];            //original centerpoint in local space
 
         let m=matrixUtil.create();
         m=matrixUtil.scale(m,this._scale);
