@@ -123,16 +123,17 @@ export default class TransformMgr{
         [mouseX,mouseY]=matrixUtil.minusVector([mouseX,mouseY],this._center);
         let sinp=matrixUtil.sinx(...[mouseX,mouseY]);
         let cosp=matrixUtil.cosx(...[mouseX,mouseY]);
+        console.log(`sinp=${sinp},cosp=${cosp}`);
         let radian=Math.asin(Math.abs(sinp));
         
-        if(sinp>=0){
-            if(cosp>=0){
+        if(sinp>0){
+            if(cosp>0){
                 radian=radian;
             }else{
                 radian=Math.PI-radian;
             }
         }else{
-            if(cosp>=0){
+            if(cosp>0){
                 radian=-radian;
             }else{
                 radian=-(Math.PI-radian);
