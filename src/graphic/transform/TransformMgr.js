@@ -110,8 +110,10 @@ export default class TransformMgr{
         let mouseY=e.offsetY;    //y position of mouse in global space
         let name=this.lastHoveredControl.name;
         if(name==='SPIN'){
+            console.log("rotate...")
             this.handleRotate(mouseX,mouseY);
         }else{
+            console.log("scale...")
             this.handleScale(mouseX,mouseY);
         }
     }
@@ -149,7 +151,6 @@ export default class TransformMgr{
     handleScale(mouseX,mouseY){
         let bps=this.getTransformedBoundingRect();
         let [tmx,tmy]=this.transformMousePoint(mouseX,mouseY);
-        let [sx,sy]=this.selectedEl.scale;
         let newSx=mathAbs(tmx/(this._width/2));
         let newSy=mathAbs(tmy/(this._height/2));
 
@@ -159,7 +160,7 @@ export default class TransformMgr{
         }else if(name.indexOf("B")!=-1){
             newSy=(tmy>=0?newSy:-newSy);
         }else{
-            newSy=sy;
+            newSy=this._scale[1];
         }
 
         if(name.indexOf("L")!=-1){
@@ -167,7 +168,7 @@ export default class TransformMgr{
         }else if(name.indexOf("R")!=-1){
             newSx=(tmx>=0?newSx:-newSx);
         }else{
-            newSx=sx;
+            newSx=this._scale[0];
         }
 
         let position=bps[0];
@@ -182,7 +183,7 @@ export default class TransformMgr{
             position[1]=tmy;
         }
 
-        position=matrixUtil.rotateVector(position,this._rotation-Math.PI/2);
+        position=matrixUtil.rotateVector(position,this._rotation);
         position=matrixUtil.addVector(position,this._center);
         this.selectedEl.position=position;
         this.selectedEl.scale=[newSx,newSy];
@@ -210,7 +211,19 @@ export default class TransformMgr{
      * 坐标原点在边界矩形的中心点上。
      */
     getTransformedBoundingRect(){
-        this.calcParams();
+        this._position=this.selectedEl.position;                //current position in global space
+        this._scale=this.selectedEl.scale;                      //current scale in global space
+        this._width=this.selectedEl.shape.width;                //original width without transforming
+        this._height=this.selectedEl.shape.height;              //original height without transforming
+        this._rotation=this.selectedEl.rotation;                //current rotation in global space
+        this._center=[this._width/2,this._height/2];            //original centerpoint in local space
+
+        let m=matrixUtil.create();
+        m=matrixUtil.scale(m,this._scale);
+        m=matrixUtil.rotate(m,this._rotation);
+        m=matrixUtil.translate(m,this._position);
+        this._transform=m;
+        this._center=matrixUtil.transformVector(this._center,this._transform);
 
         let p0=[0,0];
         let p1=[this._width,0];
@@ -267,19 +280,19 @@ export default class TransformMgr{
      * 
      * 计算与 this.selectedEl 有关的参数。
      */
-    calcParams(){
-        this._position=this.selectedEl.position;                //current position in global space
-        this._scale=this.selectedEl.scale;                      //current scale in global space
-        this._width=this.selectedEl.shape.width;                //original width without transforming
-        this._height=this.selectedEl.shape.height;              //original height without transforming
-        this._rotation=this.selectedEl.rotation;                //current rotation in global space
-        this._center=[this._width/2,this._height/2];            //original centerpoint in local space
+    // calcParams(){
+    //     this._position=this.selectedEl.position;                //current position in global space
+    //     this._scale=this.selectedEl.scale;                      //current scale in global space
+    //     this._width=this.selectedEl.shape.width;                //original width without transforming
+    //     this._height=this.selectedEl.shape.height;              //original height without transforming
+    //     this._rotation=this.selectedEl.rotation;                //current rotation in global space
+    //     this._center=[this._width/2,this._height/2];            //original centerpoint in local space
 
-        let m=matrixUtil.create();
-        m=matrixUtil.scale(m,this._scale);
-        m=matrixUtil.rotate(m,this._rotation);
-        m=matrixUtil.translate(m,this._position);
-        this._transform=m;
-        this._center=matrixUtil.transformVector(this._center,this._transform);
-    }
+    //     let m=matrixUtil.create();
+    //     m=matrixUtil.scale(m,this._scale);
+    //     m=matrixUtil.rotate(m,this._rotation);
+    //     m=matrixUtil.translate(m,this._position);
+    //     this._transform=m;
+    //     this._center=matrixUtil.transformVector(this._center,this._transform);
+    // }
 }
