@@ -4,9 +4,10 @@ import * as matrixUtil from '../../core/utils/affine_matrix_util';
 /**
  * @class qrenderer.graphic.TransformMgr
  * 
- * Transform manager. When user select the transform control and begin dragging, this manager will handle the events for the process.
+ * Global transform manager. When user drag the transform control and begin dragging, this manager will handle the events
+ * and transform parameters for the selected element.
  * 
- * 变换管理器。当用户选中元素，开始拖动变换控制杆时，此管理器负责分发事件。
+ * 全局变换管理器。当用户选中元素，开始拖动变换控制器时，此管理器负责处理事件、重新计算选中元素上的各项参数。
  */
 export default class TransformMgr{
     constructor(dispatcher){
