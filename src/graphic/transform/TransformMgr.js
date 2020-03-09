@@ -182,7 +182,7 @@ export default class TransformMgr{
             position[1]=tmy;
         }
 
-        position=matrixUtil.rotateVector(position,this._rotation);
+        position=matrixUtil.rotateVector(position,this._rotation-Math.PI/2);
         position=matrixUtil.addVector(position,this._center);
         this.selectedEl.position=position;
         this.selectedEl.scale=[newSx,newSy];
