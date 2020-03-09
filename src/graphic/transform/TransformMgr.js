@@ -107,6 +107,19 @@ export default class TransformMgr{
     mouseMoveHandler2(e){
         let mouseX=e.offsetX;    //x position of mouse in global space
         let mouseY=e.offsetY;    //y position of mouse in global space
+        let name=this.lastHoveredControl.name;
+        if(name==='SPIN'){
+            this.handleRotate(mouseX,mouseY);
+        }else{
+            this.handleScale(mouseX,mouseY);
+        }
+    }
+
+    handleRotate(mouseX,mouseY){
+        console.log("rotate...");
+    }
+
+    handleScale(mouseX,mouseY){
         let bps=this.getTransformedBoundingRect();
         let [tmx,tmy]=this.transformMousePoint(mouseX,mouseY);
         let width=this.selectedEl.shape.width;              //original width without transforming
