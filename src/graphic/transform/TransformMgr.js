@@ -158,6 +158,16 @@ export default class TransformMgr{
         this.dispatcher.on("mousedown",this.mouseDownHandler2,this);
     }
 
+    /**
+     * @private
+     * @method getControlMatrix
+     * Get the transform matrix of control, controls will not be skewed, so the skew parameters are not considered.
+     * 
+     * 
+     * 获取变换控制器的转换矩阵，变换控制器不会发生斜切，所以这里在计算是不考虑 skew 相关的参数。
+     * 
+     * TODO:把 skew 参数计算进来，补偿给 scale，从而获得更佳的变换控制器。
+     */
     getControlMatrix(){
         let scale=this.selectedEl.scale;
         let rotation=this.selectedEl.rotation;
@@ -169,6 +179,15 @@ export default class TransformMgr{
         return m;
     }
 
+    /**
+     * @private
+     * @method getTransformedBoundingRect
+     * Get transformed bouding rect of selected element, including four corner points, center point of original bounding rect, 
+     * and rotate control point. The coordinates returned by this method are in global space.
+     * 
+     * 
+     * 获取变换之后的边界矩形坐标，包括：4个角落上的坐标点、中心坐标点、旋转控制器的坐标点。此方法返回的坐标位于全局空间中。
+     */
     getTransformedBoundingRect(){
         let transform=this.getControlMatrix();
         let width=this.selectedEl.shape.width;              //original width without transforming
@@ -203,6 +222,17 @@ export default class TransformMgr{
         return [p0,p1,p2,p3,this._center];
     }
 
+    /**
+     * @private
+     * @method transformMousePoint
+     * Transform mouse clientX and clientY to local space of element.
+     * 
+     * 
+     * 把当前的鼠标点转换成元素内部坐标系的坐标。
+     * 
+     * @param {*} x 
+     * @param {*} y 
+     */
     transformMousePoint(x,y){
         let rotation=this.selectedEl.rotation;
         [x,y]=matrixUtil.minusVector([x,y],this._center);
