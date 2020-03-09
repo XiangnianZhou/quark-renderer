@@ -229,10 +229,10 @@ export default class TransformMgr{
     /**
      * @private
      * @method transformMousePoint
-     * Transform mouse clientX and clientY to local space of element.
+     * Transform the cursor origin to the center point of bounding rect, then rotate the same angel as the element does.
      * 
      * 
-     * 把当前的鼠标点转换成元素内部坐标系的坐标。
+     * 把光标的原点变换到边界矩形的中心点，并与元素保持相同的旋转角。
      * 
      * @param {*} x 
      * @param {*} y 
