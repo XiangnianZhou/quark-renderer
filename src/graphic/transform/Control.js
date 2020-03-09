@@ -135,16 +135,7 @@ export default class Control {
         rotation=matrixUtil.atanx(transform[0],transform[1]);
         this.rotation=rotation;
         this.translate=[this.el.position[0],this.el.position[1]];
-
-        cosp=matrixUtil.cosx(transform[0],transform[1]);
-        sinp=matrixUtil.sinx(transform[2],transform[3]);
-        if(cosp<0){
-            this.el.flipX=true;
-        }
-        if(sinp<0){
-            this.el.flipY=true;
-        }
-
+        
         //step-4: return result
         point=this.pointCache.get(this.name);
         this.x1=point.position[0];

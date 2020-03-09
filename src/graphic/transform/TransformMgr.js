@@ -129,22 +129,22 @@ export default class TransformMgr{
             newSx=sx;
         }
 
-        let point=bps[0];
+        let position=bps[0];
         if(name.indexOf("R")!=-1){
-            point[0]=-tmx;
+            position[0]=-tmx;
         }else if(name.indexOf("L")!=-1){
-            point[0]=tmx;
+            position[0]=tmx;
         }
         if(name.indexOf("B")!=-1){
-            point[1]=-tmy;
+            position[1]=-tmy;
         }else if(name.indexOf("T")!=-1){
-            point[1]=tmy;
+            position[1]=tmy;
         }
 
         let rotation=this.selectedEl.rotation;
-        point=matrixUtil.rotateVector(point,rotation);
-        point=matrixUtil.addVector(point,this._center);
-        this.selectedEl.position=point;
+        position=matrixUtil.rotateVector(position,rotation);
+        position=matrixUtil.addVector(position,this._center);
+        this.selectedEl.position=position;
         this.selectedEl.scale=[newSx,newSy];
         this.selectedEl.dirty();
     }
