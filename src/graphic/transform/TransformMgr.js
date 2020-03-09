@@ -223,7 +223,7 @@ export default class TransformMgr{
         m=matrixUtil.rotate(m,this._rotation);
         m=matrixUtil.translate(m,this._position);
         this._transform=m;
-        this._center=matrixUtil.transformVector(this._center,this._transform);
+        this._center=matrixUtil.transformVector(this._center,this._transform);  //center point in global space
 
         let p0=[0,0];
         let p1=[this._width,0];
