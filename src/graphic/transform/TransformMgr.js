@@ -2,13 +2,13 @@ import {EPSILON,mathAbs} from '../constants';
 import * as matrixUtil from '../../core/utils/affine_matrix_util';
 
 /**
- * @class qrenderer.graphic.TransformEventMgr
+ * @class qrenderer.graphic.TransformMgr
  * 
  * Transform event manager. When use select the transform control and begin dragging, the manager will manage the events for this process.
  * 
  * 变换事件管理器。当用户选中元素，开始拖动变换控制杆时，此管理器负责分发事件。
  */
-export default class TransformEventMgr{
+export default class TransformMgr{
     constructor(dispatcher){
         this.dispatcher=dispatcher;
         this.startListen();

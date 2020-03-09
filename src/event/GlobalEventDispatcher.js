@@ -3,7 +3,7 @@ import * as classUtil from '../core/utils/class_util';
 import * as vectorUtil from '../core/utils/vector_util';
 import * as eventTool from '../core/utils/event_util';
 import DragDropMgr from './DragDropMgr';
-import TransformEventMgr from '../graphic/transform/TransformEventMgr';
+import TransformEventMgr from '../graphic/transform/TransformMgr';
 import Eventful from './Eventful';
 import GestureMgr from './GestureMgr';
 
