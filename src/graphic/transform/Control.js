@@ -74,7 +74,6 @@ export default class Control {
         let w=boundingRect.width;
         let h=boundingRect.height;
         let c=[w/2*globalScale[0],h/2*globalScale[1]];//center point of bounding rect
-        let flag=this.el.flipY?-1:1;
 
         //step-1: cache 9 points of boundingrect, cursor style https://developer.mozilla.org/en-US/docs/Web/CSS/cursor
         this.pointCache.set("TL",{position:[0,0],cursor:'nwse-resize',name:"TL"});
@@ -85,7 +84,7 @@ export default class Control {
         this.pointCache.set("B",{position:[w/2,h],cursor:'ns-resize',name:"B"});
         this.pointCache.set("BL",{position:[0,h],cursor:'nesw-resize',name:"BL"});
         this.pointCache.set("L",{position:[0,h/2],cursor:'ew-resize',name:"L"});
-        this.pointCache.set("SPIN",{position:[w/2,flag*this.scaleControlOffset],cursor:'crosshair',name:"SPIN"});
+        this.pointCache.set("SPIN",{position:[w/2,this.scaleControlOffset],cursor:'crosshair',name:"SPIN"});
 
         //step-2: calc coordinates of this control
         let sinp=0;
@@ -98,6 +97,7 @@ export default class Control {
         let rotation=0;
         let point=null;
 
+        //do scale and offset for controls
         this.pointCache.forEach((point,key,map)=>{
             p=point.position;
 
@@ -135,7 +135,7 @@ export default class Control {
         rotation=matrixUtil.atanx(transform[0],transform[1]);
         this.rotation=rotation;
         this.translate=[this.el.position[0],this.el.position[1]];
-        
+
         //step-4: return result
         point=this.pointCache.get(this.name);
         this.x1=point.position[0];
