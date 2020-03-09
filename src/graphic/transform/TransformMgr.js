@@ -120,7 +120,7 @@ export default class TransformMgr{
 
     handleRotate(mouseX,mouseY){
         let bps=this.getTransformedBoundingRect();
-        let [mouseX,mouseY]=matrixUtil.minusVector([mouseX,mouseY],this._center);
+        [mouseX,mouseY]=matrixUtil.minusVector([mouseX,mouseY],this._center);
         let sinp=matrixUtil.sinx(...[mouseX,mouseY]);
         let cosp=matrixUtil.cosx(...[mouseX,mouseY]);
         let radian=Math.asin(Math.abs(sinp));
