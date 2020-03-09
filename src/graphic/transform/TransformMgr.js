@@ -223,7 +223,7 @@ export default class TransformMgr{
         p3=matrixUtil.rotateVector(p3,-rotation);
         p4=matrixUtil.rotateVector(p4,-rotation);
 
-        return [p0,p1,p2,p3,this._center];
+        return [p0,p1,p2,p3,p4,this._center];
     }
 
     /**
