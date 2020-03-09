@@ -117,7 +117,7 @@ export default class TransformMgr{
     }
 
     handleRotate(mouseX,mouseY){
-        this.calcParams();
+        let bps=this.getTransformedBoundingRect();
         let [x,y]=matrixUtil.minusVector([mouseX,mouseY],this._center);
         let sinp=matrixUtil.sinx(x,y);
         let cosp=matrixUtil.cosx(x,y);
@@ -136,7 +136,12 @@ export default class TransformMgr{
                 radian=-(Math.PI-radian);
             }
         }
-        // console.log(radian*180/Math.PI);
+
+        let position=bps[0];
+        position=matrixUtil.rotateVector(position,-radian);
+        position=matrixUtil.addVector(position,this._center);
+
+        this.selectedEl.position=position;
         this.selectedEl.rotation=-radian;
         this.selectedEl.dirty();
     }
