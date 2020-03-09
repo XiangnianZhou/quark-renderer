@@ -193,31 +193,35 @@ export default class TransformMgr{
         let width=this.selectedEl.shape.width;              //original width without transforming
         let height=this.selectedEl.shape.height;            //original height without transforming
         let rotation=this.selectedEl.rotation;
+        this._center=[width/2,height/2];
+        this._center=matrixUtil.transformVector(this._center,transform);
         
         let p0=[0,0];
         let p1=[width,0];
         let p2=[width,height];
         let p3=[0,height];
-        this._center=[width/2,height/2];
-        // console.log(transform);
+        let p4=[width/2,-60];
+        
         // covert coordinate to global space
         p0=matrixUtil.transformVector(p0,transform);
         p1=matrixUtil.transformVector(p1,transform);
         p2=matrixUtil.transformVector(p2,transform);
         p3=matrixUtil.transformVector(p3,transform);
-        this._center=matrixUtil.transformVector(this._center,transform);
+        p4=matrixUtil.transformVector(p4,transform);
 
         // move origin to this._center point
         p0=matrixUtil.minusVector(p0,this._center);
         p1=matrixUtil.minusVector(p1,this._center);
         p2=matrixUtil.minusVector(p2,this._center);
         p3=matrixUtil.minusVector(p3,this._center);
+        p4=matrixUtil.minusVector(p4,this._center);
 
         // rotate with element's rotation
         p0=matrixUtil.rotateVector(p0,-rotation);
         p1=matrixUtil.rotateVector(p1,-rotation);
         p2=matrixUtil.rotateVector(p2,-rotation);
         p3=matrixUtil.rotateVector(p3,-rotation);
+        p4=matrixUtil.rotateVector(p4,-rotation);
 
         return [p0,p1,p2,p3,this._center];
     }
