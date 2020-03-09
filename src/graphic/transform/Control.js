@@ -135,7 +135,7 @@ export default class Control {
             p[1]=p[1]+c[1];
         });
 
-        //step-3: calc rotation of this.el
+        //step-3: calc rotation and translate of this.el
         rotation=matrixUtil.atanx(transform[0],transform[1]);
         this.rotation=rotation;
         this.translate=[this.el.position[0],this.el.position[1]];
