@@ -25,9 +25,11 @@ export default class TransformMgr{
         this._y=0;
         //cache center point of bounding rect
         this._center=[0,0];
-        this._originCursor='default';
+        //cache cursor type
+        this._cursor='default';
         //cache original draggable flag of element
         this._elDraggable=false;
+        //whether this.el has controls
         this._hasControls=false;
         //remove all event listeners
         this.dispatcher.off("mousedown",this.mouseDownHandler1);
@@ -51,7 +53,7 @@ export default class TransformMgr{
     _clickElement(el){
         this._restoreSelection();
         this.selectedEl=el;
-        this._originCursor=el.cursor;
+        this._cursor=el.cursor;
         this._elDraggable=el.draggable;//cache original draggable flag
         this._hasControls=el.hasControls=true;
         el.dirty();
