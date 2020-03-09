@@ -40,7 +40,7 @@ export default class Control {
         this.pointCache = new Map();
         this.rotation=0;
         this.translate=[0,0];
-        this.scaleControlOffset=-30;
+        this.scaleControlOffset=50;
 
         classUtil.copyOwnProperties(this,options);
         this.fillStyle = colorUtil.parse(this.fillStyle);
@@ -75,7 +75,10 @@ export default class Control {
         let y=boundingRect.y;
         let w=boundingRect.width;
         let h=boundingRect.height;
-        let c=[w/2*scale[0],h/2*scale[1]];//center point of bounding rect
+        let c=[w/2*scale[0],h/2*scale[1]];  //center point of bounding rect
+        let flipY=this.el.scale[1]<0?-1:1;  //scaleY less than 0 means flipped in Y direction
+        console.log(flipY);
+        console.log(flipY*this.scaleControlOffset);
 
         //step-1: cache 9 points of boundingrect, cursor style https://developer.mozilla.org/en-US/docs/Web/CSS/cursor
         this.pointCache.set("TL",{position:[0,0],cursor:'nwse-resize',name:"TL"});
@@ -86,7 +89,7 @@ export default class Control {
         this.pointCache.set("B",{position:[w/2,h],cursor:'ns-resize',name:"B"});
         this.pointCache.set("BL",{position:[0,h],cursor:'nesw-resize',name:"BL"});
         this.pointCache.set("L",{position:[0,h/2],cursor:'ew-resize',name:"L"});
-        this.pointCache.set("SPIN",{position:[w/2,this.scaleControlOffset],cursor:'crosshair',name:"SPIN"});
+        this.pointCache.set("SPIN",{position:[w/2,-this.scaleControlOffset],cursor:'crosshair',name:"SPIN"});
 
         //step-2: calc coordinates of this control
         let sinp=0;
@@ -123,7 +126,12 @@ export default class Control {
                 p[0]=p[0]-halfW;
             }
             if(point.name==='SPIN'){
-                p[1]=p[1]-height+this.scaleControlOffset;
+                if(this.el.scale[1]>0){
+                    p[1]=p[1]-height;
+                }else{
+                    p[1]=p[1]+this.scaleControlOffset+2*height;
+                }
+                console.log(p[1]);
             }else{
                 if(sinp<0){
                     p[1]=p[1]-height;
