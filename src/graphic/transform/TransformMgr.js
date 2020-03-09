@@ -200,7 +200,7 @@ export default class TransformMgr{
         let p1=[width,0];
         let p2=[width,height];
         let p3=[0,height];
-        let p4=[width/2,-60];
+        let p4=[width/2,-50];
         
         // covert coordinate to global space
         p0=matrixUtil.transformVector(p0,transform);
