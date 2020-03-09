@@ -1,4 +1,4 @@
-import {EPSILON,mathAbs} from '../constants';
+import {EPSILON,mathAbs, mathLog} from '../constants';
 import * as matrixUtil from '../../core/utils/affine_matrix_util';
 
 /**
@@ -142,7 +142,7 @@ export default class TransformMgr{
         let position=bps[0];
         position=matrixUtil.rotateVector(position,-radian);
         position=matrixUtil.addVector(position,this._center);
-
+        
         this.selectedEl.position=position;
         this.selectedEl.rotation=-radian;
         this.selectedEl.dirty();
