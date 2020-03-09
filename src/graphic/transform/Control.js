@@ -59,7 +59,7 @@ export default class Control {
         ctx.fillStyle = this.fillStyle;
         ctx.strokeStyle = this.strokeStyle;
         ctx.translate(this.translate[0],this.translate[1]);
-        ctx.rotate(this.rotation);
+        ctx.rotate(-this.rotation);
         ctx.strokeRect(...[...param.position,this.width,this.height]);
         ctx.closePath();
         ctx.restore();
@@ -67,13 +67,15 @@ export default class Control {
 
     _calcParameters(){
         let transform=this.el.transform;
-        let globalScale=this.el.getGlobalScale();
+        let rotation=this.el.rotation;
+        let scale=this.el.scale;
         let boundingRect = this.el.getBoundingRect();
         let x=boundingRect.x;
         let y=boundingRect.y;
         let w=boundingRect.width;
         let h=boundingRect.height;
-        let c=[w/2*globalScale[0],h/2*globalScale[1]];//center point of bounding rect
+
+        let c=[w/2*scale[0],h/2*scale[1]];//center point of bounding rect
 
         //step-1: cache 9 points of boundingrect, cursor style https://developer.mozilla.org/en-US/docs/Web/CSS/cursor
         this.pointCache.set("TL",{position:[0,0],cursor:'nwse-resize',name:"TL"});
@@ -94,7 +96,7 @@ export default class Control {
         let width=this.width;
         let halfH=height/2;
         let halfW=width/2;
-        let rotation=0;
+        
         let point=null;
 
         //do scale and offset for controls
@@ -102,9 +104,9 @@ export default class Control {
             p=point.position;
 
             // apply scale to point
-            p[0]=p[0]*globalScale[0];
+            p[0]=p[0]*scale[0];
             if(point.name!=='SPIN'){
-                p[1]=p[1]*globalScale[1];
+                p[1]=p[1]*scale[1];
             }
             
             // move origin to the center point of boundingrect
@@ -135,8 +137,7 @@ export default class Control {
             p[1]=p[1]+c[1];
         });
 
-        //step-3: calc rotation and translate of this.el
-        rotation=matrixUtil.atanx(transform[0],transform[1]);
+        //step-3: cache rotation and translate of this.el
         this.rotation=rotation;
         this.translate=[this.el.position[0],this.el.position[1]];
 
@@ -156,14 +157,14 @@ export default class Control {
     }
 
     isHover(x,y){
-        let globalScale=this.el.getGlobalScale();
+        let scale=this.el.scale;
         let m, xMin, xMax, yMin, yMax;
         let points=[[this.x1,this.y1],[this.x2,this.y2],[this.x3,this.y3],[this.x4,this.y4]];
         
         //reverse scale
         points.forEach((point,index)=>{
-            point[0]=point[0]/globalScale[0];
-            point[1]=point[1]/globalScale[1];
+            point[0]=point[0]/scale[0];
+            point[1]=point[1]/scale[1];
             point=this.el.localToGlobal(point[0],point[1]);
             points[index]=point;
         });

@@ -458,7 +458,7 @@ class Element{
         ctx.fillStyle = this.controlFillStyle;
         ctx.strokeStyle = this.controlStrokeStyle;
         ctx.translate(control0.translate[0],control0.translate[1]);
-        ctx.rotate(control0.rotation);
+        ctx.rotate(-control0.rotation);
         ctx.strokeRect(p1[0],p1[1],w,h);
         ctx.closePath();
 
