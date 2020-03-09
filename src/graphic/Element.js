@@ -461,11 +461,16 @@ class Element{
         ctx.rotate(-control0.rotation);
         ctx.strokeRect(p1[0],p1[1],w,h);
         ctx.closePath();
-
+        
         //draw connet line
+        let [x1,y1,x2,y2]=[0,0,0,0];
+        x1=this.controls[1].x1+this.controls[1].width/2;
+        y1=this.controls[1].y1;
+        x2=this.controls[8].x1+this.controls[8].width/2;
+        y2=this.controls[8].y1+this.controls[8].height;
         ctx.beginPath();
-        ctx.moveTo(this.controls[1].x1+this.controls[1].width/2,this.controls[1].y1);
-        ctx.lineTo(this.controls[8].x1+this.controls[8].width/2,this.controls[8].y1+this.controls[8].height);
+        ctx.moveTo(x1,y1);
+        ctx.lineTo(x2,y2);
         ctx.stroke();
         ctx.restore();
     }
