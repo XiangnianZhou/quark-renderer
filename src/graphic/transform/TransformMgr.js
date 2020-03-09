@@ -26,6 +26,12 @@ export default class TransformMgr{
         this._y=0;
         //cache center point of bounding rect
         this._center=[0,0];
+        this._position;
+        this._scale;
+        this._rotation;
+        this._width;
+        this._height;
+        this._transform;
         //cache cursor type
         this._cursor='default';
         //cache original draggable flag of element
@@ -116,17 +122,36 @@ export default class TransformMgr{
     }
 
     handleRotate(mouseX,mouseY){
-        console.log("rotate...");
+        this.calcParams();
+        let [x,y]=matrixUtil.minusVector([mouseX,mouseY],this._center);
+        let sinp=matrixUtil.sinx(x,y);
+        let cosp=matrixUtil.cosx(x,y);
+        let radian=Math.asin(Math.abs(sinp));
+        
+        if(sinp>=0){
+            if(cosp>=0){
+                radian=radian;
+            }else{
+                radian=Math.PI-radian;
+            }
+        }else{
+            if(cosp>=0){
+                radian=-radian;
+            }else{
+                radian=-(Math.PI-radian);
+            }
+        }
+        // console.log(radian*180/Math.PI);
+        this.selectedEl.rotation=-radian;
+        this.selectedEl.dirty();
     }
 
     handleScale(mouseX,mouseY){
         let bps=this.getTransformedBoundingRect();
         let [tmx,tmy]=this.transformMousePoint(mouseX,mouseY);
-        let width=this.selectedEl.shape.width;              //original width without transforming
-        let height=this.selectedEl.shape.height;            //original height without transforming
         let [sx,sy]=this.selectedEl.scale;
-        let newSx=mathAbs(tmx/(width/2));
-        let newSy=mathAbs(tmy/(height/2));
+        let newSx=mathAbs(tmx/(this._width/2));
+        let newSy=mathAbs(tmy/(this._height/2));
 
         let name=this.lastHoveredControl.name;
         if(name.indexOf("T")!=-1){
@@ -157,8 +182,7 @@ export default class TransformMgr{
             position[1]=tmy;
         }
 
-        let rotation=this.selectedEl.rotation;
-        position=matrixUtil.rotateVector(position,rotation);
+        position=matrixUtil.rotateVector(position,this._rotation);
         position=matrixUtil.addVector(position,this._center);
         this.selectedEl.position=position;
         this.selectedEl.scale=[newSx,newSy];
@@ -176,27 +200,6 @@ export default class TransformMgr{
 
     /**
      * @private
-     * @method getControlMatrix
-     * Get the transform matrix of control, controls will not be skewed, so the skew parameters are not considered.
-     * 
-     * 
-     * 获取变换控制器的转换矩阵，变换控制器不会发生斜切，所以这里在计算是不考虑 skew 相关的参数。
-     * 
-     * TODO:把 skew 参数计算进来，补偿给 scale，从而获得更佳的变换控制器。
-     */
-    getControlMatrix(){
-        let scale=this.selectedEl.scale;
-        let rotation=this.selectedEl.rotation;
-        let position=this.selectedEl.position;
-        let m=matrixUtil.create();
-        m=matrixUtil.scale(m,scale);
-        m=matrixUtil.rotate(m,rotation);
-        m=matrixUtil.translate(m,position);
-        return m;
-    }
-
-    /**
-     * @private
      * @method getTransformedBoundingRect
      * Get transformed bouding rect of selected element, including four corner points, center point of original bounding rect, 
      * and rotate control point. The coordinates returned by this method are in global space.
@@ -205,25 +208,20 @@ export default class TransformMgr{
      * 获取变换之后的边界矩形坐标，包括：4个角落上的坐标点、中心坐标点、旋转控制器的坐标点。此方法返回的坐标位于全局空间中。
      */
     getTransformedBoundingRect(){
-        let transform=this.getControlMatrix();
-        let width=this.selectedEl.shape.width;              //original width without transforming
-        let height=this.selectedEl.shape.height;            //original height without transforming
-        let rotation=this.selectedEl.rotation;
-        this._center=[width/2,height/2];
-        this._center=matrixUtil.transformVector(this._center,transform);
-        
+        this.calcParams();
+
         let p0=[0,0];
-        let p1=[width,0];
-        let p2=[width,height];
-        let p3=[0,height];
-        let p4=[width/2,-50];
+        let p1=[this._width,0];
+        let p2=[this._width,this._height];
+        let p3=[0,this._height];
+        let p4=[this._width/2,-50];
         
         // covert coordinate to global space
-        p0=matrixUtil.transformVector(p0,transform);
-        p1=matrixUtil.transformVector(p1,transform);
-        p2=matrixUtil.transformVector(p2,transform);
-        p3=matrixUtil.transformVector(p3,transform);
-        p4=matrixUtil.transformVector(p4,transform);
+        p0=matrixUtil.transformVector(p0,this._transform);
+        p1=matrixUtil.transformVector(p1,this._transform);
+        p2=matrixUtil.transformVector(p2,this._transform);
+        p3=matrixUtil.transformVector(p3,this._transform);
+        p4=matrixUtil.transformVector(p4,this._transform);
 
         // move origin to this._center point
         p0=matrixUtil.minusVector(p0,this._center);
@@ -233,11 +231,11 @@ export default class TransformMgr{
         p4=matrixUtil.minusVector(p4,this._center);
 
         // rotate with element's rotation
-        p0=matrixUtil.rotateVector(p0,-rotation);
-        p1=matrixUtil.rotateVector(p1,-rotation);
-        p2=matrixUtil.rotateVector(p2,-rotation);
-        p3=matrixUtil.rotateVector(p3,-rotation);
-        p4=matrixUtil.rotateVector(p4,-rotation);
+        p0=matrixUtil.rotateVector(p0,-this._rotation);
+        p1=matrixUtil.rotateVector(p1,-this._rotation);
+        p2=matrixUtil.rotateVector(p2,-this._rotation);
+        p3=matrixUtil.rotateVector(p3,-this._rotation);
+        p4=matrixUtil.rotateVector(p4,-this._rotation);
 
         return [p0,p1,p2,p3,p4,this._center];
     }
@@ -254,9 +252,24 @@ export default class TransformMgr{
      * @param {*} y 
      */
     transformMousePoint(x,y){
-        let rotation=this.selectedEl.rotation;
         [x,y]=matrixUtil.minusVector([x,y],this._center);
-        [x,y]=matrixUtil.rotateVector([x,y],-rotation);//为什么这里的旋转是反向的？
+        [x,y]=matrixUtil.rotateVector([x,y],-this._rotation);//为什么这里的旋转是反向的？
         return [x,y];
+    }
+
+    calcParams(){
+        this._position=this.selectedEl.position;
+        this._scale=this.selectedEl.scale;
+        this._width=this.selectedEl.shape.width;              //original width without transforming
+        this._height=this.selectedEl.shape.height;            //original height without transforming
+        this._rotation=this.selectedEl.rotation;
+        this._center=[this._width/2,this._height/2];
+
+        let m=matrixUtil.create();
+        m=matrixUtil.scale(m,this._scale);
+        m=matrixUtil.rotate(m,this._rotation);
+        m=matrixUtil.translate(m,this._position);
+        this._transform=m;
+        this._center=matrixUtil.transformVector(this._center,this._transform);
     }
 }

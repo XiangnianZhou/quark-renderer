@@ -1,4 +1,4 @@
-import {mathSin,mathCos,mathSqrt,mathAtan} from '../../graphic/constants';
+import {mathSin,mathCos,mathSqrt,mathAtan, mathAsin} from '../../graphic/constants';
 
 /**
  * @class core.utils.affine_matrix_util
@@ -164,6 +164,16 @@ export function skew(a, v) {
  */
 export function sinx(x,y){
     return y/(mathSqrt(x*x+y*y));
+}
+
+/**
+ * @method asinx
+ * @param {*} x x position 
+ * @param {*} y y position
+ */
+export function asinx(x,y){
+    let sin=sinx(x,y);
+    return mathAsin(sin);
 }
 
 /**
