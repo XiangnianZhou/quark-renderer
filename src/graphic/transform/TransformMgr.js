@@ -257,6 +257,14 @@ export default class TransformMgr{
         return [x,y];
     }
 
+    /**
+     * @private
+     * @method calcParams
+     * Calculate parameters related to this.selectedEl.
+     * 
+     * 
+     * 计算与 this.selectedEl 有关的参数。
+     */
     calcParams(){
         this._position=this.selectedEl.position;
         this._scale=this.selectedEl.scale;
