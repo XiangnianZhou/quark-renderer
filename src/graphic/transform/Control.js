@@ -76,9 +76,6 @@ export default class Control {
         let w=boundingRect.width;
         let h=boundingRect.height;
         let c=[w/2*scale[0],h/2*scale[1]];  //center point of bounding rect
-        let flipY=this.el.scale[1]<0?-1:1;  //scaleY less than 0 means flipped in Y direction
-        console.log(flipY);
-        console.log(flipY*this.scaleControlOffset);
 
         //step-1: cache 9 points of boundingrect, cursor style https://developer.mozilla.org/en-US/docs/Web/CSS/cursor
         this.pointCache.set("TL",{position:[0,0],cursor:'nwse-resize',name:"TL"});
@@ -131,7 +128,6 @@ export default class Control {
                 }else{
                     p[1]=p[1]+this.scaleControlOffset+2*height;
                 }
-                console.log(p[1]);
             }else{
                 if(sinp<0){
                     p[1]=p[1]-height;
