@@ -202,10 +202,12 @@ export default class TransformMgr{
      * @private
      * @method getTransformedBoundingRect
      * Get transformed bouding rect of selected element, including four corner points, center point of original bounding rect, 
-     * and rotate control point. The coordinates returned by this method are in global space.
+     * and rotate control point. The coordinates returned by this method are in global space, the coordinate is based on the 
+     * center of bounding rect.
      * 
      * 
-     * 获取变换之后的边界矩形坐标，包括：4个角落上的坐标点、中心坐标点、旋转控制器的坐标点。此方法返回的坐标位于全局空间中。
+     * 获取变换之后的边界矩形坐标，包括：4个角落上的坐标点、中心坐标点、旋转控制器的坐标点。此方法返回的坐标位于全局空间中，计算的
+     * 坐标原点在边界矩形的中心点上。
      */
     getTransformedBoundingRect(){
         this.calcParams();
