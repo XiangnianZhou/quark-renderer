@@ -1,5 +1,5 @@
 import {normalizeRadian} from './radian_util';
-import {PI2,mathSqrt,mathAbs,mathAtan2} from '../../graphic/constants';
+import {PI2,mathSqrt,mathAbs,mathAtan2} from '../constants';
 
 /**
  * 圆弧描边包含判断

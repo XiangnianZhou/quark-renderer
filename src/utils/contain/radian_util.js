@@ -1,4 +1,4 @@
-import {PI2} from '../../graphic/constants';
+import {PI2} from '../constants';
 
 export function normalizeRadian(angle) {
     angle %= PI2;

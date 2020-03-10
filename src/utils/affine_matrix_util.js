@@ -1,4 +1,4 @@
-import {mathSin,mathCos,mathSqrt,mathAtan, mathAsin} from '../graphic/constants';
+import {mathSin,mathCos,mathSqrt,mathAtan, mathAsin} from './constants';
 
 /**
  * @class core.utils.affine_matrix_util

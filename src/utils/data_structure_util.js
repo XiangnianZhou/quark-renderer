@@ -1,4 +1,4 @@
-import {mathFloor} from '../graphic/constants';
+import {mathFloor} from './constants';
 
 /**
  * 用来操作数据的一些工具函数。

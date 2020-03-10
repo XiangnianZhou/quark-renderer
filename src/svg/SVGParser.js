@@ -14,7 +14,7 @@ import * as matrixUtil from '../utils/affine_matrix_util';
 import { createFromString } from '../utils/path_util';
 import { isString, extend, trim, each } from '../utils/data_structure_util';
 import { defaults } from '../utils/class_util';
-import {mathMin} from '../graphic/constants';
+import {mathMin} from '../utils/constants';
 
 // Most of the values can be separated by comma and/or white space.
 let DILIMITER_REG = /[\s,]+/;

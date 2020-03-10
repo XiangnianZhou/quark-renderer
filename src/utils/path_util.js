@@ -1,4 +1,4 @@
-import {mathSqrt,mathSin,mathCos,PI,mathAcos} from '../graphic/constants';
+import {mathSqrt,mathSin,mathCos,PI,mathAcos} from './constants';
 import transformPath from './transform_path';
 import Path from '../graphic/Path';
 import PathProxy from '../graphic/PathProxy';

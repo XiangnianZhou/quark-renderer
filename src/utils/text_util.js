@@ -3,7 +3,7 @@ import * as textContain from './contain/text';
 import * as roundRectHelper from './round_rect';
 import * as imageHelper from './image';
 import fixShadow from './fix_shadow';
-import {ContextCachedBy, WILL_BE_RESTORED} from '../graphic/constants';
+import {ContextCachedBy, WILL_BE_RESTORED} from './constants';
 
 var DEFAULT_FONT = textContain.DEFAULT_FONT;
 

@@ -3,7 +3,7 @@ import * as vectorUtil from '../utils/vector_util';
 import * as bbox from '../utils/bbox_util';
 import BoundingRect from './transform/BoundingRect';
 import {devicePixelRatio as dpr} from '../config';
-import {mathMin,mathMax,mathCos,mathSin,mathSqrt,mathAbs} from '../graphic/constants';
+import {mathMin,mathMax,mathCos,mathSin,mathSqrt,mathAbs} from '../utils/constants';
 
 // TODO: getTotalLength, getPointAtLength
 

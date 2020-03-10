@@ -4,7 +4,7 @@ import * as classUtil from '../utils/class_util';
 import PathProxy from './PathProxy';
 import * as pathContain from '../utils/contain/path';
 import Pattern from './Pattern';
-import {mathMax,mathAbs,mathSqrt} from '../graphic/constants';
+import {mathMax,mathAbs,mathSqrt} from '../utils/constants';
 
 /**
  * @class qrenderer.graphic.Path 

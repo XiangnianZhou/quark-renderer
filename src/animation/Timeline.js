@@ -1,5 +1,5 @@
 import easingFuncs from './utils/easing';
-import {mathMin} from '../graphic/constants';
+import {mathMin} from '../utils/constants';
 
 /**
  * @class qrenderer.animation.Timeline

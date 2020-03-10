@@ -1,4 +1,4 @@
-import {EPSILON,mathAbs, mathLog} from '../constants';
+import {EPSILON,mathAbs, mathLog} from '../../utils/constants';
 import * as matrixUtil from '../../utils/affine_matrix_util';
 
 /**

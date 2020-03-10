@@ -2,7 +2,7 @@ import {
     create as v2Create,
     distSquare as v2DistSquare
 } from './vector_util';
-import {mathPow,mathSqrt,mathAcos,mathCos,mathSin} from '../graphic/constants';
+import {mathPow,mathSqrt,mathAcos,mathCos,mathSin} from './constants';
 
 /**
  * 曲线辅助模块

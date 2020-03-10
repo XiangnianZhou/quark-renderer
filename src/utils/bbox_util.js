@@ -3,7 +3,7 @@
  */
 import * as vectorUtil from './vector_util';
 import * as curve from './curve_util';
-import {PI2,mathAsin,mathCos,mathSin,mathPow,mathSqrt,PI,mathMin,mathMax,mathAbs} from '../graphic/constants';
+import {PI2,mathAsin,mathCos,mathSin,mathPow,mathSqrt,PI,mathMin,mathMax,mathAbs} from './constants';
 
 var start = vectorUtil.create();
 var end = vectorUtil.create();

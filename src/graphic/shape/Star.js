@@ -1,6 +1,6 @@
 import Path from '../Path';
 import * as dataUtil from '../../utils/data_structure_util';
-import {mathSin,mathCos,PI2,PI} from '../../graphic/constants';
+import {mathSin,mathCos,PI2,PI} from '../../utils/constants';
 
 /**
  * @class qrenderer.graphic.shape.Star 

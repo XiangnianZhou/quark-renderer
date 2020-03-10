@@ -1,7 +1,7 @@
 import Path from '../Path';
 import fixClipWithShadow from '../../utils/fix_clip_with_shadow';
 import * as dataUtil from '../../utils/data_structure_util';
-import {mathSin,mathCos,mathMax,PI2} from '../../graphic/constants';
+import {mathSin,mathCos,mathMax,PI2} from '../../utils/constants';
 
 /**
  * @class qrenderer.graphic.shape.Sector 

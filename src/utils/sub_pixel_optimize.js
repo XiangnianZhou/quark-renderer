@@ -1,4 +1,4 @@
-import {mathRound,mathMax} from '../graphic/constants';
+import {mathRound,mathMax} from './constants';
 
 /**
  * Sub-pixel optimize for canvas rendering, prevent from blur

@@ -1,5 +1,5 @@
 import LRU from './LRU';
-import {mathMin,mathMax,mathRound,mathFloor,mathCeil} from '../graphic/constants';
+import {mathMin,mathMax,mathRound,mathFloor,mathCeil} from './constants';
 
 var kCSSColorTable = {
     'transparent': [0, 0, 0, 0], 'aliceblue': [240, 248, 255, 1],
