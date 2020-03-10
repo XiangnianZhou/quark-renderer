@@ -1,7 +1,7 @@
 import * as dataUtil from '../utils/data_structure_util';
 import * as classUtil from '../utils/class_util';
 import {Dispatcher} from '../utils/event_util';
-import requestAnimationFrame from './utils/request_animation_frame';
+import requestAnimationFrame from './request_animation_frame';
 
 /**
  * @singleton

@@ -5,7 +5,7 @@ import CanvasLayer from './CanvasLayer';
 import Image from '../graphic/Image';
 import guid from '../utils/guid';
 import timsort from '../utils/timsort';
-import requestAnimationFrame from '../animation/utils/request_animation_frame';
+import requestAnimationFrame from '../animation/request_animation_frame';
 import {mathRandom,mathMax} from '../utils/constants';
 import {devicePixelRatio} from '../config';
 import env from '../utils/env';

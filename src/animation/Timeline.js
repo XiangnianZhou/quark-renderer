@@ -1,4 +1,4 @@
-import easingFuncs from './utils/easing';
+import easingFuncs from './easing';
 import {mathMin} from '../utils/constants';
 
 /**
