@@ -4,7 +4,7 @@ import * as matrixUtil from '../core/utils/affine_matrix_util';
 import * as vectorUtil from '../core/utils/vector_util';
 import Eventful from '../event/Eventful';
 import Transformable from './transform/Transformable';
-import TransformControl from './transform/TransformControl';
+import Control from './transform/Control';
 import Animatable from '../animation/Animatable';
 import Style from './Style';
 import RectText from './RectText';
@@ -143,7 +143,7 @@ class Element{
         this.hasControls = false;
 
         /**
-         * @property {Array<TransformControl>} controls
+         * @property {Array<Control>} controls
          * Transform controls.
          * 
          * 
@@ -156,20 +156,6 @@ class Element{
         this.controlStrokeStyle = '#000000';
 
         this.controlLineWidth = 1;
-
-        /**
-         * @property {Boolean} flipX
-         * 
-         * 是否发生了X轴方向的翻转。
-         */
-        this.flipX=false;
-
-        /**
-         * @property {Boolean} flipY
-         * 
-         * 是否发生了Y轴方向的翻转。
-         */
-        this.flipY=false;
 
         /**
          * @property {Boolean} silent
@@ -447,9 +433,9 @@ class Element{
     renderControls(ctx, prevEl){
         //draw transform controls
         this.controls=[];
-        let positions = ['TL','T','TR','R','BR','B','BL','L','TT'];
+        let positions = ['TL','T','TR','R','BR','B','BL','L','SPIN'];
         positions.forEach((p,index)=>{
-            let control = new TransformControl({
+            let control = new Control({
                 el:this,
                 name:p,
                 fillStyle:this.controlFillStyle,
@@ -472,14 +458,19 @@ class Element{
         ctx.fillStyle = this.controlFillStyle;
         ctx.strokeStyle = this.controlStrokeStyle;
         ctx.translate(control0.translate[0],control0.translate[1]);
-        ctx.rotate(control0.rotation);
+        ctx.rotate(-control0.rotation);
         ctx.strokeRect(p1[0],p1[1],w,h);
         ctx.closePath();
-
+        
         //draw connet line
+        let [x1,y1,x2,y2]=[0,0,0,0];
+        x1=this.controls[1].x1+this.controls[1].width/2;
+        y1=this.controls[1].y1;
+        x2=this.controls[8].x1+this.controls[8].width/2;
+        y2=this.controls[8].y1+this.controls[8].height;
         ctx.beginPath();
-        ctx.moveTo(this.controls[1].x1+this.controls[1].width/2,this.controls[1].y1);
-        ctx.lineTo(this.controls[8].x1+this.controls[8].width/2,this.controls[8].y1+this.controls[8].height);
+        ctx.moveTo(x1,y1);
+        ctx.lineTo(x2,y2);
         ctx.stroke();
         ctx.restore();
     }
