@@ -1,4 +1,4 @@
-import {mathFloor} from '../../graphic/constants';
+import {mathFloor} from '../graphic/constants';
 
 /**
  * 用来操作数据的一些工具函数。
@@ -860,7 +860,3 @@ export function getAttrByPath(obj,path){
         }
     }
 }
-// test case
-// let obj={shape:{style:{x:[1,0]},fill:'#ff0000'}};
-// console.log(getAttrByPath(obj,"shape.style.x"));
-// console.log(getAttrByPath(obj,"shape.style.y"));

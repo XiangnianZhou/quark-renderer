@@ -1,6 +1,6 @@
-import * as dataUtil from '../core/utils/data_structure_util';
-import * as classUtil from '../core/utils/class_util';
-import {Dispatcher} from '../core/utils/event_util';
+import * as dataUtil from '../utils/data_structure_util';
+import * as classUtil from '../utils/class_util';
+import {Dispatcher} from '../utils/event_util';
 import requestAnimationFrame from './utils/request_animation_frame';
 
 /**

@@ -1,6 +1,6 @@
 import Path from '../Path';
 import * as polyHelper from '../utils/poly';
-import * as dataUtil from '../../core/utils/data_structure_util';
+import * as dataUtil from '../../utils/data_structure_util';
 
 /**
  * @class qrenderer.graphic.shape.Polyline 

@@ -1,13 +1,13 @@
-/**
- * 曲线辅助模块
- * @author pissang(https://www.github.com/pissang)
- */
-
 import {
     create as v2Create,
     distSquare as v2DistSquare
 } from './vector_util';
-import {mathPow,mathSqrt,mathAcos,mathCos,mathSin} from '../../graphic/constants';
+import {mathPow,mathSqrt,mathAcos,mathCos,mathSin} from '../graphic/constants';
+
+/**
+ * 曲线辅助模块
+ * @author pissang(https://www.github.com/pissang)
+ */
 
 var EPSILON = 1e-8;
 var EPSILON_NUMERIC = 1e-4;

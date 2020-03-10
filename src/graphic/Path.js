@@ -1,8 +1,8 @@
 import Element from './Element';
-import * as dataUtil from '../core/utils/data_structure_util';
-import * as classUtil from '../core/utils/class_util';
+import * as dataUtil from '../utils/data_structure_util';
+import * as classUtil from '../utils/class_util';
 import PathProxy from './PathProxy';
-import * as pathContain from '../core/contain/path';
+import * as pathContain from '../utils/contain/path';
 import Pattern from './Pattern';
 import {mathMax,mathAbs,mathSqrt} from '../graphic/constants';
 

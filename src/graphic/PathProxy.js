@@ -1,6 +1,6 @@
-import * as curve from '../core/utils/curve_util';
-import * as vectorUtil from '../core/utils/vector_util';
-import * as bbox from '../core/utils/bbox_util';
+import * as curve from '../utils/curve_util';
+import * as vectorUtil from '../utils/vector_util';
+import * as bbox from '../utils/bbox_util';
 import BoundingRect from './transform/BoundingRect';
 import {devicePixelRatio as dpr} from '../config';
 import {mathMin,mathMax,mathCos,mathSin,mathSqrt,mathAbs} from '../graphic/constants';

@@ -4,7 +4,7 @@ import * as cubic from './cubic';
 import * as quadratic from './quadratic';
 import * as arc from './arc';
 import {normalizeRadian} from './radian_util';
-import * as curve from '../utils/curve_util';
+import * as curve from '../curve_util';
 import windingLine from './winding_line';
 import {PI2,mathAsin,mathCos,mathSin,mathPow,mathSqrt,PI,mathMin,mathMax, mathAtan2,mathAbs} from '../../graphic/constants';
 

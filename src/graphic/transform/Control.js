@@ -1,7 +1,7 @@
-import * as classUtil from '../../core/utils/class_util';
-import * as matrixUtil from '../../core/utils/affine_matrix_util';
-import * as vectorUtil from '../../core/utils/vector_util';
-import * as colorUtil from '../../core/utils/color_util';
+import * as classUtil from '../../utils/class_util';
+import * as matrixUtil from '../../utils/affine_matrix_util';
+import * as vectorUtil from '../../utils/vector_util';
+import * as colorUtil from '../../utils/color_util';
 import {mathSin} from '../../graphic/constants';
 
 /**

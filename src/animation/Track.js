@@ -1,6 +1,6 @@
 import Timeline from './Timeline';
-import * as colorUtil from '../core/utils/color_util';
-import * as dataUtil from '../core/utils/data_structure_util';
+import * as colorUtil from '../utils/color_util';
+import * as dataUtil from '../utils/data_structure_util';
 import {mathMin} from '../graphic/constants';
 
 /**

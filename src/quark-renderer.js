@@ -3,9 +3,9 @@ import CanvasPainter from './canvas/CanvasPainter';
 import GlobalAnimationMgr from './animation/GlobalAnimationMgr';
 import DomEventInterceptor from './event/DomEventInterceptor';
 import Storage from './Storage';
-import * as textContain from './core/contain/text';
-import guid from './core/utils/guid';
-import env from './core/env';
+import * as textContain from './utils/contain/text';
+import guid from './utils/guid';
+import env from './utils/env';
 
 /**
  * @class qrenderer.core.QuarkRenderer

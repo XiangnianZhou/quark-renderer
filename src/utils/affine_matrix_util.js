@@ -1,4 +1,4 @@
-import {mathSin,mathCos,mathSqrt,mathAtan, mathAsin} from '../../graphic/constants';
+import {mathSin,mathCos,mathSqrt,mathAtan, mathAsin} from '../graphic/constants';
 
 /**
  * @class core.utils.affine_matrix_util
@@ -7,7 +7,7 @@ import {mathSin,mathCos,mathSqrt,mathAtan, mathAsin} from '../../graphic/constan
  * 此工具类为了编码方便，运算过程中省略第三行 [0,0,1]，与 Transformations 接口定义的结构一致。
  * 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
- * @exports qrenderer/core/matrix
+ * @exports qrenderer/utils/matrix
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 

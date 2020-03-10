@@ -1,7 +1,7 @@
-import * as dataUtil from '../core/utils/data_structure_util';
-import * as classUtil from '../core/utils/class_util';
-import * as vectorUtil from '../core/utils/vector_util';
-import * as eventTool from '../core/utils/event_util';
+import * as dataUtil from '../utils/data_structure_util';
+import * as classUtil from '../utils/class_util';
+import * as vectorUtil from '../utils/vector_util';
+import * as eventTool from '../utils/event_util';
 import DragDropMgr from './DragDropMgr';
 import TransformEventMgr from '../graphic/transform/TransformMgr';
 import Eventful from './Eventful';

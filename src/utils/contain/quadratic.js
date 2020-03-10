@@ -1,4 +1,4 @@
-import {quadraticProjectPoint} from '../utils/curve_util';
+import {quadraticProjectPoint} from '../curve_util';
 
 /**
  * 二次贝塞尔曲线描边包含判断

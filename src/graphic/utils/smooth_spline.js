@@ -1,4 +1,4 @@
-import {distance as v2Distance} from '../../core/utils/vector_util';
+import {distance as v2Distance} from '../../utils/vector_util';
 import {mathFloor} from '../../graphic/constants';
 /**
  * Catmull-Rom spline 插值折线

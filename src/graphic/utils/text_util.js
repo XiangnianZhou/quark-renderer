@@ -1,5 +1,5 @@
-import * as dataUtil from '../../core/utils/data_structure_util';
-import * as textContain from '../../core/contain/text';
+import * as dataUtil from '../../utils/data_structure_util';
+import * as textContain from '../../utils/contain/text';
 import * as roundRectHelper from './round_rect';
 import * as imageHelper from './image';
 import fixShadow from './fix_shadow';

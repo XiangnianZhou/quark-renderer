@@ -1,7 +1,7 @@
-import Path from '../../graphic/Path';
-import PathProxy from '../../graphic/PathProxy';
+import {mathSqrt,mathSin,mathCos,PI,mathAcos} from '../graphic/constants';
 import transformPath from './transform_path';
-import {mathSqrt,mathSin,mathCos,PI,mathAcos} from '../../graphic/constants';
+import Path from '../graphic/Path';
+import PathProxy from '../graphic/PathProxy';
 
 // command chars
 // var cc = [

@@ -1,14 +1,14 @@
-import * as dataUtil from '../core/utils/data_structure_util';
-import * as classUtil from '../core/utils/class_util';
-import * as matrixUtil from '../core/utils/affine_matrix_util';
-import * as vectorUtil from '../core/utils/vector_util';
+import * as dataUtil from '../utils/data_structure_util';
+import * as classUtil from '../utils/class_util';
+import * as matrixUtil from '../utils/affine_matrix_util';
+import * as vectorUtil from '../utils/vector_util';
 import Eventful from '../event/Eventful';
 import Transformable from './transform/Transformable';
 import Control from './transform/Control';
 import Animatable from '../animation/Animatable';
 import Style from './Style';
 import RectText from './RectText';
-import guid from '../core/utils/guid';
+import guid from '../utils/guid';
 
 /**
  * @class qrenderer.graphic.Element

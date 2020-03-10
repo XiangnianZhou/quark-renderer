@@ -1,13 +1,8 @@
+import {extend,retrieve2,retrieve3,trim} from '../data_structure_util';
+import { getContext } from '../canvas_util';
+import { mathMax, mathFloor } from '../../graphic/constants';
 import BoundingRect from '../../graphic/transform/BoundingRect';
 import * as imageHelper from '../../graphic/utils/image';
-import {
-    extend,
-    retrieve2,
-    retrieve3,
-    trim
-} from '../utils/data_structure_util';
-import { getContext } from '../utils/canvas_util';
-import { mathMax, mathFloor } from '../../graphic/constants';
 
 let textWidthCache = {};
 let textWidthCacheCounter = 0;

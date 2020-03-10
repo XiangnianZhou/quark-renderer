@@ -1,14 +1,14 @@
-import * as dataUtil from '../core/utils/data_structure_util';
-import * as canvasUtil from '../core/utils/canvas_util';
+import * as dataUtil from '../utils/data_structure_util';
+import * as canvasUtil from '../utils/canvas_util';
 import BoundingRect from '../graphic/transform/BoundingRect';
 import CanvasLayer from './CanvasLayer';
 import Image from '../graphic/Image';
-import guid from '../core/utils/guid';
-import timsort from '../core/utils/timsort';
+import guid from '../utils/guid';
+import timsort from '../utils/timsort';
 import requestAnimationFrame from '../animation/utils/request_animation_frame';
 import {mathRandom,mathMax} from '../graphic/constants';
 import {devicePixelRatio} from '../config';
-import env from '../core/env';
+import env from '../utils/env';
 
 /**
  * @class qrenderer.canvas.CanvasPainter

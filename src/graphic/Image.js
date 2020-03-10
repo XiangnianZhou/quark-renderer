@@ -1,6 +1,6 @@
 import Element from './Element';
 import BoundingRect from './transform/BoundingRect';
-import * as dataUtil from '../core/utils/data_structure_util';
+import * as dataUtil from '../utils/data_structure_util';
 import * as imageHelper from './utils/image';
 
 /**

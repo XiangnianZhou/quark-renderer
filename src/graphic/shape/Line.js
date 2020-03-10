@@ -1,6 +1,6 @@
 import Path from '../Path';
 import {subPixelOptimizeLine} from '../utils/sub_pixel_optimize';
-import * as dataUtil from '../../core/utils/data_structure_util';
+import * as dataUtil from '../../utils/data_structure_util';
 
 /**
  * @class qrenderer.graphic.shape.Line 

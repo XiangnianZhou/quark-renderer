@@ -1,13 +1,12 @@
+import Eventful from '../event/Eventful';
+import env from './env';
+import {buildTransformer} from './four_points_transform';
+
 /**
  * Utilities for mouse or touch events.
  */
 
-import Eventful from '../../event/Eventful';
-import env from '../env';
-import {buildTransformer} from './four_points_transform';
-
 var isDomLevel2 = (typeof window !== 'undefined') && !!window.addEventListener;
-
 var MOUSE_EVENT_REG = /^(?:mouse|pointer|contextmenu|drag|drop)|click/;
 var EVENT_SAVED_PROP = '___qrEVENTSAVED';
 var _calcOut = [];

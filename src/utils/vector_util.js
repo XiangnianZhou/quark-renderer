@@ -1,5 +1,5 @@
 /* global Float32Array */
-import {mathSqrt,mathMin,mathMax} from '../../graphic/constants';
+import {mathSqrt,mathMin,mathMax} from '../graphic/constants';
 
 var ArrayCtor = typeof Float32Array === 'undefined'
     ? Array

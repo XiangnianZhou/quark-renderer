@@ -1,5 +1,5 @@
 import Path from '../Path';
-import * as dataUtil from '../../core/utils/data_structure_util';
+import * as dataUtil from '../../utils/data_structure_util';
 import {mathSin,mathCos,PI2,PI} from '../../graphic/constants';
 
 /**

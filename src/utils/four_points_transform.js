@@ -1,4 +1,4 @@
-import {mathLog,mathRound} from '../../graphic/constants';
+import {mathLog,mathRound} from '../graphic/constants';
 
 /**
  * The algoritm is learnt from

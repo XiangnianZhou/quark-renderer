@@ -1,5 +1,5 @@
-import * as dataUtil from '../core/utils/data_structure_util';
-import * as classUtil from '../core/utils/class_util';
+import * as dataUtil from '../utils/data_structure_util';
+import * as classUtil from '../utils/class_util';
 import Track from './Track';
 import Eventful from '../event/Eventful';
 
