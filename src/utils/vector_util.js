@@ -1,7 +1,7 @@
 /* global Float32Array */
 import {mathSqrt,mathMin,mathMax} from './constants';
 
-var ArrayCtor = typeof Float32Array === 'undefined'
+let ArrayCtor = typeof Float32Array === 'undefined'
     ? Array
     : Float32Array;
 
@@ -12,7 +12,7 @@ var ArrayCtor = typeof Float32Array === 'undefined'
  * @return {Vector2}
  */
 export function create(x, y) {
-    var out = new ArrayCtor(2);
+    let out = new ArrayCtor(2);
     if (x == null) {
         x = 0;
     }
@@ -42,7 +42,7 @@ export function copy(out, v) {
  * @return {Vector2}
  */
 export function clone(v) {
-    var out = new ArrayCtor(2);
+    let out = new ArrayCtor(2);
     out[0] = v[0];
     out[1] = v[1];
     return out;
@@ -106,7 +106,7 @@ export function sub(out, v1, v2) {
 export function len(v) {
     return mathSqrt(lenSquare(v));
 }
-export var length = len; // jshint ignore:line
+export let length = len; // jshint ignore:line
 
 /**
  * 向量长度平方
@@ -116,7 +116,7 @@ export var length = len; // jshint ignore:line
 export function lenSquare(v) {
     return v[0] * v[0] + v[1] * v[1];
 }
-export var lengthSquare = lenSquare;
+export let lengthSquare = lenSquare;
 
 /**
  * 向量乘法
@@ -170,7 +170,7 @@ export function scale(out, v, s) {
  * @param {Vector2} v
  */
 export function normalize(out, v) {
-    var d = len(v);
+    let d = len(v);
     if (d === 0) {
         out[0] = 0;
         out[1] = 0;
@@ -194,7 +194,7 @@ export function distance(v1, v2) {
         + (v1[1] - v2[1]) * (v1[1] - v2[1])
     );
 }
-export var dist = distance;
+export let dist = distance;
 
 /**
  * 向量距离平方
@@ -206,7 +206,7 @@ export function distanceSquare(v1, v2) {
     return (v1[0] - v2[0]) * (v1[0] - v2[0])
         + (v1[1] - v2[1]) * (v1[1] - v2[1]);
 }
-export var distSquare = distanceSquare;
+export let distSquare = distanceSquare;
 
 /**
  * 求负向量
@@ -239,8 +239,8 @@ export function lerp(out, v1, v2, t) {
  * @param {Vector2} m
  */
 export function applyTransform(out, v, m) {
-    var x = v[0];
-    var y = v[1];
+    let x = v[0];
+    let y = v[1];
     out[0] = m[0] * x + m[2] * y + m[4];
     out[1] = m[1] * x + m[3] * y + m[5];
     return out;
