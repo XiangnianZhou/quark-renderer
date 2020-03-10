@@ -1,4 +1,3 @@
-
 import {
     min as v2Min,
     max as v2Max,
@@ -7,7 +6,7 @@ import {
     add as v2Add,
     clone as v2Clone,
     sub as v2Sub
-} from '../../utils/vector_util';
+} from './vector_util';
 
 /**
  * 贝塞尔平滑曲线

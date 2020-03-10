@@ -1,4 +1,4 @@
-import env from '../../utils/env';
+import env from './env';
 
 // Fix weird bug in some version of IE11 (like 11.0.9600.178**),
 // where exception "unexpected call to method or property access"

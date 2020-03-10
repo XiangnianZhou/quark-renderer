@@ -1,4 +1,4 @@
-import fixShadow from './utils/fix_shadow';
+import fixShadow from '../utils/fix_shadow';
 import {ContextCachedBy} from './constants';
 import {mathMin} from '../graphic/constants';
 

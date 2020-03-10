@@ -1,7 +1,7 @@
 import Element from './Element';
 import * as dataUtil from '../utils/data_structure_util';
 import * as textContain from '../utils/contain/text';
-import * as textUtil from './utils/text_util';
+import * as textUtil from '../utils/text_util';
 import {ContextCachedBy} from './constants';
 
 /**

@@ -1,5 +1,5 @@
 import Path from '../Path';
-import * as polyHelper from '../utils/poly';
+import * as polyHelper from '../../utils/poly';
 import * as dataUtil from '../../utils/data_structure_util';
 
 /**

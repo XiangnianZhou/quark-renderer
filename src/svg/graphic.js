@@ -3,7 +3,7 @@ import PathProxy from '../graphic/PathProxy';
 import BoundingRect from '../graphic/transform/BoundingRect';
 import * as matrixUtil from '../utils/affine_matrix_util';
 import * as textContain from '../utils/contain/text';
-import * as textUtil from '../graphic/utils/text_util';
+import * as textUtil from '../utils/text_util';
 import Text from '../graphic/Text';
 import {PI,PI2,mathRound,mathAbs,mathCos,mathSin} from '../graphic/constants';
 

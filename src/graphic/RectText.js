@@ -1,4 +1,4 @@
-import * as textUtil from './utils/text_util';
+import * as textUtil from '../utils/text_util';
 import BoundingRect from './transform/BoundingRect';
 import {WILL_BE_RESTORED} from './constants';
 /**

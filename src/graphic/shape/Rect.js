@@ -1,6 +1,6 @@
 import Path from '../Path';
-import * as roundRectHelper from '../utils/round_rect';
-import {subPixelOptimizeRect} from '../utils/sub_pixel_optimize';
+import * as roundRectHelper from '../../utils/round_rect';
+import {subPixelOptimizeRect} from '../../utils/sub_pixel_optimize';
 import * as dataUtil from '../../utils/data_structure_util';
 
 /**

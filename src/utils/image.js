@@ -1,5 +1,4 @@
-
-import LRU from '../../utils/LRU';
+import LRU from './LRU';
 
 var globalImageCache = new LRU(50);
 
