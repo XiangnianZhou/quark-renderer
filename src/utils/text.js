@@ -1,4 +1,4 @@
-import BoundingRect from '../../graphic/transform/BoundingRect';
+import BoundingRect from '../graphic/transform/BoundingRect';
 import * as imageHelper from '../../graphic/utils/image';
 import {
     extend,
@@ -7,7 +7,7 @@ import {
     trim
 } from '../utils/data_structure_util';
 import { getContext } from '../utils/canvas_util';
-import { mathMax, mathFloor } from '../../utils/constants';
+import { mathMax, mathFloor } from './constants';
 
 let textWidthCache = {};
 let textWidthCacheCounter = 0;
