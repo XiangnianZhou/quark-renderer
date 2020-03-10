@@ -13,7 +13,7 @@
         let circle=new QuarkRenderer.Rect({
             showControls:true,
             draggable:true,
-            position:[200,200],
+            position:[100,200],
             shape:{
                 width:200,
                 height:200
@@ -23,6 +23,19 @@
             }
         });
         qr.add(circle);
+
+        let image = new QuarkRenderer.Image({
+            showControls:true,
+            position: [450,200],
+            scale: [1, 1],
+            style: {
+                image: './data/test.png',
+                width: 200,
+                height: 200
+            },
+            draggable: true
+        });
+        qr.add(image);
     </script>
 </body>
 </html>

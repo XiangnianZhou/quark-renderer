@@ -122,6 +122,7 @@ export default class Control {
             }else if(cosp==0){
                 p[0]=p[0]-halfW;
             }
+            
             if(point.name==='SPIN'){
                 if(this.el.scale[1]>0){
                     p[1]=p[1]-height;
