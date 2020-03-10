@@ -1,5 +1,5 @@
 import Element from './Element';
-import BoundingRect from './transform/BoundingRect';
+import BoundingRect from './BoundingRect';
 import * as dataUtil from '../utils/data_structure_util';
 import * as imageHelper from '../utils/image_util';
 

@@ -4,7 +4,7 @@ import * as matrixUtil from '../utils/affine_matrix_util';
 import * as vectorUtil from '../utils/vector_util';
 import Eventful from '../event/Eventful';
 import Transformable from './transform/Transformable';
-import Control from './transform/Control';
+import Control from './transform/TransformControl';
 import Animatable from '../animation/Animatable';
 import Style from './Style';
 import RectText from './RectText';

@@ -1,6 +1,6 @@
-import * as vectorUtil from '../../utils/vector_util';
-import * as matrixUtil from '../../utils/affine_matrix_util';
-import {mathMin,mathMax} from '../../utils/constants';
+import * as vectorUtil from '../utils/vector_util';
+import * as matrixUtil from '../utils/affine_matrix_util';
+import {mathMin,mathMax} from '../utils/constants';
 
 /**
  * @class qrenderer.core.BoundingRect

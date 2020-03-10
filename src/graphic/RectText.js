@@ -1,5 +1,5 @@
 import * as textUtil from '../utils/text_util';
-import BoundingRect from './transform/BoundingRect';
+import BoundingRect from './BoundingRect';
 import {WILL_BE_RESTORED} from '../utils/constants';
 /**
  * @class qrenderer.graphic.RectText 

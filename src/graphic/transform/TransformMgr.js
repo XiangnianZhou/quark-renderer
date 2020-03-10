@@ -2,7 +2,7 @@ import {EPSILON,mathAbs, mathLog} from '../../utils/constants';
 import * as matrixUtil from '../../utils/affine_matrix_util';
 
 /**
- * @class qrenderer.graphic.TransformMgr
+ * @class qrenderer.graphic.transform.TransformMgr
  * 
  * Global transform manager. When user drag the transform control and begin dragging, this manager will handle the events
  * and transform parameters for the selected element.
@@ -12,7 +12,6 @@ import * as matrixUtil from '../../utils/affine_matrix_util';
 export default class TransformMgr{
     constructor(dispatcher){
         this.dispatcher=dispatcher;
-        this.startListen();
     }
     
     startListen(){

@@ -2,7 +2,7 @@ import * as dataUtil from '../utils/data_structure_util';
 import * as canvasUtil from '../utils/canvas_util';
 import {mathRandom,mathMax} from '../utils/constants';
 import {devicePixelRatio} from '../config';
-import BoundingRect from '../graphic/transform/BoundingRect';
+import BoundingRect from '../graphic/BoundingRect';
 import CanvasLayer from './CanvasLayer';
 import Image from '../graphic/Image';
 import guid from '../utils/guid';

@@ -5,7 +5,7 @@ import * as colorUtil from '../../utils/color_util';
 import {mathSin} from '../../utils/constants';
 
 /**
- * @class qrenderer.graphic.Control
+ * @class qrenderer.graphic.transform.TransformControl
  * 
  * Transform control. There are two constraints in this implementation:
  * 
@@ -20,7 +20,7 @@ import {mathSin} from '../../utils/constants';
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default class Control {
+export default class TransformControl {
     constructor(options={}){
         this.el=null;
         this.x1 = 0;
