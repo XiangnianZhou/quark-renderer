@@ -1,6 +1,6 @@
-import Eventful from './event/Eventful';
 import * as classUtil from './utils/class_util';
 import * as util from './utils/data_structure_util';
+import Eventful from './event/Eventful';
 import env from './utils/env';
 import Group from './graphic/Group';
 // Use timsort because in most case elements are partially sorted

@@ -1,6 +1,6 @@
 import Eventful from '../event/Eventful';
-import env from './env';
 import {buildTransformer} from './four_points_transform';
+import env from './env';
 
 /**
  * Utilities for mouse or touch events.

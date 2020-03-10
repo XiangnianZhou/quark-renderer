@@ -1,4 +1,4 @@
-var dpr = 1;
+let dpr = 1;
 
 // If in browser environment
 if (typeof window !== 'undefined') {
@@ -16,7 +16,7 @@ if (typeof window !== 'undefined') {
  * 0: Do nothing, for release.
  * 1: console.error, for debug.
  */
-export var debugMode = 0;
+export let debugMode = 0;
 
 // retina 屏幕优化
-export var devicePixelRatio = dpr;
+export let devicePixelRatio = dpr;
