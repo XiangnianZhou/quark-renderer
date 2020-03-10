@@ -1,13 +1,13 @@
-import {createElement} from '../core';
-import * as dataUtil from '../../utils/data_structure_util';
-import Path from '../../graphic/Path';
-import QImage from '../../graphic/Image';
-import QText from '../../graphic/Text';
+import {createElement} from './core';
+import * as dataUtil from '../utils/data_structure_util';
+import Path from '../graphic/Path';
+import QImage from '../graphic/Image';
+import QText from '../graphic/Text';
 import {
     path as svgPath,
     image as svgImage,
     text as svgText
-} from '../graphic';
+} from './graphic';
 
 /**
  * @class qrenderer.svg.helper.Definable
