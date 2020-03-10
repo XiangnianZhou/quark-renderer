@@ -29,6 +29,7 @@ Here are the key improvements compare to the original ZRender:
 - Support node-canvas environment directly, do not need any hack.
 - Removed VML engine, because the marketshare of IE is already very small now. 
 - Add skew feature for transformation system.
+- Add transform control for elements.
 
 ## Usage
 
@@ -199,6 +200,8 @@ The document is in /api directory, open /api/index.html in your browser then you
 <img src="./docs/images/5.gif">
 <br/>
 <img src="./docs/images/6.gif">
+<br/>
+<img src="./docs/images/7.gif">
 
 Wechat mini-program example:
 

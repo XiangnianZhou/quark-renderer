@@ -123,24 +123,27 @@ export default class TransformMgr{
         [mouseX,mouseY]=matrixUtil.minusVector([mouseX,mouseY],this._center);
         let sinp=matrixUtil.sinx(...[mouseX,mouseY]);
         let cosp=matrixUtil.cosx(...[mouseX,mouseY]);
-        console.log(`sinp=${sinp},cosp=${cosp}`);
         let radian=Math.asin(Math.abs(sinp));
         
         if(sinp>=0){
-            if(cosp>=0){
-                radian=radian;
-            }else{
+            if(cosp<0){
                 radian=Math.PI-radian;
+            }
+            if(this._scale[1]>0){   //flip in Y direction
+                radian=radian+Math.PI;
             }
             radian=radian-Math.PI/2;
         }else{
-            if(cosp>=0){
-                radian=-radian;
-            }else{
-                radian=-(Math.PI-radian);
+            radian=-radian;
+            if(cosp<0){
+                radian=-(Math.PI+radian);
+            }
+            if(this._scale[1]<0){   //flip in Y direction
+                radian=radian+Math.PI;
             }
             radian=radian+Math.PI/2;
         }
+        console.log(`sinp=${sinp},cosp=${cosp},radian=${radian}`);
 
         let position=bps[0];
         position=matrixUtil.rotateVector(position,-radian);
