@@ -327,7 +327,12 @@ Transformable.prototype={
      * @return {Array<Number>}
      */
     globalToLocal:function (x, y) {
-        return matrixUtil.transformVector([x,y],this.inverseTransform);//FIXME:something might be wrong while continually invoke this
+        let v2 = [x, y];
+        let inverseTransform = this.inverseTransform;
+        if (inverseTransform) {
+            vectorUtil.applyTransform(v2, v2, inverseTransform);
+        }
+        return v2;
     },
 
     /**
@@ -341,8 +346,12 @@ Transformable.prototype={
      * @return {Array<Number>}
      */
     localToGlobal:function (x, y) {
-        return matrixUtil.transformVector([x,y],this.transform);//FIXME:something might be wrong while continually invoke this
+        let v2 = [x, y];
+        let transform = this.transform;
+        if (transform) {
+            vectorUtil.applyTransform(v2, v2, transform);
+        }
+        return v2;
     }
 }
-
 export default Transformable;

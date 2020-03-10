@@ -136,11 +136,20 @@ class Element{
 
         /**
          * @property {Boolean} hasControls
-         * Whether this object has transform controls.
+         * Whether this object has transform controls now, hasControls will be set to true when element is clicked.
          * 
-         * 是否带有变换控制工具。
+         * 元素当前是否带有变换控制工具，当元素被点击的时候 hasControls 会被设置为 true。
          */
         this.hasControls = false;
+
+        /**
+         * @property {Array<Control>} controls
+         * Whether show transform controls, if showControls is false, no transform controls will be rendered.
+         * 
+         * 
+         * 是否显示变换控制工具，如果此标志位被设置为 false，无论什么情况都不会显示变换控制器。
+         */
+        this.showControls = false;
 
         /**
          * @property {Array<Control>} controls
@@ -423,10 +432,8 @@ class Element{
      * Callback during render.
      */
     render(ctx, prevEl) {
-        if(this.hasControls){
+        if(this.showControls&&this.hasControls){
             this.renderControls(ctx, prevEl);
-        }else{
-            this.__qr&&this.__qr.off("pagemousemove",this.controlActionHandler);
         }
     }
 
