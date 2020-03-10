@@ -2,7 +2,7 @@ import {extend,retrieve2,retrieve3,trim} from '../data_structure_util';
 import { getContext } from '../canvas_util';
 import { mathMax, mathFloor } from '../constants';
 import BoundingRect from '../../graphic/transform/BoundingRect';
-import * as imageHelper from '../image';
+import * as imageHelper from '../image_util';
 
 let textWidthCache = {};
 let textWidthCacheCounter = 0;

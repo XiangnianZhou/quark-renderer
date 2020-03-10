@@ -1,7 +1,7 @@
 import * as dataUtil from './data_structure_util';
 import * as textContain from './contain/text';
 import * as roundRectHelper from './round_rect';
-import * as imageHelper from './image';
+import * as imageHelper from './image_util';
 import fixShadow from './fix_shadow';
 import {ContextCachedBy, WILL_BE_RESTORED} from './constants';
 

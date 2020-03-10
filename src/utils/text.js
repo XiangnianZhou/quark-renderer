@@ -1,5 +1,5 @@
 import BoundingRect from '../graphic/transform/BoundingRect';
-import * as imageHelper from '../../graphic/utils/image';
+import * as imageHelper from './image_util';
 import {
     extend,
     retrieve2,
