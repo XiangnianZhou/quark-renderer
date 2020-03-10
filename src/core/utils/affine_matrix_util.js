@@ -1,4 +1,4 @@
-import {mathSin,mathCos} from '../../graphic/constants';
+import {mathSin,mathCos,mathSqrt,mathAtan, mathAsin} from '../../graphic/constants';
 
 /**
  * @class core.utils.affine_matrix_util
@@ -155,4 +155,101 @@ export function scale(a, v) {
  */
 export function skew(a, v) {
     return mul([1,v[1],v[0],1,0,0],a);
+}
+
+/**
+ * @method sinx
+ * @param {*} x x position 
+ * @param {*} y y position
+ */
+export function sinx(x,y){
+    return y/(mathSqrt(x*x+y*y));
+}
+
+/**
+ * @method asinx
+ * @param {*} x x position 
+ * @param {*} y y position
+ */
+export function asinx(x,y){
+    let sin=sinx(x,y);
+    return mathAsin(sin);
+}
+
+/**
+ * @method cosx
+ * @param {*} x x position 
+ * @param {*} y y position
+ */
+export function cosx(x,y){
+    return x/(mathSqrt(x*x+y*y));
+}
+
+/**
+ * @method atanx
+ * @param {*} x x position 
+ * @param {*} y y position
+ */
+export function atanx(x,y){
+    return mathAtan(y/x);
+}
+
+/**
+ * 向量加法
+ * @param {*} v1 
+ * @param {*} v2 
+ */
+export function addVector(v1,v2){
+    return [v1[0]+v2[0],v1[1]+v2[1]];
+}
+
+/**
+ * 向量减法
+ * @param {*} v1 
+ * @param {*} v2 
+ */
+export function minusVector(v1,v2){
+    return [v1[0]-v2[0],v1[1]-v2[1]];
+}
+
+/**
+ * @method vectorRotate
+ * Roate vector to an angel.
+ * 
+ * @param {*} v 
+ * @param {*} radian 
+ */
+export function rotateVector(v,radian){
+    return [v[0]*mathCos(radian)+v[1]*mathSin(radian),-v[0]*mathSin(radian)+v[1]*mathCos(radian)];
+}
+
+/**
+ * 矩阵左乘向量
+ */
+export function transformVector(v, m) {
+    var x = v[0];
+    var y = v[1];
+    let out=[];
+    out[0] = m[0] * x + m[2] * y + m[4];
+    out[1] = m[1] * x + m[3] * y + m[5];
+    return out;
+}
+
+/**
+ * 点乘
+ * @param {*} v1 
+ * @param {*} v2 
+ */
+export function dot(v1, v2) {
+    return v1[0] * v2[0] + v1[1] * v2[1];
+}
+
+/**
+ * Change origin from fromOrigin to toOrigin.
+ * @param {Array} fromOrigin    Origin1 coordinate in global space.
+ * @param {Array} toOrigin      Origin2 coordinate in global space.
+ * @param {Array} point         The point coordinate in fromOrigin.
+ */
+export function changeOrigin(fromOrigin,toOrigin,point){
+    return [point[0]+fromOrigin[0]-toOrigin[0],point[1]+fromOrigin[1]-toOrigin[1]];
 }

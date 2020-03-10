@@ -21,11 +21,11 @@ export default class QImage extends Element{
     }
 
     /**
-     * @method brush
+     * @method render
      * @param {Object} ctx 
      * @param {Element} prevEl 
      */
-    brush(ctx, prevEl) {
+    render(ctx, prevEl) {
         let style = this.style;
         let src = style.image;
 
@@ -88,6 +88,8 @@ export default class QImage extends Element{
             this.restoreTransform(ctx);
             this.drawRectText(ctx, this.getBoundingRect());
         }
+
+        // Element.prototype.render.call(this,ctx,prevEl);//FIXME:add transform control to QImage
     }
 
     /**
@@ -95,11 +97,11 @@ export default class QImage extends Element{
      */
     getBoundingRect() {
         let style = this.style;
-        if (!this._rect) {
-            this._rect = new BoundingRect(
+        if (!this._boundingRect) {
+            this._boundingRect = new BoundingRect(
                 style.x || 0, style.y || 0, style.width || 0, style.height || 0
             );
         }
-        return this._rect;
+        return this._boundingRect;
     }
 }

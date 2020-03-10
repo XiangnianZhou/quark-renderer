@@ -45,10 +45,11 @@ let Transformable = function (options={}) {
 
     /**
      * @property {Array<Number>} position
-     * The translate array.
+     * The translate array, for better understanding, we use position to replace the
+     * word translate defined in W3C canvas standard.
      * 
      * 
-     * 平移，数组。
+     * 平移，数组。为了方便理解，用 position 这个名字来替代 W3C canvas 标准里面的 translate 。
      */
     this.position = (options.position===null||options.position===undefined)?[0, 0]:options.position;
     
@@ -190,7 +191,7 @@ Transformable.prototype={
      * 
      * 注意：这里的实现没有考虑仿射变换中的矩阵乘法顺序，因为 API 调用者
      * 在提供配置项时并不会留意数学意义上的变换顺序，而总是采用的直觉意义
-     * 上的变换顺序 skew->scale->rotation->position 。
+     * 上的变换顺序，也就是：skew->scale->rotation->position 。
      * 
      *      @example
      *      rect.animate()
@@ -222,7 +223,7 @@ Transformable.prototype={
         let skew = this.skew || [0,0];
 
         let m=matrixUtil.create();
-        //移动原点
+        // move origin point
         m[4] -= origin[0];
         m[5] -= origin[1];
         
@@ -230,11 +231,11 @@ Transformable.prototype={
         m = matrixUtil.scale(m, scale);
         m = matrixUtil.rotate(m, rotation);
 
-        //原点移回去
+        // move origin back
         m[4] += origin[0];
         m[5] += origin[1];
     
-        //平移变换的值
+        // translate
         m[4] += position[0];
         m[5] += position[1];
 
@@ -258,14 +259,14 @@ Transformable.prototype={
 
         let m = this.transform;
 
-        // 自身的变换
+        // aplly transform of self
         if (needLocalTransform) {
             m=this.getLocalTransform();
         }else {
             matrixUtil.identity(m);
         }
 
-        // 应用父节点变换
+        // apply transform of parent element
         if (parentHasTransform) {
             if (needLocalTransform) {
                 m=matrixUtil.mul(parent.transform, m);
@@ -274,7 +275,7 @@ Transformable.prototype={
             }
         }
 
-        // 应用全局缩放
+        // apply global scale
         if (this.globalScaleRatio != null && this.globalScaleRatio !== 1) {
             this.getGlobalScale(scaleTmp);
             let relX = scaleTmp[0] < 0 ? -1 : 1;
@@ -288,11 +289,10 @@ Transformable.prototype={
             m[3] *= sy;
         }
         
-        //保存变换矩阵
         this.transform = m;
-        //计算逆变换矩阵
         this.inverseTransform = this.inverseTransform || matrixUtil.create();
         this.inverseTransform = matrixUtil.invert(this.inverseTransform, m);
+        return this.transform;
     },
 
     /**
@@ -305,8 +305,8 @@ Transformable.prototype={
      */
     getGlobalScale:function (out=[]) {
         let m = this.transform;
-        out[0] = mathSqrt(m[0] * m[0] + m[1] * m[1]);
-        out[1] = mathSqrt(m[2] * m[2] + m[3] * m[3]);
+        out[0] = mathSqrt(m[0] * m[0] + m[1] * m[1]);// scale in X axis
+        out[1] = mathSqrt(m[2] * m[2] + m[3] * m[3]);// scale in Y axis
         if (m[0] < 0) {
             out[0] = -out[0];
         }
@@ -354,5 +354,4 @@ Transformable.prototype={
         return v2;
     }
 }
-
 export default Transformable;

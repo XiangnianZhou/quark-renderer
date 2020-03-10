@@ -32,7 +32,7 @@ export default class Sector extends Path{
          */
         this.type='sector';
 
-        this.brush=fixClipWithShadow(Path.prototype.brush);
+        this.render=fixClipWithShadow(Path.prototype.render);
     }
 
     /**

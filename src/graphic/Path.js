@@ -56,11 +56,11 @@ class Path extends Element{
     }
 
     /**
-     * @method brush
+     * @method render
      * @param {Object} ctx 
      * @param {Element} prevEl 
      */
-    brush(ctx, prevEl) {
+    render(ctx, prevEl) {
         let path = this.path || new PathProxy(true);
         let hasStroke = this.style.hasStroke();
         let hasFill = this.style.hasFill();
@@ -103,7 +103,6 @@ class Path extends Element{
 
         let lineDash = this.style.lineDash;
         let lineDashOffset = this.style.lineDashOffset;
-
         let ctxLineDash = !!ctx.setLineDash;
 
         // Update path sx, sy
@@ -167,6 +166,8 @@ class Path extends Element{
             ctx.setLineDash([]);
         }
 
+        Element.prototype.render.call(this,ctx,prevEl);
+        
         // Draw rect text
         if (this.style.text != null) {
             // Only restore transform when needs draw text.
@@ -198,11 +199,16 @@ class Path extends Element{
     }
 
     /**
-     * @protected
      * @method getBoundingRect
+     * Get bounding rect of this element.
+     * NOTE: this method will return the bounding rect without transforming.
+     * 
+     * 
+     * 获取当前元素的边界矩形。
+     * 注意：此方法返回的是没有经过 transform 处理的边界矩形。
      */
     getBoundingRect() {
-        let rect = this._rect;
+        let rect = this._boundingRect;
         let needsUpdateRect = !rect;
         if (needsUpdateRect) {
             let path = this.path;
@@ -216,13 +222,13 @@ class Path extends Element{
             }
             rect = path.getBoundingRect();
         }
-        this._rect = rect;
+        this._boundingRect = rect;
 
         if (this.style.hasStroke()) {
             // Update rect with stroke lineWidth when
             // 1. Element changes scale or lineWidth
             // 2. Shape is changed
-            let rectWithStroke = this._rectWithStroke || (this._rectWithStroke = rect.clone());
+            let rectWithStroke = this._boundingRectWithStroke || (this._boundingRectWithStroke = rect.clone());
             if (this.__dirty || needsUpdateRect) {
                 rectWithStroke.copy(rect);
                 // FIXME Must after composeLocalTransform
@@ -320,7 +326,7 @@ class Path extends Element{
         // FIXME
         if (key === 'shape') {
             this.__dirtyPath = true;
-            this._rect = null;
+            this._boundingRect = null;
             this.setShape(value);
         }else {
             Element.prototype._attrKV.call(this, key, value);

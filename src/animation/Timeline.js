@@ -65,22 +65,23 @@ export default class Timeline{
         percent = mathMin(percent, 1);
 
         let easing = this.easing;
-        let easingFunc = typeof easing === 'string' ? easingFuncs[easing] : easing;
+        let easingFunc = typeof easing === 'string'
+            ? easingFuncs[easing] 
+            : easing;
         let schedule = typeof easingFunc === 'function'
             ? easingFunc(percent)
             : percent;
-
-        this.fire('frame', schedule);
-
-        // 结束或者重新开始周期
-        if (percent === 1) {
+        
+        if (percent === 1) {// animation 100% finished
             if (this.loop) {
                 this.restart(globalTime);
                 return 'restart';
             }
             return 'destroy';
+        }else{
+            this.fire('frame', schedule);
+            return percent;
         }
-        return percent;
     }
 
     /**

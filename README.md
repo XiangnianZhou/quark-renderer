@@ -13,22 +13,23 @@ To better understand the core ideas behind ZRender, I spent some days (2020-01) 
 - I want a very customized version to implement some cool stuff in the future.
 - I want a cleaner repo to teach my students how to understand and design a canvas engine for modern web and Wechat mini-programs.
 - I want to make the code easier to read.
-- There are two reasons why I have to pick up a new name for this project. Firstly, ZRender exported a global variable 'zrender', therefore a new name can avoid potential conflicts. Secondly, duplicated names are not allowed in npm.
+- There are two reasons why I have to pick up a new name for this project. Firstly, ZRender exported a global variable 'zrender', therefore a new name can avoid potential conflicts. Secondly, duplicated names are not allowed in npm registry.
 
 Here are the key improvements compare to the original ZRender:
 
-- Modified a bunch of classes and js files with ES6 syntax.
+- Modified a bunch of classes and .js files with ES6 syntax.
 - Added keyboard event support.
 - Added multi drag-drop feature.
-- Refactored the structure of js files and directories for better understanding.
+- Refactored the structure of .js files and directories for better understanding.
 - Refactored some implementation details for better understanding.
 - Fixed some bugs in /test directory, added a few test cases.
-- Use [jsduck](https://github.com/senchalabs/jsduck) for better API document.
+- Use [jsduck](https://github.com/senchalabs/jsduck) for better API documentation.
 - Refactored all the comments for jsduck.
 - Support Wechat mini-program directly, do not need any hack.
 - Support node-canvas environment directly, do not need any hack.
 - Removed VML engine, because the marketshare of IE is already very small now. 
 - Add skew feature for transformation system.
+- Add transform control for elements.
 
 ## Usage
 
@@ -199,6 +200,8 @@ The document is in /api directory, open /api/index.html in your browser then you
 <img src="./docs/images/5.gif">
 <br/>
 <img src="./docs/images/6.gif">
+<br/>
+<img src="./docs/images/7.gif">
 
 Wechat mini-program example:
 

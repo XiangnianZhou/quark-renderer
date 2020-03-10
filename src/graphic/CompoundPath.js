@@ -44,9 +44,9 @@ export default class CompoundPath extends Path{
 
     /**
      * @private
-     * @method beforeBrush
+     * @method beforeRender
      */
-    beforeBrush() {
+    beforeRender() {
         this._updatePathDirty();
         let paths = this.shape.paths || [];
         let scale = this.getGlobalScale();
@@ -74,9 +74,9 @@ export default class CompoundPath extends Path{
 
     /**
      * @private
-     * @method afterBrush
+     * @method afterRender
      */
-    afterBrush() {
+    afterRender() {
         let paths = this.shape.paths || [];
         for (let i = 0; i < paths.length; i++) {
             paths[i].__dirtyPath = false;

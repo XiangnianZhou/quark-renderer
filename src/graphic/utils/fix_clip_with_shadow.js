@@ -44,7 +44,7 @@ export default function (orignalBrush) {
                     )) {
                         for (var j = 0; j < shadowTemp.length; j++) {
                             // It is save to put shadowTemp static, because shadowTemp
-                            // will be all modified each item brush called.
+                            // will be all modified each item render() called.
                             shadowTemp[j][2] = style[shadowTemp[j][0]];
                             style[shadowTemp[j][0]] = shadowTemp[j][1];
                         }
