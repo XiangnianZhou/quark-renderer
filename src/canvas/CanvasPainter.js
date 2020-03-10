@@ -519,10 +519,10 @@ export default class CanvasPainter{
                 }
             }
 
-            el.beforeBrush && el.beforeBrush(ctx);
-            el.brush(ctx, scope.prevEl || null);
+            el.beforeRender && el.beforeRender(ctx);
+            el.render(ctx, scope.prevEl || null);
             scope.prevEl = el;
-            el.afterBrush && el.afterBrush(ctx);
+            el.afterRender && el.afterRender(ctx);
         }
     }
 
@@ -1068,7 +1068,7 @@ export default class CanvasPainter{
         path.skew = [0,0];
         path.composeLocalTransform();
         if (path) {
-            path.brush(ctx);
+            path.render(ctx);
         }
 
         let ImageShape = Image;

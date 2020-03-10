@@ -117,12 +117,8 @@
             rawTransformable.transform || QuarkRenderer.matrixUtil.create()
         );
 
-        root.decomposeLocalTransform();
         root.dirty(true);
-
         var handler = rootRecord.handler;
         handler && handler(root);
     }
-
-
 })();

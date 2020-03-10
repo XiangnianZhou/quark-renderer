@@ -269,3 +269,25 @@ export function max(out, v1, v2) {
     out[1] = mathMax(v1[1], v2[1]);
     return out;
 }
+
+/**
+ * |p1 p2| 叉乘 |p1 p|
+ * @param {*} p1 
+ * @param {*} p2 
+ * @param {*} p 
+ */
+export function multiCross(p1,p2,p){
+    return (p2[0] - p1[0]) * (p[1] - p1[1]) - (p[0] - p1[0]) * (p2[1] - p1[1]);
+}
+
+/**
+ * p 点是否位于 p1/p2/p3/p4 围成的矩形内部
+ * @param {*} p1 
+ * @param {*} p2 
+ * @param {*} p3 
+ * @param {*} p4 
+ * @param {*} p 
+ */
+export function isInsideRect(p1,p2,p3,p4,p){
+    return (multiCross(p1, p2, p) * multiCross(p3, p4, p) >= 0) && (multiCross(p2, p3, p) * multiCross(p4, p1, p) >= 0);
+}

@@ -22,7 +22,7 @@ export default class Text extends Element{
         this.type='text';
     }
 
-    brush(ctx, prevEl) {
+    render(ctx, prevEl) {
         let style = this.style;
 
         // Optimize, avoid normalize every time.
@@ -53,17 +53,17 @@ export default class Text extends Element{
         }
 
         this.applyTransform(ctx);
-
         textUtil.renderText(this, ctx, text, style, null, prevEl);
-
         this.restoreTransform(ctx);
+        
+        Element.prototype.render.call(this,ctx,prevEl);
     }
 
     getBoundingRect() {
         let style = this.style;
         // Optimize, avoid normalize every time.
         this.__dirty && textUtil.normalizeTextStyle(style, true);
-        if (!this._rect) {
+        if (!this._boundingRect) {
             let text = style.text;
             text != null ? (text += '') : (text = '');
             let rect = textContain.getBoundingRect(
@@ -84,8 +84,8 @@ export default class Text extends Element{
                 rect.width += w;
                 rect.height += w;
             }
-            this._rect = rect;
+            this._boundingRect = rect;
         }
-        return this._rect;
+        return this._boundingRect;
     }
 }
