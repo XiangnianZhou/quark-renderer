@@ -242,7 +242,7 @@ function pathDataToString(path) {
 
 var svgPath = {};
 
-svgPath.brush = function (el) {
+svgPath.render = function (el) {
   var style = el.style;
   var svgEl = el.__svgEl;
 
@@ -289,7 +289,7 @@ svgPath.brush = function (el) {
 
 var svgImage = {};
 
-svgImage.brush = function (el) {
+svgImage.render = function (el) {
   var style = el.style;
   var image = style.image;
 
@@ -536,7 +536,7 @@ function removeOldTextNode(el) {
 
 svgText.drawRectText = svgTextDrawRectText;
 
-svgText.brush = function (el) {
+svgText.render = function (el) {
   var style = el.style;
 
   if (style.text != null) {

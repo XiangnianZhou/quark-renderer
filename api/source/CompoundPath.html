@@ -92,14 +92,14 @@ function (_Path) {
       this.__dirtyPath = dirtyPath;
       this.__dirty = this.__dirty || dirtyPath;
     }
-<span id='qrenderer-graphic-CompoundPath-method-beforeBrush'>    /**
+<span id='qrenderer-graphic-CompoundPath-method-beforeRender'>    /**
 </span>     * @private
-     * @method beforeBrush
+     * @method beforeRender
      */
 
   }, {
-    key: &quot;beforeBrush&quot;,
-    value: function beforeBrush() {
+    key: &quot;beforeRender&quot;,
+    value: function beforeRender() {
       this._updatePathDirty();
 
       var paths = this.shape.paths || [];
@@ -129,14 +129,14 @@ function (_Path) {
         paths[i].buildPath(ctx, paths[i].shape, true);
       }
     }
-<span id='qrenderer-graphic-CompoundPath-method-afterBrush'>    /**
+<span id='qrenderer-graphic-CompoundPath-method-afterRender'>    /**
 </span>     * @private
-     * @method afterBrush
+     * @method afterRender
      */
 
   }, {
-    key: &quot;afterBrush&quot;,
-    value: function afterBrush() {
+    key: &quot;afterRender&quot;,
+    value: function afterRender() {
       var paths = this.shape.paths || [];
 
       for (var i = 0; i &lt; paths.length; i++) {

@@ -614,29 +614,29 @@ function parseTransformAttribute(xmlNode, node) {
       switch (type) {
         case &#39;translate&#39;:
           value = trim(value).split(DILIMITER_REG);
-          var px = m.position[0] + parseFloat(value[0]);
-          var py = m.position[1] + parseFloat(value[1] || 0);
-          node.position = [px, py];
+          var px = value[0] + parseFloat(value[0]);
+          var py = value[1] + parseFloat(value[1] || 0);
+          m = matrixUtil.translate(m, [px, py]);
           break;
 
         case &#39;scale&#39;:
           value = trim(value).split(DILIMITER_REG);
           var sx = parseFloat(value[0]);
           var sy = parseFloat(value[1] || value[0]);
-          node.scale = [sx, sy];
+          m = matrixUtil.scale(m, [sx, sy]);
           break;
 
         case &#39;rotate&#39;:
           value = trim(value).split(DILIMITER_REG);
           var rotation = parseFloat(value[0]);
-          node.rotation = rotation;
+          m = matrixUtil.rotate(m, rotation);
           break;
 
         case &#39;skew&#39;:
           value = trim(value).split(DILIMITER_REG);
           var skewX = parseFloat(value[0]);
           var skewY = parseFloat(value[1] || value[0]);
-          node.skew = [skewX, skewY];
+          m = matrixUtil.scale(m, [skewX, skewY]);
           break;
 
         case &#39;matrix&#39;:
@@ -647,9 +647,10 @@ function parseTransformAttribute(xmlNode, node) {
           m[3] = parseFloat(value[3]);
           m[4] = parseFloat(value[4]);
           m[5] = parseFloat(value[5]);
-          node.transform = m;
           break;
       }
+
+      node.transform = m;
     }
   }
 } // Value may contain space.

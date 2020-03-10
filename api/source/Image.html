@@ -67,16 +67,16 @@ function (_Element) {
     _this.type = &#39;image&#39;;
     return _this;
   }
-<span id='qrenderer-graphic-QImage-method-brush'>  /**
-</span>   * @method brush
+<span id='qrenderer-graphic-QImage-method-render'>  /**
+</span>   * @method render
    * @param {Object} ctx 
    * @param {Element} prevEl 
    */
 
 
   _createClass(QImage, [{
-    key: &quot;brush&quot;,
-    value: function brush(ctx, prevEl) {
+    key: &quot;render&quot;,
+    value: function render(ctx, prevEl) {
       var style = this.style;
       var src = style.image; // Must bind each time
 
@@ -124,7 +124,8 @@ function (_Element) {
         // Only restore transform when needs draw text.
         this.restoreTransform(ctx);
         this.drawRectText(ctx, this.getBoundingRect());
-      }
+      } // Element.prototype.render.call(this,ctx,prevEl);//FIXME:add transform control to QImage
+
     }
 <span id='qrenderer-graphic-QImage-method-getBoundingRect'>    /**
 </span>     * @method getBoundingRect
@@ -135,11 +136,11 @@ function (_Element) {
     value: function getBoundingRect() {
       var style = this.style;
 
-      if (!this._rect) {
-        this._rect = new BoundingRect(style.x || 0, style.y || 0, style.width || 0, style.height || 0);
+      if (!this._boundingRect) {
+        this._boundingRect = new BoundingRect(style.x || 0, style.y || 0, style.width || 0, style.height || 0);
       }
 
-      return this._rect;
+      return this._boundingRect;
     }
   }]);
 

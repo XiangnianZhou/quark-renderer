@@ -69,10 +69,11 @@ var Transformable = function Transformable() {
   this.rotation = options.rotation === null || options.rotation === undefined ? 0 : options.rotation;
 <span id='qrenderer-graphic-transform-Transformable-property-position'>  /**
 </span>   * @property {Array&lt;Number&gt;} position
-   * The translate array.
+   * The translate array, for better understanding, we use position to replace the
+   * word translate defined in W3C canvas standard.
    * 
    * 
-   * 平移，数组。
+   * 平移，数组。为了方便理解，用 position 这个名字来替代 W3C canvas 标准里面的 translate 。
    */
 
   this.position = options.position === null || options.position === undefined ? [0, 0] : options.position;
@@ -210,7 +211,7 @@ Transformable.prototype = {
    * 
    * 注意：这里的实现没有考虑仿射变换中的矩阵乘法顺序，因为 API 调用者
    * 在提供配置项时并不会留意数学意义上的变换顺序，而总是采用的直觉意义
-   * 上的变换顺序 skew-&gt;scale-&gt;rotation-&gt;position 。
+   * 上的变换顺序，也就是：skew-&gt;scale-&gt;rotation-&gt;position 。
    * 
    *      @example
    *      rect.animate()
@@ -240,16 +241,16 @@ Transformable.prototype = {
     var position = this.position || [0, 0];
     var scale = this.scale || [1, 1];
     var skew = this.skew || [0, 0];
-    var m = matrixUtil.create(); //移动原点
+    var m = matrixUtil.create(); // move origin point
 
     m[4] -= origin[0];
     m[5] -= origin[1];
     m = matrixUtil.skew(m, skew);
     m = matrixUtil.scale(m, scale);
-    m = matrixUtil.rotate(m, rotation); //原点移回去
+    m = matrixUtil.rotate(m, rotation); // move origin back
 
     m[4] += origin[0];
-    m[5] += origin[1]; //平移变换的值
+    m[5] += origin[1]; // translate
 
     m[4] += position[0];
     m[5] += position[1];
@@ -270,13 +271,13 @@ Transformable.prototype = {
     var parent = this.parent;
     var parentHasTransform = parent &amp;&amp; parent.transform;
     var needLocalTransform = this.needLocalTransform();
-    var m = this.transform; // 自身的变换
+    var m = this.transform; // aplly transform of self
 
     if (needLocalTransform) {
       m = this.getLocalTransform();
     } else {
       matrixUtil.identity(m);
-    } // 应用父节点变换
+    } // apply transform of parent element
 
 
     if (parentHasTransform) {
@@ -285,7 +286,7 @@ Transformable.prototype = {
       } else {
         matrixUtil.copy(m, parent.transform);
       }
-    } // 应用全局缩放
+    } // apply global scale
 
 
     if (this.globalScaleRatio != null &amp;&amp; this.globalScaleRatio !== 1) {
@@ -298,13 +299,12 @@ Transformable.prototype = {
       m[1] *= sx;
       m[2] *= sy;
       m[3] *= sy;
-    } //保存变换矩阵
+    }
 
-
-    this.transform = m; //计算逆变换矩阵
-
+    this.transform = m;
     this.inverseTransform = this.inverseTransform || matrixUtil.create();
     this.inverseTransform = matrixUtil.invert(this.inverseTransform, m);
+    return this.transform;
   },
 
 <span id='qrenderer-graphic-transform-Transformable-method-getGlobalScale'>  /**
@@ -318,8 +318,9 @@ Transformable.prototype = {
   getGlobalScale: function getGlobalScale() {
     var out = arguments.length &gt; 0 &amp;&amp; arguments[0] !== undefined ? arguments[0] : [];
     var m = this.transform;
-    out[0] = mathSqrt(m[0] * m[0] + m[1] * m[1]);
-    out[1] = mathSqrt(m[2] * m[2] + m[3] * m[3]);
+    out[0] = mathSqrt(m[0] * m[0] + m[1] * m[1]); // scale in X axis
+
+    out[1] = mathSqrt(m[2] * m[2] + m[3] * m[3]); // scale in Y axis
 
     if (m[0] &lt; 0) {
       out[0] = -out[0];

@@ -98,18 +98,19 @@ function () {
       var easing = this.easing;
       var easingFunc = typeof easing === &#39;string&#39; ? easingFuncs[easing] : easing;
       var schedule = typeof easingFunc === &#39;function&#39; ? easingFunc(percent) : percent;
-      this.fire(&#39;frame&#39;, schedule); // 结束或者重新开始周期
 
       if (percent === 1) {
+        // animation 100% finished
         if (this.loop) {
           this.restart(globalTime);
           return &#39;restart&#39;;
         }
 
         return &#39;destroy&#39;;
+      } else {
+        this.fire(&#39;frame&#39;, schedule);
+        return percent;
       }
-
-      return percent;
     }
 <span id='qrenderer-animation-Timeline-method-restart'>    /**
 </span>     * @method restart

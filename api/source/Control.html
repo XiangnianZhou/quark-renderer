@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>The source code</title>
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
+    .highlight { display: block; background-color: #ddd; }
+  </style>
+  <script type="text/javascript">
+    function highlight() {
+      document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
+    }
+  </script>
+</head>
+<body onload="prettyPrint(); highlight();">
+  <pre class="prettyprint lang-js">var classUtil = require(&quot;../../core/utils/class_util&quot;);
+
+var matrixUtil = require(&quot;../../core/utils/affine_matrix_util&quot;);
+
+var vectorUtil = require(&quot;../../core/utils/vector_util&quot;);
+
+var colorUtil = require(&quot;../../core/utils/color_util&quot;);
+
+var _constants = require(&quot;../../graphic/constants&quot;);
+
+var mathSin = _constants.mathSin;
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError(&quot;Invalid attempt to spread non-iterable instance&quot;); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === &quot;[object Arguments]&quot;) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i &lt; arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError(&quot;Cannot call a class as a function&quot;); } }
+
+function _defineProperties(target, props) { for (var i = 0; i &lt; props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if (&quot;value&quot; in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+<span id='qrenderer-graphic-transform-Control'>/**
+</span> * @class qrenderer.graphic.transform.Control
+ * 
+ * Transform control. There are two constraints in this implementation:
+ * 
+ * - 1. Only support scale, rotate, skew is not supported.
+ * - 2. When the element is skewed, the position of control is not right, because skew is not considered.
+ * 
+ * 
+ * 变换控制点。目前的实现有两个限制：
+ * 
+ * - 1.只支持缩放、旋转，不支持斜切。
+ * - 2.当元素发生斜切时，变换控制点的位置不正确，因为没有把斜切参数计算进去。
+ * 
+ * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
+ */
+var Control =
+/*#__PURE__*/
+function () {
+  function Control() {
+    var options = arguments.length &gt; 0 &amp;&amp; arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Control);
+
+    this.el = null;
+    this.x1 = 0;
+    this.y1 = 0;
+    this.x2 = 0;
+    this.y2 = 0;
+    this.x3 = 0;
+    this.y3 = 0;
+    this.x4 = 0;
+    this.y4 = 0;
+    this.width = 20;
+    this.height = 20;
+    this.hasControls = false;
+    this.lineWidth = 2;
+    this.name = &#39;TL&#39;; //TL, T, TR, L, R, BL, B, BR, SPIN
+
+    this.cursor = &#39;corsshair&#39;;
+    this.pointCache = new Map();
+    this.rotation = 0;
+    this.translate = [0, 0];
+    this.scaleControlOffset = 50;
+    classUtil.copyOwnProperties(this, options);
+    this.fillStyle = colorUtil.parse(this.fillStyle);
+    this.strokeStyle = colorUtil.parse(this.strokeStyle);
+  }
+
+  _createClass(Control, [{
+    key: &quot;render&quot;,
+    value: function render(ctx, prevEl) {
+      this._renderSquareControl(ctx, prevEl);
+
+      return this;
+    }
+  }, {
+    key: &quot;_renderSquareControl&quot;,
+    value: function _renderSquareControl(ctx, prevEl) {
+      var param = this._calcParameters();
+
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.lineWidth = this.lineWidth;
+      ctx.fillStyle = this.fillStyle;
+      ctx.strokeStyle = this.strokeStyle;
+      ctx.translate(this.translate[0], this.translate[1]);
+      ctx.rotate(-this.rotation);
+      ctx.strokeRect.apply(ctx, [].concat(_toConsumableArray(param.position), [this.width, this.height]));
+      ctx.closePath();
+      ctx.restore();
+    }
+  }, {
+    key: &quot;_calcParameters&quot;,
+    value: function _calcParameters() {
+      var _this = this;
+
+      var transform = this.el.transform;
+      var rotation = this.el.rotation;
+      var scale = this.el.scale;
+      var boundingRect = this.el.getBoundingRect();
+      var x = boundingRect.x;
+      var y = boundingRect.y;
+      var w = boundingRect.width;
+      var h = boundingRect.height;
+      var c = [w / 2 * scale[0], h / 2 * scale[1]]; //center point of bounding rect
+      //step-1: cache 9 points of boundingrect, cursor style https://developer.mozilla.org/en-US/docs/Web/CSS/cursor
+
+      this.pointCache.set(&quot;TL&quot;, {
+        position: [0, 0],
+        cursor: &#39;nwse-resize&#39;,
+        name: &quot;TL&quot;
+      });
+      this.pointCache.set(&quot;T&quot;, {
+        position: [w / 2, 0],
+        cursor: &#39;ns-resize&#39;,
+        name: &quot;T&quot;
+      });
+      this.pointCache.set(&quot;TR&quot;, {
+        position: [w, 0],
+        cursor: &#39;nesw-resize&#39;,
+        name: &quot;TR&quot;
+      });
+      this.pointCache.set(&quot;R&quot;, {
+        position: [w, h / 2],
+        cursor: &#39;ew-resize&#39;,
+        name: &quot;R&quot;
+      });
+      this.pointCache.set(&quot;BR&quot;, {
+        position: [w, h],
+        cursor: &#39;nwse-resize&#39;,
+        name: &quot;BR&quot;
+      });
+      this.pointCache.set(&quot;B&quot;, {
+        position: [w / 2, h],
+        cursor: &#39;ns-resize&#39;,
+        name: &quot;B&quot;
+      });
+      this.pointCache.set(&quot;BL&quot;, {
+        position: [0, h],
+        cursor: &#39;nesw-resize&#39;,
+        name: &quot;BL&quot;
+      });
+      this.pointCache.set(&quot;L&quot;, {
+        position: [0, h / 2],
+        cursor: &#39;ew-resize&#39;,
+        name: &quot;L&quot;
+      });
+      this.pointCache.set(&quot;SPIN&quot;, {
+        position: [w / 2, -this.scaleControlOffset],
+        cursor: &#39;crosshair&#39;,
+        name: &quot;SPIN&quot;
+      }); //step-2: calc coordinates of this control
+
+      var sinp = 0;
+      var cosp = 0;
+      var p = null;
+      var height = this.height;
+      var width = this.width;
+      var halfH = height / 2;
+      var halfW = width / 2;
+      var point = null; //do scale and offset for controls
+
+      this.pointCache.forEach(function (point, key, map) {
+        p = point.position; // apply scale to point
+
+        p[0] = p[0] * scale[0];
+
+        if (point.name !== &#39;SPIN&#39;) {
+          p[1] = p[1] * scale[1];
+        } // move origin to the center point of boundingrect
+
+
+        p[0] = p[0] - c[0];
+        p[1] = p[1] - c[1]; // translate, minus this.width or this.height
+
+        sinp = matrixUtil.sinx(p[0], p[1]);
+        cosp = matrixUtil.cosx(p[0], p[1]);
+
+        if (cosp &lt; 0) {
+          p[0] = p[0] - width;
+        } else if (cosp == 0) {
+          p[0] = p[0] - halfW;
+        }
+
+        if (point.name === &#39;SPIN&#39;) {
+          if (_this.el.scale[1] &gt; 0) {
+            p[1] = p[1] - height;
+          } else {
+            p[1] = p[1] + _this.scaleControlOffset + 2 * height;
+          }
+        } else {
+          if (sinp &lt; 0) {
+            p[1] = p[1] - height;
+          } else if (sinp == 0) {
+            p[1] = p[1] - halfH;
+          }
+        } //move origin back
+
+
+        p[0] = p[0] + c[0];
+        p[1] = p[1] + c[1];
+      }); //step-3: cache rotation and translate of this.el
+
+      this.rotation = rotation;
+      this.translate = [this.el.position[0], this.el.position[1]]; //step-4: return result
+
+      point = this.pointCache.get(this.name);
+      this.x1 = point.position[0];
+      this.y1 = point.position[1];
+      this.x2 = this.x1 + this.width;
+      this.y2 = this.y1;
+      this.x3 = this.x2;
+      this.y3 = this.y1 + this.height;
+      this.x4 = this.x1;
+      this.y4 = this.y3;
+      this.cursor = point.cursor;
+      return point;
+    }
+  }, {
+    key: &quot;isHover&quot;,
+    value: function isHover(x, y) {
+      var _this2 = this;
+
+      var scale = this.el.scale;
+      var m, xMin, xMax, yMin, yMax;
+      var points = [[this.x1, this.y1], [this.x2, this.y2], [this.x3, this.y3], [this.x4, this.y4]]; //reverse scale
+
+      points.forEach(function (point, index) {
+        point[0] = point[0] / scale[0];
+        point[1] = point[1] / scale[1];
+        point = _this2.el.localToGlobal(point[0], point[1]);
+        points[index] = point;
+      });
+      return vectorUtil.isInsideRect.apply(vectorUtil, points.concat([[x, y]]));
+    }
+  }]);
+
+  return Control;
+}();
+
+module.exports = Control;</pre>
+</body>
+</html>

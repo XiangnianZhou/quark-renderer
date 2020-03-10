@@ -24,6 +24,8 @@
     "../../lib/CanvasLayer.js",
     "../../lib/graphic/transform/BoundingRect.js",
     "../../lib/graphic/transform/Transformable.js",
+    "../../lib/graphic/transform/Control.js",
+    "../../lib/graphic/transform/TransformMgr.js",
     "../../lib/graphic/CompoundPath.js",
     "../../lib/graphic/Element.js",
     "../../lib/graphic/Group.js",

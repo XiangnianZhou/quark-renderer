@@ -74,8 +74,8 @@ function (_Element) {
   }
 
   _createClass(Text, [{
-    key: &quot;brush&quot;,
-    value: function brush(ctx, prevEl) {
+    key: &quot;render&quot;,
+    value: function render(ctx, prevEl) {
       var style = this.style; // Optimize, avoid normalize every time.
 
       this.__dirty &amp;&amp; textUtil.normalizeTextStyle(style, true); // Use props with prefix &#39;text&#39;.
@@ -103,6 +103,7 @@ function (_Element) {
       this.applyTransform(ctx);
       textUtil.renderText(this, ctx, text, style, null, prevEl);
       this.restoreTransform(ctx);
+      Element.prototype.render.call(this, ctx, prevEl);
     }
   }, {
     key: &quot;getBoundingRect&quot;,
@@ -111,7 +112,7 @@ function (_Element) {
 
       this.__dirty &amp;&amp; textUtil.normalizeTextStyle(style, true);
 
-      if (!this._rect) {
+      if (!this._boundingRect) {
         var text = style.text;
         text != null ? text += &#39;&#39; : text = &#39;&#39;;
         var rect = textContain.getBoundingRect(style.text + &#39;&#39;, style.font, style.textAlign, style.textVerticalAlign, style.textPadding, style.textLineHeight, style.rich);
@@ -126,10 +127,10 @@ function (_Element) {
           rect.height += w;
         }
 
-        this._rect = rect;
+        this._boundingRect = rect;
       }
 
-      return this._rect;
+      return this._boundingRect;
     }
   }]);
 

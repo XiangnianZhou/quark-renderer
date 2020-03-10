@@ -144,14 +144,14 @@ function (_Definable) {
            * transform.
            */
           // Store old transform
-          var transform = Array.prototype.slice.call(clipPath.transform); // Transform back from parent, and brush path
+          var transform = Array.prototype.slice.call(clipPath.transform); // Transform back from parent, and render path
 
           clipPath.transform = matrixUtil.mul(clipPath.parent.inverseTransform, clipPath.transform);
-          svgProxy.brush(clipPath); // Set back transform of clipPath
+          svgProxy.render(clipPath); // Set back transform of clipPath
 
           clipPath.transform = transform;
         } else {
-          svgProxy.brush(clipPath);
+          svgProxy.render(clipPath);
         }
 
         var pathEl = this.getSvgElement(clipPath);

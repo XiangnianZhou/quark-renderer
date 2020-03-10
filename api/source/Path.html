@@ -108,16 +108,16 @@ function (_Element) {
     _this.subPixelOptimize = false;
     return _this;
   }
-<span id='qrenderer-graphic-Path-method-brush'>  /**
-</span>   * @method brush
+<span id='qrenderer-graphic-Path-method-render'>  /**
+</span>   * @method render
    * @param {Object} ctx 
    * @param {Element} prevEl 
    */
 
 
   _createClass(Path, [{
-    key: &quot;brush&quot;,
-    value: function brush(ctx, prevEl) {
+    key: &quot;render&quot;,
+    value: function render(ctx, prevEl) {
       var path = this.path || new PathProxy(true);
       var hasStroke = this.style.hasStroke();
       var hasFill = this.style.hasFill();
@@ -219,8 +219,9 @@ function (_Element) {
         // PENDING
         // Remove lineDash
         ctx.setLineDash([]);
-      } // Draw rect text
+      }
 
+      Element.prototype.render.call(this, ctx, prevEl); // Draw rect text
 
       if (this.style.text != null) {
         // Only restore transform when needs draw text.
@@ -255,14 +256,19 @@ function (_Element) {
       this.path = new PathProxy();
     }
 <span id='qrenderer-graphic-Path-method-getBoundingRect'>    /**
-</span>     * @protected
-     * @method getBoundingRect
+</span>     * @method getBoundingRect
+     * Get bounding rect of this element.
+     * NOTE: this method will return the bounding rect without transforming.
+     * 
+     * 
+     * 获取当前元素的边界矩形。
+     * 注意：此方法返回的是没有经过 transform 处理的边界矩形。
      */
 
   }, {
     key: &quot;getBoundingRect&quot;,
     value: function getBoundingRect() {
-      var rect = this._rect;
+      var rect = this._boundingRect;
       var needsUpdateRect = !rect;
 
       if (needsUpdateRect) {
@@ -281,13 +287,13 @@ function (_Element) {
         rect = path.getBoundingRect();
       }
 
-      this._rect = rect;
+      this._boundingRect = rect;
 
       if (this.style.hasStroke()) {
         // Update rect with stroke lineWidth when
         // 1. Element changes scale or lineWidth
         // 2. Shape is changed
-        var rectWithStroke = this._rectWithStroke || (this._rectWithStroke = rect.clone());
+        var rectWithStroke = this._boundingRectWithStroke || (this._boundingRectWithStroke = rect.clone());
 
         if (this.__dirty || needsUpdateRect) {
           rectWithStroke.copy(rect); // FIXME Must after composeLocalTransform
@@ -394,7 +400,7 @@ function (_Element) {
       // FIXME
       if (key === &#39;shape&#39;) {
         this.__dirtyPath = true;
-        this._rect = null;
+        this._boundingRect = null;
         this.setShape(value);
       } else {
         Element.prototype._attrKV.call(this, key, value);

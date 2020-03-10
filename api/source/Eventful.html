@@ -50,13 +50,15 @@ var arrySlice = Array.prototype.slice;
 var Eventful = function Eventful(eventProcessor) {
   this._$handlers = {};
   this._$eventProcessor = eventProcessor;
+  this._$suspends = new Set();
 };
 
 Eventful.prototype = {
   constructor: Eventful,
   clearAll: function clearAll() {
-    this._$handlers = null;
+    this._$handlers = {};
     this._$eventProcessor = null;
+    this._$suspends = new Set();
   },
 
 <span id='qrenderer-event-Eventful-method-one'>  /**
@@ -140,12 +142,16 @@ Eventful.prototype = {
 
 <span id='qrenderer-event-Eventful-method-trigger'>  /**
 </span>   * @method
-   * Dispatch a event.
+   * Trigger an event.
    *
-   * @param {String} type The event name.
+   * @param {String} eventName The event name.
    */
-  trigger: function trigger(type) {
-    var _h = this._$handlers[type];
+  trigger: function trigger(eventName) {
+    if (this._$suspends.has(eventName)) {
+      return;
+    }
+
+    var _h = this._$handlers[eventName];
     var eventProcessor = this._$eventProcessor;
 
     if (_h) {
@@ -161,7 +167,7 @@ Eventful.prototype = {
       for (var i = 0; i &lt; len;) {
         var hItem = _h[i];
 
-        if (eventProcessor &amp;&amp; eventProcessor.filter &amp;&amp; hItem.query != null &amp;&amp; !eventProcessor.filter(type, hItem.query)) {
+        if (eventProcessor &amp;&amp; eventProcessor.filter &amp;&amp; hItem.query != null &amp;&amp; !eventProcessor.filter(eventName, hItem.query)) {
           i++;
           continue;
         } // Optimize advise from backbone
@@ -180,8 +186,15 @@ Eventful.prototype = {
             hItem.h.call(hItem.ctx, args[1], args[2]);
             break;
 
+          case 4:
+            hItem.h.call(hItem.ctx, args[1], args[2], args[3]);
+            break;
+
+          case 5:
+            hItem.h.call(hItem.ctx, args[1], args[2], args[3], args[4]);
+            break;
+
           default:
-            // have more than 2 given arguments
             hItem.h.apply(hItem.ctx, args);
             break;
         }
@@ -196,18 +209,34 @@ Eventful.prototype = {
       }
     }
 
-    eventProcessor &amp;&amp; eventProcessor.afterTrigger &amp;&amp; eventProcessor.afterTrigger(type);
+    eventProcessor &amp;&amp; eventProcessor.afterTrigger &amp;&amp; eventProcessor.afterTrigger(eventName);
     return this;
+  },
+
+<span id='qrenderer-event-Eventful-method-suspend'>  /**
+</span>   * 被挂起的事件不会触发。在鼠标和触摸屏交互的过程中，经常需要把某个事件临时挂起，避免误触。
+   * @param {String} eventName 
+   */
+  suspend: function suspend(eventName) {
+    this._$suspends.add(eventName);
+  },
+
+<span id='qrenderer-event-Eventful-method-resume'>  /**
+</span>   * 恢复触发。
+   * @param {String} eventName 
+   */
+  resume: function resume(eventName) {
+    this._$suspends[&quot;delete&quot;](eventName);
   },
 
 <span id='qrenderer-event-Eventful-method-triggerWithContext'>  /**
 </span>   * @method
    * Dispatch a event with context, which is specified at the last parameter.
    *
-   * @param {String} type The event name.
+   * @param {String} eventName The event name.
    */
-  triggerWithContext: function triggerWithContext(type) {
-    var _h = this._$handlers[type];
+  triggerWithContext: function triggerWithContext(eventName) {
+    var _h = this._$handlers[eventName];
     var eventProcessor = this._$eventProcessor;
 
     if (_h) {
@@ -224,7 +253,7 @@ Eventful.prototype = {
       for (var i = 0; i &lt; len;) {
         var hItem = _h[i];
 
-        if (eventProcessor &amp;&amp; eventProcessor.filter &amp;&amp; hItem.query != null &amp;&amp; !eventProcessor.filter(type, hItem.query)) {
+        if (eventProcessor &amp;&amp; eventProcessor.filter &amp;&amp; hItem.query != null &amp;&amp; !eventProcessor.filter(eventName, hItem.query)) {
           i++;
           continue;
         } // Optimize advise from backbone
@@ -243,8 +272,15 @@ Eventful.prototype = {
             hItem.h.call(ctx, args[1], args[2]);
             break;
 
+          case 4:
+            hItem.h.call(ctx, args[1], args[2], args[3]);
+            break;
+
+          case 5:
+            hItem.h.call(ctx, args[1], args[2], args[3], args[4]);
+            break;
+
           default:
-            // have more than 2 given arguments
             hItem.h.apply(ctx, args);
             break;
         }
@@ -259,7 +295,7 @@ Eventful.prototype = {
       }
     }
 
-    eventProcessor &amp;&amp; eventProcessor.afterTrigger &amp;&amp; eventProcessor.afterTrigger(type);
+    eventProcessor &amp;&amp; eventProcessor.afterTrigger &amp;&amp; eventProcessor.afterTrigger(eventName);
     return this;
   }
 };

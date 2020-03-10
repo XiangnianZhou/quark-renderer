@@ -15,23 +15,25 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">var Eventful = require(&quot;../event/Eventful&quot;);
-
-var Transformable = require(&quot;./transform/Transformable&quot;);
-
-var Animatable = require(&quot;../animation/Animatable&quot;);
-
-var Style = require(&quot;./Style&quot;);
-
-var RectText = require(&quot;./RectText&quot;);
-
-var dataUtil = require(&quot;../core/utils/data_structure_util&quot;);
+  <pre class="prettyprint lang-js">var dataUtil = require(&quot;../core/utils/data_structure_util&quot;);
 
 var classUtil = require(&quot;../core/utils/class_util&quot;);
 
 var matrixUtil = require(&quot;../core/utils/affine_matrix_util&quot;);
 
 var vectorUtil = require(&quot;../core/utils/vector_util&quot;);
+
+var Eventful = require(&quot;../event/Eventful&quot;);
+
+var Transformable = require(&quot;./transform/Transformable&quot;);
+
+var Control = require(&quot;./transform/Control&quot;);
+
+var Animatable = require(&quot;../animation/Animatable&quot;);
+
+var Style = require(&quot;./Style&quot;);
+
+var RectText = require(&quot;./RectText&quot;);
 
 var guid = require(&quot;../core/utils/guid&quot;);
 
@@ -167,6 +169,36 @@ function () {
      */
 
     this.dragging = false;
+    this.transformable = true;
+<span id='qrenderer-graphic-Element-property-hasControls'>    /**
+</span>     * @property {Boolean} hasControls
+     * Whether this object has transform controls now, hasControls will be set to true when element is clicked.
+     * 
+     * 元素当前是否带有变换控制工具，当元素被点击的时候 hasControls 会被设置为 true。
+     */
+
+    this.hasControls = false;
+<span id='qrenderer-graphic-Element-property-controls'>    /**
+</span>     * @property {Array&lt;Control&gt;} controls
+     * Whether show transform controls, if showControls is false, no transform controls will be rendered.
+     * 
+     * 
+     * 是否显示变换控制工具，如果此标志位被设置为 false，无论什么情况都不会显示变换控制器。
+     */
+
+    this.showControls = false;
+<span id='qrenderer-graphic-Element-property-controls'>    /**
+</span>     * @property {Array&lt;Control&gt;} controls
+     * Transform controls.
+     * 
+     * 
+     * 变换控制工具。
+     */
+
+    this.controls = [];
+    this.controlFillStyle = &#39;#0000ff&#39;;
+    this.controlStrokeStyle = &#39;#000000&#39;;
+    this.controlLineWidth = 1;
 <span id='qrenderer-graphic-Element-property-silent'>    /**
 </span>     * @property {Boolean} silent
      * Whether to respond to mouse events.
@@ -184,7 +216,7 @@ function () {
      * Mouse cursor when hovered
      */
 
-    this.cursor = &#39;pointer&#39;;
+    this.cursor = this.options.draggable ? &#39;move&#39; : &#39;default&#39;;
 <span id='qrenderer-graphic-Element-property-rectHover'>    /**
 </span>     * @property {String} rectHover
      * If hover area is bounding rect
@@ -235,12 +267,12 @@ function () {
      */
 
     this.__dirty = true;
-<span id='qrenderer-graphic-Element-property-_rect'>    /**
+<span id='qrenderer-graphic-Element-property-_boundingRect'>    /**
 </span>     * @private
-     * @property  _rect
+     * @property  _boundingRect
      */
 
-    this._rect = null;
+    this._boundingRect = null;
 <span id='qrenderer-graphic-Element-property-__clipPaths'>    /**
 </span>     * @private
      * @property  __clipPaths
@@ -400,7 +432,7 @@ function () {
     key: &quot;dirty&quot;,
     value: function dirty() {
       this.__dirty = this.__dirtyText = true;
-      this._rect = null;
+      this._boundingRect = null;
       this.__qr &amp;&amp; this.__qr.refresh();
     }
 <span id='qrenderer-graphic-Element-method-addToStorageHandler'>    /**
@@ -441,34 +473,93 @@ function () {
       this.__storage = null;
       this.dirty();
     }
-<span id='qrenderer-graphic-Element-method-beforeBrush'>    /**
+<span id='qrenderer-graphic-Element-method-beforeRender'>    /**
 </span>     * @protected
-     * @method beforeBrush
+     * @method beforeRender
      */
 
   }, {
-    key: &quot;beforeBrush&quot;,
-    value: function beforeBrush(ctx) {}
-<span id='qrenderer-graphic-Element-method-brush'>    /**
+    key: &quot;beforeRender&quot;,
+    value: function beforeRender(ctx) {}
+<span id='qrenderer-graphic-Element-method-render'>    /**
 </span>     * @protected
-     * @method brush
-     * Callback during brush.
+     * @method render
+     * Callback during render.
      */
 
   }, {
-    key: &quot;brush&quot;,
-    value: function brush(ctx, prevEl) {}
-<span id='qrenderer-graphic-Element-method-afterBrush'>    /**
+    key: &quot;render&quot;,
+    value: function render(ctx, prevEl) {
+      if (this.showControls &amp;&amp; this.hasControls) {
+        this.renderControls(ctx, prevEl);
+      }
+    }
+  }, {
+    key: &quot;renderControls&quot;,
+    value: function renderControls(ctx, prevEl) {
+      var _this = this;
+
+      //draw transform controls
+      this.controls = [];
+      var positions = [&#39;TL&#39;, &#39;T&#39;, &#39;TR&#39;, &#39;R&#39;, &#39;BR&#39;, &#39;B&#39;, &#39;BL&#39;, &#39;L&#39;, &#39;SPIN&#39;];
+      positions.forEach(function (p, index) {
+        var control = new Control({
+          el: _this,
+          name: p,
+          fillStyle: _this.controlFillStyle,
+          strokeStyle: _this.controlStrokeStyle,
+          lineWidth: _this.controlLineWidth
+        }).render(ctx, prevEl);
+
+        _this.controls.push(control);
+      }); //draw bounding rect
+
+      var control0 = this.controls[0];
+      var control4 = this.controls[4];
+      var p1 = [control0.x3 - control0.width / 2, control0.y3 - control0.height / 2];
+      var p2 = [control4.x1 + control4.width / 2, control4.y1 + control4.height / 2];
+      var w = p2[0] - p1[0];
+      var h = p2[1] - p1[1];
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.lineWidth = this.controlLineWidth;
+      ctx.fillStyle = this.controlFillStyle;
+      ctx.strokeStyle = this.controlStrokeStyle;
+      ctx.translate(control0.translate[0], control0.translate[1]);
+      ctx.rotate(-control0.rotation);
+      ctx.strokeRect(p1[0], p1[1], w, h);
+      ctx.closePath(); //draw connet line
+
+      var x1 = 0,
+          y1 = 0,
+          x2 = 0,
+          y2 = 0;
+      x1 = this.controls[1].x1 + this.controls[1].width / 2;
+      y1 = this.controls[1].y1;
+      x2 = this.controls[8].x1 + this.controls[8].width / 2;
+      y2 = this.controls[8].y1 + this.controls[8].height;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      ctx.restore();
+    }
+<span id='qrenderer-graphic-Element-method-afterRender'>    /**
 </span>     * @protected
-     * @method afterBrush
+     * @method afterRender
      */
 
   }, {
-    key: &quot;afterBrush&quot;,
-    value: function afterBrush(ctx) {}
+    key: &quot;afterRender&quot;,
+    value: function afterRender(ctx) {}
 <span id='qrenderer-graphic-Element-method-getBoundingRect'>    /**
-</span>     * @protected
-     * @method getBoundingRect
+</span>     * @method getBoundingRect
+     * Get bounding rect of this element.
+     * NOTE: this method will return the bounding rect without transforming.
+     * 
+     * 
+     * 获取当前元素的边界矩形。
+     * 注意：此方法返回的是没有经过 transform 处理的边界矩形。
      */
 
   }, {

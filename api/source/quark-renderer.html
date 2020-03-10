@@ -15,13 +15,13 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">var QRendererEventHandler = require(&quot;./event/QRendererEventHandler&quot;);
+  <pre class="prettyprint lang-js">var GlobalEventDispatcher = require(&quot;./event/GlobalEventDispatcher&quot;);
 
 var CanvasPainter = require(&quot;./canvas/CanvasPainter&quot;);
 
 var GlobalAnimationMgr = require(&quot;./animation/GlobalAnimationMgr&quot;);
 
-var DomEventProxy = require(&quot;./event/DomEventProxy&quot;);
+var DomEventInterceptor = require(&quot;./event/DomEventInterceptor&quot;);
 
 var Storage = require(&quot;./Storage&quot;);
 
@@ -178,11 +178,11 @@ function () {
 
     this.painter = new painterMap[rendererType](this.host, this.storage, options, this.id); //利用代理拦截 DOM 事件，转发到 QuarkRenderer 自己封装的事件机制。
 
-    var handerProxy = null;
+    var eventInterceptor = null;
 
     if (typeof this.host.moveTo !== &#39;function&#39;) {
       if (!env.node &amp;&amp; !env.worker &amp;&amp; !env.wxa) {
-        handerProxy = new DomEventProxy(this.painter.getHost());
+        eventInterceptor = new DomEventInterceptor(this.painter.getHost());
       }
     } else {
       // host is Context instance, override function.
@@ -191,14 +191,14 @@ function () {
         return self.host.measureText(text);
       });
     }
-<span id='qrenderer-core-QuarkRenderer-property-eventHandler'>    /**
+<span id='qrenderer-core-QuarkRenderer-property-eventDispatcher'>    /**
 </span>     * @private
-     * @property {QRendererEventHandler} eventHandler
+     * @property {GlobalEventDispatcher} eventDispatcher
      * QuarkRenderer 自己封装的事件机制，这是画布内部的事件系统。
      */
 
 
-    this.eventHandler = new QRendererEventHandler(this.storage, this.painter, handerProxy, this.painter.root);
+    this.eventDispatcher = new GlobalEventDispatcher(this.storage, this.painter, eventInterceptor, this.painter.root);
 <span id='qrenderer-core-QuarkRenderer-property-globalAnimationMgr'>    /**
 </span>     * @property {GlobalAnimationMgr}
      * 利用 GlobalAnimationMgr 的 frame 事件刷新画布上的元素。
@@ -218,23 +218,12 @@ function () {
   }
 <span id='qrenderer-core-QuarkRenderer-method-'>  /**
 </span>   * @method
-   * 获取实例唯一标识
-   * @return {String}
+   * 添加元素
+   * @param  {qrenderer/Element} el
    */
 
 
   _createClass(QuarkRenderer, [{
-    key: &quot;getId&quot;,
-    value: function getId() {
-      return this.id;
-    }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @method
-     * 添加元素
-     * @param  {qrenderer/Element} el
-     */
-
-  }, {
     key: &quot;add&quot;,
     value: function add(el) {
       el.__qr = this;
@@ -257,53 +246,36 @@ function () {
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @private
      * @method
-     * Change configuration of layer
-     * @param {String} qLevel
-     * @param {Object} [config]
-     * @param {String} [config.clearColor=0] Clear color
-     * @param {String} [config.motionBlur=false] If enable motion blur
-     * @param {Number} [config.lastFrameAlpha=0.7] Motion blur factor. Larger value cause longer trailer
-    */
-
-  }, {
-    key: &quot;configLayer&quot;,
-    value: function configLayer(qLevel, config) {
-      if (this.painter.configLayer) {
-        this.painter.configLayer(qLevel, config);
-      }
-
-      this.refresh();
-    }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @method
-     * Set background color
-     * @param {String} backgroundColor
+     * Perform refresh operation, this method will be called by window.requestAnimationFrame contantly, 
+     * if there is no elment need to be repaint, this method just do nothing. Please do NOT call this 
+     * method directly.
+     * 
+     * 
+     * 刷新 canvas 画面，此方法会在 window.requestAnimationFrame 方法中被不断调用，如果没有元素需要被重绘，
+     * 这个方法什么都不做。请不要直接调用此方法。
      */
 
   }, {
-    key: &quot;setBackgroundColor&quot;,
-    value: function setBackgroundColor(backgroundColor) {
-      if (this.painter.setBackgroundColor) {
-        this.painter.setBackgroundColor(backgroundColor);
+    key: &quot;flush&quot;,
+    value: function flush() {
+      if (this._needRefresh) {
+        //try refreshing all elements
+        // Clear needsRefresh ahead to avoid something wrong happens in refresh
+        // Or it will cause qrenderer refreshes again and again.
+        this._needRefresh = this._needRefreshHover = false;
+        this.painter.refresh &amp;&amp; this.painter.refresh(); // Avoid trigger qr.refresh in Element#beforeUpdate hook
+
+        this._needRefresh = this._needRefreshHover = false;
+        this.trigger(&#39;rendered&#39;);
       }
 
-      this.refresh();
-    }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @private
-     * @method
-     * Repaint the canvas immediately
-     */
-
-  }, {
-    key: &quot;refreshImmediately&quot;,
-    value: function refreshImmediately() {
-      // Clear needsRefresh ahead to avoid something wrong happens in refresh
-      // Or it will cause qrenderer refreshes again and again.
-      this._needRefresh = this._needsRefreshHover = false;
-      this.painter.refresh(); // Avoid trigger qr.refresh in Element#beforeUpdate hook
-
-      this._needRefresh = this._needsRefreshHover = false;
+      if (this._needRefreshHover) {
+        //only try refreshing hovered elements
+        this._needRefresh = this._needRefreshHover = false;
+        this.painter.refreshHover &amp;&amp; this.painter.refreshHover();
+        this._needRefresh = this._needRefreshHover = false;
+        this.trigger(&#39;rendered&#39;);
+      }
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @method
@@ -314,32 +286,6 @@ function () {
     key: &quot;refresh&quot;,
     value: function refresh() {
       this._needRefresh = true;
-    }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @private
-     * @method
-     * Perform all refresh
-     * 刷新 canvas 画面，此方法会在 window.requestAnimationFrame 方法中被不断调用。
-     */
-
-  }, {
-    key: &quot;flush&quot;,
-    value: function flush() {
-      var triggerRendered;
-
-      if (this._needRefresh) {
-        //是否需要全部重绘
-        triggerRendered = true;
-        this.refreshImmediately();
-      }
-
-      if (this._needsRefreshHover) {
-        //只重绘特定的元素，提升性能
-        triggerRendered = true;
-        this.refreshHoverImmediately();
-      }
-
-      triggerRendered &amp;&amp; this.trigger(&#39;rendered&#39;);
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @private
@@ -390,7 +336,7 @@ function () {
   }, {
     key: &quot;findHover&quot;,
     value: function findHover(x, y) {
-      return this.eventHandler.findHover(x, y);
+      return this.eventDispatcher.findHover(x, y);
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @private
@@ -416,19 +362,7 @@ function () {
   }, {
     key: &quot;refreshHover&quot;,
     value: function refreshHover() {
-      this._needsRefreshHover = true;
-    }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @private
-     * @method
-     * Refresh hover immediately
-     */
-
-  }, {
-    key: &quot;refreshHoverImmediately&quot;,
-    value: function refreshHoverImmediately() {
-      this._needsRefreshHover = false;
-      this.painter.refreshHover &amp;&amp; this.painter.refreshHover();
+      this._needRefreshHover = true;
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @method
@@ -444,7 +378,7 @@ function () {
     value: function resize(options) {
       options = options || {};
       this.painter.resize(options.width, options.height);
-      this.eventHandler.resize();
+      this.eventDispatcher.resize();
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @method
@@ -467,6 +401,41 @@ function () {
       return this.painter.getHeight();
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
+</span>     * @private
+     * @method
+     * Change configuration of layer
+     * @param {String} qLevel
+     * @param {Object} [config]
+     * @param {String} [config.clearColor=0] Clear color
+     * @param {String} [config.motionBlur=false] If enable motion blur
+     * @param {Number} [config.lastFrameAlpha=0.7] Motion blur factor. Larger value cause longer trailer
+    */
+
+  }, {
+    key: &quot;configLayer&quot;,
+    value: function configLayer(qLevel, config) {
+      if (this.painter.configLayer) {
+        this.painter.configLayer(qLevel, config);
+      }
+
+      this.refresh();
+    }
+<span id='qrenderer-core-QuarkRenderer-method-'>    /**
+</span>     * @method
+     * Set background color
+     * @param {String} backgroundColor
+     */
+
+  }, {
+    key: &quot;setBackgroundColor&quot;,
+    value: function setBackgroundColor(backgroundColor) {
+      if (this.painter.setBackgroundColor) {
+        this.painter.setBackgroundColor(backgroundColor);
+      }
+
+      this.refresh();
+    }
+<span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @method
      * Converting a path to image.
      * It has much better performance of drawing image rather than drawing a vector path.
@@ -483,39 +452,39 @@ function () {
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @method
      * Set default cursor
-     * @param {String} [cursorStyle=&#39;default&#39;] 例如 crosshair
+     * @param {String} [cursorStyle=&#39;move&#39;]
      */
 
   }, {
     key: &quot;setCursorStyle&quot;,
     value: function setCursorStyle(cursorStyle) {
-      this.eventHandler.setCursorStyle(cursorStyle);
+      this.eventDispatcher.setCursorStyle(cursorStyle);
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @method
      * Bind event
      *
      * @param {String} eventName Event name
-     * @param {Function} eventHandler Handler function
+     * @param {Function} eventDispatcher Handler function
      * @param {Object} [context] Context object
      */
 
   }, {
     key: &quot;on&quot;,
-    value: function on(eventName, eventHandler, context) {
-      this.eventHandler.on(eventName, eventHandler, context);
+    value: function on(eventName, eventDispatcher, context) {
+      this.eventDispatcher.on(eventName, eventDispatcher, context);
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @method
      * Unbind event
      * @param {String} eventName Event name
-     * @param {Function} [eventHandler] Handler function
+     * @param {Function} [eventDispatcher] Handler function
      */
 
   }, {
     key: &quot;off&quot;,
-    value: function off(eventName, eventHandler) {
-      this.eventHandler.off(eventName, eventHandler);
+    value: function off(eventName, eventDispatcher) {
+      this.eventDispatcher.off(eventName, eventDispatcher);
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @method
@@ -528,7 +497,7 @@ function () {
   }, {
     key: &quot;trigger&quot;,
     value: function trigger(eventName, event) {
-      this.eventHandler.trigger(eventName, event);
+      this.eventDispatcher.trigger(eventName, event);
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @method
@@ -552,11 +521,11 @@ function () {
       this.globalAnimationMgr.clear();
       this.storage.dispose();
       this.painter.dispose();
-      this.eventHandler.dispose();
+      this.eventDispatcher.dispose();
       this.globalAnimationMgr = null;
       this.storage = null;
       this.painter = null;
-      this.eventHandler = null;
+      this.eventDispatcher = null;
       delete instances[this.id];
     }
   }]);

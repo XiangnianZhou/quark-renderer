@@ -206,7 +206,7 @@ SVGPainter.prototype = {
 
       if (!displayable.invisible) {
         if (displayable.__dirty) {
-          svgProxy &amp;&amp; svgProxy.brush(displayable); // Update clipPath
+          svgProxy &amp;&amp; svgProxy.render(displayable); // Update clipPath
 
           this.clipPathManager.update(displayable); // Update gradient and shadow
 
