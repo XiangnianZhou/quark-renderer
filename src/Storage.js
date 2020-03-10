@@ -1,11 +1,11 @@
 import Eventful from './event/Eventful';
-import * as classUtil from './core/utils/class_util';
-import * as util from './core/utils/data_structure_util';
-import env from './core/env';
+import * as classUtil from './utils/class_util';
+import * as util from './utils/data_structure_util';
+import env from './utils/env';
 import Group from './graphic/Group';
 // Use timsort because in most case elements are partially sorted
 // https://jsfiddle.net/pissang/jr4x7mdm/8/
-import timsort from './core/utils/timsort';
+import timsort from './utils/timsort';
 
 /**
  * @class qrenderer.core.Storage

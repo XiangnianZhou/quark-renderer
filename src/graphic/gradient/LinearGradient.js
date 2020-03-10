@@ -1,4 +1,4 @@
-import * as classUtil from '../../core/utils/class_util';
+import * as classUtil from '../../utils/class_util';
 import Gradient from './Gradient';
 
 /**

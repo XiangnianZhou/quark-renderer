@@ -1,12 +1,12 @@
 import {createElement} from './core';
-import * as dataUtil from '../core/utils/data_structure_util';
+import * as dataUtil from '../utils/data_structure_util';
 import Path from '../graphic/Path';
 import QImage from '../graphic/Image';
 import QText from '../graphic/Text';
-import arrayDiff from '../core/utils/array_diff2';
-import GradientManager from './helper/GradientManager';
-import ClippathManager from './helper/ClippathManager';
-import ShadowManager from './helper/ShadowManager';
+import arrayDiff from '../utils/array_diff2';
+import GradientManager from './GradientManager';
+import ClippathManager from './ClippathManager';
+import ShadowManager from './ShadowManager';
 import {
     path as svgPath,
     image as svgImage,

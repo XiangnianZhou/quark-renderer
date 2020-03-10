@@ -1,6 +1,6 @@
-import fixShadow from './utils/fix_shadow';
-import {ContextCachedBy} from './constants';
-import {mathMin} from '../graphic/constants';
+import fixShadow from '../utils/fix_shadow';
+import {ContextCachedBy} from '../utils/constants';
+import {mathMin} from '../utils/constants';
 
 /**
  * @class qrenderer.graphic.Style

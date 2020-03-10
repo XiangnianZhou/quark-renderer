@@ -1,8 +1,8 @@
-import * as dataUtil from '../core/utils/data_structure_util';
-import * as canvasUtil from '../core/utils/canvas_util';
+import * as dataUtil from '../utils/data_structure_util';
+import * as canvasUtil from '../utils/canvas_util';
 import Style from '../graphic/Style';
 import Pattern from '../graphic/Pattern';
-import guid from '../core/utils/guid';
+import guid from '../utils/guid';
 
 /**
  * @class qrenderer.canvas.CanvasLayer

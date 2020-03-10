@@ -1,6 +1,6 @@
 import Path from '../Path';
-import * as dataUtil from '../../core/utils/data_structure_util';
-import {PI2,mathSin,mathCos,mathMin,mathMax} from '../../graphic/constants';
+import * as dataUtil from '../../utils/data_structure_util';
+import {PI2,mathSin,mathCos,mathMin,mathMax} from '../../utils/constants';
 
 /**
  * @class qrenderer.graphic.shape.Arc 

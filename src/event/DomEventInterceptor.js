@@ -1,8 +1,8 @@
 import Eventful from './Eventful';
-import * as eventUtil from '../core/utils/event_util';
-import * as dataUtil from '../core/utils/data_structure_util';
-import * as classUtil from '../core/utils/class_util';
-import env from '../core/env';
+import * as eventUtil from '../utils/event_util';
+import * as dataUtil from '../utils/data_structure_util';
+import * as classUtil from '../utils/class_util';
+import env from '../utils/env';
 
 /**
  * @class qrenderer.event.DomEventInterceptor

@@ -1,13 +1,13 @@
 /**
  * Do not mount those modules on 'src/qrenderer' for better tree shaking.
  */
-import * as dataUtil from './core/utils/data_structure_util';
-import * as colorUtil from './core/utils/color_util';
-import * as pathUtil from './core/utils/path_util';
-import * as canvasUtil from './core/utils/canvas_util';
-import * as matrixUtil from './core/utils/affine_matrix_util';
-import * as vectorUtil from './core/utils/vector_util';
-import * as bboxUtil from './core/utils/bbox_util';
+import * as dataUtil from './utils/data_structure_util';
+import * as colorUtil from './utils/color_util';
+import * as pathUtil from './utils/path_util';
+import * as canvasUtil from './utils/canvas_util';
+import * as matrixUtil from './utils/affine_matrix_util';
+import * as vectorUtil from './utils/vector_util';
+import * as bboxUtil from './utils/bbox_util';
 import {parseSVG} from './svg/SVGParser';
 
 export {default as Group} from './graphic/Group';

@@ -1,6 +1,6 @@
 import Path from '../Path';
-import * as dataUtil from '../../core/utils/data_structure_util';
-import {PI2} from '../../graphic/constants';
+import * as dataUtil from '../../utils/data_structure_util';
+import {PI2} from '../../utils/constants';
 
 /**
  * @class qrenderer.graphic.shape.Ring 

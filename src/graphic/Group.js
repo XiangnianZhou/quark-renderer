@@ -1,7 +1,7 @@
-import * as classUtil from '../core/utils/class_util';
+import * as classUtil from '../utils/class_util';
 import Element from './Element';
 import BoundingRect from './transform/BoundingRect';
-import { extend } from '../core/utils/data_structure_util';
+import { extend } from '../utils/data_structure_util';
 
 /**
  * @class qrenderer.graphic.Group

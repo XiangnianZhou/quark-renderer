@@ -1,5 +1,5 @@
-import {EPSILON,mathAbs, mathLog} from '../constants';
-import * as matrixUtil from '../../core/utils/affine_matrix_util';
+import {EPSILON,mathAbs, mathLog} from '../../utils/constants';
+import * as matrixUtil from '../../utils/affine_matrix_util';
 
 /**
  * @class qrenderer.graphic.transform.TransformMgr
@@ -141,8 +141,7 @@ export default class TransformMgr{
             }
             radian=radian+Math.PI/2;
         }
-        console.log(`sinp=${sinp},cosp=${cosp},radian=${radian}`);
-
+        
         let position=bps[0];
         position=matrixUtil.rotateVector(position,-radian);
         position=matrixUtil.addVector(position,this._center);

@@ -1,8 +1,8 @@
-import {mathSqrt,mathAtan2} from '../constants';
-import * as matrixUtil from '../../core/utils/affine_matrix_util';
-import * as vectorUtil from '../../core/utils/vector_util';
-import * as classUtil from '../../core/utils/class_util';
-import * as dataUtil from '../../core/utils/data_structure_util';
+import {mathSqrt,mathAtan2} from '../../utils/constants';
+import * as matrixUtil from '../../utils/affine_matrix_util';
+import * as vectorUtil from '../../utils/vector_util';
+import * as classUtil from '../../utils/class_util';
+import * as dataUtil from '../../utils/data_structure_util';
 
 /**
  * @abstract

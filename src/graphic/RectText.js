@@ -1,6 +1,6 @@
-import * as textUtil from './utils/text_util';
+import * as textUtil from '../utils/text_util';
 import BoundingRect from './transform/BoundingRect';
-import {WILL_BE_RESTORED} from './constants';
+import {WILL_BE_RESTORED} from '../utils/constants';
 /**
  * @class qrenderer.graphic.RectText 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
