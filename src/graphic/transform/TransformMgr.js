@@ -126,18 +126,20 @@ export default class TransformMgr{
         console.log(`sinp=${sinp},cosp=${cosp}`);
         let radian=Math.asin(Math.abs(sinp));
         
-        if(sinp>0){
-            if(cosp>0){
+        if(sinp>=0){
+            if(cosp>=0){
                 radian=radian;
             }else{
                 radian=Math.PI-radian;
             }
+            radian=radian-Math.PI/2;
         }else{
-            if(cosp>0){
+            if(cosp>=0){
                 radian=-radian;
             }else{
                 radian=-(Math.PI-radian);
             }
+            radian=radian+Math.PI/2;
         }
 
         let position=bps[0];
