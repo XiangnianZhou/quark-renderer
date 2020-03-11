@@ -39,7 +39,10 @@ export default class Line extends Path{
 
     /**
      * @method buildPath
-     * 绘制元素路径
+     * Build the path of current line, the data structure is like the path attribute in SVG.
+     * 
+     * 
+     * 构建当前线条的路径，数据结构类似 SVG 中的 path 属性。
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -79,7 +82,11 @@ export default class Line extends Path{
     }
 
     /**
-     * Get point at percent
+     * @method pointAt
+     * Get point at percent.
+     * 
+     * 
+     * 按照比例获取线条上的点。
      * @param  {Number} percent
      * @return {Array<Number>}
      */
@@ -89,5 +96,18 @@ export default class Line extends Path{
             shape.x1 * (1 - p) + shape.x2 * p,
             shape.y1 * (1 - p) + shape.y2 * p
         ];
+    }
+
+    /**
+     * @protected
+     * @method renderControls
+     * Disable renderControls method in Element, because we don't allow transformation on lines.
+     * 
+     * 
+     * 禁用 Elemnet 类上的 renderControls 方法，因为我们不希望在线条上使用几何变换。
+     * @param {*} ctx 
+     * @param {*} prevEl 
+     */
+    renderControls(ctx, prevEl){
     }
 }
