@@ -37,7 +37,10 @@ export default class Polyline extends Line{
 
     /**
      * @method buildPath
-     * 绘制元素路径
+     * Build the path of current line, the data structure is like the path attribute in SVG.
+     * 
+     * 
+     * 构建当前线条的路径，数据结构类似 SVG 中的 path 属性。
      * @param {Object} ctx 
      * @param {String} shape 
      */

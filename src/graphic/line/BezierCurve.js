@@ -60,7 +60,10 @@ export default class BezierCurve extends Line{
 
     /**
      * @method buildPath
-     * 绘制元素路径
+     * Build the path of current line, the data structure is like the path attribute in SVG.
+     * 
+     * 
+     * 构建当前线条的路径，数据结构类似 SVG 中的 path 属性。
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -122,8 +125,12 @@ export default class BezierCurve extends Line{
     }
 
     /**
-     * Get point at percent
-     * @param  {Number} t
+     * @method pointAt
+     * Get point at percent.
+     * 
+     * 
+     * 按照比例获取线条上的点。
+     * @param  {Number} percent
      * @return {Array<Number>}
      */
     pointAt(t) {
