@@ -1,4 +1,4 @@
-import Path from '../Path';
+import Line from './Line';
 import * as polyHelper from '../../utils/poly_util';
 import * as dataUtil from '../../utils/data_structure_util';
 
@@ -22,7 +22,7 @@ let defaultConfig={
     }
 };
 
-export default class Polyline extends Path{
+export default class Polyline extends Line{
     /**
      * @method constructor Polyline
      * @param {Object} options 

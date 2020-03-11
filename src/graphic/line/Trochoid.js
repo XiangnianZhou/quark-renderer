@@ -1,4 +1,4 @@
-import Path from '../Path';
+import Line from './Line';
 import * as dataUtil from '../../utils/data_structure_util';
 import {mathSin,mathCos} from '../../utils/constants';
 
@@ -25,7 +25,7 @@ let defaultConfig={
     }
 };
 
-export default class Trochold extends Path{
+export default class Trochold extends Line{
     /**
      * @method constructor Trochold
      * @param {Object} options 

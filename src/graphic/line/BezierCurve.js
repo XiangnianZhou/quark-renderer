@@ -1,4 +1,4 @@
-import Path from '../Path';
+import Line from './Line';
 import * as vectorUtil from '../../utils/vector_util';
 import * as curveUtil from '../../utils/curve_util';
 import * as dataUtil from '../../utils/data_structure_util';
@@ -45,7 +45,7 @@ function someVectorAt(shape, t, isTangent) {
     }
 }
 
-export default class BezierCurve extends Path{
+export default class BezierCurve extends Line{
     /**
      * @method constructor BezierCurve
      * @param {Object} options 
