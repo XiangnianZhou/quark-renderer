@@ -55,19 +55,24 @@
             style: {
                 stroke: 'rgba(220, 20, 60, 0.8)',
                 lineWidth: 5
-            },
+            }
         });
         qr.add(curve);
 
         let polyline = new QuarkRenderer.Polyline({
+            position: [100, 0],
             draggable: true,
+            showControls:true,
             style: {
                 lineDash: [10, 10],
                 stroke: 'rgba(220, 20, 60, 0.8)',
                 lineWidth: 10
             },
             shape: {
-                points: [[100,100],[600,100]],
+                points: [
+                    [0,100],
+                    [600,100]
+                ],
                 smooth: 0.5
             }
         });

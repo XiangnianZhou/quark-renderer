@@ -17,6 +17,7 @@ export default class TransformMgr{
     startListen(){
         this.stopListen();
         this.dispatcher.on("mousedown",this.mouseDownHandler1,this);
+        return this;
     }
 
     stopListen(){
@@ -42,6 +43,8 @@ export default class TransformMgr{
         this.dispatcher.off("mousemove",this.mouseMoveHandler1);
         this.dispatcher.off("pagemousemove",this.mouseMoveHandler2);
         this.dispatcher.off("pagemouseup",this.mouseUpHandler);
+
+        return this;
     }
 
     mouseDownHandler1(e){

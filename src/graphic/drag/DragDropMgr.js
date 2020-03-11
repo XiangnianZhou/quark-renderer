@@ -21,6 +21,7 @@ export default class DragDropMgr{
     startListen(){
         this.stopListen();
         this.dispatcher.on('mousedown', this.dragStart, this);
+        return this;
     }
 
     stopListen(){
@@ -33,6 +34,7 @@ export default class DragDropMgr{
         this.dispatcher.off('mousedown', this.dragStart);
         this.dispatcher.off('pagemousemove', this.dragging);
         this.dispatcher.off('pagemouseup', this.dragEnd);
+        return this;
     }
 
     /**
@@ -63,6 +65,7 @@ export default class DragDropMgr{
         }
         el.dragging=true;
         this.selectionMap.set(el.id,el);
+        console.log(this.selectionMap);
 
         this._x = e.offsetX;
         this._y = e.offsetY;

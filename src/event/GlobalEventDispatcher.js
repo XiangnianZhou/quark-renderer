@@ -2,9 +2,10 @@ import * as dataUtil from '../utils/data_structure_util';
 import * as classUtil from '../utils/class_util';
 import * as vectorUtil from '../utils/vector_util';
 import * as eventTool from '../utils/event_util';
+import Eventful from './Eventful';
 import DragDropMgr from '../graphic/drag/DragDropMgr';
 import TransformEventMgr from '../graphic/transform/TransformMgr';
-import Eventful from './Eventful';
+import LinkMgr from '../graphic/link/LinkMgr';
 import GestureMgr from './GestureMgr';
 
 /**
@@ -182,13 +183,16 @@ let GlobalEventDispatcher = function (storage, painter, interceptor, painterRoot
      */
     this._gestureMgr;
 
+    this.setHandlerProxy(interceptor);
+
     //start drag-drop manager.
-    new DragDropMgr(this).startListen();
+    this._ddMgr = new DragDropMgr(this).startListen();
 
     //start transform manager.
-    new TransformEventMgr(this).startListen();
+    this._transformMgr = new TransformEventMgr(this).startListen();
 
-    this.setHandlerProxy(interceptor);
+    //start link manager.
+    this._linkMgr = new LinkMgr(this).startListen();
 };
 
 GlobalEventDispatcher.prototype = {
