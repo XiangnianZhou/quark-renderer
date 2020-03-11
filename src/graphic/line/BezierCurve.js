@@ -11,22 +11,6 @@ import * as dataUtil from '../../utils/data_structure_util';
  * 贝塞尔曲线。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig={
-    shape: {
-        x1: 0,
-        y1: 0,
-        x2: 0,
-        y2: 0,
-        cpx1: 0,
-        cpy1: 0,
-        percent: 1
-    },
-    style: {
-        stroke: '#000',
-        fill: null
-    }
-};
-
 let out = [];
 
 function someVectorAt(shape, t, isTangent) {
@@ -51,7 +35,22 @@ export default class BezierCurve extends Line{
      * @param {Object} options 
      */
     constructor(options){
-        super(dataUtil.merge(defaultConfig,options,true));
+        super(dataUtil.merge({
+            shape: {
+                x1: 0,
+                y1: 0,
+                x2: 0,
+                y2: 0,
+                cpx1: 0,
+                cpy1: 0,
+                percent: 1
+            },
+            style: {
+                stroke: '#000',
+                fill: null
+            }
+        },options,true));
+
         /**
          * @property {String} type
          */

@@ -10,28 +10,27 @@ import {mathSin,mathCos} from '../../utils/constants';
  * 内外旋轮曲线。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig={
-    shape: {
-        cx: 0,
-        cy: 0,
-        r: 0,
-        r0: 0,
-        d: 0,
-        location: 'out'
-    },
-    style: {
-        stroke: '#000',
-        fill: null
-    }
-};
-
 export default class Trochold extends Line{
     /**
      * @method constructor Trochold
      * @param {Object} options 
      */
     constructor(options){
-        super(dataUtil.merge(defaultConfig,options,true));
+        super(dataUtil.merge({
+            shape: {
+                cx: 0,
+                cy: 0,
+                r: 0,
+                r0: 0,
+                d: 0,
+                location: 'out'
+            },
+            style: {
+                stroke: '#000',
+                fill: null
+            }
+        },options,true));
+
         /**
          * @property {String} type
          */

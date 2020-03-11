@@ -8,6 +8,7 @@ export let EPSILON = 1e-8; //0.00000001
 
 export let WILL_BE_RESTORED = 9;
 
+export let radian = Math.PI / 180;
 export let E=Math.E;
 export let LN2=Math.LN2;
 export let LN10=Math.LN10;

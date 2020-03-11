@@ -23,6 +23,8 @@ import {mathSin} from '../../utils/constants';
 export default class TransformControl {
     constructor(options={}){
         this.el=null;
+
+        // four corner points
         this.x1 = 0;
         this.y1 = 0;
         this.x2 = 0;
@@ -31,9 +33,10 @@ export default class TransformControl {
         this.y3 = 0;
         this.x4 = 0;
         this.y4 = 0;
+
         this.width = 20;
         this.height = 20;
-        this.hasControls = false;
+        this.hasTransformControls = false;
         this.lineWidth = 2;
         this.name = 'TL';   //TL, T, TR, L, R, BL, B, BR, SPIN
         this.cursor = 'corsshair';

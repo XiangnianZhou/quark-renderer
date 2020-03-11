@@ -135,21 +135,21 @@ class Element{
         this.transformable = true;
 
         /**
-         * @property {Boolean} hasControls
-         * Whether this object has transform controls now, hasControls will be set to true when element is clicked.
+         * @property {Boolean} hasTransformControls
+         * Whether this object has transform controls now, hasTransformControls will be set to true when element is clicked.
          * 
-         * 元素当前是否带有变换控制工具，当元素被点击的时候 hasControls 会被设置为 true。
+         * 元素当前是否带有变换控制工具，当元素被点击的时候 hasTransformControls 会被设置为 true。
          */
-        this.hasControls = false;
+        this.hasTransformControls = false;
 
         /**
          * @property {Array<Control>} controls
-         * Whether show transform controls, if showControls is false, no transform controls will be rendered.
+         * Whether show transform controls, if showTransformControls is false, no transform controls will be rendered.
          * 
          * 
          * 是否显示变换控制工具，如果此标志位被设置为 false，无论什么情况都不会显示变换控制器。
          */
-        this.showControls = false;
+        this.showTransformControls = false;
 
         /**
          * @property {Array<Control>} transformControls
@@ -432,7 +432,7 @@ class Element{
      * Callback during render.
      */
     render(ctx, prevEl) {
-        if(this.showControls&&this.hasControls){
+        if(this.showTransformControls&&this.hasTransformControls){
             this.renderTransformControls(ctx, prevEl);
         }
     }

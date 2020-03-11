@@ -1,29 +1,28 @@
-import Path from '../Path';
 import * as dataUtil from '../../utils/data_structure_util';
 import {mathSin,mathCos,PI2,PI} from '../../utils/constants';
+import Path from '../Path';
 
 /**
  * @class qrenderer.graphic.shape.Star 
  * n角星（n>3）
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig={
-    shape: {
-        cx: 0,
-        cy: 0,
-        n: 3,
-        r0: null,
-        r: 0
-    }
-};
-
 export default class Star extends Path{
     /**
      * @method constructor Star
      * @param {Object} options 
      */
     constructor(options){
-        super(dataUtil.merge(defaultConfig,options,true));
+        super(dataUtil.merge({
+            shape: {
+                cx: 0,
+                cy: 0,
+                n: 3,
+                r0: null,
+                r: 0
+            }
+        },options,true));
+
         /**
          * @property {String} type
          */

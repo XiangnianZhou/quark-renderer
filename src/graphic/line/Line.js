@@ -3,6 +3,7 @@ import * as classUtil from '../../utils/class_util';
 import {subPixelOptimizeLine} from '../../utils/sub_pixel_optimize';
 import CableLike from '../link/CableLike';
 import Path from '../Path';
+import LinkControl from '../link/LinkControl';
 
 /**
  * @class qrenderer.graphic.shape.Line 
@@ -12,31 +13,34 @@ import Path from '../Path';
  * 直线。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig={
-    shape: {
-        x1: 0,
-        y1: 0,
-        x2: 0,
-        y2: 0,
-        percent: 1
-    },
-    style: {
-        stroke: '#000',
-        fill: null
-    }
-}
-
 class Line extends Path{
     /**
      * @method constructor Line
      * @param {Object} options 
      */
     constructor(options){
-        super(dataUtil.merge(defaultConfig,options,true));
+        super(dataUtil.merge({
+            shape: {
+                x1: 0,
+                y1: 0,
+                x2: 0,
+                y2: 0,
+                percent: 1
+            },
+            style: {
+                stroke: '#000',
+                fill: null
+            }
+        },options,true));
+
         /**
          * @property {String} type
          */
         this.type='line';
+
+        this.hasLinkControls = false;
+
+        this.showLinkControls = false;
 
         /**
          * @property {Array<Control>} linkControls
@@ -48,6 +52,7 @@ class Line extends Path{
         this.linkControls = [];
 
         classUtil.inheritProperties(this,CableLike,this.options);
+        classUtil.copyOwnProperties(this,this.options,['style','shape']);
     }
 
     /**
@@ -96,10 +101,10 @@ class Line extends Path{
 
     /**
      * @method pointAt
-     * Get point at percent.
+     * Get point at percent, this value is between 0 and 1.
      * 
      * 
-     * 按照比例获取线条上的点。
+     * 按照比例获取线条上的点，取值范围在 0 到 1 之间。
      * @param  {Number} percent
      * @return {Array<Number>}
      */
@@ -118,8 +123,8 @@ class Line extends Path{
      */
     render(ctx, prevEl) {
         Path.prototype.render.call(this,ctx,prevEl);
-        if(this.isCable){
-            this.renderLinkControls();
+        if(this.hasLinkControls&&this.showLinkControls){
+            this.renderLinkControls(ctx, prevEl);
         }
     }
 
@@ -132,6 +137,12 @@ class Line extends Path{
     renderLinkControls(ctx, prevEl){
         console.log("render link controls...");
         this.linkControls = [];
+
+        let control = new LinkControl({
+            el:this
+        }).render(ctx, prevEl);
+        
+        this.linkControls.push(control);
     }
 
     /**

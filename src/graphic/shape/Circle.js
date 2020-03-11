@@ -1,27 +1,25 @@
-import Path from '../Path';
 import * as dataUtil from '../../utils/data_structure_util';
 import {PI2} from '../../utils/constants';
+import Path from '../Path';
 
 /**
  * @class qrenderer.graphic.shape.Circle 
  * 圆形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig={
-    shape: {
-        cx: 0,
-        cy: 0,
-        r: 0
-    }
-};
-
 export default class Circle extends Path{
     /**
      * @method constructor Rect
      * @param {Object} options 
      */
     constructor(options){
-        super(dataUtil.merge(defaultConfig,options,true));
+        super(dataUtil.merge({
+            shape: {
+                cx: 0,
+                cy: 0,
+                r: 0
+            }
+        },options,true));
         /**
          * @property {String} type
          */

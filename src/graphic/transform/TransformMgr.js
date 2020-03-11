@@ -61,7 +61,7 @@ export default class TransformMgr{
         this.selectedEl=el;
         this._cursor=el.cursor;
         this._elDraggable=el.draggable;             //cache original draggable flag
-        this._hasControls=el.hasControls=true;
+        this._hasControls=el.hasTransformControls=true;
         el.dirty();
     }
 
@@ -69,7 +69,7 @@ export default class TransformMgr{
         if(this.selectedEl){
             //restore original draggable flag
             this.selectedEl.draggable=this._elDraggable;
-            this.selectedEl.hasControls=false;
+            this.selectedEl.hasTransformControls=false;
             this.selectedEl.dirty();
         }else{
             //remove mousedown listener first, then start listen to mousemove 

@@ -17,7 +17,9 @@ export default class LinkMgr{
     mouseDownHandler1(e){
         let el=e.target;
         if(el&&el.isCable){
-            console.log(e);
+            console.log(el);
+            el.hasLinkControls=true;
+            el.dirty();
         }
     }
 }
