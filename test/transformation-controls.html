@@ -36,6 +36,48 @@
             draggable: true
         });
         qr.add(image);
+
+        let curve = new QuarkRenderer.BezierCurve({
+            draggable: true,
+            position: [0, 0],
+            scale: [1, 1],
+            shape: {
+                x1: 10,
+                y1: 400,
+                cpx1: 0,
+                cpy1: 0,
+                cpx2: 0,
+                cpy2: 0,
+                x2: 300,
+                y2: 30
+            },
+            style: {
+                stroke: 'rgba(220, 20, 60, 0.8)',
+                lineWidth: 5
+            },
+        });
+        qr.add(curve);
+
+        let polyline = new QuarkRenderer.Polyline({
+            draggable: true,
+            style: {
+                lineDash: [10, 10],
+                stroke: 'rgba(220, 20, 60, 0.8)',
+                lineWidth: 10
+            },
+            shape: {
+                points: [[100,100],[600,100]],
+                smooth: 0.5
+            }
+        });
+        qr.add(polyline);
+        polyline.animate()
+            .when(1000, {
+                style:{
+                    lineDashOffset: 20
+                }
+            })
+            .start(true);
     </script>
 </body>
 </html>

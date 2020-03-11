@@ -183,7 +183,7 @@ let GlobalEventDispatcher = function (storage, painter, interceptor, painterRoot
     this._gestureMgr;
 
     //start drag-drop manager.
-    new DragDropMgr(this);
+    new DragDropMgr(this).startListen();
 
     //start transform manager.
     new TransformEventMgr(this).startListen();

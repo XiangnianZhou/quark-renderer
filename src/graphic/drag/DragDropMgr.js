@@ -14,9 +14,25 @@ export default class DragDropMgr{
      * @param {GlobalEventDispatcher} dispatcher 
      */
     constructor(dispatcher){
-        this.selectionMap=new Map();
         this.dispatcher=dispatcher;
+        this.selectionMap=new Map();
+    }
+    
+    startListen(){
+        this.stopListen();
         this.dispatcher.on('mousedown', this.dragStart, this);
+    }
+
+    stopListen(){
+        this.clearSelectionMap();
+        this._draggingItem=null;
+        this._dropTarget = null;
+        this._x = 0;
+        this._y = 0;
+
+        this.dispatcher.off('mousedown', this.dragStart);
+        this.dispatcher.off('pagemousemove', this.dragging);
+        this.dispatcher.off('pagemouseup', this.dragEnd);
     }
 
     /**
