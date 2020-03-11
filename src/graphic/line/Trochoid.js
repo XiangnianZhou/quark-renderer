@@ -3,8 +3,11 @@ import * as dataUtil from '../../utils/data_structure_util';
 import {mathSin,mathCos} from '../../utils/constants';
 
 /**
- * @class qrenderer.graphic.shape.Trochold 
- * 内外旋轮曲线
+ * @class qrenderer.graphic.shape.Trochold
+ * Trochold.
+ * 
+ *  
+ * 内外旋轮曲线。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 let defaultConfig={

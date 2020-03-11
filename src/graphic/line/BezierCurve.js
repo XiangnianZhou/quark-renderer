@@ -4,8 +4,11 @@ import * as curveUtil from '../../utils/curve_util';
 import * as dataUtil from '../../utils/data_structure_util';
 
 /**
- * @class qrenderer.graphic.shape.BezierCurve 
- * 贝塞尔曲线
+ * @class qrenderer.graphic.shape.BezierCurve
+ * BezierCurve.
+ * 
+ *  
+ * 贝塞尔曲线。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 let defaultConfig={

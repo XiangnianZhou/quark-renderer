@@ -4,7 +4,10 @@ import * as dataUtil from '../../utils/data_structure_util';
 
 /**
  * @class qrenderer.graphic.shape.Polyline 
+ * Polyline.
  * 
+ * 
+ * 折线。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 let defaultConfig={

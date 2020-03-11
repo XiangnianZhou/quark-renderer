@@ -4,10 +4,12 @@ import * as dataUtil from '../../utils/data_structure_util';
 
 /**
  * @class qrenderer.graphic.shape.Line 
- * 直线
+ * Line.
+ * 
+ * 
+ * 直线。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-//TODO:Avoid create repeatly.
 let defaultConfig={
     shape: {
         x1: 0,
