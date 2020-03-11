@@ -27,9 +27,10 @@ Here are the key improvements compare to the original ZRender:
 - Refactored all the comments for jsduck.
 - Support Wechat mini-program directly, do not need any hack.
 - Support node-canvas environment directly, do not need any hack.
-- Removed VML engine, because the marketshare of IE is already very small now. 
-- Add skew feature for transformation system.
-- Add transform control for elements.
+- Removed VML engine, because the marketshare of IE is very small now. 
+- Added skew feature for transformation system.
+- Added transform control for elements.
+- Added link control for lines and shapes, so we can link these elements now.
 
 ## Usage
 
