@@ -152,13 +152,13 @@ class Element{
         this.showControls = false;
 
         /**
-         * @property {Array<Control>} controls
+         * @property {Array<Control>} transformControls
          * Transform controls.
          * 
          * 
          * 变换控制工具。
          */
-        this.controls = [];
+        this.transformControls = [];
 
         this.controlFillStyle = '#0000ff';
 
@@ -433,13 +433,13 @@ class Element{
      */
     render(ctx, prevEl) {
         if(this.showControls&&this.hasControls){
-            this.renderControls(ctx, prevEl);
+            this.renderTransformControls(ctx, prevEl);
         }
     }
 
-    renderControls(ctx, prevEl){
+    renderTransformControls(ctx, prevEl){
         //draw transform controls
-        this.controls=[];
+        this.transformControls=[];
         let positions = ['TL','T','TR','R','BR','B','BL','L','SPIN'];
         positions.forEach((p,index)=>{
             let control = new Control({
@@ -449,12 +449,12 @@ class Element{
                 strokeStyle:this.controlStrokeStyle,
                 lineWidth:this.controlLineWidth
             }).render(ctx, prevEl);
-            this.controls.push(control);
+            this.transformControls.push(control);
         });
 
         //draw bounding rect
-        let control0=this.controls[0];
-        let control4=this.controls[4];
+        let control0=this.transformControls[0];
+        let control4=this.transformControls[4];
         let p1=[control0.x3-control0.width/2,control0.y3-control0.height/2];
         let p2=[control4.x1+control4.width/2,control4.y1+control4.height/2];
         let w=p2[0]-p1[0];
@@ -471,10 +471,10 @@ class Element{
         
         //draw connet line
         let [x1,y1,x2,y2]=[0,0,0,0];
-        x1=this.controls[1].x1+this.controls[1].width/2;
-        y1=this.controls[1].y1;
-        x2=this.controls[8].x1+this.controls[8].width/2;
-        y2=this.controls[8].y1+this.controls[8].height;
+        x1=this.transformControls[1].x1+this.transformControls[1].width/2;
+        y1=this.transformControls[1].y1;
+        x2=this.transformControls[8].x1+this.transformControls[8].width/2;
+        y2=this.transformControls[8].y1+this.transformControls[8].height;
         ctx.beginPath();
         ctx.moveTo(x1,y1);
         ctx.lineTo(x2,y2);

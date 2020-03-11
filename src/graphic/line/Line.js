@@ -1,6 +1,8 @@
-import Path from '../Path';
-import {subPixelOptimizeLine} from '../../utils/sub_pixel_optimize';
 import * as dataUtil from '../../utils/data_structure_util';
+import * as classUtil from '../../utils/class_util';
+import {subPixelOptimizeLine} from '../../utils/sub_pixel_optimize';
+import CableLike from '../link/CableLike';
+import Path from '../Path';
 
 /**
  * @class qrenderer.graphic.shape.Line 
@@ -24,7 +26,7 @@ let defaultConfig={
     }
 }
 
-export default class Line extends Path{
+class Line extends Path{
     /**
      * @method constructor Line
      * @param {Object} options 
@@ -35,6 +37,17 @@ export default class Line extends Path{
          * @property {String} type
          */
         this.type='line';
+
+        /**
+         * @property {Array<Control>} linkControls
+         * Link controls.
+         * 
+         * 
+         * 连线控制工具。
+         */
+        this.linkControls = [];
+
+        classUtil.inheritProperties(this,CableLike,this.options);
     }
 
     /**
@@ -100,14 +113,40 @@ export default class Line extends Path{
 
     /**
      * @protected
-     * @method renderControls
-     * Disable renderControls method in Element, because we don't allow transformation on lines.
-     * 
-     * 
-     * 禁用 Elemnet 类上的 renderControls 方法，因为我们不希望在线条上使用几何变换。
+     * @method render
+     * Callback during render.
+     */
+    render(ctx, prevEl) {
+        Path.prototype.render.call(this,ctx,prevEl);
+        if(this.isCable){
+            this.renderLinkControls();
+        }
+    }
+
+    /**
+     * @protected
+     * @method renderTransformControls
      * @param {*} ctx 
      * @param {*} prevEl 
      */
-    renderControls(ctx, prevEl){
+    renderLinkControls(ctx, prevEl){
+        console.log("render link controls...");
+        this.linkControls = [];
+    }
+
+    /**
+     * @protected
+     * @method renderTransformControls
+     * Disable renderTransformControls method in Element, because we don't allow transformation on lines.
+     * 
+     * 
+     * 禁用 Elemnet 类上的 renderTransformControls 方法，因为我们不希望在线条上使用几何变换。
+     * @param {*} ctx 
+     * @param {*} prevEl 
+     */
+    renderTransformControls(ctx, prevEl){
     }
 }
+
+classUtil.mixin(Line, CableLike);
+export default Line;

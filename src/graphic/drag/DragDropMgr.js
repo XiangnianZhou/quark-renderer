@@ -65,8 +65,7 @@ export default class DragDropMgr{
         }
         el.dragging=true;
         this.selectionMap.set(el.id,el);
-        console.log(this.selectionMap);
-
+        
         this._x = e.offsetX;
         this._y = e.offsetY;
         this.dispatcher.on('pagemousemove', this.dragging, this);

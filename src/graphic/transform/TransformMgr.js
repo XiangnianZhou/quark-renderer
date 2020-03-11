@@ -84,7 +84,7 @@ export default class TransformMgr{
         let qrX = e.event.qrX;
         let qrY = e.event.qrY;
         this.lastHoveredControl=null;
-        this.selectedEl.controls.forEach((control,index)=>{
+        this.selectedEl.transformControls.forEach((control,index)=>{
             if(control.isHover(qrX,qrY)){
                 this.lastHoveredControl=control;
                 this.dispatcher.interceptor.setCursor(control.cursor);
