@@ -135,14 +135,21 @@ class Line extends Path{
      * @param {*} prevEl 
      */
     renderLinkControls(ctx, prevEl){
-        console.log("render link controls...");
         this.linkControls = [];
 
-        let control = new LinkControl({
-            el:this
+        let startControl = new LinkControl({
+            el:this,
+            name:'START'
         }).render(ctx, prevEl);
         
-        this.linkControls.push(control);
+        this.linkControls.push(startControl);
+
+        let endControl = new LinkControl({
+            el:this,
+            name:'END'
+        }).render(ctx, prevEl);
+        
+        this.linkControls.push(endControl);
     }
 
     /**

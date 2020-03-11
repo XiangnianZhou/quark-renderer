@@ -46,4 +46,22 @@ export default class Polyline extends Line{
     buildPath(ctx, shape) {
         polyHelper.buildPath(ctx, shape, false);
     }
+
+    /**
+     * @method pointAt
+     * Get point at percent, this value is between 0 and 1.
+     * 
+     * 
+     * 按照比例获取线条上的点，取值范围在 0 到 1 之间。
+     * @param  {Number} percent
+     * @return {Array<Number>}
+     */
+    pointAt(p) {
+        let points = this.shape.points;
+        if(!points||points.length<=1){
+            return [0,0];
+        }
+        let index = Math.floor((points.length-1)*p);
+        return [...points[index]];
+    }
 }

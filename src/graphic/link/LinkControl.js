@@ -8,6 +8,13 @@ export default class LinkControl {
     constructor(options={}){
         this.el=null;
         
+        this.name = 'START';   //START, END
+        this.cursor = 'corsshair';
+        this.radius = 10;
+        this.translate=[0,0];
+        this.lineWidth = 2;
+        this.hasTransformControls = false;
+
         // four corner points
         this.x1 = 0;
         this.y1 = 0;
@@ -18,43 +25,41 @@ export default class LinkControl {
         this.x4 = 0;
         this.y4 = 0;
 
-        this.width = 20;
-        this.height = 20;
-        this.hasTransformControls = false;
-        this.lineWidth = 2;
-        this.name = 'START';   //START, END
-        this.cursor = 'corsshair';
-
         classUtil.copyOwnProperties(this,options);
         this.fillStyle = colorUtil.parse(this.fillStyle);
         this.strokeStyle = colorUtil.parse(this.strokeStyle);
     }
 
     render(ctx,prevEl){
-        this._renderSquareControl(ctx,prevEl);
+        this._renderCircleControl(ctx,prevEl);
         return this;
     }
 
-    _renderSquareControl(ctx,prevEl){
+    _renderCircleControl(ctx,prevEl){
         let param=this._calcParameters();
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.lineWidth = this.lineWidth;
         ctx.fillStyle = this.fillStyle;
         ctx.strokeStyle = this.strokeStyle;
-        ctx.strokeRect(...[...param,this.width,this.height]);
-        console.log(...[...param,this.width,this.height]);
-        ctx.closePath();
+        ctx.translate(this.translate[0],this.translate[1]);
+        ctx.beginPath();
+        ctx.arc(...[...param,this.radius, 0, 2 * Math.PI]);
+        ctx.stroke();
         ctx.restore();
     }
 
     _calcParameters(){
+        let point=[0,0];
         if(this.name==='START'){
-            return this.el.pointAt(0);
+            point = this.el.pointAt(0);
         }else if(this.name==='END'){
-            return this.el.pointAt(1);
+            point = this.el.pointAt(1);
         }
-        return [0,0];
+        point[0]=point[0]-this.radius;
+
+        this.translate=[this.el.position[0],this.el.position[1]];
+        return point;
     }
 
     isHover(x,y){
