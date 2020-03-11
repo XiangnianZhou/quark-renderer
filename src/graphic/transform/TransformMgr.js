@@ -15,6 +15,11 @@ export default class TransformMgr{
     }
     
     startListen(){
+        this.stopListen();
+        this.dispatcher.on("mousedown",this.mouseDownHandler1,this);
+    }
+
+    stopListen(){
         this._restoreSelection();   //incase there was a selected element
         this.selectedEl=null;
         this.lastHoveredControl=null;
@@ -37,9 +42,6 @@ export default class TransformMgr{
         this.dispatcher.off("mousemove",this.mouseMoveHandler1);
         this.dispatcher.off("pagemousemove",this.mouseMoveHandler2);
         this.dispatcher.off("pagemouseup",this.mouseUpHandler);
-        
-        //just keep one mousedown listener
-        this.dispatcher.on("mousedown",this.mouseDownHandler1,this);
     }
 
     mouseDownHandler1(e){
