@@ -37,17 +37,17 @@ export default class TransformControl {
         this.width = 20;
         this.height = 20;
         this.hasTransformControls = false;
-        this.lineWidth = 2;
         this.name = 'TL';   //TL, T, TR, L, R, BL, B, BR, SPIN
         this.cursor = 'corsshair';
         this.pointCache = new Map();
         this.rotation=0;
         this.translate=[0,0];
         this.scaleControlOffset=50;
+        this.lineWidth = 2;
+        this.fillStyle = '#00ff00';
+        this.strokeStyle = '#000000';
 
         classUtil.copyOwnProperties(this,options);
-        this.fillStyle = colorUtil.parse(this.fillStyle);
-        this.strokeStyle = colorUtil.parse(this.strokeStyle);
     }
 
     render(ctx,prevEl){

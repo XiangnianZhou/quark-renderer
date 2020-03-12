@@ -160,12 +160,6 @@ class Element{
          */
         this.transformControls = [];
 
-        this.controlFillStyle = '#0000ff';
-
-        this.controlStrokeStyle = '#000000';
-
-        this.controlLineWidth = 1;
-
         /**
          * @property {Boolean} silent
          * Whether to respond to mouse events.
@@ -444,10 +438,7 @@ class Element{
         positions.forEach((p,index)=>{
             let control = new Control({
                 el:this,
-                name:p,
-                fillStyle:this.controlFillStyle,
-                strokeStyle:this.controlStrokeStyle,
-                lineWidth:this.controlLineWidth
+                name:p
             }).render(ctx, prevEl);
             this.transformControls.push(control);
         });
@@ -461,9 +452,9 @@ class Element{
         let h=p2[1]-p1[1];
         ctx.save();
         ctx.setTransform(1,0,0,1,0,0);
-        ctx.lineWidth = this.controlLineWidth;
-        ctx.fillStyle = this.controlFillStyle;
-        ctx.strokeStyle = this.controlStrokeStyle;
+        ctx.lineWidth = control0.lineWidth;
+        ctx.fillStyle = control0.fillStyle;
+        ctx.strokeStyle = control0.strokeStyle;
         ctx.translate(control0.translate[0],control0.translate[1]);
         ctx.rotate(-control0.rotation);
         ctx.strokeRect(p1[0],p1[1],w,h);
