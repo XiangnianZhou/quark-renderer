@@ -63,6 +63,12 @@ export default class TransformMgr{
         this._elDraggable=el.draggable;             //cache original draggable flag
         this._hasControls=el.hasTransformControls=true;
         el.dirty();
+
+        //remove mousedown listener first, then start listen to mousemove 
+        //and the second mousedown event
+        this.dispatcher.off("mousedown",this.mouseDownHandler1);
+        this.dispatcher.on("mousemove",this.mouseMoveHandler1,this);
+        this.dispatcher.on("mousedown",this.mouseDownHandler2,this);
     }
 
     _restoreSelection(){
@@ -71,12 +77,6 @@ export default class TransformMgr{
             this.selectedEl.draggable=this._elDraggable;
             this.selectedEl.hasTransformControls=false;
             this.selectedEl.dirty();
-        }else{
-            //remove mousedown listener first, then start listen to mousemove 
-            //and the second mousedown event
-            this.dispatcher.off("mousedown",this.mouseDownHandler1);
-            this.dispatcher.on("mousemove",this.mouseMoveHandler1,this);
-            this.dispatcher.on("mousedown",this.mouseDownHandler2,this);
         }
     }
 
