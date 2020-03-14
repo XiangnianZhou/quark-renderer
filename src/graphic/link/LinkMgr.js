@@ -62,24 +62,29 @@ export default class LinkMgr{
     }
 
     mouseMoveHandler1(e){
+        if(!this.selectedEl.isCable){
+            return;
+        }
         let qrX = e.event.qrX;
         let qrY = e.event.qrY;
         this.lastHoveredControl=null;
         this.selectedEl.linkControls.forEach((control,index)=>{
             if(control.isHover(qrX,qrY)){
                 this.lastHoveredControl=control;
+                this.selectedEl.draggable=false;
                 this.dispatcher.interceptor.setCursor(control.cursor);
+            }else{
+                this.selectedEl.draggable=true;
             }
         });
     }
 
     mouseDownHandler2(e){
         let target=e.target;
-        if(this.lastHoveredControl){                                            //click on a transform control
-            this.selectedEl.draggable=false;
+        if(this.lastHoveredControl){                                            //click on a link control
             this._x=e.offsetX;
             this._y=e.offsetY;
-            this.dispatcher.off("mousemove",this.mouseMoveHandler1);        //lockdown current clicked control, do not look for hovered control
+            this.dispatcher.off("mousemove",this.mouseMoveHandler1);            //lockdown current clicked control, do not look for hovered control
             this.dispatcher.on("pagemousemove",this.mouseMoveHandler2,this);
             this.dispatcher.on("pagemouseup",this.mouseUpHandler,this);
         }else if(target&&target.id&&target.id.indexOf("el-")!=-1){              //click on an element, FIXME:better way to determine whether the target is an element?
@@ -95,6 +100,30 @@ export default class LinkMgr{
         let mouseX=e.offsetX;    //x position of mouse in global space
         let mouseY=e.offsetY;    //y position of mouse in global space
         let name=this.lastHoveredControl.name;
+        console.log(`${mouseX}---${mouseY}---${name}`);
+        if(name==='START'){
+            this.handleStartPoint(mouseX,mouseY);
+        }else{
+            this.handleEndPoint(mouseX,mouseY);
+        }
+    }
+
+    handleStartPoint(mouseX,mouseY){
+        let position=this.selectedEl.position;
+        [mouseX,mouseY]=[mouseX-position[0],mouseY-position[1]];
+        
+        console.log(position);
+        this.selectedEl.setStartPoint(mouseX,mouseY);
+        this.selectedEl.dirty();
+    }
+    
+    handleEndPoint(mouseX,mouseY){
+        let position=this.selectedEl.position;
+        [mouseX,mouseY]=[mouseX-position[0],mouseY-position[1]];
+
+        console.log(position);
+        this.selectedEl.setEndPoint(mouseX,mouseY);
+        this.selectedEl.dirty();
     }
 
     mouseUpHandler(e){

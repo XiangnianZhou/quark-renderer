@@ -114,6 +114,16 @@ class Line extends Path{
      */
     renderTransformControls(ctx, prevEl){
     }
+
+    setStartPoint(x,y){
+        this.shape.x1=x;
+        this.shape.y1=y;
+    }
+    
+    setEndPoint(x,y){
+        this.shape.x2=x;
+        this.shape.y2=y;
+    }
 }
 
 classUtil.mixin(Line, CableLike);

@@ -64,4 +64,14 @@ export default class Polyline extends Line{
         let index = Math.floor((points.length-1)*p);
         return [...points[index]];
     }
+
+    setStartPoint(x,y){
+        this.shape.points[0]=[x,y];
+        console.log(`--->${this.shape.points.length}`);
+    }
+    
+    setEndPoint(x,y){
+        let index=this.shape.points.length-1;
+        this.shape.points[index]=[x,y];
+    }
 }
