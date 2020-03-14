@@ -6,7 +6,7 @@
     <script src="../dist/quark-renderer.js"></script>
 </head>
 <body>
-    <div id="main" style="width:1000px;height:600px;"></div>
+    <div id="main" style="width:1024px;height:800px;"></div>
 
     <script type="text/javascript">
         let qr = QuarkRenderer.init(document.getElementById('main'));
@@ -88,6 +88,25 @@
                 }
             })
             .start(true);
+
+        let line=new QuarkRenderer.Line({
+            position: [150, 700],
+            draggable: true,
+            showTransformControls:true,
+            showLinkControls:true,
+            style: {
+                stroke: 'rgba(220, 20, 60, 0.8)',
+                lineWidth: 5
+            },
+            shape: {
+                x1: 0,
+                y1: 0,
+                x2: 500,
+                y2: 0,
+                percent: 1
+            }
+        });
+        qr.add(line);
     </script>
 </body>
 </html>
