@@ -37,7 +37,7 @@ class Line extends Path{
          */
         this.type='line';
 
-        classUtil.inheritProperties(this,CableLike,this.options);
+        classUtil.inheritProperties(this,CableLike,this.options);           // If we don't need linkable feature, just remove this line.
         classUtil.copyOwnProperties(this,this.options,['style','shape']);
     }
 
@@ -101,18 +101,6 @@ class Line extends Path{
             shape.y1 * (1 - p) + shape.y2 * p
         ];
     }
-
-    // /**
-    //  * @protected
-    //  * @method render
-    //  * Callback during render.
-    //  */
-    // render(ctx, prevEl) {
-    //     Path.prototype.render.call(this,ctx,prevEl);
-    //     if(this.hasLinkControls&&this.showLinkControls){
-    //         this.renderLinkControls(ctx, prevEl);
-    //     }
-    // }
 
     /**
      * @protected
