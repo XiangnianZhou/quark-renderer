@@ -519,10 +519,10 @@ export default class CanvasPainter{
                 }
             }
 
-            el.beforeRender && el.beforeRender(ctx);
+            el.trigger("beforeRender",el);
             el.render(ctx, scope.prevEl || null);
             scope.prevEl = el;
-            el.afterRender && el.afterRender(ctx);
+            el.trigger("afterRender",el);
         }
     }
 

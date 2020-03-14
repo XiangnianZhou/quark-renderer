@@ -25,6 +25,9 @@ export default class CompoundPath extends Path{
          * @property {String} type
          */
         this.type='compound';
+
+        this.on("beforeRender",this.beforeRenderHandler);
+        this.on("afterRender",this.afterRenderHandler);
     }
 
     /**
@@ -44,9 +47,9 @@ export default class CompoundPath extends Path{
 
     /**
      * @private
-     * @method beforeRender
+     * @method beforeRenderHandler
      */
-    beforeRender() {
+    beforeRenderHandler() {
         this._updatePathDirty();
         let paths = this.shape.paths || [];
         let scale = this.getGlobalScale();
@@ -56,6 +59,17 @@ export default class CompoundPath extends Path{
                 paths[i].createPathProxy();
             }
             paths[i].path.setScale(scale[0], scale[1], paths[i].segmentIgnoreThreshold);
+        }
+    }
+    
+    /**
+     * @private
+     * @method afterRenderHandler
+     */
+    afterRenderHandler() {
+        let paths = this.shape.paths || [];
+        for (let i = 0; i < paths.length; i++) {
+            paths[i].__dirtyPath = false;
         }
     }
 
@@ -69,17 +83,6 @@ export default class CompoundPath extends Path{
         let paths = shape.paths || [];
         for (let i = 0; i < paths.length; i++) {
             paths[i].buildPath(ctx, paths[i].shape, true);
-        }
-    }
-
-    /**
-     * @private
-     * @method afterRender
-     */
-    afterRender() {
-        let paths = this.shape.paths || [];
-        for (let i = 0; i < paths.length; i++) {
-            paths[i].__dirtyPath = false;
         }
     }
 

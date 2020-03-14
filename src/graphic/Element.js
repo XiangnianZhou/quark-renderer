@@ -208,6 +208,12 @@ class Element{
          */
         this.animationProcessList = [];
 
+        //cache canvas context
+        this.ctx=null;
+
+        //cache previous element
+        this.prevEl=null;
+
         /**
          * @private
          * @property {QuarkRenderer} __qr
@@ -416,18 +422,15 @@ class Element{
 
     /**
      * @protected
-     * @method beforeRender
-     */
-    beforeRender(ctx) {}
-
-    /**
-     * @protected
      * @method render
      * Callback during render.
      */
     render(ctx, prevEl) {
+        this.ctx=ctx;
+        this.prevEl=prevEl;
+
         if(this.showTransformControls&&this.hasTransformControls){
-            this.renderTransformControls(ctx, prevEl);
+            this.renderTransformControls(this.ctx, this.prevEl);
         }
     }
 
@@ -472,12 +475,6 @@ class Element{
         ctx.stroke();
         ctx.restore();
     }
-
-    /**
-     * @protected
-     * @method afterRender
-     */
-    afterRender(ctx) {}
 
     /**
      * @method getBoundingRect

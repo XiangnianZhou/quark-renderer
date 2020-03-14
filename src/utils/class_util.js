@@ -20,19 +20,6 @@ export function inherits(clazz, baseClazz) {
 }
 
 /**
- * 这里的 mixin 只拷贝 prototype 上的属性。
- * @param {Object|Function} target
- * @param {Object|Function} sorce
- * @param {boolean} overlay
- */
-export function mixin(target, source, overlay) {
-    target = 'prototype' in target ? target.prototype : target;
-    source = 'prototype' in source ? source.prototype : source;
-
-    defaults(target, source, overlay);
-}
-
-/**
  * @method inheritProperties
  * 
  * Copy properties from super class, this method is designed for the classes which were not written in ES6 syntax.
@@ -50,6 +37,19 @@ export function inheritProperties(subInstance,SuperClass,opts){
             subInstance[name]=sp[name]
         }
     }
+}
+
+/**
+ * 这里的 mixin 只拷贝 prototype 上的属性。
+ * @param {Object|Function} target
+ * @param {Object|Function} sorce
+ * @param {boolean} overlay
+ */
+export function mixin(target, source, overlay) {
+    target = 'prototype' in target ? target.prototype : target;
+    source = 'prototype' in source ? source.prototype : source;
+
+    defaults(target, source, overlay);
 }
 
 /**

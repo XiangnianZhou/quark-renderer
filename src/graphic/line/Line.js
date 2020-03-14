@@ -3,7 +3,6 @@ import * as classUtil from '../../utils/class_util';
 import {subPixelOptimizeLine} from '../../utils/sub_pixel_optimize';
 import CableLike from '../link/CableLike';
 import Path from '../Path';
-import LinkControl from '../link/LinkControl';
 
 /**
  * @class qrenderer.graphic.shape.Line 
@@ -38,20 +37,9 @@ class Line extends Path{
          */
         this.type='line';
 
-        this.hasLinkControls = false;
-
-        this.showLinkControls = false;
-
-        /**
-         * @property {Array<Control>} linkControls
-         * Link controls.
-         * 
-         * 
-         * 连线控制工具。
-         */
-        this.linkControls = [];
-
-        classUtil.inheritProperties(this,CableLike,this.options);
+        // classUtil.inheritProperties(this,CableLike,this.options);
+        // classUtil.inherits
+        CableLike.call(this);
         classUtil.copyOwnProperties(this,this.options,['style','shape']);
     }
 
@@ -116,41 +104,17 @@ class Line extends Path{
         ];
     }
 
-    /**
-     * @protected
-     * @method render
-     * Callback during render.
-     */
-    render(ctx, prevEl) {
-        Path.prototype.render.call(this,ctx,prevEl);
-        if(this.hasLinkControls&&this.showLinkControls){
-            this.renderLinkControls(ctx, prevEl);
-        }
-    }
-
-    /**
-     * @protected
-     * @method renderTransformControls
-     * @param {*} ctx 
-     * @param {*} prevEl 
-     */
-    renderLinkControls(ctx, prevEl){
-        this.linkControls = [];
-
-        let startControl = new LinkControl({
-            el:this,
-            name:'START'
-        }).render(ctx, prevEl);
-        
-        this.linkControls.push(startControl);
-
-        let endControl = new LinkControl({
-            el:this,
-            name:'END'
-        }).render(ctx, prevEl);
-        
-        this.linkControls.push(endControl);
-    }
+    // /**
+    //  * @protected
+    //  * @method render
+    //  * Callback during render.
+    //  */
+    // render(ctx, prevEl) {
+    //     Path.prototype.render.call(this,ctx,prevEl);
+    //     if(this.hasLinkControls&&this.showLinkControls){
+    //         this.renderLinkControls(ctx, prevEl);
+    //     }
+    // }
 
     /**
      * @protected

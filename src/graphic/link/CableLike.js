@@ -1,3 +1,5 @@
+import LinkControl from './LinkControl';
+
 /**
  * @abstract
  * @class qrenderer.graphic.link.CableLike
@@ -6,10 +8,51 @@
  */
 function CableLike(){
     this.isCable=true;
+    this.hasLinkControls = false;
+    this.showLinkControls = false;
+
+    /**
+     * @property {Array<Control>} linkControls
+     * Link controls.
+     * 
+     * 
+     * 连线控制工具。
+     */
+    this.linkControls = [];
+
+    this.on("afterRender",()=>{
+        if(this.hasLinkControls&&this.showLinkControls){
+            this.renderLinkControls(this.ctx, this.prevEl);
+        }
+    });
 }
 
 CableLike.prototype={
-    constructor:CableLike
+    constructor:CableLike,
+
+    /**
+     * @protected
+     * @method renderTransformControls
+     * @param {*} ctx 
+     * @param {*} prevEl 
+     */
+    renderLinkControls:function(ctx, prevEl){
+        this.linkControls = [];
+
+        let startControl = new LinkControl({
+            el:this,
+            name:'START'
+        }).render(ctx, prevEl);
+        
+        this.linkControls.push(startControl);
+
+        let endControl = new LinkControl({
+            el:this,
+            name:'END'
+        }).render(ctx, prevEl);
+        
+        this.linkControls.push(endControl);
+    }
 }
 
 export default CableLike;
