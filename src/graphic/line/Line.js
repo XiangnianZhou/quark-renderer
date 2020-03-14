@@ -37,9 +37,7 @@ class Line extends Path{
          */
         this.type='line';
 
-        // classUtil.inheritProperties(this,CableLike,this.options);
-        // classUtil.inherits
-        CableLike.call(this);
+        classUtil.inheritProperties(this,CableLike,this.options);
         classUtil.copyOwnProperties(this,this.options,['style','shape']);
     }
 

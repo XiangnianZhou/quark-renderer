@@ -14,6 +14,8 @@ import * as dataUtil from '../../utils/data_structure_util';
  * 
  * 为 Element 类提供变换功能，例如：平移、缩放、扭曲、旋转、翻转、形状、样式。
  * 
+ * TODO:用新的事件机制和继承机制，把 Element 类里面与变形有关的逻辑移到本类中来，保持 Element 干净整洁。
+ * 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
  * @author pissang (https://www.github.com/pissang)
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
