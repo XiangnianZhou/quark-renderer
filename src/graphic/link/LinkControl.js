@@ -82,6 +82,7 @@ export default class LinkControl {
     }
 
     isHover(x,y){
+        return false;
         let scale=this.el.scale;
         let m, xMin, xMax, yMin, yMax;
         let points=[[this.x1,this.y1],[this.x2,this.y2],[this.x3,this.y3],[this.x4,this.y4]];
