@@ -85,11 +85,7 @@ export default class LinkControl {
             [centerX-this.radius+this.translate[0],centerY+this.radius+this.translate[1]]
         ];
 
-        console.log(`${this.name}--->${this.center}`);
-        console.log([x,y]);
-        console.log(points);
         let isInsideRect = vectorUtil.isInsideRect(...points,[x,y]);
-        console.log(`${isInsideRect}---${new Date().getTime()}`);
         return isInsideRect;
     }
 }
