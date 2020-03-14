@@ -1,13 +1,13 @@
 import * as dataUtil from '../../utils/data_structure_util';
 import {PI,mathSin,mathCos} from '../../utils/constants';
-import Path from '../Path';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Isogon 
  * 正多边形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default class Isogon extends Path{
+export default class Isogon extends Shape{
     /**
      * @method constructor Isogon
      * @param {Object} options 

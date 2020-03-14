@@ -1,13 +1,13 @@
 import * as dataUtil from '../../utils/data_structure_util';
 import {mathSin,mathCos,PI2,PI} from '../../utils/constants';
-import Path from '../Path';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Star 
  * n角星（n>3）
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default class Star extends Path{
+export default class Star extends Shape{
     /**
      * @method constructor Star
      * @param {Object} options 

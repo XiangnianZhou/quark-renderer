@@ -1,13 +1,13 @@
 import * as dataUtil from '../../utils/data_structure_util';
 import {PI2,mathSin,mathCos,mathMin,mathMax} from '../../utils/constants';
-import Path from '../Path';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Arc 
  * 圆弧
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default class Arc extends Path{
+export default class Arc extends Shape{
     /**
      * @method constructor Line
      * @param {Object} options 

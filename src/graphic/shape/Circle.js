@@ -1,13 +1,13 @@
 import * as dataUtil from '../../utils/data_structure_util';
 import {PI2} from '../../utils/constants';
-import Path from '../Path';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Circle 
  * 圆形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default class Circle extends Path{
+export default class Circle extends Shape{
     /**
      * @method constructor Rect
      * @param {Object} options 

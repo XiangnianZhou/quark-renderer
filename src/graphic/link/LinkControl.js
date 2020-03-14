@@ -8,7 +8,6 @@ export default class LinkControl {
     constructor(options={}){
         this.el=null;
 
-        // four corner points
         this.center = [0,0];
         this.radius = 8;
         

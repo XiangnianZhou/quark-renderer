@@ -1,7 +1,7 @@
 import * as roundRectHelper from '../../utils/round_rect';
 import * as dataUtil from '../../utils/data_structure_util';
 import {subPixelOptimizeRect} from '../../utils/sub_pixel_optimize';
-import Path from '../Path';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Rect 
@@ -10,7 +10,7 @@ import Path from '../Path';
  */
 // Avoid create repeatly.
 let subPixelOptimizeOutputShape = {};
-export default class Rect extends Path{
+export default class Rect extends Shape{
     /**
      * @method constructor Rect
      * @param {Object} options 

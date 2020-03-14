@@ -1,13 +1,13 @@
 import {PI2} from '../../utils/constants';
 import * as dataUtil from '../../utils/data_structure_util';
-import Path from '../Path';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Ring 
  * 圆环
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default class Ring extends Path{
+export default class Ring extends Shape{
     /**
      * @method constructor Ring
      * @param {Object} options 

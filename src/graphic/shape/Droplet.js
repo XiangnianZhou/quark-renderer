@@ -1,12 +1,12 @@
 import * as dataUtil from '../../utils/data_structure_util';
-import Path from '../Path';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Droplet 
  * 水滴形状
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default class Droplet extends Path{
+export default class Droplet extends Shape{
     /**
      * @method constructor Droplet
      * @param {Object} options 

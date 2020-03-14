@@ -136,6 +136,14 @@ export default class BezierCurve extends Line{
         return someVectorAt(this.shape, t, false);
     }
 
+    firstTwoPoints(){
+        return [[...this.pointAt(0)],[...this.pointAt(0.2)]];
+    }
+
+    lastTwoPoints(){
+        return [[...this.pointAt(1)],[...this.pointAt(0.8)]];
+    }
+
     /**
      * Get tangent at percent
      * @param  {Number} t

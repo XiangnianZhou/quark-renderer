@@ -1,14 +1,14 @@
 import * as dataUtil from '../../utils/data_structure_util';
 import fixClipWithShadow from '../../utils/fix_clip_with_shadow';
 import {mathSin,mathCos,mathMax,PI2} from '../../utils/constants';
-import Path from '../Path';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Sector 
  * 扇形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default class Sector extends Path{
+export default class Sector extends Shape{
     /**
      * @method constructor Sector
      * @param {Object} options 

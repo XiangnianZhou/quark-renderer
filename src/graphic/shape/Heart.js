@@ -1,12 +1,12 @@
 import * as dataUtil from '../../utils/data_structure_util';
-import Path from '../Path';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Heart 
  * 心形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default class Heart extends Path{
+export default class Heart extends Shape{
     /**
      * @method constructor Heart
      * @param {Object} options 

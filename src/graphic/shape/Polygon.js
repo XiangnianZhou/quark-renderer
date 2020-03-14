@@ -1,13 +1,13 @@
 import * as polyHelper from '../../utils/poly_util';
 import * as dataUtil from '../../utils/data_structure_util';
-import Path from '../Path';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Polygon 
  * 多边形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default class Polygon extends Path{
+export default class Polygon extends Shape{
     /**
      * @method constructor Polygon
      * @param {Object} options 
