@@ -1,4 +1,6 @@
 import Path from '../Path';
+import Linkable from '../link/Linkable';
+import * as classUtil from '../../utils/class_util';
 
 /**
  * @class qrenderer.graphic.shape.Shape 
@@ -8,8 +10,13 @@ import Path from '../Path';
  * 形状。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default class Shape extends Path{
+class Shape extends Path{
     constructor(options){
         super(options);
+
+        classUtil.inheritProperties(this,Linkable,this.options);           // If we don't need linkable feature, just remove this line.
     }
 }
+
+classUtil.mixin(Shape, Linkable);
+export default Shape;

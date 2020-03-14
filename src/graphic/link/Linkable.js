@@ -12,8 +12,8 @@ import LinkSlot from './LinkSlot';
  */
 function Linkable(){
     this.isLinkable=true;
-    this.hasLinkSlots = false;
-    this.showLinkSlots = false;
+    this.hasLinkSlots = true;
+    this.showLinkSlots = true;
 
     this.linkSlots=[];
 
@@ -33,7 +33,7 @@ Linkable.prototype={
         ['T','R','B','L'].forEach((name,index)=>{
             let slot = new LinkSlot({
                 el:this,
-                name:'T'
+                name:name
             }).render(ctx, prevEl);
             
             this.linkSlots.push(slot);
