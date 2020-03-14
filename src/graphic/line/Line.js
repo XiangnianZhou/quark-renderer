@@ -102,6 +102,14 @@ class Line extends Path{
         ];
     }
 
+    firstTwoPoints(){
+        return [[this.shape.x1,this.shape.y1],[this.shape.x2,this.shape.y2]];
+    }
+
+    lastTwoPoints(){
+        return [[this.shape.x2,this.shape.y2],[this.shape.x1,this.shape.y1]];
+    }
+
     /**
      * @protected
      * @method renderTransformControls

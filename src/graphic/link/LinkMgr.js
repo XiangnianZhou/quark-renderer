@@ -100,7 +100,6 @@ export default class LinkMgr{
         let mouseX=e.offsetX;    //x position of mouse in global space
         let mouseY=e.offsetY;    //y position of mouse in global space
         let name=this.lastHoveredControl.name;
-        console.log(`${mouseX}---${mouseY}---${name}`);
         if(name==='START'){
             this.handleStartPoint(mouseX,mouseY);
         }else{
@@ -112,7 +111,6 @@ export default class LinkMgr{
         let position=this.selectedEl.position;
         [mouseX,mouseY]=[mouseX-position[0],mouseY-position[1]];
         
-        console.log(position);
         this.selectedEl.setStartPoint(mouseX,mouseY);
         this.selectedEl.dirty();
     }
@@ -121,7 +119,6 @@ export default class LinkMgr{
         let position=this.selectedEl.position;
         [mouseX,mouseY]=[mouseX-position[0],mouseY-position[1]];
 
-        console.log(position);
         this.selectedEl.setEndPoint(mouseX,mouseY);
         this.selectedEl.dirty();
     }

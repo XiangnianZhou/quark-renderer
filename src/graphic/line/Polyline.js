@@ -61,13 +61,25 @@ export default class Polyline extends Line{
         if(!points||points.length<=1){
             return [0,0];
         }
-        let index = Math.floor((points.length-1)*p);
-        return [...points[index]];
+        if(p<=0.5){
+            return [...points[0]];
+        }else{
+            return [...points[points.length-1]];
+        }
+    }
+
+    firstTwoPoints(){
+        return [[...this.shape.points[0]],[...this.shape.points[1]]];
+    }
+
+    lastTwoPoints(){
+        let index1=this.shape.points.length-1;
+        let index2=this.shape.points.length-2;
+        return [[...this.shape.points[index1]],[...this.shape.points[index2]]];
     }
 
     setStartPoint(x,y){
         this.shape.points[0]=[x,y];
-        console.log(`--->${this.shape.points.length}`);
     }
     
     setEndPoint(x,y){

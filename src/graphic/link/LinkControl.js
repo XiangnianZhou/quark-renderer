@@ -10,13 +10,13 @@ export default class LinkControl {
 
         // four corner points
         this.center = [0,0];
-        this.radius = 10;
+        this.radius = 8;
         
         this.name = 'START';            //START, END
         this.cursor = 'crosshair';
         this.translate=[0,0];
         this.hasTransformControls = false;
-        this.lineWidth = 2;
+        this.lineWidth = 1;
         this.fillStyle = '#00ff00';
         this.strokeStyle = '#000000';
 
@@ -49,13 +49,15 @@ export default class LinkControl {
         let point0=[0,0];
         let point1=[0,0];
         if(this.name==='START'){
-            point0 = this.el.pointAt(0);
-            point1 = this.el.pointAt(0.1);
+            let firstTwoPoints=this.el.firstTwoPoints();
+            point0=firstTwoPoints[0];
+            point1=firstTwoPoints[1];
             linkPosition=point0;
         }else if(this.name==='END'){
-            point0 = this.el.pointAt(0.9);
-            point1 = this.el.pointAt(1);
-            linkPosition=point1;
+            let lastTwoPoints=this.el.lastTwoPoints();
+            point0=lastTwoPoints[0];
+            point1=lastTwoPoints[1];
+            linkPosition=point0;
         }
         let cosp2=matrixUtil.cosp2(point0,point1);
         let sinp2=matrixUtil.sinp2(point0,point1);
