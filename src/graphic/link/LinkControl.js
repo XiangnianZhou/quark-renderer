@@ -9,18 +9,11 @@ export default class LinkControl {
         this.el=null;
 
         // four corner points
-        this.x1 = 0;
-        this.y1 = 0;
-        this.x2 = 0;
-        this.y2 = 0;
-        this.x3 = 0;
-        this.y3 = 0;
-        this.x4 = 0;
-        this.y4 = 0;
+        this.center = [0,0];
+        this.radius = 10;
         
         this.name = 'START';            //START, END
-        this.cursor = 'corsshair';
-        this.radius = 10;
+        this.cursor = 'crosshair';
         this.translate=[0,0];
         this.hasTransformControls = false;
         this.lineWidth = 2;
@@ -77,24 +70,26 @@ export default class LinkControl {
             point0[1]=point0[1]+this.radius/2;
         }
         
+        this.center=point0;
         this.translate=[this.el.position[0],this.el.position[1]];
         return point0;
     }
 
     isHover(x,y){
-        return false;
-        let scale=this.el.scale;
         let m, xMin, xMax, yMin, yMax;
-        let points=[[this.x1,this.y1],[this.x2,this.y2],[this.x3,this.y3],[this.x4,this.y4]];
-        
-        //reverse scale
-        points.forEach((point,index)=>{
-            point[0]=point[0]/scale[0];
-            point[1]=point[1]/scale[1];
-            point=this.el.localToGlobal(point[0],point[1]);
-            points[index]=point;
-        });
+        let [centerX,centerY]=this.center;
+        let points=[
+            [centerX-this.radius+this.translate[0],centerY-this.radius+this.translate[1]],
+            [centerX+this.radius+this.translate[0],centerY-this.radius+this.translate[1]],
+            [centerX+this.radius+this.translate[0],centerY+this.radius+this.translate[1]],
+            [centerX-this.radius+this.translate[0],centerY+this.radius+this.translate[1]]
+        ];
 
-        return vectorUtil.isInsideRect(...points,[x,y]);
+        console.log(`${this.name}--->${this.center}`);
+        console.log([x,y]);
+        console.log(points);
+        let isInsideRect = vectorUtil.isInsideRect(...points,[x,y]);
+        console.log(`${isInsideRect}---${new Date().getTime()}`);
+        return isInsideRect;
     }
 }

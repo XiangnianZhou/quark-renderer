@@ -5,6 +5,9 @@ import LinkControl from './LinkControl';
  * @class qrenderer.graphic.link.CableLike
  * 
  * 连接线抽象类，需要成为连接线的类都可以混入此抽象类的实现。
+ * 为了方便实现一些复杂的连接场景，特别注意：
+ * - 连接线总是画在全局坐标系中。
+ * - 连接线不能缩放或者变形。
  */
 function CableLike(){
     this.isCable=true;
