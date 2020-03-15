@@ -129,7 +129,7 @@ export default class LinkMgr{
         this.currentCable.dirty();
 
         linkableMap.forEach((el,key,index)=>{
-            el.trigger("linkControlDragging",el,this.lastHoveredControl,this.currentCable,mouseX,mouseY);
+            el.trigger("linkControlDragging",el,this.lastHoveredControl);
         });
     }
 

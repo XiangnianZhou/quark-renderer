@@ -55,15 +55,13 @@ Linkable.prototype={
         this.dirty();
     },
     
-    linkControlDragging:function(scope,control,cableLike,mouseX,mouseY){
-        //判断两个圆圈是否交叉
-        // console.log(control);
-        // this.linkSlots.forEach((slot)=>{
-        //     console.log(slot.center);
-        //     console.log(slot.radius);
-        // });
-        // let dropTarget = this.dispatcher.findHover(x, y, this._draggingItem).target;
-        console.log(`(${mouseX},${mouseY})...`);
+    linkControlDragging:function(scope,control){
+        //判断两个圆圈是否交叉，如果交叉，则连接起来
+        console.log(control);
+        this.linkSlots.forEach((slot)=>{
+            console.log(slot.center);
+            console.log(slot.radius);
+        });
     }
 }
 
