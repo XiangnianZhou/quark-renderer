@@ -119,17 +119,17 @@ export default class LinkMgr{
         let mouseY=e.offsetY;    //y position of mouse in global space
         let name=this.lastHoveredControl.name;
         let position=this.currentCable.position;
+        position=[mouseX-position[0],mouseY-position[1]];
 
-        [mouseX,mouseY]=[mouseX-position[0],mouseY-position[1]];
         if(name==='START'){
-            this.currentCable.setStartPoint(mouseX,mouseY);
+            this.currentCable.setStartPoint(...position);
         }else{
-            this.currentCable.setEndPoint(mouseX,mouseY);
+            this.currentCable.setEndPoint(...position);
         }
         this.currentCable.dirty();
 
         linkableMap.forEach((el,key,index)=>{
-            el.trigger("linkControlDragging",el,this.lastHoveredControl);
+            el.trigger("linkControlDragging",el,this.lastHoveredControl,this.currentCable,mouseX,mouseY);
         });
     }
 

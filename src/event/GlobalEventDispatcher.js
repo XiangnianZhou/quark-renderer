@@ -384,7 +384,7 @@ GlobalEventDispatcher.prototype = {
         let list = this.storage.getDisplayList();
         let out = {x: x, y: y};
 
-        //FIXME:在元素数量非常庞大的时候，如 100 万个元素，这里的 for 循环会很慢，基本不能响应鼠标事件。
+        //NOTE: This for loop will consume a lot of time if the number of elements is very large.
         for (let i = list.length - 1; i >= 0; i--) {
             let hoverCheckResult;
             if (list[i] !== exclude
