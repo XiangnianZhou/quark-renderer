@@ -54,8 +54,7 @@ export default class LinkMgr{
         this._hasLinkControls=el.hasLinkControls=true;
         el.dirty();
 
-        //remove mousedown listener first, then start listen to mousemove 
-        //and the second mousedown event
+        //remove mousedown listener first, then start listen to mousemove and the second mousedown event
         this.dispatcher.off("mousedown",this.mouseDownHandler1);
         this.dispatcher.on("mousemove",this.mouseMoveHandler1,this);
         this.dispatcher.on("mousedown",this.mouseDownHandler2,this);
@@ -100,24 +99,14 @@ export default class LinkMgr{
         let mouseX=e.offsetX;    //x position of mouse in global space
         let mouseY=e.offsetY;    //y position of mouse in global space
         let name=this.lastHoveredControl.name;
-        if(name==='START'){
-            this.handleStartPoint(mouseX,mouseY);
-        }else{
-            this.handleEndPoint(mouseX,mouseY);
-        }
-    }
+        let position=this.selectedEl.position;
 
-    handleStartPoint(mouseX,mouseY){
-        let position=this.selectedEl.position;
         [mouseX,mouseY]=[mouseX-position[0],mouseY-position[1]];
-        this.selectedEl.setStartPoint(mouseX,mouseY);
-        this.selectedEl.dirty();
-    }
-    
-    handleEndPoint(mouseX,mouseY){
-        let position=this.selectedEl.position;
-        [mouseX,mouseY]=[mouseX-position[0],mouseY-position[1]];
-        this.selectedEl.setEndPoint(mouseX,mouseY);
+        if(name==='START'){
+            this.selectedEl.setStartPoint(mouseX,mouseY);
+        }else{
+            this.selectedEl.setEndPoint(mouseX,mouseY);
+        }
         this.selectedEl.dirty();
     }
 
