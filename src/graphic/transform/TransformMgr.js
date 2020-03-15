@@ -90,7 +90,7 @@ export default class TransformMgr{
 
     mouseDownHandler2(e){
         let target=e.target;
-        if(this.lastHoveredControl){//click on a transform control
+        if(this.lastHoveredControl){                                    //click on a transform control
             this.selectedEl.draggable=false;
             this._x=e.offsetX;
             this._y=e.offsetY;
@@ -99,7 +99,7 @@ export default class TransformMgr{
             this.dispatcher.on("pagemouseup",this.mouseUpHandler,this);
         }else if(target&&target.id&&target.id.indexOf("el-")!=-1){      //click on an element, FIXME:better way to determine whether the target is an element?
             this._clickElement(target);
-        }else{//click on anywhere else
+        }else{                                                          //click on anywhere else
             this._hasControls=false;
             this.startListen();
         }
@@ -216,8 +216,10 @@ export default class TransformMgr{
     getTransformedBoundingRect(){
         this._position=this.selectedEl.position;                //current position in global space
         this._scale=this.selectedEl.scale;                      //current scale in global space
-        this._width=this.selectedEl.shape.width;                //original width without transforming
-        this._height=this.selectedEl.shape.height;              //original height without transforming
+        this._width=this.selectedEl.shape.width                 //original width without transforming
+                    ||this.selectedEl.style.width;              
+        this._height=this.selectedEl.shape.height               //original height without transforming
+                    ||this.selectedEl.style.height;             
         this._rotation=this.selectedEl.rotation;                //current rotation in global space
         this._center=[this._width/2,this._height/2];            //original centerpoint in local space
 

@@ -89,7 +89,7 @@ export default class QImage extends Element{
             this.drawRectText(ctx, this.getBoundingRect());
         }
 
-        // Element.prototype.render.call(this,ctx,prevEl);//FIXME:add transform control to QImage
+        Element.prototype.render.call(this,ctx,prevEl);
     }
 
     /**

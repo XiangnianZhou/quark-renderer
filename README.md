@@ -202,6 +202,8 @@ The document is in /api directory, open /api/index.html in your browser then you
 <img src="./docs/images/6.gif">
 <br/>
 <img src="./docs/images/7.gif">
+<br/>
+<img src="./docs/images/8.gif">
 
 Wechat mini-program example:
 
