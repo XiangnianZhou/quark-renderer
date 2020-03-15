@@ -7,10 +7,8 @@ import {mathSin} from '../../utils/constants';
 export default class LinkControl {
     constructor(options={}){
         this.el=null;
-
         this.center = [0,0];
         this.radius = 8;
-        
         this.name = 'START';            //START, END
         this.cursor = 'crosshair';
         this.translate=[0,0];

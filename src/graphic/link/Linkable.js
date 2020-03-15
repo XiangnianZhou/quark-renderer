@@ -14,13 +14,20 @@ function Linkable(){
     this.isLinkable=true;
     this.hasLinkSlots = true;
     this.showLinkSlots = true;
-
     this.linkSlots=[];
 
     this.on("afterRender",()=>{
         if(this.hasLinkSlots&&this.showLinkSlots){
             this.renderLinkSlots(this.ctx, this.prevEl);
         }
+    });
+
+    this.on('dragenter', ()=>{
+        console.log("dragenter...");
+    }).on('dragleave', ()=>{
+        console.log("dragleave...");
+    }).on('drop', ()=>{
+        console.log("drop...");
     });
 }
 
@@ -29,13 +36,11 @@ Linkable.prototype={
 
     renderLinkSlots:function(ctx, prevEl){
         this.linkSlots = [];
-
         ['T','R','B','L'].forEach((name,index)=>{
             let slot = new LinkSlot({
                 el:this,
                 name:name
             }).render(ctx, prevEl);
-            
             this.linkSlots.push(slot);
         });
     }

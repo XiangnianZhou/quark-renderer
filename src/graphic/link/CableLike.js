@@ -42,19 +42,17 @@ CableLike.prototype={
      */
     renderLinkControls:function(ctx, prevEl){
         this.linkControls = [];
-
+        
         let startControl = new LinkControl({
             el:this,
             name:'START'
         }).render(ctx, prevEl);
-        
         this.linkControls.push(startControl);
 
         let endControl = new LinkControl({
             el:this,
             name:'END'
         }).render(ctx, prevEl);
-        
         this.linkControls.push(endControl);
     }
 }

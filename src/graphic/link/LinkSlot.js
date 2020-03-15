@@ -6,10 +6,8 @@ import * as colorUtil from '../../utils/color_util';
 export default class LinkControl {
     constructor(options={}){
         this.el=null;
-
         this.center = [0,0];
         this.radius = 8;
-
         this.name = 'T';   //TOP, LEFT, RIGHT, BOTTOM
         this.cursor = 'crosshair';
         this.pointCache = new Map();

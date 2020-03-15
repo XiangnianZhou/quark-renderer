@@ -110,7 +110,6 @@ export default class LinkMgr{
     handleStartPoint(mouseX,mouseY){
         let position=this.selectedEl.position;
         [mouseX,mouseY]=[mouseX-position[0],mouseY-position[1]];
-        
         this.selectedEl.setStartPoint(mouseX,mouseY);
         this.selectedEl.dirty();
     }
@@ -118,7 +117,6 @@ export default class LinkMgr{
     handleEndPoint(mouseX,mouseY){
         let position=this.selectedEl.position;
         [mouseX,mouseY]=[mouseX-position[0],mouseY-position[1]];
-
         this.selectedEl.setEndPoint(mouseX,mouseY);
         this.selectedEl.dirty();
     }
