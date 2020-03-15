@@ -25,7 +25,7 @@ function Linkable(){
         this.on('linkControlHid',this.hideSlots);
         this.on('linkControlDragging',this.linkControlDragging);
     });
-    
+
     LinkMgr.registerLinkable(this);
 }
 
@@ -55,8 +55,13 @@ Linkable.prototype={
         this.dirty();
     },
     
-    linkControlDragging:function(scope,el){
-        console.log(el);
+    linkControlDragging:function(scope,control){
+        //判断两个圆圈是否交叉
+        console.log(control);
+        this.linkSlots.forEach((slot)=>{
+            console.log(slot.center);
+            console.log(slot.radius);
+        });
     }
 }
 

@@ -8,7 +8,7 @@ export default class LinkControl {
         this.el=null;
         this.center = [0,0];
         this.radius = 8;
-        this.name = 'T';                //TOP, LEFT, RIGHT, BOTTOM
+        this.name = 'T';                    //TOP, LEFT, RIGHT, BOTTOM
         this.cursor = 'crosshair';
         this.pointCache = new Map();
         this.translate=[0,0];
@@ -16,6 +16,7 @@ export default class LinkControl {
         this.lineWidth = 2;
         this.fillStyle = '#00ff00';
         this.strokeStyle = '#000000';
+        this.cableMap=new Map();                  //The cables plugged in this slot.
 
         classUtil.copyOwnProperties(this,options);
     }
@@ -88,5 +89,23 @@ export default class LinkControl {
 
         let isInsideRect = vectorUtil.isInsideRect(...points,[x,y]);
         return isInsideRect;
+    }
+
+    /**
+     * Plug a cable to this slot.
+     * @param {*} cable 
+     */
+    plugCable(cable){
+        this.cableMap.set(cable.id,cable);
+        cable.trigger('pluginSlot',cable,this);
+    }
+    
+    /**
+     * Unplug a cable from this slot.
+     * @param {*} cable 
+     */
+    unPlugCable(cable){
+        this.cableMap.delete(cable.id);
+        cable.trigger('unplugSlot',cable,this);
     }
 }

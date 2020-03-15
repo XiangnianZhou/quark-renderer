@@ -15,6 +15,10 @@ export default class LinkMgr{
         linkableMap.set(el.id,el);
     }
 
+    static unRegisterLinkable(el){
+        linkableMap.delete(el.id);
+    }
+
     startListen(){
         this.dispatcher.on("mousedown",this.mouseDownHandler1,this);
         return this;
@@ -125,7 +129,7 @@ export default class LinkMgr{
         this.currentCable.dirty();
 
         linkableMap.forEach((el,key,index)=>{
-            el.trigger("linkControlDragging",el,this.currentCable);
+            el.trigger("linkControlDragging",el,this.lastHoveredControl);
         });
     }
 
