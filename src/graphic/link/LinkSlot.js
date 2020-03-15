@@ -13,7 +13,7 @@ export default class LinkControl {
         this.pointCache = new Map();
         this.translate=[0,0];
         this.hasTransformControls = false;
-        this.lineWidth = 1;
+        this.lineWidth = 2;
         this.fillStyle = '#00ff00';
         this.strokeStyle = '#000000';
 

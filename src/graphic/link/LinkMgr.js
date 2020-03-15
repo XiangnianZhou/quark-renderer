@@ -1,7 +1,7 @@
 export default class LinkMgr{
     constructor(dispatcher){
         this.dispatcher = dispatcher;
-        this.selectedEl=null;
+        this.line=null;
         this.lastHoveredControl=null;
         this._cursor="crosshair";
         this._elDraggable=false;
@@ -14,7 +14,7 @@ export default class LinkMgr{
     }
 
     stopListen(){
-        this.selectedEl=null;
+        this.line=null;
         this.lastHoveredControl=null;
         this._cursor="crosshair";
         this._elDraggable=false;
@@ -28,10 +28,10 @@ export default class LinkMgr{
     }
 
     restoreSelection(){
-        if(this.selectedEl){
-            this.selectedEl.hasLinkControls=false;
-            this.selectedEl.draggable=this._elDraggable;
-            this.selectedEl.dirty();
+        if(this.line){
+            this.line.hasLinkControls=false;
+            this.line.draggable=this._elDraggable;
+            this.line.dirty();
         }
     }
 
@@ -48,7 +48,7 @@ export default class LinkMgr{
 
     _clickElement(el){
         this.restoreSelection();
-        this.selectedEl=el;
+        this.line=el;
         this._cursor=el.cursor;
         this._elDraggable=el.draggable;             //cache original draggable flag
         this._hasLinkControls=el.hasLinkControls=true;
@@ -61,19 +61,19 @@ export default class LinkMgr{
     }
 
     mouseMoveHandler1(e){
-        if(!this.selectedEl.isCable){
+        if(!this.line.isCable){
             return;
         }
         let qrX = e.event.qrX;
         let qrY = e.event.qrY;
         this.lastHoveredControl=null;
-        this.selectedEl.linkControls.forEach((control,index)=>{
+        this.line.linkControls.forEach((control,index)=>{
             if(control.isHover(qrX,qrY)){
                 this.lastHoveredControl=control;
-                this.selectedEl.draggable=false;
+                this.line.draggable=false;
                 this.dispatcher.interceptor.setCursor(control.cursor);
             }else{
-                this.selectedEl.draggable=true;
+                this.line.draggable=true;
             }
         });
     }
@@ -99,19 +99,19 @@ export default class LinkMgr{
         let mouseX=e.offsetX;    //x position of mouse in global space
         let mouseY=e.offsetY;    //y position of mouse in global space
         let name=this.lastHoveredControl.name;
-        let position=this.selectedEl.position;
+        let position=this.line.position;
 
         [mouseX,mouseY]=[mouseX-position[0],mouseY-position[1]];
         if(name==='START'){
-            this.selectedEl.setStartPoint(mouseX,mouseY);
+            this.line.setStartPoint(mouseX,mouseY);
         }else{
-            this.selectedEl.setEndPoint(mouseX,mouseY);
+            this.line.setEndPoint(mouseX,mouseY);
         }
-        this.selectedEl.dirty();
+        this.line.dirty();
     }
 
     mouseUpHandler(e){
-        this.selectedEl.draggable=this._elDraggable;
+        this.line.draggable=this._elDraggable;
         this.dispatcher.off("mousedown",this.mouseDownHandler1);
         this.dispatcher.off("pagemousemove",this.mouseMoveHandler2);
         this.dispatcher.off("pagemouseup",this.mouseUpHandler);
