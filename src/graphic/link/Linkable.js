@@ -1,4 +1,5 @@
 import LinkSlot from './LinkSlot';
+import LinkMgr from './LinkMgr';
 
 /**
  * @abstract
@@ -12,23 +13,20 @@ import LinkSlot from './LinkSlot';
  */
 function Linkable(){
     this.isLinkable=true;
-    this.hasLinkSlots = true;
-    this.showLinkSlots = true;
+    this.hasLinkSlots = false;
+    this.showLinkSlots = false;
     this.linkSlots=[];
 
     this.on("afterRender",()=>{
         if(this.hasLinkSlots&&this.showLinkSlots){
             this.renderLinkSlots(this.ctx, this.prevEl);
         }
+        this.on('linkControlShowed',this.showSlots);//FIXME:remove these event listeners when destroy
+        this.on('linkControlHid',this.hideSlots);
+        this.on('linkControlDragging',this.linkControlDragging);
     });
-
-    this.on('dragenter', ()=>{
-        console.log("dragenter...");
-    }).on('dragleave', ()=>{
-        console.log("dragleave...");
-    }).on('drop', ()=>{
-        console.log("drop...");
-    });
+    
+    LinkMgr.registerLinkable(this);
 }
 
 Linkable.prototype={
@@ -43,6 +41,22 @@ Linkable.prototype={
             }).render(ctx, prevEl);
             this.linkSlots.push(slot);
         });
+    },
+
+    showSlots:function(){
+        this.hasLinkSlots = true;
+        this.showLinkSlots = true;
+        this.dirty();
+    },
+    
+    hideSlots:function(){
+        this.hasLinkSlots = false;
+        this.showLinkSlots = false;
+        this.dirty();
+    },
+    
+    linkControlDragging:function(scope,el){
+        console.log(el);
     }
 }
 

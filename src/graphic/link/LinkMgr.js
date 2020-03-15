@@ -1,11 +1,18 @@
+//Because there is no static properties in ES6 now, we put the list here.
+let linkableMap=new Map();
+
 export default class LinkMgr{
     constructor(dispatcher){
         this.dispatcher = dispatcher;
-        this.line=null;
+        this.currentCable=null;              //Current dragging cable
         this.lastHoveredControl=null;
         this._cursor="crosshair";
         this._elDraggable=false;
         this._hasLinkControls=false;
+    }
+
+    static registerLinkable(el){
+        linkableMap.set(el.id,el);
     }
 
     startListen(){
@@ -14,7 +21,7 @@ export default class LinkMgr{
     }
 
     stopListen(){
-        this.line=null;
+        this.currentCable=null;
         this.lastHoveredControl=null;
         this._cursor="crosshair";
         this._elDraggable=false;
@@ -28,11 +35,14 @@ export default class LinkMgr{
     }
 
     restoreSelection(){
-        if(this.line){
-            this.line.hasLinkControls=false;
-            this.line.draggable=this._elDraggable;
-            this.line.dirty();
+        if(this.currentCable){
+            this.currentCable.hasLinkControls=false;
+            this.currentCable.draggable=this._elDraggable;
+            this.currentCable.dirty();
         }
+        linkableMap.forEach((el,key,map)=>{
+            el.trigger('linkControlHid',el);
+        });
     }
 
     mouseDownHandler1(e){
@@ -48,11 +58,16 @@ export default class LinkMgr{
 
     _clickElement(el){
         this.restoreSelection();
-        this.line=el;
+
+        this.currentCable=el;
         this._cursor=el.cursor;
         this._elDraggable=el.draggable;             //cache original draggable flag
         this._hasLinkControls=el.hasLinkControls=true;
         el.dirty();
+
+        linkableMap.forEach((el,key,map)=>{
+            el.trigger('linkControlShowed',el);
+        });
 
         //remove mousedown listener first, then start listen to mousemove and the second mousedown event
         this.dispatcher.off("mousedown",this.mouseDownHandler1);
@@ -61,19 +76,19 @@ export default class LinkMgr{
     }
 
     mouseMoveHandler1(e){
-        if(!this.line.isCable){
+        if(!this.currentCable.isCable){
             return;
         }
         let qrX = e.event.qrX;
         let qrY = e.event.qrY;
         this.lastHoveredControl=null;
-        this.line.linkControls.forEach((control,index)=>{
+        this.currentCable.linkControls.forEach((control,index)=>{
             if(control.isHover(qrX,qrY)){
                 this.lastHoveredControl=control;
-                this.line.draggable=false;
+                this.currentCable.draggable=false;
                 this.dispatcher.interceptor.setCursor(control.cursor);
             }else{
-                this.line.draggable=true;
+                this.currentCable.draggable=true;
             }
         });
     }
@@ -99,19 +114,23 @@ export default class LinkMgr{
         let mouseX=e.offsetX;    //x position of mouse in global space
         let mouseY=e.offsetY;    //y position of mouse in global space
         let name=this.lastHoveredControl.name;
-        let position=this.line.position;
+        let position=this.currentCable.position;
 
         [mouseX,mouseY]=[mouseX-position[0],mouseY-position[1]];
         if(name==='START'){
-            this.line.setStartPoint(mouseX,mouseY);
+            this.currentCable.setStartPoint(mouseX,mouseY);
         }else{
-            this.line.setEndPoint(mouseX,mouseY);
+            this.currentCable.setEndPoint(mouseX,mouseY);
         }
-        this.line.dirty();
+        this.currentCable.dirty();
+
+        linkableMap.forEach((el,key,index)=>{
+            el.trigger("linkControlDragging",el,this.currentCable);
+        });
     }
 
     mouseUpHandler(e){
-        this.line.draggable=this._elDraggable;
+        this.currentCable.draggable=this._elDraggable;
         this.dispatcher.off("mousedown",this.mouseDownHandler1);
         this.dispatcher.off("pagemousemove",this.mouseMoveHandler2);
         this.dispatcher.off("pagemouseup",this.mouseUpHandler);
