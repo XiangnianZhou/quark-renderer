@@ -70,7 +70,7 @@ export default class LinkControl {
 
         //step-3: cache rotation and translate of this.el
         this.rotation=rotation;
-        this.translate=[this.el.position[0],this.el.position[1]];
+        this.translate=[this.el.position[0]+x,this.el.position[1]+y];
 
         //step-4: return result
         point=this.pointCache.get(this.name);
