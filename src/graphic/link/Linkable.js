@@ -67,7 +67,7 @@ Linkable.prototype={
             let radiusSum=slot.radius+control.radius;
             if(distance<radiusSum){
                 console.log(distance);
-                
+                control.setPosition(p1[0]+slot.radius,p1[1]);
                 return;
             }
         }
