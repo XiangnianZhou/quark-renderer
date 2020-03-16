@@ -29,6 +29,7 @@ function Linkable(){
     this.on('linkControlShowed',this.showSlots);//FIXME:remove these event listeners when destroy
     this.on('linkControlHid',this.hideSlots);
     this.on('linkControlDragging',this.linkControlDragging);
+    this.on('linkControlMouseUp',this.linkControlMouseUp);
 
     LinkMgr.registerLinkable(this);
 }
@@ -61,8 +62,24 @@ Linkable.prototype={
     },
     
     linkControlDragging:function(scope,control){
-        //Two circles are colliding if the centers are closer than the sum of the circle’s radii.
-        //@see http://www.dyn4j.org/2010/01/sat/
+        let param=this.getOverlap(control);
+        console.log(param);
+        if(param.isOverlap){
+            console.log("overlap...");
+        }
+    },
+
+    linkControlMouseUp:function(scope,control){
+        let param=this.getOverlap(control);
+        if(param.isOverlap){
+            console.log("linkControlMouseUp...");
+            param.slot.plugLinkControl(param.control);
+        }
+    },
+
+    //Two circles are colliding if the centers are closer than the sum of the circle’s radii.
+    //@see http://www.dyn4j.org/2010/01/sat/
+    getOverlap:function(control){
         let slots=[...this.linkSlots.values()];
         for(let i=0;i<slots.length;i++){
             let slot=slots[i];
@@ -71,10 +88,10 @@ Linkable.prototype={
             let distance=vectorUtil.distance(p1,p2);
             let radiusSum=slot.radius+control.radius;
             if(distance<radiusSum){
-                slot.plugLinkControl(control);
-                return;
+                return {isOverlap:true,slot:slot,control:control};
             }
         }
+        return {isOverlap:false};;
     }
 }
 
