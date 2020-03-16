@@ -2,9 +2,11 @@ import * as classUtil from '../../utils/class_util';
 import * as matrixUtil from '../../utils/affine_matrix_util';
 import * as vectorUtil from '../../utils/vector_util';
 import * as colorUtil from '../../utils/color_util';
+import guid from '../../utils/guid';
 
 export default class LinkControl {
     constructor(options={}){
+        this.id=guid();
         this.el=null;
         this.center = [0,0];
         this.radius = 8;
@@ -36,7 +38,7 @@ export default class LinkControl {
         ctx.translate(this.translate[0],this.translate[1]);
         ctx.rotate(-this.rotation);
         ctx.beginPath();
-        ctx.arc(...[...param.position,this.radius, 0, 2 * Math.PI]);
+        ctx.arc(...[...param,this.radius, 0, 2 * Math.PI]);
         ctx.fill();
         ctx.stroke();
         ctx.restore();
@@ -72,9 +74,8 @@ export default class LinkControl {
         this.translate=[this.el.position[0]+x,this.el.position[1]+y];
 
         //step-4: return result
-        point=this.pointCache.get(this.name);
-        this.center=point;
-        return point;
+        this.center=this.pointCache.get(this.name).position;
+        return this.center;
     }
 
     isHover(x,y){
@@ -107,5 +108,9 @@ export default class LinkControl {
     unPlugCable(cable){
         this.cableMap.delete(cable.id);
         cable.trigger('unplugSlot',cable,this);
+    }
+
+    getPosition(){
+        return matrixUtil.addVector(this.center,this.translate);
     }
 }

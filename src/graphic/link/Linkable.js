@@ -1,5 +1,6 @@
 import LinkSlot from './LinkSlot';
 import LinkMgr from './LinkMgr';
+import * as vectorUtil from '../../utils/vector_util';
 
 /**
  * @abstract
@@ -21,10 +22,10 @@ function Linkable(){
         if(this.hasLinkSlots&&this.showLinkSlots){
             this.renderLinkSlots(this.ctx, this.prevEl);
         }
-        this.on('linkControlShowed',this.showSlots);//FIXME:remove these event listeners when destroy
-        this.on('linkControlHid',this.hideSlots);
-        this.on('linkControlDragging',this.linkControlDragging);
     });
+    this.on('linkControlShowed',this.showSlots);//FIXME:remove these event listeners when destroy
+    this.on('linkControlHid',this.hideSlots);
+    this.on('linkControlDragging',this.linkControlDragging);
 
     LinkMgr.registerLinkable(this);
 }
@@ -56,12 +57,20 @@ Linkable.prototype={
     },
     
     linkControlDragging:function(scope,control){
-        //判断两个圆圈是否交叉，如果交叉，则连接起来
-        console.log(control);
-        this.linkSlots.forEach((slot)=>{
-            console.log(slot.center);
-            console.log(slot.radius);
-        });
+        //Two circles are colliding if the centers are closer than the sum of the circle’s radii.
+        //@see http://www.dyn4j.org/2010/01/sat/
+        for(let i=0;i<this.linkSlots.length;i++){
+            let slot=this.linkSlots[i];
+            let p1=slot.getPosition();
+            let p2=control.getPosition();
+            let distance=vectorUtil.distance(p1,p2);
+            let radiusSum=slot.radius+control.radius;
+            if(distance<radiusSum){
+                console.log(distance);
+                
+                return;
+            }
+        }
     }
 }
 

@@ -1,4 +1,5 @@
 import LinkControl from './LinkControl';
+import * as matrixUtil from '../../utils/affine_matrix_util';
 
 /**
  * @abstract
@@ -25,14 +26,15 @@ function CableLike(){
     this.hasLinkControls = false;
     this.showLinkControls = false;
 
-    /**
-     * @property {Array<Control>} linkControls
-     * Link controls.
-     * 
-     * 
-     * 连线控制工具。
-     */
-    this.linkControls = [];
+    this.startControl = new LinkControl({
+        el:this,
+        name:'START'
+    });
+
+    this.endControl = new LinkControl({
+        el:this,
+        name:'END'
+    });
 
     this.on("afterRender",()=>{
         if(this.hasLinkControls&&this.showLinkControls){
@@ -51,19 +53,8 @@ CableLike.prototype={
      * @param {*} prevEl 
      */
     renderLinkControls:function(ctx, prevEl){
-        this.linkControls = [];
-        
-        let startControl = new LinkControl({
-            el:this,
-            name:'START'
-        }).render(ctx, prevEl);
-        this.linkControls.push(startControl);
-
-        let endControl = new LinkControl({
-            el:this,
-            name:'END'
-        }).render(ctx, prevEl);
-        this.linkControls.push(endControl);
+        this.startControl.render(ctx,prevEl);
+        this.endControl.render(ctx,prevEl);
     }
 }
 

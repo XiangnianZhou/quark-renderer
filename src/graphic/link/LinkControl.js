@@ -3,10 +3,12 @@ import * as matrixUtil from '../../utils/affine_matrix_util';
 import * as vectorUtil from '../../utils/vector_util';
 import * as colorUtil from '../../utils/color_util';
 import {mathSin} from '../../utils/constants';
+import guid from '../../utils/guid';
 
 export default class LinkControl {
     constructor(options={}){
-        this.el=null;
+        this.id=guid();
+        this.el = null;
         this.center = [0,0];
         this.radius = 8;
         this.name = 'START';            //START, END
@@ -79,5 +81,9 @@ export default class LinkControl {
 
         let isInsideRect = vectorUtil.isInsideRect(...points,[x,y]);
         return isInsideRect;
+    }
+
+    getPosition(){
+        return matrixUtil.addVector(this.center,this.translate);
     }
 }

@@ -1,5 +1,5 @@
 //Because there is no static properties in ES6 now, we put the list here.
-let linkableMap=new Map();
+let linkables=new Map();
 
 export default class LinkMgr{
     constructor(dispatcher){
@@ -12,11 +12,11 @@ export default class LinkMgr{
     }
 
     static registerLinkable(el){
-        linkableMap.set(el.id,el);
+        linkables.set(el.id,el);
     }
 
     static unRegisterLinkable(el){
-        linkableMap.delete(el.id);
+        linkables.delete(el.id);
     }
 
     startListen(){
@@ -44,7 +44,7 @@ export default class LinkMgr{
             this.currentCable.draggable=this._elDraggable;
             this.currentCable.dirty();
         }
-        linkableMap.forEach((el,key,map)=>{
+        linkables.forEach((el,key,map)=>{
             el.trigger('linkControlHid',el);
         });
     }
@@ -69,7 +69,7 @@ export default class LinkMgr{
         this._hasLinkControls=el.hasLinkControls=true;
         el.dirty();
 
-        linkableMap.forEach((el,key,map)=>{
+        linkables.forEach((el,key,map)=>{
             el.trigger('linkControlShowed',el);
         });
 
@@ -86,7 +86,9 @@ export default class LinkMgr{
         let qrX = e.event.qrX;
         let qrY = e.event.qrY;
         this.lastHoveredControl=null;
-        this.currentCable.linkControls.forEach((control,index)=>{
+
+        let controls=[this.currentCable.startControl,this.currentCable.endControl];
+        controls.forEach((control,index)=>{
             if(control.isHover(qrX,qrY)){
                 this.lastHoveredControl=control;
                 this.currentCable.draggable=false;
@@ -128,7 +130,7 @@ export default class LinkMgr{
         }
         this.currentCable.dirty();
 
-        linkableMap.forEach((el,key,index)=>{
+        linkables.forEach((el,key,index)=>{
             el.trigger("linkControlDragging",el,this.lastHoveredControl);
         });
     }
