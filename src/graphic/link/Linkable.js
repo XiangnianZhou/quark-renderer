@@ -14,14 +14,17 @@ import * as vectorUtil from '../../utils/vector_util';
  */
 function Linkable(){
     this.isLinkable=true;
-    this.hasLinkSlots = false;
     this.showLinkSlots = false;
-    this.linkSlots=[];
+    this.linkSlots=new Map();
 
     this.on("afterRender",()=>{
-        if(this.hasLinkSlots&&this.showLinkSlots){
+        if(this.showLinkSlots){
             this.renderLinkSlots(this.ctx, this.prevEl);
         }
+        this.linkSlots.forEach((slot,key,map)=>{
+            slot.calcParameters();
+            slot.trigger("afterRender",slot);
+        });
     });
     this.on('linkControlShowed',this.showSlots);//FIXME:remove these event listeners when destroy
     this.on('linkControlHid',this.hideSlots);
@@ -34,24 +37,25 @@ Linkable.prototype={
     constructor:Linkable,
 
     renderLinkSlots:function(ctx, prevEl){
-        this.linkSlots = [];
         ['T','R','B','L'].forEach((name,index)=>{
-            let slot = new LinkSlot({
-                el:this,
-                name:name
-            }).render(ctx, prevEl);
-            this.linkSlots.push(slot);
+            let slot = this.linkSlots.get(name);
+            if(!slot){
+                slot=new LinkSlot({
+                    el:this,
+                    name:name
+                });
+                this.linkSlots.set(name,slot);
+            }
+            slot.render(ctx, prevEl);
         });
     },
 
     showSlots:function(){
-        this.hasLinkSlots = true;
         this.showLinkSlots = true;
         this.dirty();
     },
     
     hideSlots:function(){
-        this.hasLinkSlots = false;
         this.showLinkSlots = false;
         this.dirty();
     },
@@ -59,15 +63,16 @@ Linkable.prototype={
     linkControlDragging:function(scope,control){
         //Two circles are colliding if the centers are closer than the sum of the circle’s radii.
         //@see http://www.dyn4j.org/2010/01/sat/
-        for(let i=0;i<this.linkSlots.length;i++){
-            let slot=this.linkSlots[i];
+        let slots=[...this.linkSlots.values()];
+        for(let i=0;i<slots.length;i++){
+            let slot=slots[i];
             let p1=slot.getPosition();
             let p2=control.getPosition();
             let distance=vectorUtil.distance(p1,p2);
             let radiusSum=slot.radius+control.radius;
             if(distance<radiusSum){
-                console.log(distance);
                 control.setPosition(p1[0]+slot.radius,p1[1]);
+                slot.plugLinkControl(control);
                 return;
             }
         }

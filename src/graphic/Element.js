@@ -299,6 +299,7 @@ class Element{
         }
         vectorUtil.add(this.position,this.position,[dx,dy]);
         this.dirty();
+        this.trigger("moving",this);
     }
 
     /**

@@ -2,15 +2,16 @@ import * as classUtil from '../../utils/class_util';
 import * as matrixUtil from '../../utils/affine_matrix_util';
 import * as vectorUtil from '../../utils/vector_util';
 import * as colorUtil from '../../utils/color_util';
+import Eventful from '../../event/Eventful';
 import guid from '../../utils/guid';
 
-export default class LinkControl {
+class LinkSlot {
     constructor(options={}){
         this.id=guid();
         this.el=null;
         this.center = [0,0];
         this.radius = 8;
-        this.name = 'T';                    //TOP, LEFT, RIGHT, BOTTOM
+        this.name = 'T';                                //TOP, LEFT, RIGHT, BOTTOM
         this.cursor = 'crosshair';
         this.pointCache = new Map();
         this.translate=[0,0];
@@ -18,18 +19,20 @@ export default class LinkControl {
         this.lineWidth = 2;
         this.fillStyle = '#00ff00';
         this.strokeStyle = '#000000';
-        this.cableMap=new Map();                  //The cables plugged in this slot.
 
+        this.linkControls=new Map();                  //The cables plugged in this slot, the relationship between slot and cable is one to many.
+
+        classUtil.inheritProperties(this,Eventful,this.options);
         classUtil.copyOwnProperties(this,options);
     }
 
     render(ctx,prevEl){
-        this._renderCircleControl(ctx,prevEl);
+        this.renderCircleControl(ctx,prevEl);
         return this;
     }
     
-    _renderCircleControl(ctx,prevEl){
-        let param=this._calcParameters();
+    renderCircleControl(ctx,prevEl){
+        let param=this.calcParameters();
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.lineWidth = this.lineWidth;
@@ -44,7 +47,7 @@ export default class LinkControl {
         ctx.restore();
     }
 
-    _calcParameters(){
+    calcParameters(){
         let transform=this.el.transform;
         let rotation=this.el.rotation;
         let scale=this.el.scale;
@@ -92,25 +95,28 @@ export default class LinkControl {
         return isInsideRect;
     }
 
-    /**
-     * Plug a cable to this slot.
-     * @param {*} cable 
-     */
-    plugCable(cable){
-        this.cableMap.set(cable.id,cable);
-        cable.trigger('pluginSlot',cable,this);
-    }
-    
-    /**
-     * Unplug a cable from this slot.
-     * @param {*} cable 
-     */
-    unPlugCable(cable){
-        this.cableMap.delete(cable.id);
-        cable.trigger('unplugSlot',cable,this);
-    }
-
     getPosition(){
         return matrixUtil.addVector(this.center,this.translate);
     }
+
+    /**
+     * Plug a linkControl to this slot.
+     * @param {*} linkControl 
+     */
+    plugLinkControl(linkControl){
+        this.linkControls.set(linkControl.id,linkControl);
+        linkControl.setSlot(this);
+    }
+    
+    /**
+     * Unplug a linkControl from this slot.
+     * @param {*} linkControl
+     */
+    unPlugLinkControl(linkControl){
+        this.linkControls.delete(linkControl.id);
+        linkControl.deleteSlot(this);
+    }
 }
+
+classUtil.mixin(LinkSlot,Eventful);
+export default LinkSlot;

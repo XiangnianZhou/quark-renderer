@@ -2,10 +2,11 @@ import * as classUtil from '../../utils/class_util';
 import * as matrixUtil from '../../utils/affine_matrix_util';
 import * as vectorUtil from '../../utils/vector_util';
 import * as colorUtil from '../../utils/color_util';
+import Eventful from '../../event/Eventful';
 import {mathSin} from '../../utils/constants';
 import guid from '../../utils/guid';
 
-export default class LinkControl {
+class LinkControl {
     constructor(options={}){
         this.id=guid();
         this.el = null;
@@ -19,16 +20,19 @@ export default class LinkControl {
         this.fillStyle = '#00ff00';
         this.strokeStyle = '#000000';
 
+        this.slot=null;
+
+        classUtil.inheritProperties(this,Eventful,this.options);
         classUtil.copyOwnProperties(this,options);
     }
 
     render(ctx,prevEl){
-        this._renderCircleControl(ctx,prevEl);
+        this.renderCircleControl(ctx,prevEl);
         return this;
     }
 
-    _renderCircleControl(ctx,prevEl){
-        let param=this._calcParameters();
+    renderCircleControl(ctx,prevEl){
+        let param=this.calcParameters();
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.lineWidth = this.lineWidth;
@@ -42,7 +46,7 @@ export default class LinkControl {
         ctx.restore();
     }
 
-    _calcParameters(){
+    calcParameters(){
         //calculate the position of the link control
         let linkPosition=[0,0];
         let point0=[0,0];
@@ -97,4 +101,22 @@ export default class LinkControl {
         }
         this.el.dirty();
     }
+
+    setSlot(slot){
+        this.slot=slot;
+        slot.on("afterRender",this.slotAfterRenderHandler,this);
+    }
+
+    deleteSlot(slot){
+        this.slot.off("afterRender",this.slotAfterRenderHandler);
+        this.slot=null;
+    }
+
+    slotAfterRenderHandler(){
+        let p1=this.slot.getPosition();
+        this.setPosition(p1[0]+this.slot.radius,p1[1]);
+    }
 }
+
+classUtil.mixin(LinkControl,Eventful);
+export default LinkControl;
