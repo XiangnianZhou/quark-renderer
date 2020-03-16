@@ -74,6 +74,10 @@ Linkable.prototype={
         if(param.isOverlap){
             console.log("linkControlMouseUp...");
             param.slot.plugLinkControl(param.control);
+        }else{
+            this.linkSlots.forEach((slot,key,map)=>{
+                slot.unPlugLinkControl(control);
+            });
         }
     },
 

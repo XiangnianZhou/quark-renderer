@@ -120,6 +120,7 @@ export default class LinkMgr{
         let mouseX=e.offsetX;
         let mouseY=e.offsetY;
         this.lastHoveredControl.setPosition(mouseX,mouseY);
+        this.lastHoveredControl.dragging=true;
 
         linkables.forEach((el,key,index)=>{
             el.trigger("linkControlDragging",el,this.lastHoveredControl);
@@ -130,6 +131,8 @@ export default class LinkMgr{
         linkables.forEach((el,key,index)=>{
             el.trigger("linkControlMouseUp",el,this.lastHoveredControl);
         });
+        this.lastHoveredControl.dragging=false;
+
         this.currentCable.draggable=this._elDraggable;
         this.dispatcher.off("mousedown",this.mouseDownHandler1);
         this.dispatcher.off("pagemousemove",this.mouseMoveHandler2);

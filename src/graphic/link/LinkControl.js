@@ -21,6 +21,7 @@ class LinkControl {
         this.strokeStyle = '#000000';
 
         this.slot=null;
+        this.dragging=false;
 
         classUtil.inheritProperties(this,Eventful,this.options);
         classUtil.copyOwnProperties(this,options);
@@ -114,6 +115,9 @@ class LinkControl {
     }
 
     slotAfterRenderHandler(){
+        if(this.dragging){
+            return;
+        }
         let p1=this.slot.getPosition();
         this.setPosition(p1[0]+this.slot.radius,p1[1]);
     }
