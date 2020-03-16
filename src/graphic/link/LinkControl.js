@@ -86,4 +86,15 @@ export default class LinkControl {
     getPosition(){
         return matrixUtil.addVector(this.center,this.translate);
     }
+
+    setPosition(x,y){
+        let position=this.el.position;
+        position=[x-position[0],y-position[1]];
+        if(this.name==='START'){
+            this.el.setStartPoint(...position);
+        }else{
+            this.el.setEndPoint(...position);
+        }
+        this.el.dirty();
+    }
 }

@@ -86,6 +86,19 @@ class Line extends Path{
     }
 
     /**
+     * @protected
+     * @method renderTransformControls
+     * Disable renderTransformControls method in Element, because we don't allow transformation on lines.
+     * 
+     * 
+     * 禁用 Elemnet 类上的 renderTransformControls 方法，因为我们不希望在线条上使用几何变换。
+     * @param {*} ctx 
+     * @param {*} prevEl 
+     */
+    renderTransformControls(ctx, prevEl){
+    }
+
+    /**
      * @method pointAt
      * Get point at percent, this value is between 0 and 1.
      * 
@@ -102,27 +115,22 @@ class Line extends Path{
         ];
     }
 
+    firstPoint(){
+        return [this.shape.x1,this.shape.y1];
+    }
+
     firstTwoPoints(){
         return [[this.shape.x1,this.shape.y1],[this.shape.x2,this.shape.y2]];
+    }
+
+    lastPoint(){
+        return [this.shape.x2,this.shape.y2];
     }
 
     lastTwoPoints(){
         return [[this.shape.x2,this.shape.y2],[this.shape.x1,this.shape.y1]];
     }
-
-    /**
-     * @protected
-     * @method renderTransformControls
-     * Disable renderTransformControls method in Element, because we don't allow transformation on lines.
-     * 
-     * 
-     * 禁用 Elemnet 类上的 renderTransformControls 方法，因为我们不希望在线条上使用几何变换。
-     * @param {*} ctx 
-     * @param {*} prevEl 
-     */
-    renderTransformControls(ctx, prevEl){
-    }
-
+    
     setStartPoint(x,y){
         this.shape.x1=x;
         this.shape.y1=y;

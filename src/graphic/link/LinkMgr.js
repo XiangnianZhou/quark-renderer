@@ -117,19 +117,10 @@ export default class LinkMgr{
     }
 
     mouseMoveHandler2(e){
-        let mouseX=e.offsetX;    //x position of mouse in global space
-        let mouseY=e.offsetY;    //y position of mouse in global space
-        let name=this.lastHoveredControl.name;
-        let position=this.currentCable.position;
-        position=[mouseX-position[0],mouseY-position[1]];
-
-        if(name==='START'){
-            this.currentCable.setStartPoint(...position);
-        }else{
-            this.currentCable.setEndPoint(...position);
-        }
-        this.currentCable.dirty();
-
+        let mouseX=e.offsetX;
+        let mouseY=e.offsetY;
+        this.lastHoveredControl.setPosition(mouseX,mouseY);
+        
         linkables.forEach((el,key,index)=>{
             el.trigger("linkControlDragging",el,this.lastHoveredControl);
         });
