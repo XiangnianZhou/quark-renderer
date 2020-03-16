@@ -23,7 +23,6 @@ import * as matrixUtil from '../../utils/affine_matrix_util';
  */
 function CableLike(){
     this.isCable=true;
-    this.hasLinkControls = false;
     this.showLinkControls = false;
 
     this.startControl = new LinkControl({
@@ -37,9 +36,11 @@ function CableLike(){
     });
 
     this.on("afterRender",()=>{
-        if(this.hasLinkControls&&this.showLinkControls){
+        if(this.showLinkControls){
             this.renderLinkControls(this.ctx, this.prevEl);
         }
+        this.startControl.trigger("afterRender",this.startControl);
+        this.endControl.trigger("afterRender",this.endControl);
     });
 }
 

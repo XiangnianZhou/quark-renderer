@@ -8,7 +8,7 @@ export default class LinkMgr{
         this.lastHoveredControl=null;
         this._cursor="crosshair";
         this._elDraggable=false;
-        this._hasLinkControls=false;
+        this._showLinkControls=false;
     }
 
     static registerLinkable(el){
@@ -29,7 +29,7 @@ export default class LinkMgr{
         this.lastHoveredControl=null;
         this._cursor="crosshair";
         this._elDraggable=false;
-        this._hasLinkControls=false;
+        this._showLinkControls=false;
         this.dispatcher.off("mousedown",this.mouseDownHandler1);
         this.dispatcher.off("mousedown",this.mouseDownHandler2);
         this.dispatcher.off("mousemove",this.mouseMoveHandler1);
@@ -40,7 +40,7 @@ export default class LinkMgr{
 
     restoreSelection(){
         if(this.currentCable){
-            this.currentCable.hasLinkControls=false;
+            this.currentCable.showLinkControls=false;
             this.currentCable.draggable=this._elDraggable;
             this.currentCable.dirty();
         }
@@ -66,7 +66,7 @@ export default class LinkMgr{
         this.currentCable=el;
         this._cursor=el.cursor;
         this._elDraggable=el.draggable;             //cache original draggable flag
-        this._hasLinkControls=el.hasLinkControls=true;
+        this._showLinkControls=el.showLinkControls=true;
         el.dirty();
 
         linkables.forEach((el,key,map)=>{

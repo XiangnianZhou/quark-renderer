@@ -71,7 +71,6 @@ Linkable.prototype={
             let distance=vectorUtil.distance(p1,p2);
             let radiusSum=slot.radius+control.radius;
             if(distance<radiusSum){
-                control.setPosition(p1[0]+slot.radius,p1[1]);
                 slot.plugLinkControl(control);
                 return;
             }

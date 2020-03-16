@@ -106,6 +106,7 @@ class LinkSlot {
     plugLinkControl(linkControl){
         this.linkControls.set(linkControl.id,linkControl);
         linkControl.setSlot(this);
+        linkControl.on("afterRender",this.linkControlAfterRenderHandler,this);
     }
     
     /**
@@ -115,6 +116,11 @@ class LinkSlot {
     unPlugLinkControl(linkControl){
         this.linkControls.delete(linkControl.id);
         linkControl.deleteSlot(this);
+        linkControl.off("afterRender",this.linkControlAfterRenderHandler,this);
+    }
+
+    linkControlAfterRenderHandler(){
+        
     }
 }
 
