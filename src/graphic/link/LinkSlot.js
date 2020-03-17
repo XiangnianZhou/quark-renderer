@@ -5,6 +5,20 @@ import * as colorUtil from '../../utils/color_util';
 import Eventful from '../../event/Eventful';
 import guid from '../../utils/guid';
 
+/**
+ * @abstract
+ * @class qrenderer.graphic.link.LinkSlot
+ * 
+ * 
+ * 
+ * 插槽用来为 Shape、Image、Text 类型的元素提供连线功能，它的基本特性是：
+ * - 插槽不能独立存在的，因为独立存在的插槽没有意义，它必须附着在其它元素上。
+ * - 一个插槽上面可以插入多跟连线，插槽和连线之间是一对多的关系。
+ * - 插槽自身不能做几何变换，translate/rotate/skew 都不能。因为插槽是用来进行用户交互的，如果它自己做几何变换，那么交互起来就不方便。
+ * 
+ * @author 大漠穷秋 <damoqiongqiu@126.com>
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 class LinkSlot {
     constructor(options={}){
         this.id=guid();
@@ -104,9 +118,8 @@ class LinkSlot {
      * @param {*} linkControl 
      */
     plugLinkControl(linkControl){
-        this.linkControls.set(linkControl.id,linkControl);
         linkControl.setSlot(this);
-        linkControl.on("afterRender",this.linkControlAfterRenderHandler,this);
+        this.linkControls.set(linkControl.id,linkControl);
     }
     
     /**
@@ -116,11 +129,10 @@ class LinkSlot {
     unPlugLinkControl(linkControl){
         this.linkControls.delete(linkControl.id);
         linkControl.deleteSlot(this);
-        linkControl.off("afterRender",this.linkControlAfterRenderHandler,this);
     }
 
     linkControlAfterRenderHandler(){
-        
+
     }
 }
 

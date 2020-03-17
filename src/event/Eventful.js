@@ -327,7 +327,8 @@ function on(eventful, event, query, handler, context, isOnce) {
     }
 
     for (let i = 0; i < _h[event].length; i++) {
-        if (_h[event][i].h === handler) {
+        if (_h[event][i].ctx === context
+            &&_h[event][i].h === handler) {
             return eventful;
         }
     }

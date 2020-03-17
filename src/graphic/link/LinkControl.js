@@ -110,7 +110,7 @@ class LinkControl {
     }
 
     deleteSlot(){
-        this.slot&&this.slot.off("afterRender",this.slotAfterRenderHandler);
+        this.slot&&this.slot.off("afterRender",this.slotAfterRenderHandler,this);
         this.slot=null;
     }
 

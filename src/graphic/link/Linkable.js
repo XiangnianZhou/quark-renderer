@@ -63,16 +63,15 @@ Linkable.prototype={
     
     linkControlDragging:function(scope,control){
         let param=this.getOverlap(control);
-        console.log(param);
         if(param.isOverlap){
-            console.log("overlap...");
+            //TODO:add some highlight feature here...
+            // console.log("overlap...");
         }
     },
 
     linkControlMouseUp:function(scope,control){
         let param=this.getOverlap(control);
         if(param.isOverlap){
-            console.log("linkControlMouseUp...");
             param.slot.plugLinkControl(param.control);
         }else{
             this.linkSlots.forEach((slot,key,map)=>{
