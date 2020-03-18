@@ -1,7 +1,7 @@
 import * as classUtil from '../utils/class_util';
 import Element from './Element';
+import Rect from './shape/Rect';
 import BoundingRect from './BoundingRect';
-import { extend } from '../utils/data_structure_util';
 
 /**
  * @class qrenderer.graphic.Group
@@ -26,7 +26,7 @@ import { extend } from '../utils/data_structure_util';
  *      }));
  *      qr.add(g);
  */
-class Group extends Element{
+class Group extends Rect{
     /**
      * @method constructor Group
      */
@@ -51,6 +51,16 @@ class Group extends Element{
     }
 
     /**
+     * @method buildPath
+     * 绘制元素路径
+     * @param {Object} ctx 
+     * @param {String} shape 
+     */
+    buildPath(ctx, shape) {
+        Rect.prototype.buildPath.call(this,ctx,shape);
+    }
+
+    /**
      * @method add
      * 添加子节点到最后
      * @param {Element} child
@@ -59,8 +69,6 @@ class Group extends Element{
         if (child 
             && child !== this 
             && child.parent !== this) {
-            
-            this.children.push(child);
             this._doAdd(child);
         }
         return this;
@@ -96,6 +104,8 @@ class Group extends Element{
      */
     _doAdd(child) {
         child.parent&&child.parent.remove(child);
+        child.parent=this;
+        this.children.push(child);
         this.__qr&&(child.__qr=this.__qr);
         this.__storage&&this.__storage.addToStorage(child);
     }

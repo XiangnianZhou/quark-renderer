@@ -2,7 +2,6 @@ import * as classUtil from './utils/class_util';
 import * as util from './utils/data_structure_util';
 import Eventful from './event/Eventful';
 import env from './utils/env';
-import Group from './graphic/Group';
 // Use timsort because in most case elements are partially sorted
 // https://jsfiddle.net/pissang/jr4x7mdm/8/
 import timsort from './utils/timsort';
@@ -148,7 +147,7 @@ Storage.prototype = {
 
     /**
      * @method addToRoot
-     * 添加图形(Shape)或者组(Group)到根节点
+     * 添加元素到根节点
      * @param {Element} el
      */
     addToRoot: function (el) {
@@ -162,7 +161,7 @@ Storage.prototype = {
 
     /**
      * @method
-     * 删除指定的图形(Shape)或者组(Group)
+     * 删除指定元素
      * @param {string|Array.<String>} [el] 如果为空清空整个Storage
      */
     delFromRoot: function (el) {
