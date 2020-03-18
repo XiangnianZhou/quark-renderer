@@ -199,6 +199,22 @@ GlobalEventDispatcher.prototype = {
 
     constructor: GlobalEventDispatcher,
 
+    disableDrag:function(){
+        this._ddMgr.stopListen();
+    },
+
+    enableDrag:function(){
+        this._ddMgr.startListen();
+    },
+
+    disableTransform:function(){
+        this._transformMgr.stopListen();
+    },
+
+    enableTransform:function(){
+        this._transformMgr.startListen();
+    },
+
     /**
      * @method setHandlerProxy
      * @param {*} interceptor 

@@ -93,8 +93,12 @@ export default class LinkMgr{
                 this.lastHoveredControl=control;
                 this.currentCable.draggable=false;
                 this.dispatcher.interceptor.setCursor(control.cursor);
+                this.dispatcher.disableDrag();
+                // this.dispatcher.disableTransform();
             }else{
                 this.currentCable.draggable=true;
+                this.dispatcher.enableDrag();
+                // this.dispatcher.enableTransform();
             }
         });
     }

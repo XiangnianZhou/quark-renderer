@@ -19,7 +19,6 @@ export default class DragDropMgr{
     }
     
     startListen(){
-        this.stopListen();
         this.dispatcher.on('mousedown', this.dragStart, this);
         return this;
     }
