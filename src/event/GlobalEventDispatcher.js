@@ -209,7 +209,6 @@ GlobalEventDispatcher.prototype = {
 
     disableTransform:function(){
         this._transformMgr.stopListen();
-        console.log(this._transformMgr._$handlers);
     },
 
     enableTransform:function(){
