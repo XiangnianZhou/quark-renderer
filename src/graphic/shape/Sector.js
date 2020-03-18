@@ -31,7 +31,7 @@ export default class Sector extends Shape{
          */
         this.type='sector';
 
-        this.render=fixClipWithShadow(Path.prototype.render);
+        this.render=fixClipWithShadow(Shape.prototype.render);
     }
 
     /**
