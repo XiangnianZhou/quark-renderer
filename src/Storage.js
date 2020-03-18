@@ -127,7 +127,9 @@ Storage.prototype = {
         }
 
         el.__clipPaths = clipPaths;
-        this._displayList[this._displayListLen++] = el;
+        if(!this._displayList.includes(el)){
+            this._displayList[this._displayListLen++] = el;
+        }
 
         if (el.type==='group') {
             let children = el.children;

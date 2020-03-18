@@ -257,7 +257,7 @@ GlobalEventDispatcher.prototype = {
 
         let hovered = this._hovered = this.findHover(x, y);
         let hoveredTarget = hovered.target;
-
+        console.log(hovered);
         let interceptor = this.interceptor;
         interceptor.setCursor && interceptor.setCursor(hoveredTarget ? hoveredTarget.cursor : 'default');
 
@@ -398,6 +398,7 @@ GlobalEventDispatcher.prototype = {
      */
     findHover: function (x, y, exclude) {
         let list = this.storage.getDisplayList();
+        console.log(list);
         let out = {x: x, y: y};
 
         //NOTE: This for loop will consume a lot of time if the number of elements is very large.
