@@ -39,6 +39,8 @@ class Line extends Path{
 
         classUtil.inheritProperties(this,CableLike,this.options);           // If we don't need linkable feature, just remove this line.
         classUtil.copyOwnProperties(this,this.options,['style','shape']);
+
+        this.transformable = false;
     }
 
     /**
@@ -130,7 +132,7 @@ class Line extends Path{
     lastTwoPoints(){
         return [[this.shape.x2,this.shape.y2],[this.shape.x1,this.shape.y1]];
     }
-    
+
     setStartPoint(x,y){
         this.shape.x1=x;
         this.shape.y1=y;

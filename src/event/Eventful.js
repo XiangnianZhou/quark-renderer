@@ -94,7 +94,7 @@ Eventful.prototype = {
      * @param {Function} [handler] The event handler.
      *        If no `handler` input, "off" all listeners of the `event`.
      */
-    off: function (event, handler) {
+    off: function (event, handler,context) {
         let _h = this._$handlers;
         if (!event) {
             this._$handlers = {};
@@ -104,7 +104,8 @@ Eventful.prototype = {
             if (_h[event]) {
                 let newList = [];
                 for (let i = 0, l = _h[event].length; i < l; i++) {
-                    if (_h[event][i].h !== handler) {
+                    if (_h[event][i].ctx !== context
+                        &&_h[event][i].h !== handler){
                         newList.push(_h[event][i]);
                     }
                 }

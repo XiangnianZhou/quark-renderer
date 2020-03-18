@@ -38,11 +38,11 @@ export default class TransformMgr{
         this._hasControls=false;    //whether this.el has controls
         
         //remove all event listeners
-        this.dispatcher.off("mousedown",this.mouseDownHandler1);
-        this.dispatcher.off("mousedown",this.mouseDownHandler2);
-        this.dispatcher.off("mousemove",this.mouseMoveHandler1);
-        this.dispatcher.off("pagemousemove",this.mouseMoveHandler2);
-        this.dispatcher.off("pagemouseup",this.mouseUpHandler);
+        this.dispatcher.off("mousedown",this.mouseDownHandler1,this);
+        this.dispatcher.off("mousedown",this.mouseDownHandler2,this);
+        this.dispatcher.off("mousemove",this.mouseMoveHandler1,this);
+        this.dispatcher.off("pagemousemove",this.mouseMoveHandler2,this);
+        this.dispatcher.off("pagemouseup",this.mouseUpHandler,this);
 
         return this;
     }
@@ -66,7 +66,7 @@ export default class TransformMgr{
 
         //remove mousedown listener first, then start listen to mousemove 
         //and the second mousedown event
-        this.dispatcher.off("mousedown",this.mouseDownHandler1);
+        this.dispatcher.off("mousedown",this.mouseDownHandler1,this);
         this.dispatcher.on("mousemove",this.mouseMoveHandler1,this);
         this.dispatcher.on("mousedown",this.mouseDownHandler2,this);
     }
@@ -81,6 +81,9 @@ export default class TransformMgr{
     }
 
     mouseMoveHandler1(e){
+        if(!this.selectedEl){
+            return;
+        }
         let qrX = e.event.qrX;
         let qrY = e.event.qrY;
         this.lastHoveredControl=null;
@@ -98,7 +101,7 @@ export default class TransformMgr{
             this.selectedEl.draggable=false;
             this._x=e.offsetX;
             this._y=e.offsetY;
-            this.dispatcher.off("mousemove",this.mouseMoveHandler1);    //lockdown current clicked control, do not look for hovered control
+            this.dispatcher.off("mousemove",this.mouseMoveHandler1,this);    //lockdown current clicked control, do not look for hovered control
             this.dispatcher.on("pagemousemove",this.mouseMoveHandler2,this);
             this.dispatcher.on("pagemouseup",this.mouseUpHandler,this);
         }else if(target&&target.id&&target.id.indexOf("el-")!=-1){      //click on an element, FIXME:better way to determine whether the target is an element?
@@ -199,9 +202,9 @@ export default class TransformMgr{
 
     mouseUpHandler(e){
         this.selectedEl.draggable=this._elDraggable;
-        this.dispatcher.off("mousedown",this.mouseDownHandler1);
-        this.dispatcher.off("pagemousemove",this.mouseMoveHandler2);
-        this.dispatcher.off("pagemouseup",this.mouseUpHandler);
+        this.dispatcher.off("mousedown",this.mouseDownHandler1,this);
+        this.dispatcher.off("pagemousemove",this.mouseMoveHandler2,this);
+        this.dispatcher.off("pagemouseup",this.mouseUpHandler,this);
         this.dispatcher.on("mousemove",this.mouseMoveHandler1,this);
         this.dispatcher.on("mousedown",this.mouseDownHandler2,this);
     }

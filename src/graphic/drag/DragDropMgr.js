@@ -30,9 +30,9 @@ export default class DragDropMgr{
         this._x = 0;
         this._y = 0;
 
-        this.dispatcher.off('mousedown', this.dragStart);
-        this.dispatcher.off('pagemousemove', this.dragging);
-        this.dispatcher.off('pagemouseup', this.dragEnd);
+        this.dispatcher.off('mousedown', this.dragStart,this);
+        this.dispatcher.off('pagemousemove', this.dragging,this);
+        this.dispatcher.off('pagemouseup', this.dragEnd,this);
         return this;
     }
 
@@ -125,8 +125,8 @@ export default class DragDropMgr{
             el.dragging=false;
             this.dispatcher.dispatchToElement(this.normalizeParam(el, e), 'dragend', e.event);
         });
-        this.dispatcher.off('pagemousemove', this.dragging);
-        this.dispatcher.off('pagemouseup', this.dragEnd);
+        this.dispatcher.off('pagemousemove', this.dragging,this);
+        this.dispatcher.off('pagemouseup', this.dragEnd,this);
 
         if (this._dropTarget) {
             this.dispatcher.dispatchToElement(this.normalizeParam(this._dropTarget, e), 'drop', e.event);
