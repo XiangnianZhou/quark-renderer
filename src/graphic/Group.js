@@ -198,43 +198,43 @@ class Group extends Rect{
         Element.prototype.delFromStorageHandler.call(this,storage);
     }
 
-    /**
-     * @method getBoundingRect
-     * @return {BoundingRect}
-     */
-    getBoundingRect(includeChildren) {
-        // TODO Caching
-        let rect = null;
-        let tmpRect = new BoundingRect(0, 0, 0, 0);
-        let children = includeChildren || this.children;
+    // /**
+    //  * @method getBoundingRect
+    //  * @return {BoundingRect}
+    //  */
+    // getBoundingRect(includeChildren) {
+    //     // TODO Caching
+    //     let rect = null;
+    //     let tmpRect = new BoundingRect(0, 0, 0, 0);
+    //     let children = includeChildren || this.children;
         
-        for (let i = 0; i < children.length; i++) {
-            let child = children[i];
-            if (child.ignore || child.invisible) {
-                continue;
-            }
+    //     for (let i = 0; i < children.length; i++) {
+    //         let child = children[i];
+    //         if (child.ignore || child.invisible) {
+    //             continue;
+    //         }
 
-            let childRect = child.getBoundingRect();
-            let transform = child.getLocalTransform();
-            // TODO:
-            // The boundingRect cacluated by transforming original
-            // rect may be bigger than the actual bundingRect when rotation
-            // is used. (Consider a circle rotated aginst its center, where
-            // the actual boundingRect should be the same as that not be
-            // rotated.) But we can not find better approach to calculate
-            // actual boundingRect yet, considering performance.
-            if (transform) {
-                tmpRect.copy(childRect);
-                tmpRect.applyTransform(transform);
-                rect = rect || tmpRect.clone();
-                rect.union(tmpRect);
-            }else {
-                rect = rect || childRect.clone();
-                rect.union(childRect);
-            }
-        }
-        return rect || tmpRect;
-    }
+    //         let childRect = child.getBoundingRect();
+    //         let transform = child.getLocalTransform();
+    //         // TODO:
+    //         // The boundingRect cacluated by transforming original
+    //         // rect may be bigger than the actual bundingRect when rotation
+    //         // is used. (Consider a circle rotated aginst its center, where
+    //         // the actual boundingRect should be the same as that not be
+    //         // rotated.) But we can not find better approach to calculate
+    //         // actual boundingRect yet, considering performance.
+    //         if (transform) {
+    //             tmpRect.copy(childRect);
+    //             tmpRect.applyTransform(transform);
+    //             rect = rect || tmpRect.clone();
+    //             rect.union(tmpRect);
+    //         }else {
+    //             rect = rect || childRect.clone();
+    //             rect.union(childRect);
+    //         }
+    //     }
+    //     return rect || tmpRect;
+    // }
 }
 
 export default Group;
