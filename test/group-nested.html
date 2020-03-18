@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Group Nested</title>
+    <script src="../dist/quark-renderer.js"></script>
+</head>
+<body>
+    <div id="main" style="width:1024px;height:800px;"></div>
+    <script type="text/javascript">
+        let qr = QuarkRenderer.init(document.getElementById('main'));
+        let group1 = new QuarkRenderer.Group({
+            draggable: true,
+            position: [100, 100],
+            shape: {
+                width:400,
+                height:300
+            },
+            style: {
+                fill:'#ccc'
+            }
+        });
+        let group2 = new QuarkRenderer.Group({
+            draggable: true,
+            position: [0, 0],
+            shape: {
+                width:300,
+                height:200
+            },
+            style: {
+                fill:'#ff3300'
+            }
+        });
+        let group3 = new QuarkRenderer.Group({
+            draggable: true,
+            position: [0, 0],
+            shape: {
+                width:200,
+                height:100
+            },
+            style: {
+                fill:'#0033ff'
+            }
+        });
+        group2.add(group3);
+        group1.add(group2);
+        qr.add(group1);
+    </script>
+    <div id="Main" style="width:600px;height:400px;"></div>
+</body>
+</html>
