@@ -9,7 +9,7 @@
     <div id="main" style="width:1024px;height:800px;"></div>
     <script type="text/javascript">
         var qr = QuarkRenderer.init(document.getElementById('main'));
-        var circle = new QuarkRenderer.Circle({
+        var circle1 = new QuarkRenderer.Circle({
             scale: [1, 1],
             shape: {
                 cx: 0,
@@ -34,7 +34,7 @@
         var group = new QuarkRenderer.Group({
             position: [100, 100]
         });
-        group.add(circle);
+        group.add(circle1);
         group.add(circle2);
         qr.add(group);
         
@@ -53,7 +53,7 @@
             })
             .start(true);
 
-        circle.animate()
+        circle1.animate()
             .when(100, {
                 position: [20, 0]
             })

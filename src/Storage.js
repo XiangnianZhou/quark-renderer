@@ -126,6 +126,9 @@ Storage.prototype = {
             }
         }
 
+        el.__clipPaths = clipPaths;
+        this._displayList[this._displayListLen++] = el;
+
         if (el.type==='group') {
             let children = el.children;
             for (let i = 0; i < children.length; i++) {
@@ -138,11 +141,12 @@ Storage.prototype = {
                 this._updateAndAddDisplayable(child, clipPaths, includeIgnore);
             }
             // Mark group clean here
-            el.__dirty = false;
-        }else {
-            el.__clipPaths = clipPaths;
-            this._displayList[this._displayListLen++] = el;
+            // el.__dirty = false;
         }
+        // else {
+        //     el.__clipPaths = clipPaths;
+        //     this._displayList[this._displayListLen++] = el;
+        // }
     },
 
     /**

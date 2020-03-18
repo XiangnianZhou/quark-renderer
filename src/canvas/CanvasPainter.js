@@ -498,7 +498,6 @@ export default class CanvasPainter{
             // Ignore culled element
             && !(el.culling && this.isDisplayableCulled(el, this._width, this._height))
         ) {
-
             let clipPaths = el.__clipPaths;
             let prevElClipPaths = scope.prevElClipPaths;
 
