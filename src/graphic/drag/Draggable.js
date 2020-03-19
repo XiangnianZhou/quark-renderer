@@ -11,7 +11,17 @@ import * as vectorUtil from '../../utils/vector_util';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 let Draggable = function (options={}) {
+    /**
+     * @property {Boolean} draggable
+     * Whether it can be dragged.
+     */
+    this.draggable = false;
 
+    /**
+     * @property {Boolean} dragging
+     * Whether is it dragging.
+     */
+    this.dragging = false;
 }
 
 Draggable.prototype={

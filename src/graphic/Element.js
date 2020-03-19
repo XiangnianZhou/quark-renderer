@@ -120,18 +120,6 @@ class Element{
          */
         this.qlevel = 0;
 
-        /**
-         * @property {Boolean} draggable
-         * Whether it can be dragged.
-         */
-        this.draggable = false;
-
-        /**
-         * @property {Boolean} dragging
-         * Whether is it dragging.
-         */
-        this.dragging = false;
-
         this.transformable = true;
 
         /**
