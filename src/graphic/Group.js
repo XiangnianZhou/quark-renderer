@@ -34,9 +34,22 @@ class Group extends Rect{
         super(options);
 
         /**
-         * @property {String}
+         * @property {String} type
          */
         this.type='group';
+
+        /**
+         * @property {String} resizeStrategy
+         * - free: The group will not resitrict child nodes' positions, all child nodes are free to move.
+         * - resize: The group will auto resize according to the position of child nodes. 
+         * - restrict: The group will restrict the position of child nodes, no child nodes can move outside group area.
+         * 
+         * 
+         * - free: Group 不会限制子节点的位置，所有子节点都可以自由移动。
+         * - resize: Group 会自动调整自己的尺寸来适配子节点的位置。
+         * - restrict: Group 会限制子节点的位置，子节点只能在 group 内部移动，不能超出 group 的范围。
+         */
+        this.resizeStrategy='free'; // free, resize, restrict
         
         /**
          * @property children

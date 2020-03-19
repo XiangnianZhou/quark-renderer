@@ -1,7 +1,6 @@
 import * as dataUtil from '../utils/data_structure_util';
 import * as classUtil from '../utils/class_util';
 import * as matrixUtil from '../utils/affine_matrix_util';
-import * as vectorUtil from '../utils/vector_util';
 import Eventful from '../event/Eventful';
 import Transformable from './transform/Transformable';
 import Control from './transform/TransformControl';
@@ -9,6 +8,7 @@ import Animatable from '../animation/Animatable';
 import Style from './Style';
 import RectText from './RectText';
 import guid from '../utils/guid';
+import Draggable from './drag/Draggable';
 
 /**
  * @class qrenderer.graphic.Element
@@ -269,37 +269,14 @@ class Element{
             }
         }
 
-        classUtil.inheritProperties(this,Transformable,this.options);
         classUtil.inheritProperties(this,Eventful,this.options);
         classUtil.inheritProperties(this,Animatable,this.options);
+        classUtil.inheritProperties(this,Draggable,this.options);
+        classUtil.inheritProperties(this,Transformable,this.options);
         classUtil.copyOwnProperties(this,this.options,['style','shape']);
 
         this.on("addToStorage",this.addToStorageHandler);
         this.on("delFromStorage",this.delFromStorageHandler);
-    }
-
-    /**
-     * @method
-     * 
-     * Drift element
-     * 
-     * 移动元素
-     * 
-     * @param  {Number} dx dx on the global space
-     * @param  {Number} dy dy on the global space
-     */
-    drift(dx, dy) {
-        switch (this.draggable) {
-            case 'horizontal':
-                dy = 0;
-                break;
-            case 'vertical':
-                dx = 0;
-                break;
-        }
-        vectorUtil.add(this.position,this.position,[dx,dy]);
-        this.dirty();
-        this.trigger("moving",this);
     }
 
     /**
@@ -579,8 +556,9 @@ class Element{
     }
 }
 
+classUtil.mixin(Element, Eventful);
 classUtil.mixin(Element, Animatable);
+classUtil.mixin(Element, Draggable);
 classUtil.mixin(Element, Transformable);
 classUtil.mixin(Element, RectText);
-classUtil.mixin(Element, Eventful);
 export default Element;
