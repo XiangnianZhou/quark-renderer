@@ -221,13 +221,7 @@ class Element{
          * 这是一个非常重要的标志位，在绘制大量对象的时候，把 __dirty 标记为 false 可以节省大量操作。
          */
         this.__dirty = true;
-    
-        /**
-         * @private
-         * @property  _boundingRect
-         */
-        this._boundingRect = null;
-        
+
         /**
          * @private
          * @property  __clipPaths
@@ -236,6 +230,12 @@ class Element{
          * because it is easy to only using null to check whether clipPaths changed.
          */
         this.__clipPaths = null;
+
+        /**
+         * @protected
+         * @property __boundingRect 边界矩形
+         */
+        this.__boundingRect=null;
 
         /**
          * @property {Style} style
@@ -348,7 +348,7 @@ class Element{
      */
     dirty() {
         this.__dirty = this.__dirtyText = true;
-        this._boundingRect = null;
+        this.__boundingRect = null;
         this.__qr && this.__qr.refresh();
     }
 
@@ -451,7 +451,10 @@ class Element{
      * 获取当前元素的边界矩形。
      * 注意：此方法返回的是没有经过 transform 处理的边界矩形。
      */
-    getBoundingRect() {}
+    getBoundingRect() {
+        //All subclasses should provide implementation for this method. 
+        //所有子类都需要提供此方法的具体实现。
+    }
 
     /**
      * @protected

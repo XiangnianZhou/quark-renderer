@@ -30,12 +30,6 @@ class Path extends Element{
         this.path = null;
 
         /**
-         * @private
-         * @property __dirtyPath
-         */
-        this.__dirtyPath=true;
-
-        /**
          * @property {Number} strokeContainThreshold
          */
         this.strokeContainThreshold=5;
@@ -53,6 +47,12 @@ class Path extends Element{
          * See `subPixelOptimize`.
          */
         this.subPixelOptimize=false;
+
+        /**
+         * @private
+         * @property __dirtyPath
+         */
+        this.__dirtyPath=true;
     }
 
     /**
@@ -197,7 +197,7 @@ class Path extends Element{
     createPathProxy() {
         this.path = new PathProxy();
     }
-
+    
     /**
      * @method getBoundingRect
      * Get bounding rect of this element.
@@ -208,7 +208,7 @@ class Path extends Element{
      * 注意：此方法返回的是没有经过 transform 处理的边界矩形。
      */
     getBoundingRect() {
-        let rect = this._boundingRect;
+        let rect = this.__boundingRect;
         let needsUpdateRect = !rect;
         if (needsUpdateRect) {
             let path = this.path;
@@ -222,7 +222,7 @@ class Path extends Element{
             }
             rect = path.getBoundingRect();
         }
-        this._boundingRect = rect;
+        this.__boundingRect = rect;
 
         if (this.style.hasStroke()) {
             // Update rect with stroke lineWidth when
@@ -326,7 +326,7 @@ class Path extends Element{
         // FIXME
         if (key === 'shape') {
             this.__dirtyPath = true;
-            this._boundingRect = null;
+            this.__boundingRect = null;
             this.setShape(value);
         }else {
             Element.prototype._attrKV.call(this, key, value);

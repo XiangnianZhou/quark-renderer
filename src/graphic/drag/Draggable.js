@@ -28,9 +28,21 @@ Draggable.prototype={
     constructor:Draggable,
 
     /**
-     * @method
+     * @method beforeMove
      * 
-     * Drift element
+     * 
+     * 
+     * 钩子函数，在元素发生移动之前执行。
+     * 如果 beforeMove 返回 false ，元素不会发生移动，API 调用者可以利用此钩子实现复杂的控制。
+     */
+    beforeMove(dx,dy,event){
+        return true;
+    },
+
+    /**
+     * @method move
+     * 
+     * Move element
      * 
      * 移动元素
      * 
@@ -38,7 +50,11 @@ Draggable.prototype={
      * @param  {Number} dy dy on the global space.
      * @param  {Event} event event object.
      */
-    drift(dx, dy, event) {
+    move(dx, dy, event) {
+        if(this.beforeMove&&!this.beforeMove(dx,dy,event)){
+            return;
+        }
+        this.trigger("beforeMove",this);
         switch (this.draggable) {
             case 'horizontal':
                 dy = 0;
@@ -50,6 +66,16 @@ Draggable.prototype={
         vectorUtil.add(this.position,this.position,[dx,dy]);
         this.dirty();
         this.trigger("moving",this);//TODO:trigger moving event when animating the position property.
+        this.trigger("afterMove",this);
+        this.afterMove();
+    },
+
+    /**
+     * @method afterMove
+     * 钩子函数，在元素发生移动之后执行。
+     */
+    afterMove(){
+
     }
 }
 

@@ -63,7 +63,7 @@ export default class Text extends Element{
         let style = this.style;
         // Optimize, avoid normalize every time.
         this.__dirty && textUtil.normalizeTextStyle(style, true);
-        if (!this._boundingRect) {
+        if (!this.__boundingRect) {
             let text = style.text;
             text != null ? (text += '') : (text = '');
             let rect = textContain.getBoundingRect(
@@ -84,8 +84,8 @@ export default class Text extends Element{
                 rect.width += w;
                 rect.height += w;
             }
-            this._boundingRect = rect;
+            this.__boundingRect = rect;
         }
-        return this._boundingRect;
+        return this.__boundingRect;
     }
 }

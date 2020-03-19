@@ -1,4 +1,4 @@
-import {mathSqrt,mathAtan2} from '../../utils/constants';
+import {mathSqrt, mathAtan2, mathMin, mathMax, mathAbs} from '../../utils/constants';
 import * as matrixUtil from '../../utils/affine_matrix_util';
 import * as vectorUtil from '../../utils/vector_util';
 import * as classUtil from '../../utils/class_util';
@@ -354,6 +354,46 @@ Transformable.prototype={
             vectorUtil.applyTransform(v2, v2, transform);
         }
         return v2;
+    },
+
+    _getCoordinates:function(){
+        let rect=this.getBoundingRect();
+        
+        let points=[];
+        points[0]=[rect.x,rect.y];
+        points[1]=[rect.x+rect.width,rect.y];
+        points[2]=[rect.x+rect.width,rect.y+rect.height];
+        points[3]=[rect.x,rect.y+rect.height];
+        
+        points[0]=matrixUtil.transformVector(points[0],this.transform);
+        points[1]=matrixUtil.transformVector(points[1],this.transform);
+        points[2]=matrixUtil.transformVector(points[2],this.transform);
+        points[3]=matrixUtil.transformVector(points[3],this.transform);
+
+        let minX=mathMin(points[0][0],points[1][0],points[2][0],points[3][0]);
+        let maxX=mathMax(points[0][0],points[1][0],points[2][0],points[3][0]);
+        let minY=mathMin(points[0][1],points[1][1],points[2][1],points[3][1]);
+        let maxY=mathMax(points[0][1],points[1][1],points[2][1],points[3][1]);
+
+        return [minX,maxX,minY,maxY];
+    },
+
+    /**
+     * @method getOuterBoundingRect
+     * 
+     * 
+     * 
+     * 全局坐标系中的边界矩形，此矩形本身不进行几何变换，但是会包裹变形之后的元素。
+     */
+    getOuterBoundingRect:function(){
+        let [minX,maxX,minY,maxY]=this._getCoordinates();
+
+        return {
+            x:minX,
+            y:minY,
+            width:mathAbs(maxX-minX),
+            height:mathAbs(maxY-minY)
+        };
     }
 }
 export default Transformable;

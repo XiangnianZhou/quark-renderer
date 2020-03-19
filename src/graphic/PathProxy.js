@@ -26,8 +26,8 @@ var CMD = {
     R: 7
 };
 
-var min = [];
-var max = [];
+var min1 = [];
+var max1 = [];
 var min2 = [];
 var max2 = [];
 
@@ -563,8 +563,8 @@ PathProxy.prototype = {
      * @return {BoundingRect}
      */
     getBoundingRect: function () {
-        min[0] = min[1] = min2[0] = min2[1] = Number.MAX_VALUE;
-        max[0] = max[1] = max2[0] = max2[1] = -Number.MAX_VALUE;
+        min1[0] = min1[1] = min2[0] = min2[1] = Number.MAX_VALUE;
+        max1[0] = max1[1] = max2[0] = max2[1] = -Number.MAX_VALUE;
 
         var data = this.data;
         var xi = 0;
@@ -663,17 +663,17 @@ PathProxy.prototype = {
             }
 
             // Union
-            vectorUtil.min(min, min, min2);
-            vectorUtil.max(max, max, max2);
+            vectorUtil.min(min1, min1, min2);
+            vectorUtil.max(max1, max1, max2);
         }
 
         // No data
         if (i === 0) {
-            min[0] = min[1] = max[0] = max[1] = 0;
+            min1[0] = min1[1] = max1[0] = max1[1] = 0;
         }
 
         return new BoundingRect(
-            min[0], min[1], max[0] - min[0], max[1] - min[1]
+            min1[0], min1[1], max1[0] - min1[0], max1[1] - min1[1]
         );
     },
 

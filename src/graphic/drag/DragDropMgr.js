@@ -93,7 +93,7 @@ export default class DragDropMgr{
         this._y = y;
 
         this.selectionMap.forEach((el,key)=>{
-            el.drift(dx, dy, e);
+            el.move(dx, dy, e);
             this.dispatcher.dispatchToElement(this.normalizeParam(el, e), 'drag', e.event);
         });
 
