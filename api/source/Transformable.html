@@ -15,18 +15,21 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">var _constants = require(&quot;../constants&quot;);
+  <pre class="prettyprint lang-js">var _constants = require(&quot;../../utils/constants&quot;);
 
 var mathSqrt = _constants.mathSqrt;
 var mathAtan2 = _constants.mathAtan2;
+var mathMin = _constants.mathMin;
+var mathMax = _constants.mathMax;
+var mathAbs = _constants.mathAbs;
 
-var matrixUtil = require(&quot;../../core/utils/affine_matrix_util&quot;);
+var matrixUtil = require(&quot;../../utils/affine_matrix_util&quot;);
 
-var vectorUtil = require(&quot;../../core/utils/vector_util&quot;);
+var vectorUtil = require(&quot;../../utils/vector_util&quot;);
 
-var classUtil = require(&quot;../../core/utils/class_util&quot;);
+var classUtil = require(&quot;../../utils/class_util&quot;);
 
-var dataUtil = require(&quot;../../core/utils/data_structure_util&quot;);
+var dataUtil = require(&quot;../../utils/data_structure_util&quot;);
 
 <span id='qrenderer-graphic-transform-Transformable'>/**
 </span> * @abstract
@@ -37,6 +40,8 @@ var dataUtil = require(&quot;../../core/utils/data_structure_util&quot;);
  * 
  * 
  * 为 Element 类提供变换功能，例如：平移、缩放、扭曲、旋转、翻转、形状、样式。
+ * 
+ * TODO:用新的事件机制和继承机制，把 Element 类里面与变形有关的逻辑移到本类中来，保持 Element 干净整洁。
  * 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
  * @author pissang (https://www.github.com/pissang)
@@ -373,6 +378,36 @@ Transformable.prototype = {
     }
 
     return v2;
+  },
+
+<span id='qrenderer-graphic-transform-Transformable-method-getOuterBoundingRect'>  /**
+</span>   * @method getOuterBoundingRect
+   * 
+   * 
+   * 
+   * 全局坐标系中的边界矩形，此矩形本身不进行几何变换，但是会包裹变形之后的元素。
+   */
+  getOuterBoundingRect: function getOuterBoundingRect() {
+    var rect = this.getBoundingRect();
+    var points = [];
+    points[0] = [rect.x, rect.y];
+    points[1] = [rect.x + rect.width, rect.y];
+    points[2] = [rect.x + rect.width, rect.y + rect.height];
+    points[3] = [rect.x, rect.y + rect.height];
+    points[0] = matrixUtil.transformVector(points[0], this.transform);
+    points[1] = matrixUtil.transformVector(points[1], this.transform);
+    points[2] = matrixUtil.transformVector(points[2], this.transform);
+    points[3] = matrixUtil.transformVector(points[3], this.transform);
+    var minX = mathMin(points[0][0], points[1][0], points[2][0], points[3][0]);
+    var maxX = mathMax(points[0][0], points[1][0], points[2][0], points[3][0]);
+    var minY = mathMin(points[0][1], points[1][1], points[2][1], points[3][1]);
+    var maxY = mathMax(points[0][1], points[1][1], points[2][1], points[3][1]);
+    return {
+      x: minX,
+      y: minY,
+      width: mathAbs(maxX - minX),
+      height: mathAbs(maxY - minY)
+    };
   }
 };
 var _default = Transformable;

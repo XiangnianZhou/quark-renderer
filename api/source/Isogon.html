@@ -15,15 +15,15 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">var Path = require(&quot;../Path&quot;);
+  <pre class="prettyprint lang-js">var dataUtil = require(&quot;../../utils/data_structure_util&quot;);
 
-var dataUtil = require(&quot;../../core/utils/data_structure_util&quot;);
-
-var _constants = require(&quot;../../graphic/constants&quot;);
+var _constants = require(&quot;../../utils/constants&quot;);
 
 var PI = _constants.PI;
 var mathSin = _constants.mathSin;
 var mathCos = _constants.mathCos;
+
+var Shape = require(&quot;./Shape&quot;);
 
 function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
@@ -48,19 +48,10 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  * 正多边形
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
-var defaultConfig = {
-  shape: {
-    x: 0,
-    y: 0,
-    r: 0,
-    n: 0
-  }
-};
-
 var Isogon =
 /*#__PURE__*/
-function (_Path) {
-  _inherits(Isogon, _Path);
+function (_Shape) {
+  _inherits(Isogon, _Shape);
 
 <span id='qrenderer-graphic-shape-Isogon-method-constructor'>  /**
 </span>   * @method constructor Isogon
@@ -71,7 +62,14 @@ function (_Path) {
 
     _classCallCheck(this, Isogon);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Isogon).call(this, dataUtil.merge(defaultConfig, options, true)));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Isogon).call(this, dataUtil.merge({
+      shape: {
+        x: 0,
+        y: 0,
+        r: 0,
+        n: 0
+      }
+    }, options, true)));
 <span id='qrenderer-graphic-shape-Isogon-property-type'>    /**
 </span>     * @property {String} type
      */
@@ -114,7 +112,7 @@ function (_Path) {
   }]);
 
   return Isogon;
-}(Path);
+}(Shape);
 
 module.exports = Isogon;</pre>
 </body>

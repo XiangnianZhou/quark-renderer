@@ -15,17 +15,15 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">var Eventful = require(&quot;./event/Eventful&quot;);
+  <pre class="prettyprint lang-js">var classUtil = require(&quot;./utils/class_util&quot;);
 
-var classUtil = require(&quot;./core/utils/class_util&quot;);
+var util = require(&quot;./utils/data_structure_util&quot;);
 
-var util = require(&quot;./core/utils/data_structure_util&quot;);
+var Eventful = require(&quot;./event/Eventful&quot;);
 
-var env = require(&quot;./core/env&quot;);
+var env = require(&quot;./utils/env&quot;);
 
-var Group = require(&quot;./graphic/Group&quot;);
-
-var timsort = require(&quot;./core/utils/timsort&quot;);
+var timsort = require(&quot;./utils/timsort&quot;);
 
 // Use timsort because in most case elements are partially sorted
 // https://jsfiddle.net/pissang/jr4x7mdm/8/
@@ -158,6 +156,9 @@ Storage.prototype = {
       }
     }
 
+    el.__clipPaths = clipPaths;
+    this._displayList[this._displayListLen++] = el;
+
     if (el.type === &#39;group&#39;) {
       var children = el.children;
 
@@ -170,19 +171,13 @@ Storage.prototype = {
         }
 
         this._updateAndAddDisplayable(child, clipPaths, includeIgnore);
-      } // Mark group clean here
-
-
-      el.__dirty = false;
-    } else {
-      el.__clipPaths = clipPaths;
-      this._displayList[this._displayListLen++] = el;
+      }
     }
   },
 
 <span id='qrenderer-core-Storage-method-addToRoot'>  /**
 </span>   * @method addToRoot
-   * 添加图形(Shape)或者组(Group)到根节点
+   * 添加元素到根节点
    * @param {Element} el
    */
   addToRoot: function addToRoot(el) {
@@ -197,7 +192,7 @@ Storage.prototype = {
 
 <span id='qrenderer-core-Storage-method-delFromRoot'>  /**
 </span>   * @method
-   * 删除指定的图形(Shape)或者组(Group)
+   * 删除指定元素
    * @param {string|Array.&lt;String&gt;} [el] 如果为空清空整个Storage
    */
   delFromRoot: function delFromRoot(el) {

@@ -15,14 +15,15 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">var Path = require(&quot;../Path&quot;);
+  <pre class="prettyprint lang-js">var dataUtil = require(&quot;../../utils/data_structure_util&quot;);
 
-var dataUtil = require(&quot;../../core/utils/data_structure_util&quot;);
-
-var _constants = require(&quot;../../graphic/constants&quot;);
+var _constants = require(&quot;../../utils/constants&quot;);
 
 var mathSin = _constants.mathSin;
 var mathCos = _constants.mathCos;
+var radian = _constants.radian;
+
+var Shape = require(&quot;./Shape&quot;);
 
 function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
@@ -47,25 +48,10 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  * 玫瑰线
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
-var radian = Math.PI / 180;
-var defaultConfig = {
-  shape: {
-    cx: 0,
-    cy: 0,
-    r: [],
-    k: 0,
-    n: 1
-  },
-  style: {
-    stroke: &#39;#000&#39;,
-    fill: null
-  }
-};
-
 var Rose =
 /*#__PURE__*/
-function (_Path) {
-  _inherits(Rose, _Path);
+function (_Shape) {
+  _inherits(Rose, _Shape);
 
 <span id='qrenderer-graphic-shape-Rose-method-constructor'>  /**
 </span>   * @method constructor Rose
@@ -76,7 +62,19 @@ function (_Path) {
 
     _classCallCheck(this, Rose);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Rose).call(this, dataUtil.merge(defaultConfig, options, true)));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Rose).call(this, dataUtil.merge({
+      shape: {
+        cx: 0,
+        cy: 0,
+        r: [],
+        k: 0,
+        n: 1
+      },
+      style: {
+        stroke: &#39;#000&#39;,
+        fill: null
+      }
+    }, options, true)));
 <span id='qrenderer-graphic-shape-Rose-property-type'>    /**
 </span>     * @property {String} type
      */
@@ -118,7 +116,7 @@ function (_Path) {
   }]);
 
   return Rose;
-}(Path);
+}(Shape);
 
 module.exports = Rose;</pre>
 </body>

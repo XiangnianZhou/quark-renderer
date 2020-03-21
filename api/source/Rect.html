@@ -15,15 +15,15 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">var Path = require(&quot;../Path&quot;);
+  <pre class="prettyprint lang-js">var roundRectHelper = require(&quot;../../utils/round_rect&quot;);
 
-var roundRectHelper = require(&quot;../utils/round_rect&quot;);
+var dataUtil = require(&quot;../../utils/data_structure_util&quot;);
 
-var _sub_pixel_optimize = require(&quot;../utils/sub_pixel_optimize&quot;);
+var _sub_pixel_optimize = require(&quot;../../utils/sub_pixel_optimize&quot;);
 
 var subPixelOptimizeRect = _sub_pixel_optimize.subPixelOptimizeRect;
 
-var dataUtil = require(&quot;../../core/utils/data_structure_util&quot;);
+var Shape = require(&quot;./Shape&quot;);
 
 function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
@@ -50,25 +50,11 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  */
 // Avoid create repeatly.
 var subPixelOptimizeOutputShape = {};
-var defaultConfig = {
-  shape: {
-    // 左上、右上、右下、左下角的半径依次为r1、r2、r3、r4
-    // r缩写为1         相当于 [1, 1, 1, 1]
-    // r缩写为[1]       相当于 [1, 1, 1, 1]
-    // r缩写为[1, 2]    相当于 [1, 2, 1, 2]
-    // r缩写为[1, 2, 3] 相当于 [1, 2, 3, 2]
-    r: 0,
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0
-  }
-};
 
 var Rect =
 /*#__PURE__*/
-function (_Path) {
-  _inherits(Rect, _Path);
+function (_Shape) {
+  _inherits(Rect, _Shape);
 
 <span id='qrenderer-graphic-shape-Rect-method-constructor'>  /**
 </span>   * @method constructor Rect
@@ -79,7 +65,20 @@ function (_Path) {
 
     _classCallCheck(this, Rect);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Rect).call(this, dataUtil.merge(defaultConfig, options, true)));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Rect).call(this, dataUtil.merge({
+      shape: {
+        // 左上、右上、右下、左下角的半径依次为r1、r2、r3、r4
+        // r缩写为1         相当于 [1, 1, 1, 1]
+        // r缩写为[1]       相当于 [1, 1, 1, 1]
+        // r缩写为[1, 2]    相当于 [1, 2, 1, 2]
+        // r缩写为[1, 2, 3] 相当于 [1, 2, 3, 2]
+        r: 0,
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0
+      }
+    }, options, true)));
 <span id='qrenderer-graphic-shape-Rect-property-type'>    /**
 </span>     * @property {String} type
      */
@@ -130,7 +129,7 @@ function (_Path) {
   }]);
 
   return Rect;
-}(Path);
+}(Shape);
 
 module.exports = Rect;</pre>
 </body>

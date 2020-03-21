@@ -15,17 +15,14 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">var dataUtil = require(&quot;../../utils/data_structure_util&quot;);
+  <pre class="prettyprint lang-js">var Line = require(&quot;./Line&quot;);
+
+var dataUtil = require(&quot;../../utils/data_structure_util&quot;);
 
 var _constants = require(&quot;../../utils/constants&quot;);
 
-var PI2 = _constants.PI2;
 var mathSin = _constants.mathSin;
 var mathCos = _constants.mathCos;
-var mathMin = _constants.mathMin;
-var mathMax = _constants.mathMax;
-
-var Shape = require(&quot;./Shape&quot;);
 
 function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
@@ -45,73 +42,102 @@ function _inherits(subClass, superClass) { if (typeof superClass !== &quot;funct
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-<span id='qrenderer-graphic-shape-Arc'>/**
-</span> * @class qrenderer.graphic.shape.Arc 
- * 圆弧
+<span id='qrenderer-graphic-line-Trochold'>/**
+</span> * @class qrenderer.graphic.line.Trochold
+ * Trochold.
+ * 
+ *  
+ * 内外旋轮曲线。
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
-var Arc =
+var Trochold =
 /*#__PURE__*/
-function (_Shape) {
-  _inherits(Arc, _Shape);
+function (_Line) {
+  _inherits(Trochold, _Line);
 
-<span id='qrenderer-graphic-shape-Arc-method-constructor'>  /**
-</span>   * @method constructor Line
+<span id='qrenderer-graphic-line-Trochold-method-constructor'>  /**
+</span>   * @method constructor Trochold
    * @param {Object} options 
    */
-  function Arc(options) {
+  function Trochold(options) {
     var _this;
 
-    _classCallCheck(this, Arc);
+    _classCallCheck(this, Trochold);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Arc).call(this, dataUtil.merge({
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Trochold).call(this, dataUtil.merge({
       shape: {
         cx: 0,
         cy: 0,
         r: 0,
-        startAngle: 0,
-        endAngle: PI2,
-        clockwise: true
+        r0: 0,
+        d: 0,
+        location: &#39;out&#39;
       },
       style: {
         stroke: &#39;#000&#39;,
         fill: null
       }
     }, options, true)));
-<span id='qrenderer-graphic-shape-Arc-property-type'>    /**
+<span id='qrenderer-graphic-line-Trochold-property-type'>    /**
 </span>     * @property {String} type
      */
 
-    _this.type = &#39;arc&#39;;
+    _this.type = &#39;trochoid&#39;;
     return _this;
   }
-<span id='qrenderer-graphic-shape-Arc-method-buildPath'>  /**
+<span id='qrenderer-graphic-line-Trochold-method-buildPath'>  /**
 </span>   * @method buildPath
-   * 绘制元素路径
+   * Build the path of current line, the data structure is like the path attribute in SVG.
+   * 
+   * 
+   * 构建当前线条的路径，数据结构类似 SVG 中的 path 属性。
    * @param {Object} ctx 
    * @param {String} shape 
    */
 
 
-  _createClass(Arc, [{
+  _createClass(Trochold, [{
     key: &quot;buildPath&quot;,
     value: function buildPath(ctx, shape) {
-      var x = shape.cx;
-      var y = shape.cy;
-      var r = mathMax(shape.r, 0);
-      var startAngle = shape.startAngle;
-      var endAngle = shape.endAngle;
-      var clockwise = shape.clockwise;
-      var unitX = mathCos(startAngle);
-      var unitY = mathSin(startAngle);
-      ctx.moveTo(unitX * r + x, unitY * r + y);
-      ctx.arc(x, y, r, startAngle, endAngle, !clockwise);
+      var x1;
+      var y1;
+      var x2;
+      var y2;
+      var R = shape.r;
+      var r = shape.r0;
+      var d = shape.d;
+      var offsetX = shape.cx;
+      var offsetY = shape.cy;
+      var delta = shape.location === &#39;out&#39; ? 1 : -1;
+
+      if (shape.location &amp;&amp; R &lt;= r) {
+        return;
+      }
+
+      var num = 0;
+      var i = 1;
+      var theta;
+      x1 = (R + delta * r) * mathCos(0) - delta * d * mathCos(0) + offsetX;
+      y1 = (R + delta * r) * mathSin(0) - d * mathSin(0) + offsetY;
+      ctx.moveTo(x1, y1); // 计算结束时的i
+
+      do {
+        num++;
+      } while (r * num % (R + delta * r) !== 0);
+
+      do {
+        theta = Math.PI / 180 * i;
+        x2 = (R + delta * r) * mathCos(theta) - delta * d * mathCos((R / r + delta) * theta) + offsetX;
+        y2 = (R + delta * r) * mathSin(theta) - d * mathSin((R / r + delta) * theta) + offsetY;
+        ctx.lineTo(x2, y2);
+        i++;
+      } while (i &lt;= r * num / (R + delta * r) * 360);
     }
   }]);
 
-  return Arc;
-}(Shape);
+  return Trochold;
+}(Line);
 
-module.exports = Arc;</pre>
+module.exports = Trochold;</pre>
 </body>
 </html>

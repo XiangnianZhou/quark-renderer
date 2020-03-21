@@ -108,7 +108,7 @@ Eventful.prototype = {
    * @param {Function} [handler] The event handler.
    *        If no `handler` input, &quot;off&quot; all listeners of the `event`.
    */
-  off: function off(event, handler) {
+  off: function off(event, handler, context) {
     var _h = this._$handlers;
 
     if (!event) {
@@ -121,7 +121,7 @@ Eventful.prototype = {
         var newList = [];
 
         for (var i = 0, l = _h[event].length; i &lt; l; i++) {
-          if (_h[event][i].h !== handler) {
+          if (_h[event][i].ctx !== context &amp;&amp; _h[event][i].h !== handler) {
             newList.push(_h[event][i]);
           }
         }
@@ -362,7 +362,7 @@ function _on(eventful, event, query, handler, context, isOnce) {
   }
 
   for (var i = 0; i &lt; _h[event].length; i++) {
-    if (_h[event][i].h === handler) {
+    if (_h[event][i].ctx === context &amp;&amp; _h[event][i].h === handler) {
       return eventful;
     }
   }

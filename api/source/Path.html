@@ -17,17 +17,17 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">var Element = require(&quot;./Element&quot;);
 
-var dataUtil = require(&quot;../core/utils/data_structure_util&quot;);
+var dataUtil = require(&quot;../utils/data_structure_util&quot;);
 
-var classUtil = require(&quot;../core/utils/class_util&quot;);
+var classUtil = require(&quot;../utils/class_util&quot;);
 
 var PathProxy = require(&quot;./PathProxy&quot;);
 
-var pathContain = require(&quot;../core/contain/path&quot;);
+var pathContain = require(&quot;../utils/contain/path&quot;);
 
 var Pattern = require(&quot;./Pattern&quot;);
 
-var _constants = require(&quot;../graphic/constants&quot;);
+var _constants = require(&quot;../utils/constants&quot;);
 
 var mathMax = _constants.mathMax;
 var mathAbs = _constants.mathAbs;
@@ -81,12 +81,6 @@ function (_Element) {
      */
 
     _this.path = null;
-<span id='qrenderer-graphic-Path-property-__dirtyPath'>    /**
-</span>     * @private
-     * @property __dirtyPath
-     */
-
-    _this.__dirtyPath = true;
 <span id='qrenderer-graphic-Path-property-strokeContainThreshold'>    /**
 </span>     * @property {Number} strokeContainThreshold
      */
@@ -106,6 +100,12 @@ function (_Element) {
      */
 
     _this.subPixelOptimize = false;
+<span id='qrenderer-graphic-Path-property-__dirtyPath'>    /**
+</span>     * @private
+     * @property __dirtyPath
+     */
+
+    _this.__dirtyPath = true;
     return _this;
   }
 <span id='qrenderer-graphic-Path-method-render'>  /**
@@ -257,18 +257,21 @@ function (_Element) {
     }
 <span id='qrenderer-graphic-Path-method-getBoundingRect'>    /**
 </span>     * @method getBoundingRect
-     * Get bounding rect of this element.
-     * NOTE: this method will return the bounding rect without transforming.
+     * Get bounding rect of this element, NOTE: 
+     * this method will return the bounding rect without transforming(translate/scale/rotate/skew). 
+     * However, direct modifications to the shape property will be reflected in the bouding-rect.
+     * For example,  if we modify this.shape.width directly, then the new width property will be calculated.
      * 
      * 
-     * 获取当前元素的边界矩形。
-     * 注意：此方法返回的是没有经过 transform 处理的边界矩形。
+     * 获取当前元素的边界矩形，注意：
+     * 此方法返回的是没有经过 transform(translate/scale/rotate/skew) 处理的边界矩形，但是对 shape 属性直接进行的修改会反映在获取的边界矩形上。
+     * 例如，用代码直接对 this.shape.width 进行赋值，那么在计算边界矩形时就会用新的 width 属性进行计算。
      */
 
   }, {
     key: &quot;getBoundingRect&quot;,
     value: function getBoundingRect() {
-      var rect = this._boundingRect;
+      var rect = this.__boundingRect;
       var needsUpdateRect = !rect;
 
       if (needsUpdateRect) {
@@ -287,7 +290,7 @@ function (_Element) {
         rect = path.getBoundingRect();
       }
 
-      this._boundingRect = rect;
+      this.__boundingRect = rect;
 
       if (this.style.hasStroke()) {
         // Update rect with stroke lineWidth when
@@ -322,22 +325,22 @@ function (_Element) {
 
       return rect;
     }
-<span id='qrenderer-graphic-Path-method-contain'>    /**
-</span>     * @method contain
+<span id='qrenderer-graphic-Path-method-containPoint'>    /**
+</span>     * @method containPoint
      * @param {*} x 
      * @param {*} y 
      */
 
   }, {
-    key: &quot;contain&quot;,
-    value: function contain(x, y) {
+    key: &quot;containPoint&quot;,
+    value: function containPoint(x, y) {
       var localPos = this.globalToLocal(x, y);
       var rect = this.getBoundingRect();
       var style = this.style;
       x = localPos[0];
       y = localPos[1];
 
-      if (rect.contain(x, y)) {
+      if (rect.containPoint(x, y)) {
         var pathData = this.path.data;
 
         if (style.hasStroke()) {
@@ -357,7 +360,7 @@ function (_Element) {
         }
 
         if (style.hasFill()) {
-          return pathContain.contain(pathData, x, y);
+          return pathContain.containPoint(pathData, x, y);
         }
       }
 
@@ -400,7 +403,7 @@ function (_Element) {
       // FIXME
       if (key === &#39;shape&#39;) {
         this.__dirtyPath = true;
-        this._boundingRect = null;
+        this.__boundingRect = null;
         this.setShape(value);
       } else {
         Element.prototype._attrKV.call(this, key, value);

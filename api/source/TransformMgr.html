@@ -15,13 +15,13 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">var _constants = require(&quot;../constants&quot;);
+  <pre class="prettyprint lang-js">var _constants = require(&quot;../../utils/constants&quot;);
 
 var EPSILON = _constants.EPSILON;
 var mathAbs = _constants.mathAbs;
 var mathLog = _constants.mathLog;
 
-var matrixUtil = require(&quot;../../core/utils/affine_matrix_util&quot;);
+var matrixUtil = require(&quot;../../utils/affine_matrix_util&quot;);
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
@@ -52,12 +52,18 @@ function () {
     _classCallCheck(this, TransformMgr);
 
     this.dispatcher = dispatcher;
-    this.startListen();
   }
 
   _createClass(TransformMgr, [{
     key: &quot;startListen&quot;,
     value: function startListen() {
+      this.stopListen();
+      this.dispatcher.on(&quot;mousedown&quot;, this.mouseDownHandler1, this);
+      return this;
+    }
+  }, {
+    key: &quot;stopListen&quot;,
+    value: function stopListen() {
       this._restoreSelection(); //incase there was a selected element
 
 
@@ -82,13 +88,12 @@ function () {
       this._hasControls = false; //whether this.el has controls
       //remove all event listeners
 
-      this.dispatcher.off(&quot;mousedown&quot;, this.mouseDownHandler1);
-      this.dispatcher.off(&quot;mousedown&quot;, this.mouseDownHandler2);
-      this.dispatcher.off(&quot;mousemove&quot;, this.mouseMoveHandler1);
-      this.dispatcher.off(&quot;pagemousemove&quot;, this.mouseMoveHandler2);
-      this.dispatcher.off(&quot;pagemouseup&quot;, this.mouseUpHandler); //just keep one mousedown listener
-
-      this.dispatcher.on(&quot;mousedown&quot;, this.mouseDownHandler1, this);
+      this.dispatcher.off(&quot;mousedown&quot;, this.mouseDownHandler1, this);
+      this.dispatcher.off(&quot;mousedown&quot;, this.mouseDownHandler2, this);
+      this.dispatcher.off(&quot;mousemove&quot;, this.mouseMoveHandler1, this);
+      this.dispatcher.off(&quot;pagemousemove&quot;, this.mouseMoveHandler2, this);
+      this.dispatcher.off(&quot;pagemouseup&quot;, this.mouseUpHandler, this);
+      return this;
     }
   }, {
     key: &quot;mouseDownHandler1&quot;,
@@ -112,8 +117,13 @@ function () {
       this._cursor = el.cursor;
       this._elDraggable = el.draggable; //cache original draggable flag
 
-      this._hasControls = el.hasControls = true;
-      el.dirty();
+      this._hasControls = el.hasTransformControls = true;
+      el.dirty(); //remove mousedown listener first, then start listen to mousemove 
+      //and the second mousedown event
+
+      this.dispatcher.off(&quot;mousedown&quot;, this.mouseDownHandler1, this);
+      this.dispatcher.on(&quot;mousemove&quot;, this.mouseMoveHandler1, this);
+      this.dispatcher.on(&quot;mousedown&quot;, this.mouseDownHandler2, this);
     }
   }, {
     key: &quot;_restoreSelection&quot;,
@@ -121,14 +131,8 @@ function () {
       if (this.selectedEl) {
         //restore original draggable flag
         this.selectedEl.draggable = this._elDraggable;
-        this.selectedEl.hasControls = false;
+        this.selectedEl.hasTransformControls = false;
         this.selectedEl.dirty();
-      } else {
-        //remove mousedown listener first, then start listen to mousemove 
-        //and the second mousedown event
-        this.dispatcher.off(&quot;mousedown&quot;, this.mouseDownHandler1);
-        this.dispatcher.on(&quot;mousemove&quot;, this.mouseMoveHandler1, this);
-        this.dispatcher.on(&quot;mousedown&quot;, this.mouseDownHandler2, this);
       }
     }
   }, {
@@ -136,10 +140,14 @@ function () {
     value: function mouseMoveHandler1(e) {
       var _this = this;
 
+      if (!this.selectedEl) {
+        return;
+      }
+
       var qrX = e.event.qrX;
       var qrY = e.event.qrY;
       this.lastHoveredControl = null;
-      this.selectedEl.controls.forEach(function (control, index) {
+      this.selectedEl.transformControls.forEach(function (control, index) {
         if (control.isHover(qrX, qrY)) {
           _this.lastHoveredControl = control;
 
@@ -157,7 +165,7 @@ function () {
         this.selectedEl.draggable = false;
         this._x = e.offsetX;
         this._y = e.offsetY;
-        this.dispatcher.off(&quot;mousemove&quot;, this.mouseMoveHandler1); //lockdown current clicked control, do not look for hovered control
+        this.dispatcher.off(&quot;mousemove&quot;, this.mouseMoveHandler1, this); //lockdown current clicked control, do not look for hovered control
 
         this.dispatcher.on(&quot;pagemousemove&quot;, this.mouseMoveHandler2, this);
         this.dispatcher.on(&quot;pagemouseup&quot;, this.mouseUpHandler, this);
@@ -226,7 +234,6 @@ function () {
         radian = radian + Math.PI / 2;
       }
 
-      console.log(&quot;sinp=&quot;.concat(sinp, &quot;,cosp=&quot;).concat(cosp, &quot;,radian=&quot;).concat(radian));
       var position = bps[0];
       position = matrixUtil.rotateVector(position, -radian);
       position = matrixUtil.addVector(position, this._center);
@@ -288,9 +295,9 @@ function () {
     key: &quot;mouseUpHandler&quot;,
     value: function mouseUpHandler(e) {
       this.selectedEl.draggable = this._elDraggable;
-      this.dispatcher.off(&quot;mousedown&quot;, this.mouseDownHandler1);
-      this.dispatcher.off(&quot;pagemousemove&quot;, this.mouseMoveHandler2);
-      this.dispatcher.off(&quot;pagemouseup&quot;, this.mouseUpHandler);
+      this.dispatcher.off(&quot;mousedown&quot;, this.mouseDownHandler1, this);
+      this.dispatcher.off(&quot;pagemousemove&quot;, this.mouseMoveHandler2, this);
+      this.dispatcher.off(&quot;pagemouseup&quot;, this.mouseUpHandler, this);
       this.dispatcher.on(&quot;mousemove&quot;, this.mouseMoveHandler1, this);
       this.dispatcher.on(&quot;mousedown&quot;, this.mouseDownHandler2, this);
     }
@@ -313,10 +320,10 @@ function () {
 
       this._scale = this.selectedEl.scale; //current scale in global space
 
-      this._width = this.selectedEl.shape.width; //original width without transforming
-
-      this._height = this.selectedEl.shape.height; //original height without transforming
-
+      this._width = this.selectedEl.shape.width //original width without transforming
+      || this.selectedEl.style.width;
+      this._height = this.selectedEl.shape.height //original height without transforming
+      || this.selectedEl.style.height;
       this._rotation = this.selectedEl.rotation; //current rotation in global space
 
       this._center = [this._width / 2, this._height / 2]; //original centerpoint in local space

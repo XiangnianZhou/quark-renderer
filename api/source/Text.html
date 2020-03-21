@@ -17,13 +17,13 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">var Element = require(&quot;./Element&quot;);
 
-var dataUtil = require(&quot;../core/utils/data_structure_util&quot;);
+var dataUtil = require(&quot;../utils/data_structure_util&quot;);
 
-var textContain = require(&quot;../core/contain/text&quot;);
+var textContain = require(&quot;../utils/contain/text&quot;);
 
-var textUtil = require(&quot;./utils/text_util&quot;);
+var textUtil = require(&quot;../utils/text_util&quot;);
 
-var _constants = require(&quot;./constants&quot;);
+var _constants = require(&quot;../utils/constants&quot;);
 
 var ContextCachedBy = _constants.ContextCachedBy;
 
@@ -105,6 +105,19 @@ function (_Element) {
       this.restoreTransform(ctx);
       Element.prototype.render.call(this, ctx, prevEl);
     }
+<span id='qrenderer-graphic-Text-method-getBoundingRect'>    /**
+</span>     * @method getBoundingRect
+     * Get bounding rect of this element, NOTE: 
+     * this method will return the bounding rect without transforming(translate/scale/rotate/skew). 
+     * However, direct modifications to the shape property will be reflected in the bouding-rect.
+     * For example,  if we modify this.shape.width directly, then the new width property will be calculated.
+     * 
+     * 
+     * 获取当前元素的边界矩形，注意：
+     * 此方法返回的是没有经过 transform(translate/scale/rotate/skew) 处理的边界矩形，但是对 shape 属性直接进行的修改会反映在获取的边界矩形上。
+     * 例如，用代码直接对 this.shape.width 进行赋值，那么在计算边界矩形时就会用新的 width 属性进行计算。
+     */
+
   }, {
     key: &quot;getBoundingRect&quot;,
     value: function getBoundingRect() {
@@ -112,7 +125,7 @@ function (_Element) {
 
       this.__dirty &amp;&amp; textUtil.normalizeTextStyle(style, true);
 
-      if (!this._boundingRect) {
+      if (!this.__boundingRect) {
         var text = style.text;
         text != null ? text += &#39;&#39; : text = &#39;&#39;;
         var rect = textContain.getBoundingRect(style.text + &#39;&#39;, style.font, style.textAlign, style.textVerticalAlign, style.textPadding, style.textLineHeight, style.rich);
@@ -127,10 +140,10 @@ function (_Element) {
           rect.height += w;
         }
 
-        this._boundingRect = rect;
+        this.__boundingRect = rect;
       }
 
-      return this._boundingRect;
+      return this.__boundingRect;
     }
   }]);
 

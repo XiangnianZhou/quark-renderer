@@ -27,36 +27,36 @@ var Rect = require(&quot;../graphic/shape/Rect&quot;);
 
 var Ellipse = require(&quot;../graphic/shape/Ellipse&quot;);
 
-var Line = require(&quot;../graphic/shape/Line&quot;);
+var Line = require(&quot;../graphic/line/Line&quot;);
+
+var Polyline = require(&quot;../graphic/line/Polyline&quot;);
 
 var Path = require(&quot;../graphic/Path&quot;);
 
 var Polygon = require(&quot;../graphic/shape/Polygon&quot;);
 
-var Polyline = require(&quot;../graphic/shape/Polyline&quot;);
-
 var LinearGradient = require(&quot;../graphic/gradient/LinearGradient&quot;);
 
 var Style = require(&quot;../graphic/Style&quot;);
 
-var matrixUtil = require(&quot;../core/utils/affine_matrix_util&quot;);
+var matrixUtil = require(&quot;../utils/affine_matrix_util&quot;);
 
-var _path_util = require(&quot;../core/utils/path_util&quot;);
+var _path_util = require(&quot;../utils/path_util&quot;);
 
 var createFromString = _path_util.createFromString;
 
-var _data_structure_util = require(&quot;../core/utils/data_structure_util&quot;);
+var _data_structure_util = require(&quot;../utils/data_structure_util&quot;);
 
 var isString = _data_structure_util.isString;
 var extend = _data_structure_util.extend;
 var trim = _data_structure_util.trim;
 var each = _data_structure_util.each;
 
-var _class_util = require(&quot;../core/utils/class_util&quot;);
+var _class_util = require(&quot;../utils/class_util&quot;);
 
 var defaults = _class_util.defaults;
 
-var _constants = require(&quot;../graphic/constants&quot;);
+var _constants = require(&quot;../utils/constants&quot;);
 
 var mathMin = _constants.mathMin;
 // Most of the values can be separated by comma and/or white space.

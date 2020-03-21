@@ -17,11 +17,11 @@
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js">var Element = require(&quot;./Element&quot;);
 
-var BoundingRect = require(&quot;./transform/BoundingRect&quot;);
+var BoundingRect = require(&quot;./BoundingRect&quot;);
 
-var dataUtil = require(&quot;../core/utils/data_structure_util&quot;);
+var dataUtil = require(&quot;../utils/data_structure_util&quot;);
 
-var imageHelper = require(&quot;./utils/image&quot;);
+var imageHelper = require(&quot;../utils/image_util&quot;);
 
 function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
@@ -124,8 +124,9 @@ function (_Element) {
         // Only restore transform when needs draw text.
         this.restoreTransform(ctx);
         this.drawRectText(ctx, this.getBoundingRect());
-      } // Element.prototype.render.call(this,ctx,prevEl);//FIXME:add transform control to QImage
+      }
 
+      Element.prototype.render.call(this, ctx, prevEl);
     }
 <span id='qrenderer-graphic-QImage-method-getBoundingRect'>    /**
 </span>     * @method getBoundingRect
@@ -136,11 +137,11 @@ function (_Element) {
     value: function getBoundingRect() {
       var style = this.style;
 
-      if (!this._boundingRect) {
-        this._boundingRect = new BoundingRect(style.x || 0, style.y || 0, style.width || 0, style.height || 0);
+      if (!this.__boundingRect) {
+        this.__boundingRect = new BoundingRect(style.x || 0, style.y || 0, style.width || 0, style.height || 0);
       }
 
-      return this._boundingRect;
+      return this.__boundingRect;
     }
   }]);
 

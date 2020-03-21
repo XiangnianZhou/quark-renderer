@@ -70,6 +70,11 @@ function (_Path) {
      */
 
     _this.type = &#39;compound&#39;;
+
+    _this.on(&quot;beforeRender&quot;, _this.beforeRenderHandler);
+
+    _this.on(&quot;afterRender&quot;, _this.afterRenderHandler);
+
     return _this;
   }
 <span id='qrenderer-graphic-CompoundPath-method-_updatePathDirty'>  /**
@@ -92,14 +97,14 @@ function (_Path) {
       this.__dirtyPath = dirtyPath;
       this.__dirty = this.__dirty || dirtyPath;
     }
-<span id='qrenderer-graphic-CompoundPath-method-beforeRender'>    /**
+<span id='qrenderer-graphic-CompoundPath-method-beforeRenderHandler'>    /**
 </span>     * @private
-     * @method beforeRender
+     * @method beforeRenderHandler
      */
 
   }, {
-    key: &quot;beforeRender&quot;,
-    value: function beforeRender() {
+    key: &quot;beforeRenderHandler&quot;,
+    value: function beforeRenderHandler() {
       this._updatePathDirty();
 
       var paths = this.shape.paths || [];
@@ -111,6 +116,20 @@ function (_Path) {
         }
 
         paths[i].path.setScale(scale[0], scale[1], paths[i].segmentIgnoreThreshold);
+      }
+    }
+<span id='qrenderer-graphic-CompoundPath-method-afterRenderHandler'>    /**
+</span>     * @private
+     * @method afterRenderHandler
+     */
+
+  }, {
+    key: &quot;afterRenderHandler&quot;,
+    value: function afterRenderHandler() {
+      var paths = this.shape.paths || [];
+
+      for (var i = 0; i &lt; paths.length; i++) {
+        paths[i].__dirtyPath = false;
       }
     }
 <span id='qrenderer-graphic-CompoundPath-method-buildPath'>    /**
@@ -127,20 +146,6 @@ function (_Path) {
 
       for (var i = 0; i &lt; paths.length; i++) {
         paths[i].buildPath(ctx, paths[i].shape, true);
-      }
-    }
-<span id='qrenderer-graphic-CompoundPath-method-afterRender'>    /**
-</span>     * @private
-     * @method afterRender
-     */
-
-  }, {
-    key: &quot;afterRender&quot;,
-    value: function afterRender() {
-      var paths = this.shape.paths || [];
-
-      for (var i = 0; i &lt; paths.length; i++) {
-        paths[i].__dirtyPath = false;
       }
     }
 <span id='qrenderer-graphic-CompoundPath-method-getBoundingRect'>    /**

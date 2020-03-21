@@ -15,15 +15,15 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">var classUtil = require(&quot;../core/utils/class_util&quot;);
+  <pre class="prettyprint lang-js">var classUtil = require(&quot;../utils/class_util&quot;);
+
+var dataUtil = require(&quot;../utils/data_structure_util&quot;);
 
 var Element = require(&quot;./Element&quot;);
 
-var BoundingRect = require(&quot;./transform/BoundingRect&quot;);
+var Rect = require(&quot;./shape/Rect&quot;);
 
-var _data_structure_util = require(&quot;../core/utils/data_structure_util&quot;);
-
-var extend = _data_structure_util.extend;
+var BoundingRect = require(&quot;./BoundingRect&quot;);
 
 function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
@@ -51,25 +51,11 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  * 
  * - Group 可以插入子节点，其它类型不能。
  * - Group 上的变换也会被应用到子节点上。
- * 
- *      @example small frame
- *      let Group = require(&#39;qrenderer/Group&#39;);
- *      let Circle = require(&#39;qrenderer/graphic/shape/Circle&#39;);
- *      let g = new Group();
- *      g.add(new Circle({
- *          position:[100,100],
- *          style: {
- *              x: 100,
- *              y: 100,
- *              r: 20,
- *          }
- *      }));
- *      qr.add(g);
  */
 var Group =
 /*#__PURE__*/
-function (_Element) {
-  _inherits(Group, _Element);
+function (_Rect) {
+  _inherits(Group, _Rect);
 
 <span id='qrenderer-graphic-Group-method-constructor'>  /**
 </span>   * @method constructor Group
@@ -81,12 +67,30 @@ function (_Element) {
 
     _classCallCheck(this, Group);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Group).call(this, options));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Group).call(this, dataUtil.merge({
+      style: {
+        fill: &#39;#ccc&#39;
+      }
+    }, options, true)));
 <span id='qrenderer-graphic-Group-property-type'>    /**
-</span>     * @property {String}
+</span>     * @property {String} type
      */
 
     _this.type = &#39;group&#39;;
+<span id='qrenderer-graphic-Group-property-resizeStrategy'>    /**
+</span>     * @property {String} resizeStrategy
+     * - free: The group will not resitrict child nodes&#39; positions, all child nodes are free to move.
+     * - resize: The group will auto resize according to the position of child nodes. 
+     * - restrict: The group will restrict the position of child nodes, no child nodes can move outside group area.
+     * 
+     * 
+     * - free: Group 不会限制子节点的位置，所有子节点都可以自由移动。
+     * - resize: Group 会自动调整自己的尺寸来适配子节点的位置。
+     * - restrict: Group 会限制子节点的位置，子节点只能在 group 内部移动，不能超出 group 的范围。
+     */
+
+    _this.resizeStrategy = &#39;resize&#39;; // free, resize, restrict
+
 <span id='qrenderer-graphic-Group-property-children'>    /**
 </span>     * @property children
      */
@@ -100,19 +104,29 @@ function (_Element) {
     _this.__storage = null;
     return _this;
   }
-<span id='qrenderer-graphic-Group-method-add'>  /**
-</span>   * @method add
-   * 添加子节点到最后
-   * @param {Element} child
+<span id='qrenderer-graphic-Group-method-buildPath'>  /**
+</span>   * @method buildPath
+   * 绘制元素路径
+   * @param {Object} ctx 
+   * @param {String} shape 
    */
 
 
   _createClass(Group, [{
+    key: &quot;buildPath&quot;,
+    value: function buildPath(ctx, shape) {
+      Rect.prototype.buildPath.call(this, ctx, shape);
+    }
+<span id='qrenderer-graphic-Group-method-add'>    /**
+</span>     * @method add
+     * 添加子节点到最后
+     * @param {Element} child
+     */
+
+  }, {
     key: &quot;add&quot;,
     value: function add(child) {
       if (child &amp;&amp; child !== this &amp;&amp; child.parent !== this) {
-        this.children.push(child);
-
         this._doAdd(child);
       }
 
@@ -151,8 +165,95 @@ function (_Element) {
     key: &quot;_doAdd&quot;,
     value: function _doAdd(child) {
       child.parent &amp;&amp; child.parent.remove(child);
+      child.parent = this;
+      this.children.push(child);
       this.__qr &amp;&amp; (child.__qr = this.__qr);
-      this.__storage &amp;&amp; this.__storage.addToStorage(child);
+      this.__storage &amp;&amp; this.__storage.addToStorage(child); //listen to moving and resizing evnets.
+
+      child.beforeMove = this.beforeChildMove;
+      child.on(&quot;moving&quot;, this.childEventHandler, this);
+      child.on(&quot;resizing&quot;, this.childEventHandler, this);
+    }
+  }, {
+    key: &quot;childEventHandler&quot;,
+    value: function childEventHandler(child) {
+      if (this.resizeStrategy === &#39;free&#39;) {
+        return;
+      } else if (this.resizeStrategy === &#39;resize&#39;) {
+        this.resizeGroup(child);
+      }
+    } //执行上下文是子元素对象
+
+  }, {
+    key: &quot;beforeChildMove&quot;,
+    value: function beforeChildMove(dx, dy, event) {
+      var group = this.parent;
+
+      if (group.resizeStrategy === &#39;free&#39;) {
+        return true;
+      }
+
+      var groupOriginalRect = group.originalBoundingRect;
+      var groupRect = group.getOuterBoundingRect();
+      var childRect = this.getOuterBoundingRect();
+
+      if (this.position[0] &lt; 0) {
+        this.position[0] = 0;
+        return false;
+      }
+
+      if (this.position[1] &lt; 0) {
+        this.position[1] = 0;
+        return false;
+      }
+
+      if (group.resizeStrategy === &#39;restrict&#39;) {
+        var tempWidth = childRect.x + childRect.width - groupRect.x;
+
+        if (tempWidth &gt; groupOriginalRect.width) {
+          this.position[0] = groupOriginalRect.width - childRect.width;
+          return false;
+        }
+
+        var tempHeight = childRect.y + childRect.height - groupRect.y;
+
+        if (tempHeight &gt; groupOriginalRect.height) {
+          this.position[1] = groupOriginalRect.height - childRect.height;
+          return false;
+        }
+      }
+
+      return true;
+    }
+  }, {
+    key: &quot;resizeGroup&quot;,
+    value: function resizeGroup(child) {
+      var groupOriginalRect = this.originalBoundingRect;
+      var groupRect = this.getOuterBoundingRect();
+      var childRect = child.getOuterBoundingRect();
+      var newWidth = groupOriginalRect.width;
+      var newHeight = groupOriginalRect.height;
+
+      if (child.position[0] &gt;= 0) {
+        var temp = childRect.x + childRect.width - groupRect.x;
+
+        if (temp &gt; groupOriginalRect.width) {
+          newWidth = temp;
+        }
+      }
+
+      if (child.position[1] &gt;= 0) {
+        var _temp = childRect.y + childRect.height - groupRect.y;
+
+        if (_temp &gt; groupOriginalRect.height) {
+          newHeight = _temp;
+        }
+      }
+
+      this.shape.width = newWidth;
+      this.shape.height = newHeight;
+      this.dirty();
+      this.trigger(&quot;resizing&quot;, this);
     }
 <span id='qrenderer-graphic-Group-method-remove'>    /**
 </span>     * @method remove
@@ -163,6 +264,9 @@ function (_Element) {
   }, {
     key: &quot;remove&quot;,
     value: function remove(child) {
+      child.beforeMove = null;
+      child.off(&quot;moving&quot;, this.childEventHandler, this);
+      child.off(&quot;resizing&quot;, this.childEventHandler, this);
       var idx = dataUtil.indexOf(this.children, child);
 
       if (idx &gt;= 0) {
@@ -258,53 +362,46 @@ function (_Element) {
       }); //然后在调用父层的处理函数删除自身
 
       Element.prototype.delFromStorageHandler.call(this, storage);
-    }
-<span id='qrenderer-graphic-Group-method-getBoundingRect'>    /**
-</span>     * @method getBoundingRect
-     * @return {BoundingRect}
-     */
+    } // /**
+    //  * @method getBoundingRect
+    //  * @return {BoundingRect}
+    //  */
+    // getBoundingRect(includeChildren) {
+    //     // TODO Caching
+    //     let rect = null;
+    //     let tmpRect = new BoundingRect(0, 0, 0, 0);
+    //     let children = includeChildren || this.children;
+    //     for (let i = 0; i &lt; children.length; i++) {
+    //         let child = children[i];
+    //         if (child.ignore || child.invisible) {
+    //             continue;
+    //         }
+    //         let childRect = child.getBoundingRect();
+    //         let transform = child.getLocalTransform();
+    //         // TODO:
+    //         // The boundingRect cacluated by transforming original
+    //         // rect may be bigger than the actual bundingRect when rotation
+    //         // is used. (Consider a circle rotated aginst its center, where
+    //         // the actual boundingRect should be the same as that not be
+    //         // rotated.) But we can not find better approach to calculate
+    //         // actual boundingRect yet, considering performance.
+    //         if (transform) {
+    //             tmpRect.copy(childRect);
+    //             tmpRect.applyTransform(transform);
+    //             rect = rect || tmpRect.clone();
+    //             rect.union(tmpRect);
+    //         }else {
+    //             rect = rect || childRect.clone();
+    //             rect.union(childRect);
+    //         }
+    //     }
+    //     return rect || tmpRect;
+    // }
 
-  }, {
-    key: &quot;getBoundingRect&quot;,
-    value: function getBoundingRect(includeChildren) {
-      // TODO Caching
-      var rect = null;
-      var tmpRect = new BoundingRect(0, 0, 0, 0);
-      var children = includeChildren || this.children;
-
-      for (var i = 0; i &lt; children.length; i++) {
-        var child = children[i];
-
-        if (child.ignore || child.invisible) {
-          continue;
-        }
-
-        var childRect = child.getBoundingRect();
-        var transform = child.getLocalTransform(); // TODO:
-        // The boundingRect cacluated by transforming original
-        // rect may be bigger than the actual bundingRect when rotation
-        // is used. (Consider a circle rotated aginst its center, where
-        // the actual boundingRect should be the same as that not be
-        // rotated.) But we can not find better approach to calculate
-        // actual boundingRect yet, considering performance.
-
-        if (transform) {
-          tmpRect.copy(childRect);
-          tmpRect.applyTransform(transform);
-          rect = rect || tmpRect.clone();
-          rect.union(tmpRect);
-        } else {
-          rect = rect || childRect.clone();
-          rect.union(childRect);
-        }
-      }
-
-      return rect || tmpRect;
-    }
   }]);
 
   return Group;
-}(Element);
+}(Rect);
 
 var _default = Group;
 module.exports = _default;</pre>

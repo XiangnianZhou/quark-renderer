@@ -15,9 +15,9 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">var Path = require(&quot;../Path&quot;);
+  <pre class="prettyprint lang-js">var dataUtil = require(&quot;../../utils/data_structure_util&quot;);
 
-var dataUtil = require(&quot;../../core/utils/data_structure_util&quot;);
+var Shape = require(&quot;./Shape&quot;);
 
 function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
@@ -42,19 +42,10 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  * 椭圆形状
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
-var defaultConfig = {
-  shape: {
-    cx: 0,
-    cy: 0,
-    rx: 0,
-    ry: 0
-  }
-};
-
 var Droplet =
 /*#__PURE__*/
-function (_Path) {
-  _inherits(Droplet, _Path);
+function (_Shape) {
+  _inherits(Droplet, _Shape);
 
 <span id='qrenderer-graphic-shape-Ellipse-method-constructor'>  /**
 </span>   * @method constructor Droplet
@@ -65,7 +56,14 @@ function (_Path) {
 
     _classCallCheck(this, Droplet);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Droplet).call(this, dataUtil.merge(defaultConfig, options, true)));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Droplet).call(this, dataUtil.merge({
+      shape: {
+        cx: 0,
+        cy: 0,
+        rx: 0,
+        ry: 0
+      }
+    }, options, true)));
 <span id='qrenderer-graphic-shape-Ellipse-property-type'>    /**
 </span>     * @property {String} type
      */
@@ -104,7 +102,7 @@ function (_Path) {
   }]);
 
   return Droplet;
-}(Path);
+}(Shape);
 
 module.exports = Droplet;</pre>
 </body>
