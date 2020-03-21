@@ -101,8 +101,7 @@ class LinkControl {
         if(this.dragging){
             return;
         }
-        let p1=this.slot.getPosition();
-        this.setPosition(p1[0]+this.slot.radius,p1[1]);
+        this.setPosition(...this.slot.getPosition());
     }
 }
 
