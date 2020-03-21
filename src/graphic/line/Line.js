@@ -37,7 +37,7 @@ class Line extends Path{
          */
         this.type='line';
 
-        classUtil.inheritProperties(this,CableLike,this.options);           // If we don't need linkable feature, just remove this line.
+        classUtil.inheritProperties(this,CableLike,this.options);
         classUtil.copyOwnProperties(this,this.options,['style','shape']);
 
         this.transformable = false;
