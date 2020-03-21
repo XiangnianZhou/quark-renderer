@@ -253,20 +253,17 @@ Transformable.prototype={
      * 此方法的主要作用是复合父层的变换矩阵，当元素出现嵌套时，需要此方法来复合父层上的变换。
      */
     composeParentTransform:function () {
-        let parent = this.parent;
-        let parentHasTransform = parent && parent.transform;
         let needLocalTransform = this.needLocalTransform();
+        let m = matrixUtil.identity(this.transform);
 
-        let m = this.transform;
-
-        // aplly transform of self
+        // transformation of self
         if (needLocalTransform) {
             m=this.getLocalTransform();
-        }else {
-            matrixUtil.identity(m);
         }
 
-        // apply transform of parent element
+        // transformation of parent element
+        let parent = this.parent;
+        let parentHasTransform = parent && parent.transform;
         if (parentHasTransform) {
             if (needLocalTransform) {
                 m=matrixUtil.mul(parent.transform, m);
@@ -275,7 +272,7 @@ Transformable.prototype={
             }
         }
 
-        // apply global scale
+        // global scale
         if (this.globalScaleRatio != null && this.globalScaleRatio !== 1) {
             this.getGlobalScale(scaleTmp);
             let relX = scaleTmp[0] < 0 ? -1 : 1;
