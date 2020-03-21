@@ -61,7 +61,7 @@ class LinkSlot {
     }
 
     calcParameters(){
-        let transform=this.el.transform;
+        let transform=this.el.composeParentTransform();
         let rotation=this.el.rotation;
         let scale=this.el.scale;
         let boundingRect = this.el.getBoundingRect();
@@ -87,8 +87,8 @@ class LinkSlot {
 
         //step-3: cache rotation and translate of this.el
         this.rotation=rotation;
-        this.translate=[this.el.position[0]+x,this.el.position[1]+y];
-
+        this.translate=[transform[4],transform[5]];
+        
         //step-4: return result
         this.center=this.pointCache.get(this.name).position;
         return this.center;
