@@ -245,16 +245,14 @@ Transformable.prototype={
     },
 
     /**
-     * @method composeLocalTransform
-     * Compose all the parameters, including skew, scale, roration, position, 
-     * transform matrix of parent node, global scale,
-     * and generate a new transform matrix of local element.
+     * @method composeParentTransform
+     * This method is designed to compose the transform matrix from parent. 
+     * We needt this method to compose the transfromation from parent when the elements are nested.
      * 
      * 
-     * 把各项参数，包括：scale、position、skew、rotation、父层的变换矩阵、全局缩放，全部
-     * 结合在一起，计算出一个新的本地变换矩阵。
+     * 此方法的主要作用是复合父层的变换矩阵，当元素出现嵌套时，需要此方法来复合父层上的变换。
      */
-    composeLocalTransform:function () {
+    composeParentTransform:function () {
         let parent = this.parent;
         let parentHasTransform = parent && parent.transform;
         let needLocalTransform = this.needLocalTransform();
@@ -358,7 +356,8 @@ Transformable.prototype={
 
     /**
      * @method getOuterBoundingRect
-     * 
+     * Get the bounding rect in global space, this rect will not apply transformation itself, but it will 
+     * wrap the transformed element.
      * 
      * 
      * 全局坐标系中的边界矩形，此矩形本身不进行几何变换，但是会包裹变形之后的元素。

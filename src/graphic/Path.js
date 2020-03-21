@@ -234,7 +234,7 @@ class Path extends Element{
             let rectWithStroke = this._boundingRectWithStroke || (this._boundingRectWithStroke = rect.clone());
             if (this.__dirty || needsUpdateRect) {
                 rectWithStroke.copy(rect);
-                // FIXME Must after composeLocalTransform
+                // FIXME Must after composeParentTransform
                 let w = this.style.lineWidth;
                 // PENDING, Min line width is needed when line is horizontal or vertical
                 let lineScale = this.style.strokeNoScale ? this.getLineScale() : 1;

@@ -35,6 +35,24 @@
             }
         });
 
+        let rect = new QuarkRenderer.Rect({
+            linkable:true,
+            draggable:true,
+            position:[10,10],
+            shape: {
+                r: 0,
+                width: 50,
+                height: 50
+            },
+            style: {
+                fill: '#00ff00',
+                lineWidth: 5,
+                text:'矩形',
+                textPosition:'inside'
+            }
+        });
+        group1.add(rect);
+
         qr.add(group1);
         qr.add(group2);
 

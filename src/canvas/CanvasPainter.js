@@ -1065,7 +1065,7 @@ export default class CanvasPainter{
         path.rotation = 0;
         path.scale = [1,1];
         path.skew = [0,0];
-        path.composeLocalTransform();
+        path.composeParentTransform();
         if (path) {
             path.render(ctx);
         }

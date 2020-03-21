@@ -102,7 +102,7 @@ Storage.prototype = {
         }
 
         if (el.__dirty) {
-            el.composeLocalTransform();
+            el.composeParentTransform();
         }
 
         let userSetClipPath = el.clipPath;
@@ -119,7 +119,7 @@ Storage.prototype = {
             while (currentClipPath) {
                 // clipPath 的变换是基于使用这个 clipPath 的元素
                 currentClipPath.parent = parentClipPath;
-                currentClipPath.composeLocalTransform();
+                currentClipPath.composeParentTransform();
                 clipPaths.push(currentClipPath);
                 parentClipPath = currentClipPath;
                 currentClipPath = currentClipPath.clipPath;
