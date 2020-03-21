@@ -4,7 +4,7 @@ import * as curveUtil from '../../utils/curve_util';
 import * as dataUtil from '../../utils/data_structure_util';
 
 /**
- * @class qrenderer.graphic.shape.BezierCurve
+ * @class qrenderer.graphic.line.BezierCurve
  * BezierCurve.
  * 
  *  

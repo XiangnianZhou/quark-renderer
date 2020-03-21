@@ -3,7 +3,7 @@ import * as dataUtil from '../../utils/data_structure_util';
 import {mathSin,mathCos} from '../../utils/constants';
 
 /**
- * @class qrenderer.graphic.shape.Trochold
+ * @class qrenderer.graphic.line.Trochold
  * Trochold.
  * 
  *  

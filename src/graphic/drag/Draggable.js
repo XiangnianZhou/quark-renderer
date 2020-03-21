@@ -2,7 +2,7 @@ import * as vectorUtil from '../../utils/vector_util';
 
 /**
  * @abstract
- * @class qrenderer.drag.Draggable
+ * @class qrenderer.graphic.drag.Draggable
  * 
  * 
  * 

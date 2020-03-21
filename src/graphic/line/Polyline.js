@@ -3,7 +3,7 @@ import * as polyHelper from '../../utils/poly_util';
 import * as dataUtil from '../../utils/data_structure_util';
 
 /**
- * @class qrenderer.graphic.shape.Polyline 
+ * @class qrenderer.graphic.line.Polyline 
  * Polyline.
  * 
  * 

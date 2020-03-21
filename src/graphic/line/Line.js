@@ -5,7 +5,7 @@ import CableLike from '../link/CableLike';
 import Path from '../Path';
 
 /**
- * @class qrenderer.graphic.shape.Line 
+ * @class qrenderer.graphic.line.Line 
  * Line.
  * 
  * 

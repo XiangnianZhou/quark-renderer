@@ -1,5 +1,5 @@
 /**
- * @class qrenderer.drag.DragDropMgr
+ * @class qrenderer.graphic.drag.DragDropMgr
  * Global drag-drop manager, hold Ctrl for multi-selection.
  * 
  * 
