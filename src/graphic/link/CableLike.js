@@ -44,7 +44,7 @@ function CableLike(){
         }
         this.startControl.trigger("afterRender",this.startControl);
         this.endControl.trigger("afterRender",this.endControl);
-    });
+    },this);
 }
 
 CableLike.prototype={

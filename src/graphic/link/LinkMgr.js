@@ -125,6 +125,7 @@ export default class LinkMgr{
         this.lastHoveredControl.dragging=true;
 
         linkables.forEach((el,key,index)=>{
+            this.lastHoveredControl.deleteSlot();
             el.trigger("linkControlDragging",el,this.lastHoveredControl);
         });
     }

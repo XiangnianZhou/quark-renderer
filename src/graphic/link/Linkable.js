@@ -17,7 +17,19 @@ function Linkable(){
     this.showLinkSlots = false;
     this.linkSlots=new Map();
 
-    this.on("afterRender",()=>{
+    this.on("afterRender",this.afterRenderHandler,this);
+    this.on('linkControlShowed', this.showSlots, this); //FIXME:remove these event listeners when destroy
+    this.on('linkControlHid', this.hideSlots, this);
+    this.on('linkControlDragging', this.linkControlDragging, this);
+    this.on('linkControlMouseUp', this.linkControlMouseUp, this);
+
+    LinkMgr.registerLinkable(this);
+}
+
+Linkable.prototype={
+    constructor:Linkable,
+
+    afterRenderHandler:function(){
         if(!this.isLinkable){
             return;
         }
@@ -28,17 +40,7 @@ function Linkable(){
             slot.calcParameters();
             slot.trigger("afterRender",slot);
         });
-    });
-    this.on('linkControlShowed',this.showSlots);//FIXME:remove these event listeners when destroy
-    this.on('linkControlHid',this.hideSlots);
-    this.on('linkControlDragging',this.linkControlDragging);
-    this.on('linkControlMouseUp',this.linkControlMouseUp);
-
-    LinkMgr.registerLinkable(this);
-}
-
-Linkable.prototype={
-    constructor:Linkable,
+    },
 
     renderLinkSlots:function(ctx, prevEl){
         ['T','R','B','L'].forEach((name,index)=>{
@@ -68,18 +70,13 @@ Linkable.prototype={
         let param=this.getOverlap(control);
         if(param.isOverlap){
             //TODO:add some highlight feature here...
-            // console.log("overlap...");
         }
     },
 
     linkControlMouseUp:function(scope,control){
         let param=this.getOverlap(control);
         if(param.isOverlap){
-            param.slot.plugLinkControl(param.control);
-        }else{
-            this.linkSlots.forEach((slot,key,map)=>{
-                slot.unPlugLinkControl(control);
-            });
+            control.setSlot(param.slot);
         }
     },
 

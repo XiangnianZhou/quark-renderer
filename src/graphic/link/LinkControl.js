@@ -87,7 +87,9 @@ class LinkControl {
     }
 
     setSlot(slot){
-        this.deleteSlot();
+        if(this.slot===slot){
+            return;
+        }
         this.slot=slot;
         slot.on("afterRender",this.slotAfterRenderHandler,this);
     }

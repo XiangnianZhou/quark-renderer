@@ -193,10 +193,6 @@ export default class CanvasLayer{
         let width=0;
         let height=0;
 
-        // console.log(this.motionBlur);
-        // console.log(!clearAll);
-        // console.log(haveMotionBLur);
-
         if (haveMotionBLur&&this.canvasInstance) {
             width = this.canvasInstance.width;
             height = this.canvasInstance.height;

@@ -34,7 +34,6 @@ class LinkSlot {
         this.fillStyle = '#00ff00';
         this.strokeStyle = '#000000';
 
-        this.linkControls=new Map();                  //The cables plugged in this slot, the relationship between slot and cable is one to many.
 
         classUtil.inheritProperties(this,Eventful,this.options);
         classUtil.copyOwnProperties(this,options);
@@ -111,24 +110,6 @@ class LinkSlot {
 
     getPosition(){
         return matrixUtil.addVector(this.center,this.translate);
-    }
-
-    /**
-     * Plug a linkControl to this slot.
-     * @param {*} linkControl 
-     */
-    plugLinkControl(linkControl){
-        linkControl.setSlot(this);
-        this.linkControls.set(linkControl.id,linkControl);
-    }
-    
-    /**
-     * Unplug a linkControl from this slot.
-     * @param {*} linkControl
-     */
-    unPlugLinkControl(linkControl){
-        this.linkControls.delete(linkControl.id);
-        linkControl.deleteSlot(this);
     }
 }
 

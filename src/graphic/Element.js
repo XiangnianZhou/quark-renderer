@@ -265,11 +265,11 @@ class Element{
         classUtil.inheritProperties(this,Transformable,this.options);
         classUtil.copyOwnProperties(this,this.options,['style','shape']);
 
-        this.on("addToStorage",this.addToStorageHandler);
-        this.on("delFromStorage",this.delFromStorageHandler);
+        this.on("addToStorage",this.addToStorageHandler,this);
+        this.on("delFromStorage",this.delFromStorageHandler,this);
         this.one("afterRender",()=>{
             this.originalBoundingRect=this.getBoundingRect();
-        });
+        },this);
     }
 
     /**
