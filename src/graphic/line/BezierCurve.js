@@ -136,8 +136,16 @@ export default class BezierCurve extends Line{
         return someVectorAt(this.shape, t, false);
     }
 
+    firstPoint(){
+        return this.pointAt(0);
+    }
+
     firstTwoPoints(){
         return [[...this.pointAt(0)],[...this.pointAt(0.2)]];
+    }
+
+    lastPoint(){
+        return this.pointAt(1);
     }
 
     lastTwoPoints(){
