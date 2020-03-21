@@ -12,7 +12,7 @@
         let qr = QuarkRenderer.init(document.getElementById('main'));
         let circle=new QuarkRenderer.Rect({
             showTransformControls:true,
-            isLinkable:true,
+            linkable:true,
             draggable:true,
             position:[100,200],
             shape:{
@@ -27,7 +27,7 @@
 
         let image = new QuarkRenderer.Image({
             showTransformControls:true,
-            isLinkable:true,
+            linkable:true,
             position: [450,200],
             scale: [1, 1],
             style: {

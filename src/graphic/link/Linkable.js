@@ -13,7 +13,7 @@ import * as vectorUtil from '../../utils/vector_util';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 function Linkable(){
-    this.isLinkable=false;
+    this.linkable=false;
     this.showLinkSlots = false;
     this.linkSlots=new Map();
 
@@ -30,7 +30,7 @@ Linkable.prototype={
     constructor:Linkable,
 
     afterRenderHandler:function(){
-        if(!this.isLinkable){
+        if(!this.linkable){
             return;
         }
         if(this.showLinkSlots){
