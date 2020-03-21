@@ -130,10 +130,6 @@ class LinkSlot {
         this.linkControls.delete(linkControl.id);
         linkControl.deleteSlot(this);
     }
-
-    linkControlAfterRenderHandler(){
-
-    }
 }
 
 classUtil.mixin(LinkSlot,Eventful);
