@@ -13,11 +13,14 @@ import * as vectorUtil from '../../utils/vector_util';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 function Linkable(){
-    this.isLinkable=true;
+    this.isLinkable=false;
     this.showLinkSlots = false;
     this.linkSlots=new Map();
 
     this.on("afterRender",()=>{
+        if(!this.isLinkable){
+            return;
+        }
         if(this.showLinkSlots){
             this.renderLinkSlots(this.ctx, this.prevEl);
         }

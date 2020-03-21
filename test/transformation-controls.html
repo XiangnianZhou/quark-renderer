@@ -12,6 +12,7 @@
         let qr = QuarkRenderer.init(document.getElementById('main'));
         let circle=new QuarkRenderer.Rect({
             showTransformControls:true,
+            isLinkable:true,
             draggable:true,
             position:[100,200],
             shape:{
@@ -26,6 +27,7 @@
 
         let image = new QuarkRenderer.Image({
             showTransformControls:true,
+            isLinkable:true,
             position: [450,200],
             scale: [1, 1],
             style: {
@@ -39,7 +41,7 @@
 
         let curve = new QuarkRenderer.BezierCurve({
             draggable: true,
-            showTransformControls:true,
+            isCable:true,
             position: [0, 0],
             scale: [1, 1],
             shape: {
@@ -67,6 +69,7 @@
         let polyline = new QuarkRenderer.Polyline({
             position: [100, 0],
             draggable: true,
+            isCable:true,
             showTransformControls:true,
             style: {
                 lineDash: [10, 10],
@@ -90,6 +93,7 @@
         let line=new QuarkRenderer.Line({
             position: [150, 700],
             draggable: true,
+            isCable:true,
             showTransformControls:true,
             style: {
                 stroke: 'rgba(220, 20, 60, 0.8)',

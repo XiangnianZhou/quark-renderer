@@ -84,14 +84,14 @@ function pageEventHandler(pageEventName, event) {
  * @param {Number} y 
  */
 function isHover(element, x, y) {
-    if (element[element.rectHover ? 'rectContain' : 'contain'](x, y)) {
+    if (element[element.rectHover ? 'rectContainPoint' : 'containPoint'](x, y)) {
         let el = element;
         let isSilent = false;
         while (el) {
             // If clipped by ancestor.
             // FIXME: If clipPath has neither stroke nor fill,
-            // el.clipPath.contain(x, y) will always return false.
-            if (el.clipPath && !el.clipPath.contain(x, y)) {
+            // el.clipPath.containPoint(x, y) will always return false.
+            if (el.clipPath && !el.clipPath.containPoint(x, y)) {
                 return false;
             }
             if (el.silent) {

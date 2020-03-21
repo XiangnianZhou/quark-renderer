@@ -35,7 +35,7 @@ Draggable.prototype={
      * 钩子函数，在元素发生移动之前执行。
      * 如果 beforeMove 返回 false ，元素不会发生移动，API 调用者可以利用此钩子实现复杂的控制。
      */
-    beforeMove(dx,dy,event){
+    beforeMove(dx,dy,event,el){
         return true;
     },
 
@@ -51,9 +51,6 @@ Draggable.prototype={
      * @param  {Event} event event object.
      */
     move(dx, dy, event) {
-        if(this.beforeMove&&!this.beforeMove(dx,dy,event)){
-            return;
-        }
         this.trigger("beforeMove",this);
         switch (this.draggable) {
             case 'horizontal':
@@ -63,9 +60,9 @@ Draggable.prototype={
                 dx = 0;
                 break;
         }
+        this.trigger("moving",this);//TODO:trigger moving event when animating the position property.
         vectorUtil.add(this.position,this.position,[dx,dy]);
         this.dirty();
-        this.trigger("moving",this);//TODO:trigger moving event when animating the position property.
         this.trigger("afterMove",this);
         this.afterMove();
     },
@@ -74,7 +71,7 @@ Draggable.prototype={
      * @method afterMove
      * 钩子函数，在元素发生移动之后执行。
      */
-    afterMove(){
+    afterMove(dx, dy, event, el){
 
     }
 }

@@ -197,15 +197,18 @@ class Path extends Element{
     createPathProxy() {
         this.path = new PathProxy();
     }
-    
+
     /**
      * @method getBoundingRect
-     * Get bounding rect of this element.
-     * NOTE: this method will return the bounding rect without transforming.
+     * Get bounding rect of this element, NOTE: 
+     * this method will return the bounding rect without transforming(translate/scale/rotate/skew). 
+     * However, direct modifications to the shape property will be reflected in the bouding-rect.
+     * For example,  if we modify this.shape.width directly, then the new width property will be calculated.
      * 
      * 
-     * 获取当前元素的边界矩形。
-     * 注意：此方法返回的是没有经过 transform 处理的边界矩形。
+     * 获取当前元素的边界矩形，注意：
+     * 此方法返回的是没有经过 transform(translate/scale/rotate/skew) 处理的边界矩形，但是对 shape 属性直接进行的修改会反映在获取的边界矩形上。
+     * 例如，用代码直接对 this.shape.width 进行赋值，那么在计算边界矩形时就会用新的 width 属性进行计算。
      */
     getBoundingRect() {
         let rect = this.__boundingRect;
@@ -258,18 +261,18 @@ class Path extends Element{
     }
 
     /**
-     * @method contain
+     * @method containPoint
      * @param {*} x 
      * @param {*} y 
      */
-    contain(x, y) {
+    containPoint(x, y) {
         let localPos = this.globalToLocal(x, y);
         let rect = this.getBoundingRect();
         let style = this.style;
         x = localPos[0];
         y = localPos[1];
 
-        if (rect.contain(x, y)) {
+        if (rect.containPoint(x, y)) {
             let pathData = this.path.data;
             if (style.hasStroke()) {
                 let lineWidth = style.lineWidth;
@@ -288,7 +291,7 @@ class Path extends Element{
                 }
             }
             if (style.hasFill()) {
-                return pathContain.contain(pathData, x, y);
+                return pathContain.containPoint(pathData, x, y);
             }
         }
         return false;

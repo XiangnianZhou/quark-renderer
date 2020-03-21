@@ -158,11 +158,11 @@ class BoundingRect{
     }
 
     /**
-     * @method contain
+     * @method containPoint
      * @param {*} x 
      * @param {*} y 
      */
-    contain(x, y) {
+    containPoint(x, y) {
         let rect = this;
         return x >= rect.x
             && x <= (rect.x + rect.width)

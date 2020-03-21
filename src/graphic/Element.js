@@ -202,6 +202,8 @@ class Element{
         //cache previous element
         this.prevEl=null;
 
+        this.originalBoundingRect=null;
+
         /**
          * @private
          * @property {QuarkRenderer} __qr
@@ -265,6 +267,9 @@ class Element{
 
         this.on("addToStorage",this.addToStorageHandler);
         this.on("delFromStorage",this.delFromStorageHandler);
+        this.one("afterRender",()=>{
+            this.originalBoundingRect=this.getBoundingRect();
+        });
     }
 
     /**
@@ -444,12 +449,15 @@ class Element{
 
     /**
      * @method getBoundingRect
-     * Get bounding rect of this element.
-     * NOTE: this method will return the bounding rect without transforming.
+     * Get bounding rect of this element, NOTE: 
+     * this method will return the bounding rect without transforming(translate/scale/rotate/skew). 
+     * However, direct modifications to the shape property will be reflected in the bouding-rect.
+     * For example,  if we modify this.shape.width directly, then the new width property will be calculated.
      * 
      * 
-     * 获取当前元素的边界矩形。
-     * 注意：此方法返回的是没有经过 transform 处理的边界矩形。
+     * 获取当前元素的边界矩形，注意：
+     * 此方法返回的是没有经过 transform(translate/scale/rotate/skew) 处理的边界矩形，但是对 shape 属性直接进行的修改会反映在获取的边界矩形上。
+     * 例如，用代码直接对 this.shape.width 进行赋值，那么在计算边界矩形时就会用新的 width 属性进行计算。
      */
     getBoundingRect() {
         //All subclasses should provide implementation for this method. 
@@ -458,7 +466,7 @@ class Element{
 
     /**
      * @protected
-     * @method contain
+     * @method containPoint
      * 
      * If displayable element contain coord x, y, this is an util function for
      * determine where two elements overlap.
@@ -469,13 +477,13 @@ class Element{
      * @param  {Number} y
      * @return {Boolean}
      */
-    contain(x, y) {
-        return this.rectContain(x, y);
+    containPoint(x, y) {
+        return this.rectContainPoint(x, y);
     }
 
     /**
      * @protected
-     * @method rectContain
+     * @method rectContainPoint
      * 
      * If bounding rect of element contain coord x, y.
      * 
@@ -485,10 +493,10 @@ class Element{
      * @param  {Number} y
      * @return {Boolean}
      */
-    rectContain(x, y) {
+    rectContainPoint(x, y) {
         let coord = this.globalToLocal(x, y);
         let rect = this.getBoundingRect();
-        return rect.contain(coord[0], coord[1]);
+        return rect.containPoint(coord[0], coord[1]);
     }
 
     /**

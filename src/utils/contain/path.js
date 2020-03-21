@@ -390,7 +390,7 @@ function containPath(data, lineWidth, isStroke, x, y) {
     return w !== 0;
 }
 
-export function contain(pathData, x, y) {
+export function containPoint(pathData, x, y) {
     return containPath(pathData, 0, false, x, y);
 }
 

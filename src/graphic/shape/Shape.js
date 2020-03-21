@@ -15,6 +15,7 @@ class Shape extends Path{
         super(options);
 
         classUtil.inheritProperties(this,Linkable,this.options);           // If we don't need linkable feature, just remove this line.
+        classUtil.copyOwnProperties(this,this.options,['style','shape']);
     }
 }
 

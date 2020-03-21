@@ -1,4 +1,5 @@
 import * as classUtil from '../utils/class_util';
+import * as dataUtil from '../utils/data_structure_util';
 import Element from './Element';
 import Rect from './shape/Rect';
 import BoundingRect from './BoundingRect';
@@ -11,27 +12,17 @@ import BoundingRect from './BoundingRect';
  * 
  * - Group 可以插入子节点，其它类型不能。
  * - Group 上的变换也会被应用到子节点上。
- * 
- *      @example small frame
- *      let Group = require('qrenderer/Group');
- *      let Circle = require('qrenderer/graphic/shape/Circle');
- *      let g = new Group();
- *      g.add(new Circle({
- *          position:[100,100],
- *          style: {
- *              x: 100,
- *              y: 100,
- *              r: 20,
- *          }
- *      }));
- *      qr.add(g);
  */
 class Group extends Rect{
     /**
      * @method constructor Group
      */
     constructor(options={}){
-        super(options);
+        super(dataUtil.merge({
+            style: {
+                fill:'#ccc'
+            }
+        },options,true));
 
         /**
          * @property {String} type
@@ -49,7 +40,7 @@ class Group extends Rect{
          * - resize: Group 会自动调整自己的尺寸来适配子节点的位置。
          * - restrict: Group 会限制子节点的位置，子节点只能在 group 内部移动，不能超出 group 的范围。
          */
-        this.resizeStrategy='free'; // free, resize, restrict
+        this.resizeStrategy='resize'; // free, resize, restrict
         
         /**
          * @property children
@@ -121,6 +112,83 @@ class Group extends Rect{
         this.children.push(child);
         this.__qr&&(child.__qr=this.__qr);
         this.__storage&&this.__storage.addToStorage(child);
+
+        //listen to moving and resizing evnets.
+        child.beforeMove=this.beforeChildMove;
+        child.on("moving",this.childEventHandler,this);
+        child.on("resizing",this.childEventHandler,this);
+    }
+
+    childEventHandler(child){
+        if(this.resizeStrategy==='free'){
+            return;
+        }else if(this.resizeStrategy==='resize'){
+            this.resizeGroup(child);
+        }
+    }
+
+    //执行上下文是子元素对象
+    beforeChildMove(dx,dy,event){
+        let group=this.parent;
+        if(group.resizeStrategy==='free'){
+            return true;
+        }
+
+        let groupOriginalRect=group.originalBoundingRect;
+        let groupRect=group.getOuterBoundingRect();
+        let childRect=this.getOuterBoundingRect();
+
+        if(this.position[0]<0){
+            this.position[0]=0;
+            return false;
+        }
+        if(this.position[1]<0){
+            this.position[1]=0;
+            return false;
+        }
+        
+        if(group.resizeStrategy==='restrict'){
+            let tempWidth=childRect.x+childRect.width-groupRect.x;
+            if(tempWidth>groupOriginalRect.width){
+                this.position[0]=groupOriginalRect.width-childRect.width;
+                return false;
+            }
+
+            let tempHeight=childRect.y+childRect.height-groupRect.y;
+            if(tempHeight>groupOriginalRect.height){
+                this.position[1]=groupOriginalRect.height-childRect.height;
+                return false;
+            }
+        }
+        return true;
+    }
+
+    resizeGroup(child){
+        let groupOriginalRect=this.originalBoundingRect;
+        let groupRect=this.getOuterBoundingRect();
+        let childRect=child.getOuterBoundingRect();
+        let newWidth=groupOriginalRect.width;
+        let newHeight=groupOriginalRect.height;
+
+        if(child.position[0]>=0){
+            let temp=childRect.x+childRect.width-groupRect.x;
+            if(temp>groupOriginalRect.width){
+                newWidth=temp;
+            }
+        }
+
+        if(child.position[1]>=0){
+            let temp=childRect.y+childRect.height-groupRect.y;
+            if(temp>groupOriginalRect.height){
+                newHeight=temp;
+            }
+        }
+
+        this.shape.width=newWidth;
+        this.shape.height=newHeight;
+
+        this.dirty();
+        this.trigger("resizing",this);
     }
 
     /**
@@ -129,6 +197,10 @@ class Group extends Rect{
      * @param {Element} child
      */
     remove(child) {
+        child.beforeMove=null;
+        child.off("moving",this.childEventHandler,this);
+        child.off("resizing",this.childEventHandler,this);
+
         let idx = dataUtil.indexOf(this.children, child);
         if (idx >= 0) {
             this.children.splice(idx, 1);

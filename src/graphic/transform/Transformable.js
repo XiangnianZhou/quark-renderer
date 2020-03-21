@@ -356,7 +356,14 @@ Transformable.prototype={
         return v2;
     },
 
-    _getCoordinates:function(){
+    /**
+     * @method getOuterBoundingRect
+     * 
+     * 
+     * 
+     * 全局坐标系中的边界矩形，此矩形本身不进行几何变换，但是会包裹变形之后的元素。
+     */
+    getOuterBoundingRect:function(){
         let rect=this.getBoundingRect();
         
         let points=[];
@@ -374,19 +381,6 @@ Transformable.prototype={
         let maxX=mathMax(points[0][0],points[1][0],points[2][0],points[3][0]);
         let minY=mathMin(points[0][1],points[1][1],points[2][1],points[3][1]);
         let maxY=mathMax(points[0][1],points[1][1],points[2][1],points[3][1]);
-
-        return [minX,maxX,minY,maxY];
-    },
-
-    /**
-     * @method getOuterBoundingRect
-     * 
-     * 
-     * 
-     * 全局坐标系中的边界矩形，此矩形本身不进行几何变换，但是会包裹变形之后的元素。
-     */
-    getOuterBoundingRect:function(){
-        let [minX,maxX,minY,maxY]=this._getCoordinates();
 
         return {
             x:minX,

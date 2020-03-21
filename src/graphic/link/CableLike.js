@@ -22,7 +22,7 @@ import * as matrixUtil from '../../utils/affine_matrix_util';
  * - 混入此实现的类默认假定已经混入了 Eventful ，因为我们需要事件系统。
  */
 function CableLike(){
-    this.isCable=true;
+    this.isCable=false;
     this.showLinkControls = false;
 
     this.startControl = new LinkControl({
@@ -36,6 +36,9 @@ function CableLike(){
     });
 
     this.on("afterRender",()=>{
+        if(!this.isCable){
+            return;
+        }
         if(this.showLinkControls){
             this.renderLinkControls(this.ctx, this.prevEl);
         }
