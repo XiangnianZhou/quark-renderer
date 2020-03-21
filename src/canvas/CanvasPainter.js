@@ -2,7 +2,7 @@ import * as dataUtil from '../utils/data_structure_util';
 import * as canvasUtil from '../utils/canvas_util';
 import {mathRandom,mathMax} from '../utils/constants';
 import {devicePixelRatio} from '../config';
-import BoundingRect from '../graphic/transform/BoundingRect';
+import BoundingRect from '../graphic/BoundingRect';
 import CanvasLayer from './CanvasLayer';
 import Image from '../graphic/Image';
 import guid from '../utils/guid';
@@ -498,7 +498,6 @@ export default class CanvasPainter{
             // Ignore culled element
             && !(el.culling && this.isDisplayableCulled(el, this._width, this._height))
         ) {
-
             let clipPaths = el.__clipPaths;
             let prevElClipPaths = scope.prevElClipPaths;
 
@@ -519,10 +518,10 @@ export default class CanvasPainter{
                 }
             }
 
-            el.beforeRender && el.beforeRender(ctx);
+            el.trigger("beforeRender",el);
             el.render(ctx, scope.prevEl || null);
             scope.prevEl = el;
-            el.afterRender && el.afterRender(ctx);
+            el.trigger("afterRender",el);
         }
     }
 

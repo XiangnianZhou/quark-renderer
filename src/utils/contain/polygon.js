@@ -6,7 +6,7 @@ function isAroundEqual(a, b) {
     return Math.abs(a - b) < EPSILON;
 }
 
-export function contain(points, x, y) {
+export function containPoint(points, x, y) {
     let w = 0;
     let p = points[0];
 

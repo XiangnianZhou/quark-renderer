@@ -1,28 +1,27 @@
-import Path from '../Path';
 import * as dataUtil from '../../utils/data_structure_util';
 import {PI,mathSin,mathCos} from '../../utils/constants';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Isogon 
  * 正多边形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig={
-    shape: {
-        x: 0, 
-        y: 0,
-        r: 0,
-        n: 0
-    }
-};
-
-export default class Isogon extends Path{
+export default class Isogon extends Shape{
     /**
      * @method constructor Isogon
      * @param {Object} options 
      */
     constructor(options){
-        super(dataUtil.merge(defaultConfig,options,true));
+        super(dataUtil.merge({
+            shape: {
+                x: 0, 
+                y: 0,
+                r: 0,
+                n: 0
+            }
+        },options,true));
+
         /**
          * @property {String} type
          */

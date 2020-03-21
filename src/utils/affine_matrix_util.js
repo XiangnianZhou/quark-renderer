@@ -253,3 +253,28 @@ export function dot(v1, v2) {
 export function changeOrigin(fromOrigin,toOrigin,point){
     return [point[0]+fromOrigin[0]-toOrigin[0],point[1]+fromOrigin[1]-toOrigin[1]];
 }
+
+
+/**
+ * 求两个点构成的向量 sin 值
+ * 
+ * @param {*} point0 
+ * @param {*} point1 
+ */
+export function sinp2(point0,point1){
+    let deltaX=point1[0]-point0[0];
+    let deltaY=point1[1]-point0[1];
+    return deltaY/mathSqrt(deltaX*deltaX+deltaY*deltaY);
+}
+
+/**
+ * 求两个点构成的向量 cos 值
+ * 
+ * @param {*} point0 
+ * @param {*} point1 
+ */
+export function cosp2(point0,point1){
+    let deltaX=point1[0]-point0[0];
+    let deltaY=point1[1]-point0[1];
+    return deltaX/mathSqrt(deltaX*deltaX+deltaY*deltaY);
+}

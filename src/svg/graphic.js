@@ -1,6 +1,6 @@
 import {createElement} from './core';
 import PathProxy from '../graphic/PathProxy';
-import BoundingRect from '../graphic/transform/BoundingRect';
+import BoundingRect from '../graphic/BoundingRect';
 import * as matrixUtil from '../utils/affine_matrix_util';
 import * as textContain from '../utils/contain/text';
 import * as textUtil from '../utils/text_util';

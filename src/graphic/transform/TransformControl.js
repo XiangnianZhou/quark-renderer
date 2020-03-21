@@ -5,7 +5,7 @@ import * as colorUtil from '../../utils/color_util';
 import {mathSin} from '../../utils/constants';
 
 /**
- * @class qrenderer.graphic.transform.Control
+ * @class qrenderer.graphic.transform.TransformControl
  * 
  * Transform control. There are two constraints in this implementation:
  * 
@@ -20,9 +20,11 @@ import {mathSin} from '../../utils/constants';
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default class Control {
+export default class TransformControl {
     constructor(options={}){
         this.el=null;
+
+        // four corner points
         this.x1 = 0;
         this.y1 = 0;
         this.x2 = 0;
@@ -31,20 +33,21 @@ export default class Control {
         this.y3 = 0;
         this.x4 = 0;
         this.y4 = 0;
+
         this.width = 20;
         this.height = 20;
-        this.hasControls = false;
-        this.lineWidth = 2;
+        this.hasTransformControls = false;
         this.name = 'TL';   //TL, T, TR, L, R, BL, B, BR, SPIN
         this.cursor = 'corsshair';
         this.pointCache = new Map();
         this.rotation=0;
         this.translate=[0,0];
         this.scaleControlOffset=50;
+        this.lineWidth = 2;
+        this.fillStyle = '#00ff00';
+        this.strokeStyle = '#000000';
 
         classUtil.copyOwnProperties(this,options);
-        this.fillStyle = colorUtil.parse(this.fillStyle);
-        this.strokeStyle = colorUtil.parse(this.strokeStyle);
     }
 
     render(ctx,prevEl){

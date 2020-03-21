@@ -1,6 +1,6 @@
 <h1 align="center">Quark Renderer</h1>
 
-A lightweight yet powerful canvas (&svg) render engine improved from [ZRender](https://github.com/ecomfe/zrender)
+A lightweight yet powerful Canvas(&SVG) render engine improved from [ZRender](https://github.com/ecomfe/zrender)
 
 ## Background
 
@@ -27,9 +27,11 @@ Here are the key improvements compare to the original ZRender:
 - Refactored all the comments for jsduck.
 - Support Wechat mini-program directly, do not need any hack.
 - Support node-canvas environment directly, do not need any hack.
-- Removed VML engine, because the marketshare of IE is already very small now. 
-- Add skew feature for transformation system.
-- Add transform control for elements.
+- Removed VML engine, because the marketshare of IE is very small now. 
+- Added skew feature for transformation system.
+- Added transform control for elements.
+- Added link control for lines and shapes, so we can link these elements now.
+- Refactored Group so that it can be nested and restrict the position of child nodes.
 
 ## Usage
 
@@ -204,6 +206,8 @@ The document is in /api directory, open /api/index.html in your browser then you
 <img src="./docs/images/7.gif">
 <br/>
 <img src="./docs/images/8.gif">
+<br/>
+<img src="./docs/images/9.gif">
 
 Wechat mini-program example:
 

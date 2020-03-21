@@ -2,9 +2,10 @@ import * as dataUtil from '../utils/data_structure_util';
 import * as classUtil from '../utils/class_util';
 import * as vectorUtil from '../utils/vector_util';
 import * as eventTool from '../utils/event_util';
-import DragDropMgr from './DragDropMgr';
-import TransformEventMgr from '../graphic/transform/TransformMgr';
 import Eventful from './Eventful';
+import DragDropMgr from '../graphic/drag/DragDropMgr';
+import TransformEventMgr from '../graphic/transform/TransformMgr';
+import LinkMgr from '../graphic/link/LinkMgr';
 import GestureMgr from './GestureMgr';
 
 /**
@@ -83,14 +84,14 @@ function pageEventHandler(pageEventName, event) {
  * @param {Number} y 
  */
 function isHover(element, x, y) {
-    if (element[element.rectHover ? 'rectContain' : 'contain'](x, y)) {
+    if (element[element.rectHover ? 'rectContainPoint' : 'containPoint'](x, y)) {
         let el = element;
         let isSilent = false;
         while (el) {
             // If clipped by ancestor.
             // FIXME: If clipPath has neither stroke nor fill,
-            // el.clipPath.contain(x, y) will always return false.
-            if (el.clipPath && !el.clipPath.contain(x, y)) {
+            // el.clipPath.containPoint(x, y) will always return false.
+            if (el.clipPath && !el.clipPath.containPoint(x, y)) {
                 return false;
             }
             if (el.silent) {
@@ -182,18 +183,37 @@ let GlobalEventDispatcher = function (storage, painter, interceptor, painterRoot
      */
     this._gestureMgr;
 
+    this.setHandlerProxy(interceptor);
+
     //start drag-drop manager.
-    new DragDropMgr(this);
+    this._ddMgr = new DragDropMgr(this).startListen();
 
     //start transform manager.
-    new TransformEventMgr(this);
+    this._transformMgr = new TransformEventMgr(this).startListen();
 
-    this.setHandlerProxy(interceptor);
+    //start link manager.
+    this._linkMgr = new LinkMgr(this).startListen();
 };
 
 GlobalEventDispatcher.prototype = {
 
     constructor: GlobalEventDispatcher,
+
+    disableDrag:function(){
+        this._ddMgr.stopListen();
+    },
+
+    enableDrag:function(){
+        this._ddMgr.startListen();
+    },
+
+    disableTransform:function(){
+        this._transformMgr.stopListen();
+    },
+
+    enableTransform:function(){
+        this._transformMgr.startListen();
+    },
 
     /**
      * @method setHandlerProxy
@@ -237,7 +257,6 @@ GlobalEventDispatcher.prototype = {
 
         let hovered = this._hovered = this.findHover(x, y);
         let hoveredTarget = hovered.target;
-
         let interceptor = this.interceptor;
         interceptor.setCursor && interceptor.setCursor(hoveredTarget ? hoveredTarget.cursor : 'default');
 
@@ -380,7 +399,6 @@ GlobalEventDispatcher.prototype = {
         let list = this.storage.getDisplayList();
         let out = {x: x, y: y};
 
-        //FIXME:在元素数量非常庞大的时候，如 100 万个元素，这里的 for 循环会很慢，基本不能响应鼠标事件。
         for (let i = list.length - 1; i >= 0; i--) {
             let hoverCheckResult;
             if (list[i] !== exclude

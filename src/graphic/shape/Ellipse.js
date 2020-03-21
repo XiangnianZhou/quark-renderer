@@ -1,27 +1,25 @@
-import Path from '../Path';
 import * as dataUtil from '../../utils/data_structure_util';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Ellipse 
  * 椭圆形状
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig={
-    shape: {
-        cx: 0, 
-        cy: 0,
-        rx: 0, 
-        ry: 0
-    }
-};
-
-export default class Droplet extends Path{
+export default class Droplet extends Shape{
     /**
      * @method constructor Droplet
      * @param {Object} options 
      */
     constructor(options){
-        super(dataUtil.merge(defaultConfig,options,true));
+        super(dataUtil.merge({
+            shape: {
+                cx: 0, 
+                cy: 0,
+                rx: 0, 
+                ry: 0
+            }
+        },options,true));
         /**
          * @property {String} type
          */

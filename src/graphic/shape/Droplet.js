@@ -1,27 +1,26 @@
-import Path from '../Path';
 import * as dataUtil from '../../utils/data_structure_util';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Droplet 
  * 水滴形状
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig={
-    shape: {
-        cx: 0, 
-        cy: 0,
-        width: 0, 
-        height: 0
-    }
-};
-
-export default class Droplet extends Path{
+export default class Droplet extends Shape{
     /**
      * @method constructor Droplet
      * @param {Object} options 
      */
     constructor(options){
-        super(dataUtil.merge(defaultConfig,options,true));
+        super(dataUtil.merge({
+            shape: {
+                cx: 0, 
+                cy: 0,
+                width: 0, 
+                height: 0
+            }
+        },options,true));
+
         /**
          * @property {String} type
          */

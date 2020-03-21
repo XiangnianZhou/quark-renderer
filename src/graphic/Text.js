@@ -59,11 +59,23 @@ export default class Text extends Element{
         Element.prototype.render.call(this,ctx,prevEl);
     }
 
+    /**
+     * @method getBoundingRect
+     * Get bounding rect of this element, NOTE: 
+     * this method will return the bounding rect without transforming(translate/scale/rotate/skew). 
+     * However, direct modifications to the shape property will be reflected in the bouding-rect.
+     * For example,  if we modify this.shape.width directly, then the new width property will be calculated.
+     * 
+     * 
+     * 获取当前元素的边界矩形，注意：
+     * 此方法返回的是没有经过 transform(translate/scale/rotate/skew) 处理的边界矩形，但是对 shape 属性直接进行的修改会反映在获取的边界矩形上。
+     * 例如，用代码直接对 this.shape.width 进行赋值，那么在计算边界矩形时就会用新的 width 属性进行计算。
+     */
     getBoundingRect() {
         let style = this.style;
         // Optimize, avoid normalize every time.
         this.__dirty && textUtil.normalizeTextStyle(style, true);
-        if (!this._boundingRect) {
+        if (!this.__boundingRect) {
             let text = style.text;
             text != null ? (text += '') : (text = '');
             let rect = textContain.getBoundingRect(
@@ -84,8 +96,8 @@ export default class Text extends Element{
                 rect.width += w;
                 rect.height += w;
             }
-            this._boundingRect = rect;
+            this.__boundingRect = rect;
         }
-        return this._boundingRect;
+        return this.__boundingRect;
     }
 }

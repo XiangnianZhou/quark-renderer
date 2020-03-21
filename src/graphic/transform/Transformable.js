@@ -1,4 +1,4 @@
-import {mathSqrt,mathAtan2} from '../../utils/constants';
+import {mathSqrt, mathAtan2, mathMin, mathMax, mathAbs} from '../../utils/constants';
 import * as matrixUtil from '../../utils/affine_matrix_util';
 import * as vectorUtil from '../../utils/vector_util';
 import * as classUtil from '../../utils/class_util';
@@ -13,6 +13,8 @@ import * as dataUtil from '../../utils/data_structure_util';
  * 
  * 
  * 为 Element 类提供变换功能，例如：平移、缩放、扭曲、旋转、翻转、形状、样式。
+ * 
+ * TODO:用新的事件机制和继承机制，把 Element 类里面与变形有关的逻辑移到本类中来，保持 Element 干净整洁。
  * 
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Transformations
  * @author pissang (https://www.github.com/pissang)
@@ -352,6 +354,40 @@ Transformable.prototype={
             vectorUtil.applyTransform(v2, v2, transform);
         }
         return v2;
+    },
+
+    /**
+     * @method getOuterBoundingRect
+     * 
+     * 
+     * 
+     * 全局坐标系中的边界矩形，此矩形本身不进行几何变换，但是会包裹变形之后的元素。
+     */
+    getOuterBoundingRect:function(){
+        let rect=this.getBoundingRect();
+        
+        let points=[];
+        points[0]=[rect.x,rect.y];
+        points[1]=[rect.x+rect.width,rect.y];
+        points[2]=[rect.x+rect.width,rect.y+rect.height];
+        points[3]=[rect.x,rect.y+rect.height];
+        
+        points[0]=matrixUtil.transformVector(points[0],this.transform);
+        points[1]=matrixUtil.transformVector(points[1],this.transform);
+        points[2]=matrixUtil.transformVector(points[2],this.transform);
+        points[3]=matrixUtil.transformVector(points[3],this.transform);
+
+        let minX=mathMin(points[0][0],points[1][0],points[2][0],points[3][0]);
+        let maxX=mathMax(points[0][0],points[1][0],points[2][0],points[3][0]);
+        let minY=mathMin(points[0][1],points[1][1],points[2][1],points[3][1]);
+        let maxY=mathMax(points[0][1],points[1][1],points[2][1],points[3][1]);
+
+        return {
+            x:minX,
+            y:minY,
+            width:mathAbs(maxX-minX),
+            height:mathAbs(maxY-minY)
+        };
     }
 }
 export default Transformable;

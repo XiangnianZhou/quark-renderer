@@ -1,28 +1,27 @@
-import Path from '../Path';
-import * as dataUtil from '../../utils/data_structure_util';
 import {PI2} from '../../utils/constants';
+import * as dataUtil from '../../utils/data_structure_util';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Ring 
  * 圆环
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig={
-    shape: {
-        cx: 0,
-        cy: 0,
-        r: 0,
-        r0: 0
-    }
-};
-
-export default class Ring extends Path{
+export default class Ring extends Shape{
     /**
      * @method constructor Ring
      * @param {Object} options 
      */
     constructor(options){
-        super(dataUtil.merge(defaultConfig,options,true));
+        super(dataUtil.merge({
+            shape: {
+                cx: 0,
+                cy: 0,
+                r: 0,
+                r0: 0
+            }
+        },options,true));
+
         /**
          * @property {String} type
          */

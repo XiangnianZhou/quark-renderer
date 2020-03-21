@@ -1,34 +1,36 @@
-import Path from '../Path';
+import Line from './Line';
 import * as dataUtil from '../../utils/data_structure_util';
 import {mathSin,mathCos} from '../../utils/constants';
 
 /**
- * @class qrenderer.graphic.shape.Trochold 
- * 内外旋轮曲线
+ * @class qrenderer.graphic.shape.Trochold
+ * Trochold.
+ * 
+ *  
+ * 内外旋轮曲线。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig={
-    shape: {
-        cx: 0,
-        cy: 0,
-        r: 0,
-        r0: 0,
-        d: 0,
-        location: 'out'
-    },
-    style: {
-        stroke: '#000',
-        fill: null
-    }
-};
-
-export default class Trochold extends Path{
+export default class Trochold extends Line{
     /**
      * @method constructor Trochold
      * @param {Object} options 
      */
     constructor(options){
-        super(dataUtil.merge(defaultConfig,options,true));
+        super(dataUtil.merge({
+            shape: {
+                cx: 0,
+                cy: 0,
+                r: 0,
+                r0: 0,
+                d: 0,
+                location: 'out'
+            },
+            style: {
+                stroke: '#000',
+                fill: null
+            }
+        },options,true));
+
         /**
          * @property {String} type
          */
@@ -37,7 +39,10 @@ export default class Trochold extends Path{
 
     /**
      * @method buildPath
-     * 绘制元素路径
+     * Build the path of current line, the data structure is like the path attribute in SVG.
+     * 
+     * 
+     * 构建当前线条的路径，数据结构类似 SVG 中的 path 属性。
      * @param {Object} ctx 
      * @param {String} shape 
      */

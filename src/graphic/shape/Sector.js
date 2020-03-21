@@ -1,38 +1,37 @@
-import Path from '../Path';
-import fixClipWithShadow from '../../utils/fix_clip_with_shadow';
 import * as dataUtil from '../../utils/data_structure_util';
+import fixClipWithShadow from '../../utils/fix_clip_with_shadow';
 import {mathSin,mathCos,mathMax,PI2} from '../../utils/constants';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Sector 
  * 扇形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig={
-    shape: {
-        cx: 0,
-        cy: 0,
-        r0: 0,
-        r: 0,
-        startAngle: 0,
-        endAngle: PI2,
-        clockwise: true
-    }
-};
-
-export default class Sector extends Path{
+export default class Sector extends Shape{
     /**
      * @method constructor Sector
      * @param {Object} options 
      */
     constructor(options){
-        super(dataUtil.merge(defaultConfig,options,true));
+        super(dataUtil.merge({
+            shape: {
+                cx: 0,
+                cy: 0,
+                r0: 0,
+                r: 0,
+                startAngle: 0,
+                endAngle: PI2,
+                clockwise: true
+            }
+        },options,true));
+
         /**
          * @property {String} type
          */
         this.type='sector';
 
-        this.render=fixClipWithShadow(Path.prototype.render);
+        this.render=fixClipWithShadow(Shape.prototype.render);
     }
 
     /**

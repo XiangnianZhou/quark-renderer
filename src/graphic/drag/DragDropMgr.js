@@ -1,5 +1,5 @@
 /**
- * @class qrenderer.event.DragDropMgr
+ * @class qrenderer.drag.DragDropMgr
  * Global drag-drop manager, hold Ctrl for multi-selection.
  * 
  * 
@@ -14,9 +14,26 @@ export default class DragDropMgr{
      * @param {GlobalEventDispatcher} dispatcher 
      */
     constructor(dispatcher){
-        this.selectionMap=new Map();
         this.dispatcher=dispatcher;
+        this.selectionMap=new Map();
+    }
+    
+    startListen(){
         this.dispatcher.on('mousedown', this.dragStart, this);
+        return this;
+    }
+
+    stopListen(){
+        this.clearSelectionMap();
+        this._draggingItem=null;
+        this._dropTarget = null;
+        this._x = 0;
+        this._y = 0;
+
+        this.dispatcher.off('mousedown', this.dragStart,this);
+        this.dispatcher.off('pagemousemove', this.dragging,this);
+        this.dispatcher.off('pagemouseup', this.dragEnd,this);
+        return this;
     }
 
     /**
@@ -47,7 +64,7 @@ export default class DragDropMgr{
         }
         el.dragging=true;
         this.selectionMap.set(el.id,el);
-
+        
         this._x = e.offsetX;
         this._y = e.offsetY;
         this.dispatcher.on('pagemousemove', this.dragging, this);
@@ -76,7 +93,10 @@ export default class DragDropMgr{
         this._y = y;
 
         this.selectionMap.forEach((el,key)=>{
-            el.drift(dx, dy, e);
+            if(el.beforeMove(dx,dy,e,el)){
+                el.move(dx, dy, e);
+                el.afterMove(dx,dy,e,el)
+            }
             this.dispatcher.dispatchToElement(this.normalizeParam(el, e), 'drag', e.event);
         });
 
@@ -108,8 +128,8 @@ export default class DragDropMgr{
             el.dragging=false;
             this.dispatcher.dispatchToElement(this.normalizeParam(el, e), 'dragend', e.event);
         });
-        this.dispatcher.off('pagemousemove', this.dragging);
-        this.dispatcher.off('pagemouseup', this.dragEnd);
+        this.dispatcher.off('pagemousemove', this.dragging,this);
+        this.dispatcher.off('pagemouseup', this.dragEnd,this);
 
         if (this._dropTarget) {
             this.dispatcher.dispatchToElement(this.normalizeParam(this._dropTarget, e), 'drop', e.event);

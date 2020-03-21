@@ -1,29 +1,16 @@
-import Path from '../Path';
+import Line from './Line';
 import * as vectorUtil from '../../utils/vector_util';
 import * as curveUtil from '../../utils/curve_util';
 import * as dataUtil from '../../utils/data_structure_util';
 
 /**
- * @class qrenderer.graphic.shape.BezierCurve 
- * 贝塞尔曲线
+ * @class qrenderer.graphic.shape.BezierCurve
+ * BezierCurve.
+ * 
+ *  
+ * 贝塞尔曲线。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig={
-    shape: {
-        x1: 0,
-        y1: 0,
-        x2: 0,
-        y2: 0,
-        cpx1: 0,
-        cpy1: 0,
-        percent: 1
-    },
-    style: {
-        stroke: '#000',
-        fill: null
-    }
-};
-
 let out = [];
 
 function someVectorAt(shape, t, isTangent) {
@@ -42,13 +29,28 @@ function someVectorAt(shape, t, isTangent) {
     }
 }
 
-export default class BezierCurve extends Path{
+export default class BezierCurve extends Line{
     /**
      * @method constructor BezierCurve
      * @param {Object} options 
      */
     constructor(options){
-        super(dataUtil.merge(defaultConfig,options,true));
+        super(dataUtil.merge({
+            shape: {
+                x1: 0,
+                y1: 0,
+                x2: 0,
+                y2: 0,
+                cpx1: 0,
+                cpy1: 0,
+                percent: 1
+            },
+            style: {
+                stroke: '#000',
+                fill: null
+            }
+        },options,true));
+
         /**
          * @property {String} type
          */
@@ -57,7 +59,10 @@ export default class BezierCurve extends Path{
 
     /**
      * @method buildPath
-     * 绘制元素路径
+     * Build the path of current line, the data structure is like the path attribute in SVG.
+     * 
+     * 
+     * 构建当前线条的路径，数据结构类似 SVG 中的 path 属性。
      * @param {Object} ctx 
      * @param {String} shape 
      */
@@ -119,12 +124,24 @@ export default class BezierCurve extends Path{
     }
 
     /**
-     * Get point at percent
-     * @param  {Number} t
+     * @method pointAt
+     * Get point at percent.
+     * 
+     * 
+     * 按照比例获取线条上的点。
+     * @param  {Number} percent
      * @return {Array<Number>}
      */
     pointAt(t) {
         return someVectorAt(this.shape, t, false);
+    }
+
+    firstTwoPoints(){
+        return [[...this.pointAt(0)],[...this.pointAt(0.2)]];
+    }
+
+    lastTwoPoints(){
+        return [[...this.pointAt(1)],[...this.pointAt(0.8)]];
     }
 
     /**

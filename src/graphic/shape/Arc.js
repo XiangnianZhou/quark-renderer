@@ -1,34 +1,33 @@
-import Path from '../Path';
 import * as dataUtil from '../../utils/data_structure_util';
 import {PI2,mathSin,mathCos,mathMin,mathMax} from '../../utils/constants';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Arc 
  * 圆弧
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig={
-    shape: {
-        cx: 0,
-        cy: 0,
-        r: 0,
-        startAngle: 0,
-        endAngle: PI2,
-        clockwise: true
-    },
-    style: {
-        stroke: '#000',
-        fill: null
-    }
-};
-
-export default class Arc extends Path{
+export default class Arc extends Shape{
     /**
      * @method constructor Line
      * @param {Object} options 
      */
     constructor(options){
-        super(dataUtil.merge(defaultConfig,options,true));
+        super(dataUtil.merge({
+            shape: {
+                cx: 0,
+                cy: 0,
+                r: 0,
+                startAngle: 0,
+                endAngle: PI2,
+                clockwise: true
+            },
+            style: {
+                stroke: '#000',
+                fill: null
+            }
+        },options,true));
+
         /**
          * @property {String} type
          */

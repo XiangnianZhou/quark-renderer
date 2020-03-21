@@ -1,14 +1,14 @@
 import * as dataUtil from '../utils/data_structure_util';
 import * as classUtil from '../utils/class_util';
 import * as matrixUtil from '../utils/affine_matrix_util';
-import * as vectorUtil from '../utils/vector_util';
 import Eventful from '../event/Eventful';
 import Transformable from './transform/Transformable';
-import Control from './transform/Control';
+import Control from './transform/TransformControl';
 import Animatable from '../animation/Animatable';
 import Style from './Style';
 import RectText from './RectText';
 import guid from '../utils/guid';
+import Draggable from './drag/Draggable';
 
 /**
  * @class qrenderer.graphic.Element
@@ -120,51 +120,33 @@ class Element{
          */
         this.qlevel = 0;
 
-        /**
-         * @property {Boolean} draggable
-         * Whether it can be dragged.
-         */
-        this.draggable = false;
-
-        /**
-         * @property {Boolean} dragging
-         * Whether is it dragging.
-         */
-        this.dragging = false;
-
         this.transformable = true;
 
         /**
-         * @property {Boolean} hasControls
-         * Whether this object has transform controls now, hasControls will be set to true when element is clicked.
+         * @property {Boolean} hasTransformControls
+         * Whether this object has transform controls now, hasTransformControls will be set to true when element is clicked.
          * 
-         * 元素当前是否带有变换控制工具，当元素被点击的时候 hasControls 会被设置为 true。
+         * 元素当前是否带有变换控制工具，当元素被点击的时候 hasTransformControls 会被设置为 true。
          */
-        this.hasControls = false;
+        this.hasTransformControls = false;
 
         /**
          * @property {Array<Control>} controls
-         * Whether show transform controls, if showControls is false, no transform controls will be rendered.
+         * Whether show transform controls, if showTransformControls is false, no transform controls will be rendered.
          * 
          * 
          * 是否显示变换控制工具，如果此标志位被设置为 false，无论什么情况都不会显示变换控制器。
          */
-        this.showControls = false;
+        this.showTransformControls = false;
 
         /**
-         * @property {Array<Control>} controls
+         * @property {Array<Control>} transformControls
          * Transform controls.
          * 
          * 
          * 变换控制工具。
          */
-        this.controls = [];
-
-        this.controlFillStyle = '#0000ff';
-
-        this.controlStrokeStyle = '#000000';
-
-        this.controlLineWidth = 1;
+        this.transformControls = [];
 
         /**
          * @property {Boolean} silent
@@ -214,6 +196,14 @@ class Element{
          */
         this.animationProcessList = [];
 
+        //cache canvas context
+        this.ctx=null;
+
+        //cache previous element
+        this.prevEl=null;
+
+        this.originalBoundingRect=null;
+
         /**
          * @private
          * @property {QuarkRenderer} __qr
@@ -233,13 +223,7 @@ class Element{
          * 这是一个非常重要的标志位，在绘制大量对象的时候，把 __dirty 标记为 false 可以节省大量操作。
          */
         this.__dirty = true;
-    
-        /**
-         * @private
-         * @property  _boundingRect
-         */
-        this._boundingRect = null;
-        
+
         /**
          * @private
          * @property  __clipPaths
@@ -248,6 +232,12 @@ class Element{
          * because it is easy to only using null to check whether clipPaths changed.
          */
         this.__clipPaths = null;
+
+        /**
+         * @protected
+         * @property __boundingRect 边界矩形
+         */
+        this.__boundingRect=null;
 
         /**
          * @property {Style} style
@@ -269,36 +259,17 @@ class Element{
             }
         }
 
-        classUtil.inheritProperties(this,Transformable,this.options);
         classUtil.inheritProperties(this,Eventful,this.options);
         classUtil.inheritProperties(this,Animatable,this.options);
+        classUtil.inheritProperties(this,Draggable,this.options);
+        classUtil.inheritProperties(this,Transformable,this.options);
         classUtil.copyOwnProperties(this,this.options,['style','shape']);
 
         this.on("addToStorage",this.addToStorageHandler);
         this.on("delFromStorage",this.delFromStorageHandler);
-    }
-
-    /**
-     * @method
-     * 
-     * Drift element
-     * 
-     * 移动元素
-     * 
-     * @param  {Number} dx dx on the global space
-     * @param  {Number} dy dy on the global space
-     */
-    drift(dx, dy) {
-        switch (this.draggable) {
-            case 'horizontal':
-                dy = 0;
-                break;
-            case 'vertical':
-                dx = 0;
-                break;
-        }
-        vectorUtil.add(this.position,this.position,[dx,dy]);
-        this.dirty();
+        this.one("afterRender",()=>{
+            this.originalBoundingRect=this.getBoundingRect();
+        });
     }
 
     /**
@@ -382,7 +353,7 @@ class Element{
      */
     dirty() {
         this.__dirty = this.__dirtyText = true;
-        this._boundingRect = null;
+        this.__boundingRect = null;
         this.__qr && this.__qr.refresh();
     }
 
@@ -422,48 +393,42 @@ class Element{
 
     /**
      * @protected
-     * @method beforeRender
-     */
-    beforeRender(ctx) {}
-
-    /**
-     * @protected
      * @method render
      * Callback during render.
      */
     render(ctx, prevEl) {
-        if(this.showControls&&this.hasControls){
-            this.renderControls(ctx, prevEl);
+        this.ctx=ctx;
+        this.prevEl=prevEl;
+
+        if(this.showTransformControls&&this.hasTransformControls){
+            this.renderTransformControls(this.ctx, this.prevEl);
         }
     }
 
-    renderControls(ctx, prevEl){
+    renderTransformControls(ctx, prevEl){
         //draw transform controls
-        this.controls=[];
+        this.transformControls=[];
         let positions = ['TL','T','TR','R','BR','B','BL','L','SPIN'];
         positions.forEach((p,index)=>{
             let control = new Control({
                 el:this,
-                name:p,
-                fillStyle:this.controlFillStyle,
-                strokeStyle:this.controlStrokeStyle,
-                lineWidth:this.controlLineWidth
+                name:p
             }).render(ctx, prevEl);
-            this.controls.push(control);
+            this.transformControls.push(control);
         });
 
         //draw bounding rect
-        let control0=this.controls[0];
-        let control4=this.controls[4];
+        let control0=this.transformControls[0];
+        let control4=this.transformControls[4];
         let p1=[control0.x3-control0.width/2,control0.y3-control0.height/2];
         let p2=[control4.x1+control4.width/2,control4.y1+control4.height/2];
         let w=p2[0]-p1[0];
         let h=p2[1]-p1[1];
         ctx.save();
         ctx.setTransform(1,0,0,1,0,0);
-        ctx.lineWidth = this.controlLineWidth;
-        ctx.fillStyle = this.controlFillStyle;
-        ctx.strokeStyle = this.controlStrokeStyle;
+        ctx.lineWidth = control0.lineWidth;
+        ctx.fillStyle = control0.fillStyle;
+        ctx.strokeStyle = control0.strokeStyle;
         ctx.translate(control0.translate[0],control0.translate[1]);
         ctx.rotate(-control0.rotation);
         ctx.strokeRect(p1[0],p1[1],w,h);
@@ -471,10 +436,10 @@ class Element{
         
         //draw connet line
         let [x1,y1,x2,y2]=[0,0,0,0];
-        x1=this.controls[1].x1+this.controls[1].width/2;
-        y1=this.controls[1].y1;
-        x2=this.controls[8].x1+this.controls[8].width/2;
-        y2=this.controls[8].y1+this.controls[8].height;
+        x1=this.transformControls[1].x1+this.transformControls[1].width/2;
+        y1=this.transformControls[1].y1;
+        x2=this.transformControls[8].x1+this.transformControls[8].width/2;
+        y2=this.transformControls[8].y1+this.transformControls[8].height;
         ctx.beginPath();
         ctx.moveTo(x1,y1);
         ctx.lineTo(x2,y2);
@@ -483,25 +448,25 @@ class Element{
     }
 
     /**
-     * @protected
-     * @method afterRender
-     */
-    afterRender(ctx) {}
-
-    /**
      * @method getBoundingRect
-     * Get bounding rect of this element.
-     * NOTE: this method will return the bounding rect without transforming.
+     * Get bounding rect of this element, NOTE: 
+     * this method will return the bounding rect without transforming(translate/scale/rotate/skew). 
+     * However, direct modifications to the shape property will be reflected in the bouding-rect.
+     * For example,  if we modify this.shape.width directly, then the new width property will be calculated.
      * 
      * 
-     * 获取当前元素的边界矩形。
-     * 注意：此方法返回的是没有经过 transform 处理的边界矩形。
+     * 获取当前元素的边界矩形，注意：
+     * 此方法返回的是没有经过 transform(translate/scale/rotate/skew) 处理的边界矩形，但是对 shape 属性直接进行的修改会反映在获取的边界矩形上。
+     * 例如，用代码直接对 this.shape.width 进行赋值，那么在计算边界矩形时就会用新的 width 属性进行计算。
      */
-    getBoundingRect() {}
+    getBoundingRect() {
+        //All subclasses should provide implementation for this method. 
+        //所有子类都需要提供此方法的具体实现。
+    }
 
     /**
      * @protected
-     * @method contain
+     * @method containPoint
      * 
      * If displayable element contain coord x, y, this is an util function for
      * determine where two elements overlap.
@@ -512,13 +477,13 @@ class Element{
      * @param  {Number} y
      * @return {Boolean}
      */
-    contain(x, y) {
-        return this.rectContain(x, y);
+    containPoint(x, y) {
+        return this.rectContainPoint(x, y);
     }
 
     /**
      * @protected
-     * @method rectContain
+     * @method rectContainPoint
      * 
      * If bounding rect of element contain coord x, y.
      * 
@@ -528,10 +493,10 @@ class Element{
      * @param  {Number} y
      * @return {Boolean}
      */
-    rectContain(x, y) {
+    rectContainPoint(x, y) {
         let coord = this.globalToLocal(x, y);
         let rect = this.getBoundingRect();
-        return rect.contain(coord[0], coord[1]);
+        return rect.containPoint(coord[0], coord[1]);
     }
 
     /**
@@ -590,8 +555,9 @@ class Element{
     }
 }
 
+classUtil.mixin(Element, Eventful);
 classUtil.mixin(Element, Animatable);
+classUtil.mixin(Element, Draggable);
 classUtil.mixin(Element, Transformable);
 classUtil.mixin(Element, RectText);
-classUtil.mixin(Element, Eventful);
 export default Element;

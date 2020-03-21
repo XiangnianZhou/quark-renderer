@@ -1,27 +1,26 @@
-import Path from '../Path';
 import * as polyHelper from '../../utils/poly_util';
 import * as dataUtil from '../../utils/data_structure_util';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Polygon 
  * 多边形
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let defaultConfig={
-    shape: {
-        points: null,
-        smooth: false,
-        smoothConstraint: null
-    }
-};
-
-export default class Polygon extends Path{
+export default class Polygon extends Shape{
     /**
      * @method constructor Polygon
      * @param {Object} options 
      */
     constructor(options){
-        super(dataUtil.merge(defaultConfig,options,true));
+        super(dataUtil.merge({
+            shape: {
+                points: null,
+                smooth: false,
+                smoothConstraint: null
+            }
+        },options,true));
+
         /**
          * @property {String} type
          */

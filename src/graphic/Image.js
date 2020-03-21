@@ -1,5 +1,5 @@
 import Element from './Element';
-import BoundingRect from './transform/BoundingRect';
+import BoundingRect from './BoundingRect';
 import * as dataUtil from '../utils/data_structure_util';
 import * as imageHelper from '../utils/image_util';
 
@@ -97,11 +97,11 @@ export default class QImage extends Element{
      */
     getBoundingRect() {
         let style = this.style;
-        if (!this._boundingRect) {
-            this._boundingRect = new BoundingRect(
+        if (!this.__boundingRect) {
+            this.__boundingRect = new BoundingRect(
                 style.x || 0, style.y || 0, style.width || 0, style.height || 0
             );
         }
-        return this._boundingRect;
+        return this.__boundingRect;
     }
 }

@@ -1,35 +1,32 @@
-import Path from '../Path';
 import * as dataUtil from '../../utils/data_structure_util';
-import {mathSin,mathCos} from '../../utils/constants';
+import {mathSin,mathCos,radian} from '../../utils/constants';
+import Shape from './Shape';
 
 /**
  * @class qrenderer.graphic.shape.Rose 
  * 玫瑰线
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let radian = Math.PI / 180;
-
-let defaultConfig={
-    shape: {
-        cx: 0,
-        cy: 0,
-        r: [],
-        k: 0,
-        n: 1
-    },
-    style: {
-        stroke: '#000',
-        fill: null
-    }
-};
-
-export default class Rose extends Path{
+export default class Rose extends Shape{
     /**
      * @method constructor Rose
      * @param {Object} options 
      */
     constructor(options){
-        super(dataUtil.merge(defaultConfig,options,true));
+        super(dataUtil.merge({
+            shape: {
+                cx: 0,
+                cy: 0,
+                r: [],
+                k: 0,
+                n: 1
+            },
+            style: {
+                stroke: '#000',
+                fill: null
+            }
+        },options,true));
+
         /**
          * @property {String} type
          */

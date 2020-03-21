@@ -1,6 +1,6 @@
-import * as vectorUtil from '../../utils/vector_util';
-import * as matrixUtil from '../../utils/affine_matrix_util';
-import {mathMin,mathMax} from '../../utils/constants';
+import * as vectorUtil from '../utils/vector_util';
+import * as matrixUtil from '../utils/affine_matrix_util';
+import {mathMin,mathMax} from '../utils/constants';
 
 /**
  * @class qrenderer.graphic.transform.BoundingRect
@@ -158,11 +158,11 @@ class BoundingRect{
     }
 
     /**
-     * @method contain
+     * @method containPoint
      * @param {*} x 
      * @param {*} y 
      */
-    contain(x, y) {
+    containPoint(x, y) {
         let rect = this;
         return x >= rect.x
             && x <= (rect.x + rect.width)
