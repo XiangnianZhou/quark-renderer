@@ -1,6 +1,6 @@
 <h1 align="center">Quark Renderer</h1>
 
-A lightweight yet powerful canvas (&svg) render engine improved from [ZRender](https://github.com/ecomfe/zrender)
+A lightweight yet powerful Canvas(&SVG) render engine improved from [ZRender](https://github.com/ecomfe/zrender)
 
 ## Background
 
@@ -31,6 +31,7 @@ Here are the key improvements compare to the original ZRender:
 - Added skew feature for transformation system.
 - Added transform control for elements.
 - Added link control for lines and shapes, so we can link these elements now.
+- Refactored Group so that it can be nested and restrict the position of child nodes.
 
 ## Usage
 
