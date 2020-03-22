@@ -35,7 +35,13 @@ function CableLike(){
         name:'END'
     });
 
-    this.on("afterRender",()=>{
+    this.on("afterRender",this.afterRenderHandler,this);
+}
+
+CableLike.prototype={
+    constructor:CableLike,
+
+    afterRenderHandler:function(){
         if(!this.isCable){
             return;
         }
@@ -44,11 +50,7 @@ function CableLike(){
         }
         this.startControl.trigger("afterRender",this.startControl);
         this.endControl.trigger("afterRender",this.endControl);
-    },this);
-}
-
-CableLike.prototype={
-    constructor:CableLike,
+    },
 
     /**
      * @protected

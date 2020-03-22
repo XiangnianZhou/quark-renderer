@@ -35,26 +35,20 @@ class LinkSlot {
         this.translate=[0,0];
         this.hasTransformControls = false;
         this.lineWidth = 2;
-        this.fillStyle = '#00ff00';
         this.strokeStyle = '#000000';
-
+        this.fillStyle = '#00ff00';
 
         classUtil.inheritProperties(this,Eventful,this.options);
         classUtil.copyOwnProperties(this,options);
     }
-
-    render(ctx,prevEl){
-        this.renderCircleControl(ctx,prevEl);
-        return this;
-    }
     
-    renderCircleControl(ctx,prevEl){
+    render(ctx,prevEl){
         let param=this.calcParameters();
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.lineWidth = this.lineWidth;
-        ctx.fillStyle = this.fillStyle;
         ctx.strokeStyle = this.strokeStyle;
+        ctx.fillStyle = this.fillStyle;
         ctx.translate(this.translate[0],this.translate[1]);
         ctx.rotate(-this.rotation);
         ctx.beginPath();
@@ -62,6 +56,7 @@ class LinkSlot {
         ctx.fill();
         ctx.stroke();
         ctx.restore();
+        return this;
     }
 
     calcParameters(){
