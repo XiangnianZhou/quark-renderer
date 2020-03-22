@@ -8,13 +8,17 @@ import guid from '../../utils/guid';
 /**
  * @abstract
  * @class qrenderer.graphic.link.LinkSlot
- * 
+ * Slot is designed to provide link function for Shape, Image, and Text, the basic features are:
+ * - The slot can NOT exist independently because that doesn't make sense, the slot must attached to other element.
+ * - We can plug many cables into a slot, the relationship between the slot and the cable is one to many.
+ * - The slot can not apply any transformations itself, all translate, rotate, scale, and skew are unavailable. Since the 
+ * slot is used for user interaction, it's not convenient to interact with if we apply transformations to it.
  * 
  * 
  * 插槽用来为 Shape、Image、Text 类型的元素提供连线功能，它的基本特性是：
  * - 插槽不能独立存在的，因为独立存在的插槽没有意义，它必须附着在其它元素上。
  * - 一个插槽上面可以插入多跟连线，插槽和连线之间是一对多的关系。
- * - 插槽自身不能做几何变换，translate/rotate/skew 都不能。因为插槽是用来进行用户交互的，如果它自己做几何变换，那么交互起来就不方便。
+ * - 插槽自身不能做几何变换，translate/rotate/scale/skew 都不能。因为插槽是用来进行用户交互的，如果它自己做几何变换，那么交互起来就不方便。
  * 
  * @author 大漠穷秋 <damoqiongqiu@126.com>
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
@@ -88,7 +92,7 @@ class LinkSlot {
         //step-3: cache rotation and translate of this.el
         this.rotation=rotation;
         this.translate=[transform[4],transform[5]];
-        
+
         //step-4: return result
         this.center=this.pointCache.get(this.name).position;
         return this.center;
