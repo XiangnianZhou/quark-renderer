@@ -8,7 +8,7 @@
  * @param  {Number}  lineWidth
  * @param  {Number}  x
  * @param  {Number}  y
- * @return {boolean}
+ * @return {Boolean}
  */
 export function containStroke(x0, y0, x1, y1, lineWidth, x, y) {
     if (lineWidth === 0) {

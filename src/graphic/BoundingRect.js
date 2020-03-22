@@ -131,7 +131,7 @@ class BoundingRect{
     /**
      * @method intersect
      * @param {(BoundingRect|Object)} b
-     * @return {boolean}
+     * @return {Boolean}
      */
     intersect(b) {
         if (!b) {

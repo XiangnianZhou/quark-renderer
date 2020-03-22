@@ -31,7 +31,7 @@ var _calcOut = [];
  * @param {HTMLElement} el DOM element.
  * @param {Event} e Mouse event or touch event.
  * @param {Object} out Get `out.qrX` and `out.qrY` as the result.
- * @param {boolean} [calculate=false] Whether to force calculate
+ * @param {Boolean} [calculate=false] Whether to force calculate
  *        the coordinates but not use ones provided by browser.
  */
 export function clientToLocal(el, e, out, calculate) {
@@ -193,7 +193,7 @@ export function getNativeEvent(e) {
  *
  * @param {HTMLElement} el DOM element.
  * @param {Event} [e] See `getNativeEvent`.
- * @param {boolean} [calculate=false] Whether to force calculate
+ * @param {Boolean} [calculate=false] Whether to force calculate
  *        the coordinates but not use ones provided by browser.
  * @return {UIEvent} The normalized native UIEvent.
  */
@@ -302,7 +302,7 @@ export var stop = isDomLevel2
  * for fault tolerance, See the `e.which` compatibility above.
  *
  * @param {MouseEvent} e
- * @return {boolean}
+ * @return {Boolean}
  */
 export function isMiddleOrRightButtonOnMouseUpDown(e) {
     return e.which === 2 || e.which === 3;

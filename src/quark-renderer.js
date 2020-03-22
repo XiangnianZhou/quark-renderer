@@ -185,7 +185,7 @@ class QuarkRenderer{
         this.globalAnimationMgr.start();
     
         /**
-         * @property {boolean}
+         * @property {Boolean}
          * @private
          */
         this._needRefresh=false;  

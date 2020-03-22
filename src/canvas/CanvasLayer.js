@@ -107,7 +107,7 @@ export default class CanvasLayer{
         this.clearColor = 0;
 
         /**
-         * @property {boolean} 是否开启动态模糊
+         * @property {Boolean} 是否开启动态模糊
          */
         this.motionBlur = false;
         
@@ -182,7 +182,7 @@ export default class CanvasLayer{
     /**
      * @method clear
      * 清空该层画布
-     * @param {boolean} [clearAll=false] Clear all with out motion blur
+     * @param {Boolean} [clearAll=false] Clear all with out motion blur
      * @param {Color} [clearColor]
      */
     clear(clearAll, clearColor) {

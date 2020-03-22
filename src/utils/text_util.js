@@ -575,7 +575,7 @@ function getTextXForPadding(x, textAlign, textPadding) {
 /**
  * @param {String} text
  * @param {Style} style
- * @return {boolean}
+ * @return {Boolean}
  */
 export function needDrawText(text, style) {
     return text != null

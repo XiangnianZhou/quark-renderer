@@ -8,9 +8,17 @@ import timsort from './utils/timsort';
 
 /**
  * @class qrenderer.core.Storage
- * 内容仓库 (M)，用来存储和管理画布上的所有对象，同时提供绘制和更新队列的功能。
- * 需要绘制的对象首先存储在 Storage 中，然后 Painter 类会从 Storage 中依次取出进行绘图。
- * 利用 Storage 作为内存中转站，对于不需要刷新的对象可以不进行绘制，从而可以提升整体性能。
+ * Global storage, has 3 core features:
+ * - Store and manage all the objects in QuarkRenderer instance.
+ * - Manage the displaylist.
+ * - Cooperate with Painter to render the elements. Painter will get the display list from Storage, in this case Storage is used as a transfer 
+ * station, we can skip the drawing process for those elements that do NOT need to be rendered, this will help us improve the performance.
+ * 
+ * 
+ * 全局仓库，有3个主要核心功能：
+ * - 存储和管理 QuarkRenderer 中的所有对象。
+ * - 管理显示列表。
+ * - 与 Painter 配合，渲染元素。Painter 会从 Storage 中获取显示列表进行绘图，利用 Storage 作为中转站，对于不需要刷新的对象可以不绘制，从而可以提升整体性能。
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 
@@ -20,18 +28,30 @@ import timsort from './utils/timsort';
 let Storage = function () { // jshint ignore:line
     /**
      * @private
+     * This is used to store the elements displayed in the canvas itself, not nested in other element.
+     * 
+     * 
+     * 存储直接放在画布上的对象，而不是嵌套在其它元素中的对象。
      * @property _roots
      */
-    this._roots = new Map();//直接放在画布上的对象为根对象
+    this._roots = new Map();
 
     /**
      * @private
+     * The display list.
+     * 
+     * 显示列表。
      * @property _displayList
      */
     this._displayList = [];
 
     /**
      * @private
+     * Length of display list.
+     * 
+     * 
+     * 显示列表的长度。
+     * 
      * @property _displayListLen
      */
     this._displayListLen = 0;
@@ -56,11 +76,21 @@ Storage.prototype = {
 
     /**
      * @method getDisplayList
-     * 返回所有图形的绘制队列
-     * @param {boolean} [needUpdate=false] 是否在返回前更新该数组
-     * @param {boolean} [includeIgnore=false] 是否包含 ignore 的数组, 在 needUpdate 为 true 的时候有效
-     *
-     * 详见{@link Displayable.prototype.updateDisplayList}
+     * Get the display list.
+     * 
+     * 
+     * 获取显示列表。
+     * 
+     * @param {Boolean} [needUpdate=false] 
+     * Wether update the list before returnning.
+     * 
+     * 
+     * 是否在返回前更新该数组。
+     * @param {Boolean} [includeIgnore=false] 
+     * Wether include the ignore array, this is valid when needUpdate is true.
+     * 
+     * 
+     * 是否包含 ignore 的数组, 在 needUpdate 为 true 的时候有效。
      * @return {Array<Displayable>}
      */
     getDisplayList: function (needUpdate, includeIgnore) {
@@ -73,10 +103,19 @@ Storage.prototype = {
 
     /**
      * @method updateDisplayList
-     * 更新图形的绘制队列。
-     * 每次绘制前都会调用，该方法会先深度优先遍历整个树，更新所有Group和Shape的变换并且把所有可见的Shape保存到数组中，
-     * 最后根据绘制的优先级（zlevel > z > 插入顺序）排序得到绘制队列
-     * @param {boolean} [includeIgnore=false] 是否包含 ignore 的数组
+     * Update the display list, will be invoked before each redering process. 
+     * This method will traverse the whole tree using deep first method, update all the transformations of Groups and Shapes, 
+     * save all the visiable Shapes into an array. Finally, the array is sorted by the piority, zlevel > z > insert order.
+     * 
+     * 
+     * 更新显示列表，每次绘制前都会调用。
+     * 该方法会先深度优先遍历整个树，更新所有 Group 和 Shape 的变换并且把所有可见的Shape保存到数组中，
+     * 最后根据优先级排序得到绘制队列，zlevel > z > 插入顺序。
+     * @param {Boolean} [includeIgnore=false] 
+     * Wether include the ignore array.
+     * 
+     * 
+     * 是否包含 ignore 的数组。
      */
     updateDisplayList: function (includeIgnore) {
         this._displayListLen = 0;
@@ -88,6 +127,22 @@ Storage.prototype = {
 
         displayList.length = this._displayListLen;
         env.canvasSupported && timsort(displayList, this.displayableSortFunc);
+    },
+
+    displayableSortFunc: function(a, b) {
+        if (a.qlevel === b.qlevel) {
+            if (a.z === b.z) {
+                // if (a.z2 === b.z2) {
+                //     // FIXME Slow has renderidx compare
+                //     // http://stackoverflow.com/questions/20883421/sorting-in-javascript-should-every-compare-function-have-a-return-0-statement
+                //     // https://github.com/v8/v8/blob/47cce544a31ed5577ffe2963f67acb4144ee0232/src/js/array.js#L1012
+                //     return a.__renderidx - b.__renderidx;
+                // }
+                return a.z2 - b.z2;
+            }
+            return a.z - b.z;
+        }
+        return a.qlevel - b.qlevel;
     },
 
     /**
@@ -107,7 +162,7 @@ Storage.prototype = {
 
         let userSetClipPath = el.clipPath;
         if (userSetClipPath) {
-            // FIXME 效率影响
+            // FIXME:performance issue here
             if (clipPaths) {
                 clipPaths = clipPaths.slice();
             }else {
@@ -134,7 +189,7 @@ Storage.prototype = {
             for (let i = 0; i < children.length; i++) {
                 let child = children[i];
                 // Force to mark as dirty if group is dirty
-                // FIXME __dirtyPath ?
+                // FIXME: __dirtyPath ?
                 if (el.__dirty) {
                     child.__dirty = true;
                 }
@@ -145,7 +200,10 @@ Storage.prototype = {
 
     /**
      * @method addToRoot
-     * 添加元素到根节点
+     * Add element to root.
+     * 
+     * 
+     * 添加元素到根节点。
      * @param {Element} el
      */
     addToRoot: function (el) {
@@ -158,8 +216,11 @@ Storage.prototype = {
     },
 
     /**
-     * @method
-     * 删除指定元素
+     * @method delFromRoot
+     * Delete element from root.
+     * 
+     * 
+     * 删除指定元素。
      * @param {string|Array.<String>} [el] 如果为空清空整个Storage
      */
     delFromRoot: function (el) {
@@ -185,6 +246,10 @@ Storage.prototype = {
 
     /**
      * @method addToStorage
+     * Add element to Storage.
+     * 
+     * 
+     * 把元素添加到 Storage 中。
      * @param {Element} el 
      */
     addToStorage: function (el) {
@@ -196,6 +261,10 @@ Storage.prototype = {
 
     /**
      * @method delFromStorage
+     * Delete element from Storage.
+     * 
+     * 
+     * 从 Storage 中删除元素。
      * @param {Element} el 
      */
     delFromStorage: function (el) {
@@ -209,27 +278,14 @@ Storage.prototype = {
 
     /**
      * @method dispose
-     * 清空并且释放Storage
+     * Clear and dispose Storage.
+     * 
+     * 
+     * 清空并且释放 Storage。
      */
     dispose: function () {
         this._renderList =null;
         this._roots = null;
-    },
-
-    displayableSortFunc: function(a, b) {
-        if (a.qlevel === b.qlevel) {
-            if (a.z === b.z) {
-                // if (a.z2 === b.z2) {
-                //     // FIXME Slow has renderidx compare
-                //     // http://stackoverflow.com/questions/20883421/sorting-in-javascript-should-every-compare-function-have-a-return-0-statement
-                //     // https://github.com/v8/v8/blob/47cce544a31ed5577ffe2963f67acb4144ee0232/src/js/array.js#L1012
-                //     return a.__renderidx - b.__renderidx;
-                // }
-                return a.z2 - b.z2;
-            }
-            return a.z - b.z;
-        }
-        return a.qlevel - b.qlevel;
     }
 };
 

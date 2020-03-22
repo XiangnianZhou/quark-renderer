@@ -215,7 +215,7 @@ PathProxy.prototype = {
      * @param  {Number} r
      * @param  {Number} startAngle
      * @param  {Number} endAngle
-     * @param  {boolean} anticlockwise
+     * @param  {Boolean} anticlockwise
      * @return {PathProxy}
      */
     arc: function (cx, cy, r, startAngle, endAngle, anticlockwise) {
@@ -320,7 +320,7 @@ PathProxy.prototype = {
 
     /**
      * @method len
-     * @return {boolean}
+     * @return {Boolean}
      */
     len: function () {
         return this._len;
@@ -409,7 +409,7 @@ PathProxy.prototype = {
 
     /**
      * If needs js implemented dashed line
-     * @return {boolean}
+     * @return {Boolean}
      * @private
      */
     _needsDash: function () {
