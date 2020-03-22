@@ -25,22 +25,22 @@ let pageEventSupported = env.domSupported;
  *
  * The use case of page events can be, for example, if we are implementing a dragging feature:
  * ```js
- * qr.on('mousedown', function (event) {
+ * qr.eventDispatcher.on('mousedown', function (event) {
  *     let dragging = true;
  *
  *     // Listen to `pagemousemove` and `pagemouseup` rather than `mousemove` and `mouseup`,
  *     // because `mousemove` and `mouseup` will not be triggered when the pointer is out
  *     // of the qrenderer area.
- *     qr.on('pagemousemove', handleMouseMove);
- *     qr.on('pagemouseup', handleMouseUp);
+ *     qr.eventDispatcher.on('pagemousemove', handleMouseMove);
+ *     qr.eventDispatcher.on('pagemouseup', handleMouseUp);
  *
  *     function handleMouseMove(event) {
  *         if (dragging) { ... }
  *     }
  *     function handleMouseUp(event) {
  *         dragging = false; ...
- *         qr.off('pagemousemove', handleMouseMove);
- *         qr.off('pagemouseup', handleMouseUp);
+ *         qr.eventDispatcher.off('pagemousemove', handleMouseMove);
+ *         qr.eventDispatcher.off('pagemouseup', handleMouseUp);
  *     }
  * });
  * ```

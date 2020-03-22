@@ -215,16 +215,14 @@ class QuarkRenderer{
             // Or it will cause qrenderer refreshes again and again.
             this._needRefresh = this._needRefreshHover = false;
             this.painter.refresh && this.painter.refresh();
-            // Avoid trigger qr.refresh in Element#beforeUpdate hook
-            this._needRefresh = this._needRefreshHover = false;
-            this.trigger('rendered');
         }
         if (this._needRefreshHover) {//only try refreshing hovered elements
             this._needRefresh = this._needRefreshHover = false;
             this.painter.refreshHover && this.painter.refreshHover();
-            this._needRefresh = this._needRefreshHover = false;
-            this.trigger('rendered');
         }
+        // Avoid trigger qr.refresh in Element#beforeUpdate hook
+        this._needRefresh = this._needRefreshHover = false;
+        this.eventDispatcher.trigger('rendered');
     }
 
     /**
@@ -380,39 +378,6 @@ class QuarkRenderer{
      */
     setCursorStyle(cursorStyle) {
         this.eventDispatcher.setCursorStyle(cursorStyle);
-    }
-
-    /**
-     * @method
-     * Bind event
-     *
-     * @param {String} eventName Event name
-     * @param {Function} eventDispatcher Handler function
-     * @param {Object} [context] Context object
-     */
-    on(eventName, eventDispatcher, context) {
-        this.eventDispatcher.on(eventName, eventDispatcher, context);
-    }
-
-    /**
-     * @method
-     * Unbind event
-     * @param {String} eventName Event name
-     * @param {Function} [eventDispatcher] Handler function
-     */
-    off(eventName, eventDispatcher) {
-        this.eventDispatcher.off(eventName, eventDispatcher);
-    }
-
-    /**
-     * @method
-     * Trigger event manually
-     *
-     * @param {String} eventName Event name
-     * @param {event=} event Event object
-     */
-    trigger(eventName, event) {
-        this.eventDispatcher.trigger(eventName, event);
     }
 
     /**

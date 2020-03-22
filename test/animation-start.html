@@ -104,7 +104,7 @@
                 }
             }, throttleRate);
 
-            qr.on('mousemove', function (e) {
+            qr.eventDispatcher.on('mousemove', function (e) {
                 update([e.offsetX, e.offsetY]);
             });
         }

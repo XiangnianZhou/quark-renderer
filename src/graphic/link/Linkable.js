@@ -1,5 +1,6 @@
 import LinkSlot from './LinkSlot';
 import LinkMgr from './LinkMgr';
+import Line from '../line/Line';
 import * as vectorUtil from '../../utils/vector_util';
 
 /**
@@ -33,16 +34,14 @@ Linkable.prototype={
         if(!this.linkable){
             return;
         }
-        if(this.showLinkSlots){
-            this.renderLinkSlots(this.ctx, this.prevEl);
-        }
+        this.createLinkSlots(this.ctx, this.prevEl);
         this.linkSlots.forEach((slot,key,map)=>{
             slot.calcParameters();
             slot.trigger("afterRender",slot);
         });
     },
 
-    renderLinkSlots:function(ctx, prevEl){
+    createLinkSlots:function(ctx, prevEl){
         ['T','R','B','L'].forEach((name,index)=>{
             let slot = this.linkSlots.get(name);
             if(!slot){
@@ -52,8 +51,11 @@ Linkable.prototype={
                 });
                 this.linkSlots.set(name,slot);
             }
-            slot.render(ctx, prevEl);
+            if(this.showLinkSlots){
+                slot.render(ctx, prevEl);
+            }
         });
+        this.trigger("afterSlotRender",this);
     },
 
     showSlots:function(){
@@ -95,6 +97,49 @@ Linkable.prototype={
             }
         }
         return {isOverlap:false};;
+    },
+
+    /**
+     * @method createLink
+     * Link two linkables programmaticly.
+     * 
+     * 
+     * 用程序的方式把两个 linkable 元素连接起来。
+     * 
+     * @param {*} linkable1 
+     * @param {*} linkable2 
+     * @param {*} position1 
+     * @param {*} position2 
+     */
+    createLink(linkable1, linkable2, position1='R', position2='L'){
+        let line=new Line({
+            position: [0, 0],
+            draggable: true,
+            isCable:true,
+            style: {
+                stroke: 'rgba(220, 20, 60, 0.8)',
+                lineWidth: 2
+            },
+            shape: {
+                x1: 0,
+                y1: 0,
+                x2: 10,
+                y2: 0,
+                percent: 1
+            }
+        });
+        this.__qr.add(line);
+
+        this.__qr.eventDispatcher.one("rendered",()=>{
+            let slot1=this.linkSlots.get(position1);
+            let slot2=linkable2.linkSlots.get(position2);
+
+            let control1=line.startControl;
+            let control2=line.endControl;
+    
+            control1.setSlot(slot1);
+            control2.setSlot(slot2);
+        },this);
     }
 }
 

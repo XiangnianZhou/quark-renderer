@@ -86,15 +86,16 @@ class LinkControl {
             return;
         }
         this.slot=slot;
-        slot.on("afterRender",this.slotAfterRenderHandler,this);
+        this.updatePosition();
+        slot.on("afterRender",this.updatePosition,this);
     }
 
     deleteSlot(){
-        this.slot&&this.slot.off("afterRender",this.slotAfterRenderHandler,this);
+        this.slot&&this.slot.off("afterRender",this.updatePosition,this);
         this.slot=null;
     }
 
-    slotAfterRenderHandler(){
+    updatePosition(){
         if(this.dragging){
             return;
         }
