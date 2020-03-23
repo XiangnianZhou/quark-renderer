@@ -28,15 +28,15 @@ class LinkSlot {
         this.id=guid();
         this.el=null;
         this.center = [0,0];
-        this.radius = 8;
+        this.radius = 6;
         this.name = 'T';                                //TOP, LEFT, RIGHT, BOTTOM
         this.cursor = 'crosshair';
         this.pointCache = new Map();
         this.translate=[0,0];
         this.hasTransformControls = false;
-        this.lineWidth = 2;
+        this.lineWidth = 1;
         this.strokeStyle = '#000000';
-        this.fillStyle = '#00ff00';
+        this.fillStyle = '#ffff00';
 
         classUtil.inheritProperties(this,Eventful,this.options);
         classUtil.copyOwnProperties(this,options);

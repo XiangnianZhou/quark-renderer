@@ -11,14 +11,14 @@ class LinkControl {
         this.id=guid();
         this.el = null;
         this.center = [0,0];
-        this.radius = 8;
+        this.radius = 6;
         this.name = 'START';            //START, END
         this.cursor = 'crosshair';
         this.translate=[0,0];
         this.hasTransformControls = false;
-        this.lineWidth = 2;
+        this.lineWidth = 1;
         this.strokeStyle = '#000000';
-        this.fillStyle = '#00ff00';
+        this.fillStyle = '#ffff00';
         this.slot=null;
         this.dragging=false;
 
