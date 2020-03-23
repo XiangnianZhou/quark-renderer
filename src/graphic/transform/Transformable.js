@@ -354,10 +354,10 @@ Transformable.prototype={
     /**
      * @method getOuterBoundingRect
      * Get the bounding rect in global space, this rect will not apply transformation itself, but it will 
-     * wrap the transformed element.
+     * surround the transformed element.
      * 
      * 
-     * 全局坐标系中的边界矩形，此矩形本身不进行几何变换，但是会包裹变形之后的元素。
+     * 全局坐标系中的边界矩形，此矩形本身不进行几何变换，但是会包围变形之后的元素。
      */
     getOuterBoundingRect:function(){
         let rect=this.getBoundingRect();
