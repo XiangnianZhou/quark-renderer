@@ -148,13 +148,13 @@ class Group extends Rect{
         }
         
         if(group.resizeStrategy==='restrict'){
-            let tempWidth=childRect.x+childRect.width-groupRect.x;
+            let tempWidth=childRect.x2-groupRect.x1;
             if(tempWidth>groupOriginalRect.width){
                 this.position[0]=groupOriginalRect.width-childRect.width;
                 return false;
             }
 
-            let tempHeight=childRect.y+childRect.height-groupRect.y;
+            let tempHeight=childRect.y2-groupRect.y1;
             if(tempHeight>groupOriginalRect.height){
                 this.position[1]=groupOriginalRect.height-childRect.height;
                 return false;
@@ -171,14 +171,14 @@ class Group extends Rect{
         let newHeight=groupOriginalRect.height;
 
         if(child.position[0]>=0){
-            let temp=childRect.x+childRect.width-groupRect.x;
+            let temp=childRect.x2-groupRect.x1;
             if(temp>groupOriginalRect.width){
                 newWidth=temp;
             }
         }
 
         if(child.position[1]>=0){
-            let temp=childRect.y+childRect.height-groupRect.y;
+            let temp=childRect.y2-groupRect.y1;
             if(temp>groupOriginalRect.height){
                 newHeight=temp;
             }

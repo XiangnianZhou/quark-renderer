@@ -379,8 +379,10 @@ Transformable.prototype={
         let maxY=mathMax(points[0][1],points[1][1],points[2][1],points[3][1]);
 
         return {
-            x:minX,
-            y:minY,
+            x1:minX,
+            y1:minY,
+            x2:maxX,
+            x2:maxY,
             width:mathAbs(maxX-minX),
             height:mathAbs(maxY-minY)
         };

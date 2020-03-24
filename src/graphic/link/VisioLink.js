@@ -1,4 +1,6 @@
 import Polyline from '../line/Polyline';
+import GeoPoint from '../../geometric/GeoPoint';
+import GeoLine from '../../geometric/GeoLine';
 
 /**
  * @class qrenderer.graphic.link.VisioLink
@@ -21,8 +23,8 @@ export default class VisioLink extends Polyline{
          */
         this.type = 'vosiolink';
         this.escapeDistance = 30;
-        this.startPoint = this.firstPoint();
-        this.endPoint = this.lastPoint();
+        this.startPoint = new GeoPoint(...this.firstPoint());
+        this.endPoint = new GeoPoint(...this.lastPoint());
         this.startBounding = null;      //bounding rect of start shape
         this.endBounding = null;        //bounding rect of end shape
     }
@@ -55,10 +57,10 @@ export default class VisioLink extends Polyline{
 
         //find start exit point
         if(this.startBounding != null) {
-            potentialExits[0] = [this.startPoint[0], this.startBounding.y-this.escapeDistance];                                 //north
-            potentialExits[1] = [this.startBounding.x+this.startBounding.width+this.figureEscapeDistance, this.startPoint[1]];  //east
-            potentialExits[2] = [this.startPoint[0], this.startBounding.y+this.startBounding.height+this.figureEscapeDistance]; //south
-            potentialExits[3] = [this.startBounding.x-this.figureEscapeDistance, this.startPoint[1]];                           //west
+            potentialExits[0] = new GeoPoint(this.startPoint.x, this.startBounding.y-this.escapeDistance);                                 //north
+            potentialExits[1] = new GeoPoint(this.startBounding.x+this.startBounding.width+this.figureEscapeDistance, this.startPoint.y);  //east
+            potentialExits[2] = new GeoPoint(this.startPoint.x, this.startBounding.y+this.startBounding.height+this.figureEscapeDistance); //south
+            potentialExits[3] = new GeoPoint(this.startBounding.x-this.figureEscapeDistance, this.startPoint.y);                           //west
             //pick closest exit point
             startExitPoint = potentialExits[0];
             for(let i = 1; i < potentialExits.length; i++) {
@@ -70,10 +72,10 @@ export default class VisioLink extends Polyline{
 
         //find end exit point
         if (this.endBounding != null) {
-            potentialExits[0] = [this.endPoint[0], this.endPoint[1]-this.figureEscapeDistance];                             //north
-            potentialExits[1] = [this.endBounding.x+this.endBounding.width+this.figureEscapeDistance, this.endPoint[1]];    //east
-            potentialExits[2] = [this.endPoint[0], this.endBounding.y+this.endBounding.height+this.figureEscapeDistance];   //south
-            potentialExits[3] = [this.endBounding[0]-this.figureEscapeDistance, this.endPoint[1]];                          //west
+            potentialExits[0] = new GeoPoint(this.endPoint.x, this.endPoint.y-this.figureEscapeDistance);                              //north
+            potentialExits[1] = new GeoPoint(this.endBounding.x+this.endBounding.width+this.figureEscapeDistance, this.endPoint.y);    //east
+            potentialExits[2] = new GeoPoint(this.endPoint.x, this.endBounding.y+this.endBounding.height+this.figureEscapeDistance);   //south
+            potentialExits[3] = new GeoPoint(this.endBounding.x-this.figureEscapeDistance, this.endPoint.y);                           //west
             //pick closest exit point
             endExitPoint = potentialExits[0];
             for (let i = 1; i < potentialExits.length; i++) {
@@ -101,26 +103,26 @@ export default class VisioLink extends Polyline{
 
         //first variant
         let s1_1 = [...s1];
-        s1_1.splice(gapIndex + 1, 0, [s1_1[gapIndex][0], s1_1[gapIndex + 1][1]]);
+        s1_1.splice(gapIndex + 1, 0, [s1_1[gapIndex].x, s1_1[gapIndex + 1].y]);
         solutions.push(['s1', 's1_1', s1_1]);
 
         //second variant
         let s1_2 = [...s1];
-        s1_2.splice(gapIndex + 1, 0, [s1_2[gapIndex + 1][0], s1_2[gapIndex][1]]);
+        s1_2.splice(gapIndex + 1, 0, [s1_2[gapIndex + 1].x, s1_2[gapIndex].y]);
         solutions.push(['s1', 's1_2', s1_2]);
 
         //S2
         //Variant I
         let s2_1 = [...s1];
-        let s2_1_2 = [(s2_1[gapIndex][0] + s2_1[gapIndex + 1][0]) / 2, s2_1[gapIndex][1]];
-        let s2_1_2 = [(s2_1[gapIndex][0] + s2_1[gapIndex + 1][0]) / 2, s2_1[gapIndex + 1][1]];
+        let s2_1_2 = [(s2_1[gapIndex].x + s2_1[gapIndex + 1].x) / 2, s2_1[gapIndex].y];
+        let s2_1_2 = [(s2_1[gapIndex].x + s2_1[gapIndex + 1].x) / 2, s2_1[gapIndex + 1].y];
         s2_1.splice(gapIndex + 1, 0, s2_1_1, s2_1_2);
         solutions.push(['s2', 's2_1', s2_1]);
 
         //Variant II
         let s2_2 = [...s1];
-        let s2_2_1 = [s2_2[gapIndex][0], (s2_2[gapIndex][1] + s2_2[gapIndex + 1][1]) / 2];
-        let s2_2_2 = [s2_2[gapIndex + 1][0], (s2_2[gapIndex][1] + s2_2[gapIndex + 1][1]) / 2];
+        let s2_2_1 = [s2_2[gapIndex].x, (s2_2[gapIndex].y + s2_2[gapIndex + 1].y) / 2];
+        let s2_2_2 = [s2_2[gapIndex + 1].x, (s2_2[gapIndex].y + s2_2[gapIndex + 1].y) / 2];
         s2_2.splice(gapIndex + 1, 0, s2_2_1, s2_2_2);
         solutions.push(['s2', 's2_2', s2_2]);
 
@@ -128,7 +130,7 @@ export default class VisioLink extends Polyline{
         let s2_3 = [...s1];
         //find the amount (stored in delta) of pixels we need to move right so no intersection with a figure will be present
         //add points X coordinates to be able to generate Variant III even in the absence of figures :p
-        let eastExits = [s2_3[gapIndex][0] + 20, s2_3[gapIndex + 1][0] + 20];
+        let eastExits = [s2_3[gapIndex].x + 20, s2_3[gapIndex + 1].x + 20];
         if (this.startBounding) {
             eastExits.push(this.startBounding.x+this.startBounding.width + 20);
         }
@@ -136,8 +138,8 @@ export default class VisioLink extends Polyline{
             eastExits.push(this.endBounding.x+this.endBounding.width + 20);
         }
         let eastExit = this.max(eastExits);
-        let s2_3_1 = [eastExit, s2_3[gapIndex][1]];
-        let s2_3_2 = [eastExit, s2_3[gapIndex + 1][1]];
+        let s2_3_1 = [eastExit, s2_3[gapIndex].y];
+        let s2_3_2 = [eastExit, s2_3[gapIndex + 1].y];
         s2_3.splice(gapIndex + 1, 0, s2_3_1, s2_3_2);
         solutions.push(['s2', 's2_3', s2_3]);
 
@@ -145,7 +147,7 @@ export default class VisioLink extends Polyline{
         let s2_4 = [...s1];
         //find the amount (stored in delta) of pixels we need to move up so no intersection with a figure will be present
         //add points y coordinates to be able to generate Variant III even in the absence of figures :p
-        let northExits = [s2_4[gapIndex][1] - 20, s2_4[gapIndex + 1][1] - 20];
+        let northExits = [s2_4[gapIndex].y - 20, s2_4[gapIndex + 1].y - 20];
         if (this.startBounding) {
             northExits.push(this.startBounding.y - 20);
         }
@@ -153,8 +155,8 @@ export default class VisioLink extends Polyline{
             northExits.push(this.endBounding.y - 20);
         }
         let northExit = this.min(northExits);
-        let s2_4_1 = [s2_4[gapIndex][0], northExit];
-        let s2_4_2 = [s2_4[gapIndex + 1][0], northExit];
+        let s2_4_1 = [s2_4[gapIndex].x, northExit];
+        let s2_4_2 = [s2_4[gapIndex + 1].x, northExit];
         s2_4.splice(gapIndex + 1, 0, s2_4_1, s2_4_2);
         solutions.push(['s2', 's2_4', s2_4]);
 
@@ -162,7 +164,7 @@ export default class VisioLink extends Polyline{
         let s2_5 = [...s1];
         //find the amount (stored in delta) of pixels we need to move left so no intersection with a figure will be present
          //add points x coordinates to be able to generate Variant III even in the absence of figures :p
-        let westExits = [s2_5[gapIndex][0] - 20, s2_5[gapIndex + 1][0] - 20];
+        let westExits = [s2_5[gapIndex].x - 20, s2_5[gapIndex + 1].x - 20];
         if (this.startBounding) {
             westExits.push(this.startBounding.x - 20);
         }
@@ -170,8 +172,8 @@ export default class VisioLink extends Polyline{
             westExits.push(this.endBounding.x - 20);
         }
         let westExit = this.min(westExits);
-        let s2_5_1 = [westExit, s2_5[gapIndex][1]];
-        let s2_5_2 = [westExit, s2_5[gapIndex + 1][1]];
+        let s2_5_1 = [westExit, s2_5[gapIndex].y];
+        let s2_5_2 = [westExit, s2_5[gapIndex + 1].y];
         s2_5.splice(gapIndex + 1, 0, s2_5_1, s2_5_2);
         solutions.push(['s2', 's2_5', s2_5]);
 
@@ -179,7 +181,7 @@ export default class VisioLink extends Polyline{
         let s2_6 = [...s1];
         //find the amount (stored in delta) of pixels we need to move down so no intersection with a figure will be present
         //add points y coordinates to be able to generate Variant III even in the absence of figures :p
-        let southExits = [s2_6[gapIndex][1] + 20, s2_6[gapIndex + 1][1] + 20];
+        let southExits = [s2_6[gapIndex].y + 20, s2_6[gapIndex + 1].y + 20];
         if (this.startBounding) {
             southExits.push(this.startBounding.y+this.startBounding.height + 20);
         }
@@ -187,8 +189,8 @@ export default class VisioLink extends Polyline{
             southExits.push(this.endBounding.y+this.endBounding.height + 20);
         }
         let southExit = this.max(southExits);
-        let s2_6_1 = [s2_6[gapIndex][0], southExit];
-        let s2_6_2 = [s2_6[gapIndex + 1][0], southExit];
+        let s2_6_1 = [s2_6[gapIndex].x, southExit];
+        let s2_6_2 = [s2_6[gapIndex + 1].x, southExit];
         s2_6.splice(gapIndex + 1, 0, s2_6_1, s2_6_2);
         solutions.push(['s2', 's2_6', s2_6]);
 
@@ -214,7 +216,7 @@ export default class VisioLink extends Polyline{
         solutions = orthogonalSolution;
 
         //2. filter backward solutions, do not allow start and end points to coincide - ignore them
-        if (startPoint.equals(endPoint)) {
+        if (this.startPoint.equals(this.endPoint)) {
             //nothing to do...
         } else {
             let forwardSolutions = [];
@@ -241,18 +243,18 @@ export default class VisioLink extends Polyline{
              * If any bounds just trim the solution. So we avoid the strange case when a connection 
              * startes from a point on a figure and ends inside of the same figure, but not on a connection point.
              */
-            if (eBounds || sBounds) {
+            if (this.endBounding || this.startBounding) {
                 //i0nnerLines = innerLines.slice(0, innerLines.length - 1);
                 innerLines = innerLines.slice(1, innerLines.length - 1);
             }
 
             //now test for intersection
-            if (sBounds) {
-                intersect = intersect || this.polylineIntersectsRectangle(innerLines, sBounds);
+            if (this.startBounding) {
+                intersect = intersect || this.polylineIntersectsRectangle(innerLines, this.startBounding);
             }
 
-            if (eBounds) {
-                intersect = intersect || this.polylineIntersectsRectangle(innerLines, eBounds);
+            if (this.endBounding) {
+                intersect = intersect || this.polylineIntersectsRectangle(innerLines, this.endBounding);
             }
             
             if (!intersect) {
@@ -306,7 +308,7 @@ export default class VisioLink extends Polyline{
             return true;
         }
         for (let i = 0; i < v.length - 1; i++) {
-            if (v[i][0] != v[i + 1][0] && v[i][1] != v[i + 1][1]) {
+            if (v[i].x != v[i + 1].x && v[i].y != v[i + 1].y) {
                 return false;
             }
         }
@@ -387,17 +389,18 @@ export default class VisioLink extends Polyline{
     polylineIntersectsRectangle(points, bounds, closedPolyline) {
         //get the 4 lines/segments represented by the bounds
         let lines = [];
-        lines.push(new Line(new Point(bounds[0], bounds[1]), new Point(bounds[2], bounds[1])));
-        lines.push(new Line(new Point(bounds[2], bounds[1]), new Point(bounds[2], bounds[3])));
-        lines.push(new Line(new Point(bounds[2], bounds[3]), new Point(bounds[0], bounds[3])));
-        lines.push(new Line(new Point(bounds[0], bounds[3]), new Point(bounds[0], bounds[1])));
+
+        lines.push(new GeoLine(new GeoPoint(bounds[0], bounds[1]), new GeoPoint(bounds[2], bounds[1])));
+        lines.push(new GeoLine(new GeoPoint(bounds[2], bounds[1]), new GeoPoint(bounds[2], bounds[3])));
+        lines.push(new GeoLine(new GeoPoint(bounds[2], bounds[3]), new GeoPoint(bounds[0], bounds[3])));
+        lines.push(new GeoLine(new GeoPoint(bounds[0], bounds[3]), new GeoPoint(bounds[0], bounds[1])));
 
         for (let k = 0; k < points.length - 1; k++) {
             //create a line out of each 2 consecutive points
-            let tempLine = new Line(points[k], points[k + 1]);
+            let tempLine = new GeoLine(points[k], points[k + 1]);
             //see if that line intersect any of the line on bounds border
             for (let i = 0; i < lines.length; i++) {
-                if (lineIntersectsLine(tempLine, lines[i])) {
+                if (this.lineIntersectsLine(tempLine, lines[i])) {
                     return true;
                 }
             }
@@ -406,10 +409,10 @@ export default class VisioLink extends Polyline{
         //check the closed figure - that is last point connected to the first
         if (closedPolyline) {
             //create a line out of each 2 consecutive points
-            let tempLine1 = new Line(points[points.length - 1], points[0]);
+            let tempLine1 = new GeoLine(points[points.length - 1], points[0]);
             //see if that line intersect any of the line on bounds border
             for (let j = 0; j < lines.length; j++) {
-                if (lineIntersectsLine(tempLine1, lines[j])) {
+                if (this.lineIntersectsLine(tempLine1, lines[j])) {
                     return true;
                 }
             }
@@ -433,14 +436,14 @@ export default class VisioLink extends Polyline{
         }
         let score = 0;
         for (let i = 1; i < v.length - 1; i++) {
-            if(v[i - 1][0] == v[i][0] && v[i][0] == v[i + 1][0]) { //on the same vertical
-                if (this.signum(v[i + 1][1] - v[i][1]) == this.signum(v[i][1] - v[i - 1][1])) { //same direction
+            if(v[i - 1].x == v[i].x && v[i].x == v[i + 1].x) { //on the same vertical
+                if (this.signum(v[i + 1].y - v[i].y) == this.signum(v[i].y - v[i - 1].y)) { //same direction
                     score++;
                 } else { //going back - no good
                     return -1;
                 }
-            }else if(v[i - 1][1] == v[i][1] && v[i][1] == v[i + 1][1]) { //on the same horizontal
-                if (this.signum(v[i + 1][0] - v[i][0]) == this.signum(v[i][0] - v[i - 1][0])) { //same direction
+            }else if(v[i - 1].y == v[i].y && v[i].y == v[i + 1].y) { //on the same horizontal
+                if (this.signum(v[i + 1].x - v[i].x) == this.signum(v[i].x - v[i - 1].x)) { //same direction
                     score++;
                 } else { //going back - no good
                     return -1;
@@ -478,15 +481,15 @@ export default class VisioLink extends Polyline{
             return true;
         }
         for (let i = 0; i < v.length - 2; i++) {
-            if (v[i][0] == v[i + 1][0] && v[i + 1][0] == v[i + 2][0]) {//on the same vertical
-                if (this.signum(v[i + 1][1] - v[i][1]) != 0) {//test only we have a progressing path
-                    if (this.signum(v[i + 1][1] - v[i][1]) == -1 * this.signum(v[i + 2][1] - v[i + 1][1])) {//going back (ignore zero)
+            if (v[i].x == v[i + 1].x && v[i + 1].x == v[i + 2].x) {//on the same vertical
+                if (this.signum(v[i + 1].y - v[i].y) != 0) {//test only we have a progressing path
+                    if (this.signum(v[i + 1].y - v[i].y) == -1 * this.signum(v[i + 2].y - v[i + 1].y)) {//going back (ignore zero)
                         return false;
                     }
                 }
-            } else if (v[i][1] == v[i + 1][1] && v[i + 1][1] == v[i + 2][1]) {//on the same horizontal
-                if (this.signum(v[i + 1][0] - v[i][0]) != 0) {//test only we have a progressing path
-                    if (this.signum(v[i + 1][0] - v[i][0]) == -1 * this.signum(v[i + 2][0] - v[i + 1][0])) {//going back (ignore zero)
+            } else if (v[i].y == v[i + 1].y && v[i + 1].y == v[i + 2].y) {//on the same horizontal
+                if (this.signum(v[i + 1].x - v[i].x) != 0) {//test only we have a progressing path
+                    if (this.signum(v[i + 1].x - v[i].x) == -1 * this.signum(v[i + 2].x - v[i + 1].x)) {//going back (ignore zero)
                         return false;
                     }
                 }
@@ -506,7 +509,7 @@ export default class VisioLink extends Polyline{
      * @return {Number} - the distance between those 2 points. It is always positive.
      */
     distance(p1, p2) {
-        return Math.sqrt(Math.pow(p1[0] - p2[0], 2) + Math.pow(p1[1] - p2[1], 2));
+        return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
     }
 
     /**
