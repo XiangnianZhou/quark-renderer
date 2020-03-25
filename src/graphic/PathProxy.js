@@ -16,7 +16,7 @@ import {mathMin,mathMax,mathCos,mathSin,mathSqrt,mathAbs} from '../utils/constan
  * @author Yi Shen (http://www.github.com/pissang)
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-var CMD = {
+let CMD = {
     M: 1,
     L: 2,
     C: 3,
@@ -26,17 +26,17 @@ var CMD = {
     R: 7
 };
 
-var min1 = [];
-var max1 = [];
-var min2 = [];
-var max2 = [];
+let min1 = [];
+let max1 = [];
+let min2 = [];
+let max2 = [];
 
-var hasTypedArray = typeof Float32Array !== 'undefined';
+let hasTypedArray = typeof Float32Array !== 'undefined';
 
 /**
  * @method constructor PathProxy
  */
-var PathProxy = function (notSaveData) {
+let PathProxy = function (notSaveData) {
 
     this._saveData = !(notSaveData || false);
 
@@ -149,7 +149,7 @@ PathProxy.prototype = {
      * @return {PathProxy}
      */
     lineTo: function (x, y) {
-        var exceedUnit = mathAbs(x - this._xi) > this._ux
+        let exceedUnit = mathAbs(x - this._xi) > this._ux
             || mathAbs(y - this._yi) > this._uy
             // Force draw the first segment
             || this._len < 5;
@@ -251,9 +251,9 @@ PathProxy.prototype = {
     closePath: function () {
         this.addData(CMD.Z);
 
-        var ctx = this._ctx;
-        var x0 = this._x0;
-        var y0 = this._y0;
+        let ctx = this._ctx;
+        let x0 = this._x0;
+        let y0 = this._y0;
         if (ctx) {
             this._needsDash() && this._dashedLineTo(x0, y0);
             ctx.closePath();
@@ -298,8 +298,8 @@ PathProxy.prototype = {
 
             this._dashIdx = 0;
 
-            var lineDashSum = 0;
-            for (var i = 0; i < lineDash.length; i++) {
+            let lineDashSum = 0;
+            for (let i = 0; i < lineDash.length; i++) {
                 lineDashSum += lineDash[i];
             }
             this._dashSum = lineDashSum;
@@ -332,13 +332,13 @@ PathProxy.prototype = {
      */
     setData: function (data) {
 
-        var len = data.length;
+        let len = data.length;
 
         if (!(this.data && this.data.length === len) && hasTypedArray) {
             this.data = new Float32Array(len);
         }
 
-        for (var i = 0; i < len; i++) {
+        for (let i = 0; i < len; i++) {
             this.data[i] = data[i];
         }
 
@@ -354,18 +354,18 @@ PathProxy.prototype = {
         if (!(path instanceof Array)) {
             path = [path];
         }
-        var len = path.length;
-        var appendSize = 0;
-        var offset = this._len;
-        for (var i = 0; i < len; i++) {
+        let len = path.length;
+        let appendSize = 0;
+        let offset = this._len;
+        for (let i = 0; i < len; i++) {
             appendSize += path[i].len();
         }
         if (hasTypedArray && (this.data instanceof Float32Array)) {
             this.data = new Float32Array(offset + appendSize);
         }
-        for (var i = 0; i < len; i++) {
-            var appendPathData = path[i].data;
-            for (var k = 0; k < appendPathData.length; k++) {
+        for (let i = 0; i < len; i++) {
+            let appendPathData = path[i].data;
+            for (let k = 0; k < appendPathData.length; k++) {
                 this.data[offset++] = appendPathData[k];
             }
         }
@@ -382,14 +382,14 @@ PathProxy.prototype = {
             return;
         }
 
-        var data = this.data;
+        let data = this.data;
         if (this._len + arguments.length > data.length) {
             // 因为之前的数组已经转换成静态的 Float32Array
             // 所以不够用时需要扩展一个新的动态数组
             this._expandData();
             data = this.data;
         }
-        for (var i = 0; i < arguments.length; i++) {
+        for (let i = 0; i < arguments.length; i++) {
             data[this._len++] = arguments[i];
         }
 
@@ -399,8 +399,8 @@ PathProxy.prototype = {
     _expandData: function () {
         // Only if data is Float32Array
         if (!(this.data instanceof Array)) {
-            var newData = [];
-            for (var i = 0; i < this._len; i++) {
+            let newData = [];
+            for (let i = 0; i < this._len; i++) {
                 newData[i] = this.data[i];
             }
             this.data = newData;
@@ -417,21 +417,21 @@ PathProxy.prototype = {
     },
 
     _dashedLineTo: function (x1, y1) {
-        var dashSum = this._dashSum;
-        var offset = this._dashOffset;
-        var lineDash = this._lineDash;
-        var ctx = this._ctx;
+        let dashSum = this._dashSum;
+        let offset = this._dashOffset;
+        let lineDash = this._lineDash;
+        let ctx = this._ctx;
 
-        var x0 = this._xi;
-        var y0 = this._yi;
-        var dx = x1 - x0;
-        var dy = y1 - y0;
-        var dist = mathSqrt(dx * dx + dy * dy);
-        var x = x0;
-        var y = y0;
-        var dash;
-        var nDash = lineDash.length;
-        var idx;
+        let x0 = this._xi;
+        let y0 = this._yi;
+        let dx = x1 - x0;
+        let dy = y1 - y0;
+        let dist = mathSqrt(dx * dx + dy * dy);
+        let x = x0;
+        let y = y0;
+        let dash;
+        let nDash = lineDash.length;
+        let idx;
         dx /= dist;
         dy /= dist;
 
@@ -467,25 +467,25 @@ PathProxy.prototype = {
 
     // Not accurate dashed line to
     _dashedBezierTo: function (x1, y1, x2, y2, x3, y3) {
-        var dashSum = this._dashSum;
-        var offset = this._dashOffset;
-        var lineDash = this._lineDash;
-        var ctx = this._ctx;
+        let dashSum = this._dashSum;
+        let offset = this._dashOffset;
+        let lineDash = this._lineDash;
+        let ctx = this._ctx;
 
-        var x0 = this._xi;
-        var y0 = this._yi;
-        var t;
-        var dx;
-        var dy;
-        var cubicAt = curve.cubicAt;
-        var bezierLen = 0;
-        var idx = this._dashIdx;
-        var nDash = lineDash.length;
+        let x0 = this._xi;
+        let y0 = this._yi;
+        let t;
+        let dx;
+        let dy;
+        let cubicAt = curve.cubicAt;
+        let bezierLen = 0;
+        let idx = this._dashIdx;
+        let nDash = lineDash.length;
 
-        var x;
-        var y;
+        let x;
+        let y;
 
-        var tmpLen = 0;
+        let tmpLen = 0;
 
         if (offset < 0) {
             // Convert to positive offset
@@ -534,8 +534,8 @@ PathProxy.prototype = {
 
     _dashedQuadraticTo: function (x1, y1, x2, y2) {
         // Convert quadratic to cubic using degree elevation
-        var x3 = x2;
-        var y3 = y2;
+        let x3 = x2;
+        let y3 = y2;
         x2 = (x2 + 2 * x1) / 3;
         y2 = (y2 + 2 * y1) / 3;
         x1 = (this._xi + 2 * x1) / 3;
@@ -549,7 +549,7 @@ PathProxy.prototype = {
      * Convert dynamic array to static Float32Array
      */
     toStatic: function () {
-        var data = this.data;
+        let data = this.data;
         if (data instanceof Array) {
             data.length = this._len;
             if (hasTypedArray) {
@@ -566,14 +566,15 @@ PathProxy.prototype = {
         min1[0] = min1[1] = min2[0] = min2[1] = Number.MAX_VALUE;
         max1[0] = max1[1] = max2[0] = max2[1] = -Number.MAX_VALUE;
 
-        var data = this.data;
-        var xi = 0;
-        var yi = 0;
-        var x0 = 0;
-        var y0 = 0;
-
-        for (var i = 0; i < data.length;) {
-            var cmd = data[i++];
+        let data = this.data;
+        let xi = 0;
+        let yi = 0;
+        let x0 = 0;
+        let y0 = 0;
+        let i = 0;
+        
+        for (; i < data.length;) {
+            let cmd = data[i++];
 
             if (i === 1) {
                 // 如果第一个命令是 L, C, Q
@@ -623,15 +624,15 @@ PathProxy.prototype = {
                     break;
                 case CMD.A:
                     // TODO Arc 判断的开销比较大
-                    var cx = data[i++];
-                    var cy = data[i++];
-                    var rx = data[i++];
-                    var ry = data[i++];
-                    var startAngle = data[i++];
-                    var endAngle = data[i++] + startAngle;
+                    let cx = data[i++];
+                    let cy = data[i++];
+                    let rx = data[i++];
+                    let ry = data[i++];
+                    let startAngle = data[i++];
+                    let endAngle = data[i++] + startAngle;
                     // TODO Arc 旋转
                     i += 1;
-                    var anticlockwise = 1 - data[i++];
+                    let anticlockwise = 1 - data[i++];
 
                     if (i === 1) {
                         // 直接使用 arc 命令
@@ -651,8 +652,8 @@ PathProxy.prototype = {
                 case CMD.R:
                     x0 = xi = data[i++];
                     y0 = yi = data[i++];
-                    var width = data[i++];
-                    var height = data[i++];
+                    let width = data[i++];
+                    let height = data[i++];
                     // Use fromLine
                     bbox.fromLine(x0, y0, x0 + width, y0 + height, min2, max2);
                     break;
@@ -684,18 +685,18 @@ PathProxy.prototype = {
      * @param {CanvasRenderingContext2D} ctx
      */
     rebuildPath: function (ctx) {
-        var d = this.data;
-        var x0;
-        var y0;
-        var xi;
-        var yi;
-        var x;
-        var y;
-        var ux = this._ux;
-        var uy = this._uy;
-        var len = this._len;
-        for (var i = 0; i < len;) {
-            var cmd = d[i++];
+        let d = this.data;
+        let x0;
+        let y0;
+        let xi;
+        let yi;
+        let x;
+        let y;
+        let ux = this._ux;
+        let uy = this._uy;
+        let len = this._len;
+        for (let i = 0; i < len;) {
+            let cmd = d[i++];
 
             if (i === 1) {
                 // 如果第一个命令是 L, C, Q
@@ -737,19 +738,19 @@ PathProxy.prototype = {
                     yi = d[i - 1];
                     break;
                 case CMD.A:
-                    var cx = d[i++];
-                    var cy = d[i++];
-                    var rx = d[i++];
-                    var ry = d[i++];
-                    var theta = d[i++];
-                    var dTheta = d[i++];
-                    var psi = d[i++];
-                    var fs = d[i++];
-                    var r = (rx > ry) ? rx : ry;
-                    var scaleX = (rx > ry) ? 1 : rx / ry;
-                    var scaleY = (rx > ry) ? ry / rx : 1;
-                    var isEllipse = mathAbs(rx - ry) > 1e-3;
-                    var endAngle = theta + dTheta;
+                    let cx = d[i++];
+                    let cy = d[i++];
+                    let rx = d[i++];
+                    let ry = d[i++];
+                    let theta = d[i++];
+                    let dTheta = d[i++];
+                    let psi = d[i++];
+                    let fs = d[i++];
+                    let r = (rx > ry) ? rx : ry;
+                    let scaleX = (rx > ry) ? 1 : rx / ry;
+                    let scaleY = (rx > ry) ? ry / rx : 1;
+                    let isEllipse = mathAbs(rx - ry) > 1e-3;
+                    let endAngle = theta + dTheta;
                     if (isEllipse) {
                         ctx.translate(cx, cy);
                         ctx.rotate(psi);
