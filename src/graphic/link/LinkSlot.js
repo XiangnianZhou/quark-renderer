@@ -64,8 +64,8 @@ class LinkSlot {
         let rotation=this.el.rotation;
         let scale=this.el.scale;
         let boundingRect = this.el.getBoundingRect();
-        let x=boundingRect.x;
-        let y=boundingRect.y;
+        let x=boundingRect.x1;
+        let y=boundingRect.y1;
         let w=boundingRect.width;
         let h=boundingRect.height;
 

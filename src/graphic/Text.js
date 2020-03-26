@@ -87,14 +87,16 @@ export default class Text extends Element{
                 style.textLineHeight,
                 style.rich
             );
-            rect.x += style.x || 0;
-            rect.y += style.y || 0;
+            rect.x1 += style.x || 0;
+            rect.y1 += style.y || 0;
             if (textUtil.getStroke(style.textStroke, style.textStrokeWidth)) {
                 let w = style.textStrokeWidth;
-                rect.x -= w / 2;
-                rect.y -= w / 2;
+                rect.x1 -= w / 2;
+                rect.y1 -= w / 2;
                 rect.width += w;
                 rect.height += w;
+                rect.x2 = rect.x1 + rect.width;
+                rect.y2 = rect.y1 + rect.height;
             }
             this.__boundingRect = rect;
         }

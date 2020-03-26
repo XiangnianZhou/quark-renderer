@@ -363,10 +363,10 @@ Transformable.prototype={
         let rect=this.getBoundingRect();
         
         let points=[];
-        points[0]=[rect.x,rect.y];
-        points[1]=[rect.x+rect.width,rect.y];
-        points[2]=[rect.x+rect.width,rect.y+rect.height];
-        points[3]=[rect.x,rect.y+rect.height];
+        points[0]=[rect.x1,rect.y1];
+        points[1]=[rect.x2,rect.y1];
+        points[2]=[rect.x2,rect.y2];
+        points[3]=[rect.x1,rect.y2];
         
         points[0]=matrixUtil.transformVector(points[0],this.transform);
         points[1]=matrixUtil.transformVector(points[1],this.transform);

@@ -16,49 +16,63 @@
     </style>
     <div id="main"></div>
     <script type="text/javascript">
-        var qr = QuarkRenderer.init(document.getElementById('main'));
-        var starShape = new QuarkRenderer.Star({
-            shape: {
-                x: 10,
-                y: 10,
-                r: 8,
-                n: 5
-            },
-            style: {
-                stroke: 'rgb(52,179,242)',
-                fill: '#fff',
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowOffsetY: 0
-            }
-        });
-        var zImage = qr.pathToImage(starShape);
+        //FIXME:something might be wrong with pathToImage() or image animation.
+        let qr = QuarkRenderer.init(document.getElementById('main'));
+        // let starShape = new QuarkRenderer.Star({
+        //     shape: {
+        //         x: 10,
+        //         y: 10,
+        //         r: 8,
+        //         n: 5
+        //     },
+        //     style: {
+        //         stroke: 'rgb(52,179,242)',
+        //         fill: '#fff',
+        //         shadowBlur: 10,
+        //         shadowOffsetX: 0,
+        //         shadowOffsetY: 0
+        //     }
+        // });
+        // let zImage = qr.pathToImage(starShape);
 
-        var NUMBER = 10000;
+        let NUMBER = 1000;
 
-        for (var i = 0; i < NUMBER; i++) {
-            var star = new QuarkRenderer.Image({
-                scale: [1, 1],
-                zlevel: 1,
+        for (let i = 0; i < NUMBER; i++) {
+            // let star = new QuarkRenderer.Image({
+            //     scale: [1, 1],
+            //     zlevel: 1,
+            //     style: {
+            //         x: 0,
+            //         y: 0,
+            //         image: zImage.style.image
+            //     }
+            // });
+            let star=new QuarkRenderer.Star({
+                shape: {
+                    x: 10,
+                    y: 10,
+                    r: 8,
+                    n: 5
+                },
                 style: {
-                    x: 0,
-                    y: 0,
-                    image: zImage.style.image
+                    stroke: 'rgb(52,179,242)',
+                    fill: '#fff',
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowOffsetY: 0
                 }
             });
-
             qr.add(star);
-            var ap = star.animate();
-
-            var points = [];
-            var point = [
+            
+            let ap = star.animate();
+            let points = [];
+            let point = [
                 Math.random() * qr.getWidth(),
                 Math.random() * qr.getHeight()
             ];
-            //star.position = point;
             points.push(point);
-            for (var j = 1; j < 10; j++) {
-                var point = [
+            for (let j = 1; j < 10; j++) {
+                let point = [
                     Math.random() * qr.getWidth(),
                     Math.random() * qr.getHeight()
                 ];
@@ -67,7 +81,8 @@
                 });
                 points.push(point);
             }
-            var polyline = new QuarkRenderer.Polyline({
+            
+            let polyline = new QuarkRenderer.Polyline({
                 zlevel: 0,
                 shape: {
                     smooth: 'spline',

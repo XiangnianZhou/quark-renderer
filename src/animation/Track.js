@@ -51,6 +51,7 @@ export default class Track{
         if(dataUtil.isString(result)&&result==='destroy'){
             this.isFinished=true;
         }
+        // console.log(`result=${result}`);
         return result;
     }
 

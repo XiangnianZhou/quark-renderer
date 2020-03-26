@@ -572,7 +572,7 @@ PathProxy.prototype = {
         let x0 = 0;
         let y0 = 0;
         let i = 0;
-        
+
         for (; i < data.length;) {
             let cmd = data[i++];
 
@@ -674,7 +674,12 @@ PathProxy.prototype = {
         }
 
         return new BoundingRect(
-            min1[0], min1[1], max1[0] - min1[0], max1[1] - min1[1]
+            min1[0], 
+            min1[1], 
+            max1[0], 
+            max1[1],
+            max1[0] - min1[0], 
+            max1[1] - min1[1]
         );
     },
 

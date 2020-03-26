@@ -283,7 +283,7 @@ class Group extends Rect{
         Element.prototype.delFromStorageHandler.call(this,storage);
     }
 
-    // /**
+    // /**FIXME:refactor this method
     //  * @method getBoundingRect
     //  * @return {BoundingRect}
     //  */

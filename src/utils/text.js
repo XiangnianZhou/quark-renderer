@@ -146,15 +146,15 @@ export function adjustTextY(y, height, textVerticalAlign) {
  * @public
  * @param {Obejct} [out] Prepared out object. If not input, auto created in the method.
  * @param {Style} style where `textPosition` and `textDistance` are visited.
- * @param {Object} rect {x, y, width, height} Rect of the host elment, according to which the text positioned.
+ * @param {Object} rect {x1, y1, x2, y2, width, height} Rect of the host elment, according to which the text positioned.
  * @return {Object} The input `out`. Set: {x, y, textAlign, textVerticalAlign}
  */
 export function calculateTextPosition(out, style, rect) {
     let textPosition = style.textPosition;
     let distance = style.textDistance;
 
-    let x = rect.x;
-    let y = rect.y;
+    let x = rect.x1;
+    let y = rect.y1;
     distance = distance || 0;
 
     let height = rect.height;

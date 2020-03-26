@@ -21,24 +21,23 @@ class BoundingRect{
     /**
      * @method constructor BoundingRect
      */
-    constructor(x, y, width, height){
-        if (width < 0) {
-            x = x + width;
-            width = -width;
-        }
-        if (height < 0) {
-            y = y + height;
-            height = -height;
-        }
-    
+    constructor(x1=0, y1=0, x2=0, y2=0, width=0, height=0){
         /**
          * @property {Number}
          */
-        this.x = x;
+        this.x1 = x1;
         /**
          * @property {Number}
          */
-        this.y = y;
+        this.y1 = y1;
+        /**
+         * @property {Number}
+         */
+        this.x2 = x2;
+        /**
+         * @property {Number}
+         */
+        this.y2 = y2;
         /**
          * @property {Number}
          */
@@ -51,14 +50,16 @@ class BoundingRect{
 
     /**
      * @param {Object|BoundingRect} rect
-     * @param {Number} rect.x
-     * @param {Number} rect.y
+     * @param {Number} rect.x1
+     * @param {Number} rect.y1
+     * @param {Number} rect.x2
+     * @param {Number} rect.y2
      * @param {Number} rect.width
      * @param {Number} rect.height
      * @return {BoundingRect}
      */
     static create(rect) {
-        return new BoundingRect(rect.x, rect.y, rect.width, rect.height);
+        return new BoundingRect(rect.x1, rect.y1, rect.x2, rect.y2, rect.width, rect.height);
     }
 
     /**
@@ -66,19 +67,12 @@ class BoundingRect{
      * @param {BoundingRect} other
      */
     union(other) {
-        let x = mathMin(other.x, this.x);
-        let y = mathMin(other.y, this.y);
-
-        this.width = mathMax(
-                other.x + other.width,
-                this.x + this.width
-            ) - x;
-        this.height = mathMax(
-                other.y + other.height,
-                this.y + this.height
-            ) - y;
-        this.x = x;
-        this.y = y;
+        this.x1 = mathMin(other.x1, this.x1);
+        this.y1 = mathMin(other.y1, this.y1);
+        this.x2 = mathMax(other.x2, this.x2);
+        this.y2 = mathMax(other.y2, this.y2);
+        this.width = this.x2-this.x1;
+        this.height = this.y2-this.y1;
     }
 
     /**
@@ -92,22 +86,22 @@ class BoundingRect{
         if (!m) {
             return;
         }
-        lt[0] = lb[0] = this.x;
-        lt[1] = rt[1] = this.y;
-        rb[0] = rt[0] = this.x + this.width;
-        rb[1] = lb[1] = this.y + this.height;
+        lt[0] = lb[0] = this.x1;
+        lt[1] = rt[1] = this.y1;
+        rb[0] = rt[0] = this.x2;
+        rb[1] = lb[1] = this.y2;
 
         v2ApplyTransform(lt, lt, m);
         v2ApplyTransform(rb, rb, m);
         v2ApplyTransform(lb, lb, m);
         v2ApplyTransform(rt, rt, m);
 
-        this.x = mathMin(lt[0], rb[0], lb[0], rt[0]);
-        this.y = mathMin(lt[1], rb[1], lb[1], rt[1]);
-        let maxX = mathMax(lt[0], rb[0], lb[0], rt[0]);
-        let maxY = mathMax(lt[1], rb[1], lb[1], rt[1]);
-        this.width = maxX - this.x;
-        this.height = maxY - this.y;
+        this.x1 = mathMin(lt[0], rb[0], lb[0], rt[0]);
+        this.y1 = mathMin(lt[1], rb[1], lb[1], rt[1]);
+        this.x2 = mathMax(lt[0], rb[0], lb[0], rt[0]);
+        this.y2 = mathMax(lt[1], rb[1], lb[1], rt[1]);
+        this.width = this.x2 - this.x1;
+        this.height = this.y2 - this.y1;
     }
 
     /**
@@ -122,9 +116,9 @@ class BoundingRect{
         let sy = b.height / a.height;
 
         let m = matrixUtil.create();
-        m = matrixUtil.translate(m, [-a.x, -a.y]);
+        m = matrixUtil.translate(m, [-a.x1, -a.y1]);
         m = matrixUtil.scale(m, [sx, sy]);
-        m = matrixUtil.translate(m, [b.x, b.y]);
+        m = matrixUtil.translate(m, [b.x1, b.y1]);
         return m;
     }
 
@@ -144,15 +138,15 @@ class BoundingRect{
         }
 
         let a = this;
-        let ax0 = a.x;
-        let ax1 = a.x + a.width;
-        let ay0 = a.y;
-        let ay1 = a.y + a.height;
+        let ax0 = a.x1;
+        let ax1 = a.x2;
+        let ay0 = a.y1;
+        let ay1 = a.y2;
 
-        let bx0 = b.x;
-        let bx1 = b.x + b.width;
-        let by0 = b.y;
-        let by1 = b.y + b.height;
+        let bx0 = b.x1;
+        let bx1 = b.x2;
+        let by0 = b.y1;
+        let by1 = b.y2;
 
         return !(ax1 < bx0 || bx1 < ax0 || ay1 < by0 || by1 < ay0);
     }
@@ -164,10 +158,10 @@ class BoundingRect{
      */
     containPoint(x, y) {
         let rect = this;
-        return x >= rect.x
-            && x <= (rect.x + rect.width)
-            && y >= rect.y
-            && y <= (rect.y + rect.height);
+        return x >= rect.x1
+            && x <= rect.x2
+            && y >= rect.y1
+            && y <= rect.y2;
     }
 
     /**
@@ -175,7 +169,7 @@ class BoundingRect{
      * @return {BoundingRect}
      */
     clone() {
-        return new BoundingRect(this.x, this.y, this.width, this.height);
+        return new BoundingRect(this.x1, this.y1, this.x2, this.y2, this.width, this.height);
     }
 
     /**
@@ -184,22 +178,12 @@ class BoundingRect{
      * @param other
      */
     copy(other) {
-        this.x = other.x;
-        this.y = other.y;
+        this.x1 = other.x1;
+        this.y1 = other.y1;
+        this.x2 = other.x2;
+        this.y2 = other.y2;
         this.width = other.width;
         this.height = other.height;
-    }
-
-    /**
-     * @method plain
-     */
-    plain() {
-        return {
-            x: this.x,
-            y: this.y,
-            width: this.width,
-            height: this.height
-        };
     }
 }
 

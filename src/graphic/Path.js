@@ -248,8 +248,10 @@ class Path extends Element{
                 if (lineScale > 1e-10) {
                     rectWithStroke.width += w / lineScale;
                     rectWithStroke.height += w / lineScale;
-                    rectWithStroke.x -= w / lineScale / 2;
-                    rectWithStroke.y -= w / lineScale / 2;
+                    rectWithStroke.x1 -= w / lineScale / 2;
+                    rectWithStroke.y1 -= w / lineScale / 2;
+                    rectWithStroke.x2 = rectWithStroke.x1+rectWithStroke.width;
+                    rectWithStroke.y2 = rectWithStroke.y1+rectWithStroke.height;
                 }
             }
 

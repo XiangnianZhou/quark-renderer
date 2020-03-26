@@ -1,4 +1,3 @@
-
 import smoothSpline from './smooth_spline';
 import smoothBezier from './smooth_bezier';
 
@@ -21,8 +20,7 @@ export function buildPath(ctx, shape, closePath) {
                     cp1[0], cp1[1], cp2[0], cp2[1], p[0], p[1]
                 );
             }
-        }
-        else {
+        }else {
             if (smooth === 'spline') {
                 points = smoothSpline(points, closePath);
             }

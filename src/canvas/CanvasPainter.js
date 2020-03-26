@@ -1061,7 +1061,7 @@ export default class CanvasPainter{
             rotation: path.rotation,
             scale: path.scale
         };
-        path.position = [leftMargin - rect.x, topMargin - rect.y];
+        path.position = [leftMargin - rect.x1, topMargin - rect.y1];
         path.rotation = 0;
         path.scale = [1,1];
         path.skew = [0,0];

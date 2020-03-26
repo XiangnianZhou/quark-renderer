@@ -102,9 +102,27 @@ class QImage extends Element{
      */
     getBoundingRect() {
         let style = this.style;
+        if(!style.x){
+            style.x=0;
+        }
+        if(!style.y){
+            style.y=0;
+        }
+        if(!style.width){
+            style.width=0;
+        }
+        if(!style.height){
+            style.height=0;
+        }
+
         if (!this.__boundingRect) {
             this.__boundingRect = new BoundingRect(
-                style.x || 0, style.y || 0, style.width || 0, style.height || 0
+                style.x, 
+                style.y,
+                style.width-style.x,
+                style.height-style.y, 
+                style.width, 
+                style.height
             );
         }
         return this.__boundingRect;
