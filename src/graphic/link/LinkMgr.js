@@ -121,7 +121,7 @@ export default class LinkMgr{
     mouseMoveHandler2(e){
         let mouseX=e.offsetX;
         let mouseY=e.offsetY;
-        this.lastHoveredControl.setPosition(mouseX,mouseY);
+        this.lastHoveredControl.setGlobalPosition(mouseX,mouseY);
         this.lastHoveredControl.dragging=true;
 
         linkables.forEach((el,key,index)=>{

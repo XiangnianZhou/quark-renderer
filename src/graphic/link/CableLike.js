@@ -24,7 +24,9 @@ import * as matrixUtil from '../../utils/affine_matrix_util';
 function CableLike(){
     this.isCable=false;
     this.showLinkControls = false;
-
+    this.startBounding = null;      //bounding rect of start shape
+    this.endBounding = null;        //bounding rect of end shape
+    
     this.startControl = new LinkControl({
         el:this,
         name:'START'
@@ -61,6 +63,14 @@ CableLike.prototype={
     renderLinkControls:function(ctx, prevEl){
         this.startControl.render(ctx,prevEl);
         this.endControl.render(ctx,prevEl);
+    },
+
+    setStartBounding(startBounding){
+        this.startBounding=startBounding;
+    },
+
+    setEndBounding(endBounding){
+        this.endBounding=endBounding;
     }
 }
 

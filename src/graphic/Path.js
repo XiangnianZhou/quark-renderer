@@ -1,10 +1,10 @@
-import Element from './Element';
 import * as dataUtil from '../utils/data_structure_util';
 import * as classUtil from '../utils/class_util';
-import PathProxy from './PathProxy';
 import * as pathContain from '../utils/contain/path';
-import Pattern from './Pattern';
 import {mathMax,mathAbs,mathSqrt} from '../utils/constants';
+import Element from './Element';
+import PathProxy from './PathProxy';
+import Pattern from './Pattern';
 
 /**
  * @class qrenderer.graphic.Path 

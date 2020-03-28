@@ -382,7 +382,7 @@ Transformable.prototype={
             x1:minX,
             y1:minY,
             x2:maxX,
-            x2:maxY,
+            y2:maxY,
             width:mathAbs(maxX-minX),
             height:mathAbs(maxY-minY)
         };

@@ -6,6 +6,15 @@ import Eventful from '../../event/Eventful';
 import {mathSin} from '../../utils/constants';
 import guid from '../../utils/guid';
 
+/**
+ * @class qrenderer.graphic.link.LinkControl 
+ * LinkControl.
+ * 
+ * 
+ * 连接控制器。
+ * @author 大漠穷秋 <damoqiongqiu@126.com>
+ * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
+ */
 class LinkControl {
     constructor(options={}){
         this.id=guid();
@@ -66,13 +75,12 @@ class LinkControl {
         return isInsideRect;
     }
 
-    getPosition(){
+    getGlobalPosition(){
         return matrixUtil.addVector(this.center,this.translate);
     }
 
-    setPosition(x,y){
-        let position=this.el.position;
-        position=[x-position[0],y-position[1]];
+    setGlobalPosition(x,y){
+        let position=matrixUtil.minusVector([x,y],this.el.position);  //convert to local coordinate
         if(this.name==='START'){
             this.el.setStartPoint(...position);
         }else{
@@ -81,25 +89,35 @@ class LinkControl {
         this.el.dirty();
     }
 
+    updateGlobalPosition(){
+        if(this.dragging){
+            return;
+        }
+        if(this.name==='START'){
+            this.el.setStartBounding(this.slot.el.getOuterBoundingRect());
+        }else{
+            this.el.setEndBounding(this.slot.el.getOuterBoundingRect());
+        }
+        this.setGlobalPosition(...this.slot.getGlobalPosition());
+    }
+
     setSlot(slot){
         if(this.slot===slot){
             return;
         }
         this.slot=slot;
-        this.updatePosition();
-        slot.on("afterRender",this.updatePosition,this);
+        this.updateGlobalPosition();
+        slot.on("afterRender",this.updateGlobalPosition,this);
     }
 
     deleteSlot(){
-        this.slot&&this.slot.off("afterRender",this.updatePosition,this);
-        this.slot=null;
-    }
-
-    updatePosition(){
-        if(this.dragging){
-            return;
+        if(this.name==='START'){
+            this.el.setStartBounding(null);
+        }else{
+            this.el.setEndBounding(null);
         }
-        this.setPosition(...this.slot.getPosition());
+        this.slot&&this.slot.off("afterRender",this.updateGlobalPosition,this);
+        this.slot=null;
     }
 }
 

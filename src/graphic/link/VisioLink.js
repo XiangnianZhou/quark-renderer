@@ -1,6 +1,9 @@
 import Polyline from '../line/Polyline';
 import GeoPoint from '../../geometric/GeoPoint';
 import GeoLine from '../../geometric/GeoLine';
+import * as classUtil from '../../utils/class_util';
+import * as matrixUtil from '../../utils/affine_matrix_util';
+import { vectorUtil } from '../../export';
 
 /**
  * @class qrenderer.graphic.link.VisioLink
@@ -23,10 +26,10 @@ export default class VisioLink extends Polyline{
          */
         this.type = 'vosiolink';
         this.escapeDistance = 30;
-        this.startPoint = new GeoPoint(...this.firstPoint());
-        this.endPoint = new GeoPoint(...this.lastPoint());
-        this.startBounding = null;      //bounding rect of start shape
-        this.endBounding = null;        //bounding rect of end shape
+        this.startPoint = null;     //start point in global space
+        this.endPoint = null;       //end point in global space
+
+        classUtil.copyOwnProperties(this,this.options,['style','shape']);
     }
 
     /**
@@ -39,9 +42,14 @@ export default class VisioLink extends Polyline{
      * @param {String} shape 
      */
     buildPath(ctx, shape) {
-        //TODO:处理 __startBouding 和 __endBouding 为 null 的情况
-        this.calcPoints();
-        Polyline.prototype.call(this, ctx, shape);
+        let solutions = this.calcPoints();
+        let arr=solutions[0][2];
+        arr.forEach((item)=>{
+            item.x-=this.position[0];
+            item.y-=this.position[1];
+        });
+        this.shape.points=GeoPoint.pointsToArray(arr);
+        Polyline.prototype.buildPath.call(this, ctx, shape);
     }
 
     /**
@@ -49,18 +57,20 @@ export default class VisioLink extends Polyline{
      * 折点插值算法。
      */
     calcPoints() {
-        let figureEscapeDistance = [this.escapeDistance, this.escapeDistance];
+        this.startPoint = new GeoPoint(...matrixUtil.addVector(this.firstPoint(),this.position));   //start point in global space
+        this.endPoint = new GeoPoint(...matrixUtil.addVector(this.lastPoint(),this.position));      //end point in global space
+
         let potentialExits = [];
-        let startExitPoint = [0,0];
-        let endExitPoint = [0,0];
+        let startExitPoint = null;
+        let endExitPoint = null;
         let solutions = [];
 
         //find start exit point
         if(this.startBounding != null) {
-            potentialExits[0] = new GeoPoint(this.startPoint.x, this.startBounding.y-this.escapeDistance);                                 //north
-            potentialExits[1] = new GeoPoint(this.startBounding.x+this.startBounding.width+this.figureEscapeDistance, this.startPoint.y);  //east
-            potentialExits[2] = new GeoPoint(this.startPoint.x, this.startBounding.y+this.startBounding.height+this.figureEscapeDistance); //south
-            potentialExits[3] = new GeoPoint(this.startBounding.x-this.figureEscapeDistance, this.startPoint.y);                           //west
+            potentialExits[0] = new GeoPoint(this.startPoint.x, this.startBounding.y1-this.escapeDistance);      //north
+            potentialExits[1] = new GeoPoint(this.startBounding.x2+this.escapeDistance, this.startPoint.y);      //east
+            potentialExits[2] = new GeoPoint(this.startPoint.x, this.startBounding.y2+this.escapeDistance);      //south
+            potentialExits[3] = new GeoPoint(this.startBounding.x1-this.escapeDistance, this.startPoint.y);      //west
             //pick closest exit point
             startExitPoint = potentialExits[0];
             for(let i = 1; i < potentialExits.length; i++) {
@@ -72,10 +82,10 @@ export default class VisioLink extends Polyline{
 
         //find end exit point
         if (this.endBounding != null) {
-            potentialExits[0] = new GeoPoint(this.endPoint.x, this.endPoint.y-this.figureEscapeDistance);                              //north
-            potentialExits[1] = new GeoPoint(this.endBounding.x+this.endBounding.width+this.figureEscapeDistance, this.endPoint.y);    //east
-            potentialExits[2] = new GeoPoint(this.endPoint.x, this.endBounding.y+this.endBounding.height+this.figureEscapeDistance);   //south
-            potentialExits[3] = new GeoPoint(this.endBounding.x-this.figureEscapeDistance, this.endPoint.y);                           //west
+            potentialExits[0] = new GeoPoint(this.endPoint.x, this.endBounding.y1-this.escapeDistance);    //north
+            potentialExits[1] = new GeoPoint(this.endBounding.x2+this.escapeDistance, this.endPoint.y);    //east
+            potentialExits[2] = new GeoPoint(this.endPoint.x, this.endBounding.y2+this.escapeDistance);    //south
+            potentialExits[3] = new GeoPoint(this.endBounding.x1-this.escapeDistance, this.endPoint.y);    //west
             //pick closest exit point
             endExitPoint = potentialExits[0];
             for (let i = 1; i < potentialExits.length; i++) {
@@ -85,112 +95,115 @@ export default class VisioLink extends Polyline{
             }
         }
 
+        //the index of the gap (where do we need to insert new points) DO NOT CHANGE IT
+        let gapIndex = 0;
+
         //Basic solution
         let s = [this.startPoint];
-        s.push(startExitPoint);
-        s.push(endExitPoint);
+        if(startExitPoint){
+            s.push(startExitPoint);
+            gapIndex = 1;
+        }
+        endExitPoint && s.push(endExitPoint);
         s.push(this.endPoint);
-
-        //the index of the gap (where do we need to insert new points) DO NOT CHANGE IT
-        let gapIndex = 1;
-
+        
         //SO - no additional points
-        let s0 = [...s];
+        let s0 = GeoPoint.cloneArray(s);
         solutions.push(['s0', 's0', s0]);
-
+        
         //S1
-        let s1 = [...s];
+        let s1 = GeoPoint.cloneArray(s);
 
         //first variant
-        let s1_1 = [...s1];
-        s1_1.splice(gapIndex + 1, 0, [s1_1[gapIndex].x, s1_1[gapIndex + 1].y]);
+        let s1_1 = GeoPoint.cloneArray(s1);
+        s1_1.splice(gapIndex + 1, 0, new GeoPoint(s1_1[gapIndex].x, s1_1[gapIndex + 1].y));
         solutions.push(['s1', 's1_1', s1_1]);
 
         //second variant
-        let s1_2 = [...s1];
-        s1_2.splice(gapIndex + 1, 0, [s1_2[gapIndex + 1].x, s1_2[gapIndex].y]);
+        let s1_2 = GeoPoint.cloneArray(s1);
+        s1_2.splice(gapIndex + 1, 0, new GeoPoint(s1_2[gapIndex + 1].x, s1_2[gapIndex].y));
         solutions.push(['s1', 's1_2', s1_2]);
 
         //S2
         //Variant I
-        let s2_1 = [...s1];
-        let s2_1_2 = [(s2_1[gapIndex].x + s2_1[gapIndex + 1].x) / 2, s2_1[gapIndex].y];
-        let s2_1_2 = [(s2_1[gapIndex].x + s2_1[gapIndex + 1].x) / 2, s2_1[gapIndex + 1].y];
+        let s2_1 = GeoPoint.cloneArray(s1);
+        let s2_1_1 = new GeoPoint((s2_1[gapIndex].x + s2_1[gapIndex + 1].x) / 2, s2_1[gapIndex].y);
+        let s2_1_2 = new GeoPoint((s2_1[gapIndex].x + s2_1[gapIndex + 1].x) / 2, s2_1[gapIndex + 1].y);
         s2_1.splice(gapIndex + 1, 0, s2_1_1, s2_1_2);
         solutions.push(['s2', 's2_1', s2_1]);
 
         //Variant II
-        let s2_2 = [...s1];
-        let s2_2_1 = [s2_2[gapIndex].x, (s2_2[gapIndex].y + s2_2[gapIndex + 1].y) / 2];
-        let s2_2_2 = [s2_2[gapIndex + 1].x, (s2_2[gapIndex].y + s2_2[gapIndex + 1].y) / 2];
+        let s2_2 = GeoPoint.cloneArray(s1);
+        let s2_2_1 = new GeoPoint(s2_2[gapIndex].x, (s2_2[gapIndex].y + s2_2[gapIndex + 1].y) / 2);
+        let s2_2_2 = new GeoPoint(s2_2[gapIndex + 1].x, (s2_2[gapIndex].y + s2_2[gapIndex + 1].y) / 2);
         s2_2.splice(gapIndex + 1, 0, s2_2_1, s2_2_2);
         solutions.push(['s2', 's2_2', s2_2]);
 
         //Variant III
-        let s2_3 = [...s1];
+        let s2_3 = GeoPoint.cloneArray(s1);
         //find the amount (stored in delta) of pixels we need to move right so no intersection with a figure will be present
         //add points X coordinates to be able to generate Variant III even in the absence of figures :p
         let eastExits = [s2_3[gapIndex].x + 20, s2_3[gapIndex + 1].x + 20];
         if (this.startBounding) {
-            eastExits.push(this.startBounding.x+this.startBounding.width + 20);
+            eastExits.push(this.startBounding.x2 + 20);
         }
         if (this.endBounding) {
-            eastExits.push(this.endBounding.x+this.endBounding.width + 20);
+            eastExits.push(this.endBounding.x2 + 20);
         }
         let eastExit = this.max(eastExits);
-        let s2_3_1 = [eastExit, s2_3[gapIndex].y];
-        let s2_3_2 = [eastExit, s2_3[gapIndex + 1].y];
+        let s2_3_1 = new GeoPoint(eastExit, s2_3[gapIndex].y);
+        let s2_3_2 = new GeoPoint(eastExit, s2_3[gapIndex + 1].y);
         s2_3.splice(gapIndex + 1, 0, s2_3_1, s2_3_2);
         solutions.push(['s2', 's2_3', s2_3]);
 
         //Variant IV
-        let s2_4 = [...s1];
+        let s2_4 = GeoPoint.cloneArray(s1);
         //find the amount (stored in delta) of pixels we need to move up so no intersection with a figure will be present
         //add points y coordinates to be able to generate Variant III even in the absence of figures :p
         let northExits = [s2_4[gapIndex].y - 20, s2_4[gapIndex + 1].y - 20];
         if (this.startBounding) {
-            northExits.push(this.startBounding.y - 20);
+            northExits.push(this.startBounding.y1 - 20);
         }
         if (this.endBounding) {
-            northExits.push(this.endBounding.y - 20);
+            northExits.push(this.endBounding.y1 - 20);
         }
         let northExit = this.min(northExits);
-        let s2_4_1 = [s2_4[gapIndex].x, northExit];
-        let s2_4_2 = [s2_4[gapIndex + 1].x, northExit];
+        let s2_4_1 = new GeoPoint(s2_4[gapIndex].x, northExit);
+        let s2_4_2 = new GeoPoint(s2_4[gapIndex + 1].x, northExit);
         s2_4.splice(gapIndex + 1, 0, s2_4_1, s2_4_2);
         solutions.push(['s2', 's2_4', s2_4]);
 
         //Variant V
-        let s2_5 = [...s1];
+        let s2_5 = GeoPoint.cloneArray(s1);
         //find the amount (stored in delta) of pixels we need to move left so no intersection with a figure will be present
          //add points x coordinates to be able to generate Variant III even in the absence of figures :p
         let westExits = [s2_5[gapIndex].x - 20, s2_5[gapIndex + 1].x - 20];
         if (this.startBounding) {
-            westExits.push(this.startBounding.x - 20);
+            westExits.push(this.startBounding.x1 - 20);
         }
         if (this.endBounding) {
-            westExits.push(this.endBounding.x - 20);
+            westExits.push(this.endBounding.x1 - 20);
         }
         let westExit = this.min(westExits);
-        let s2_5_1 = [westExit, s2_5[gapIndex].y];
-        let s2_5_2 = [westExit, s2_5[gapIndex + 1].y];
+        let s2_5_1 = new GeoPoint(westExit, s2_5[gapIndex].y);
+        let s2_5_2 = new GeoPoint(westExit, s2_5[gapIndex + 1].y);
         s2_5.splice(gapIndex + 1, 0, s2_5_1, s2_5_2);
         solutions.push(['s2', 's2_5', s2_5]);
 
         //Variant VI
-        let s2_6 = [...s1];
+        let s2_6 = GeoPoint.cloneArray(s1);
         //find the amount (stored in delta) of pixels we need to move down so no intersection with a figure will be present
         //add points y coordinates to be able to generate Variant III even in the absence of figures :p
         let southExits = [s2_6[gapIndex].y + 20, s2_6[gapIndex + 1].y + 20];
         if (this.startBounding) {
-            southExits.push(this.startBounding.y+this.startBounding.height + 20);
+            southExits.push(this.startBounding.y1+this.startBounding.height + 20);
         }
         if (this.endBounding) {
-            southExits.push(this.endBounding.y+this.endBounding.height + 20);
+            southExits.push(this.endBounding.y1+this.endBounding.height + 20);
         }
         let southExit = this.max(southExits);
-        let s2_6_1 = [s2_6[gapIndex].x, southExit];
-        let s2_6_2 = [s2_6[gapIndex + 1].x, southExit];
+        let s2_6_1 = new GeoPoint(s2_6[gapIndex].x, southExit);
+        let s2_6_2 = new GeoPoint(s2_6[gapIndex + 1].x, southExit);
         s2_6.splice(gapIndex + 1, 0, s2_6_1, s2_6_2);
         solutions.push(['s2', 's2_6', s2_6]);
 
@@ -216,9 +229,7 @@ export default class VisioLink extends Polyline{
         solutions = orthogonalSolution;
 
         //2. filter backward solutions, do not allow start and end points to coincide - ignore them
-        if (this.startPoint.equals(this.endPoint)) {
-            //nothing to do...
-        } else {
+        if (!this.startPoint.equals(this.endPoint)) {
             let forwardSolutions = [];
             for (let i = 0; i < solutions.length; i++) {
                 let solution = solutions[i][2];
@@ -296,10 +307,14 @@ export default class VisioLink extends Polyline{
             }
         }
         solutions = [solutions[solIndex]];
+        return solutions;
     }
 
     /**
-     * Tests if a vector of points is an orthogonal path (moving in multiples of 90 degrees)
+     * Tests if a vector of points is an orthogonal path (moving in multiples of 90 degrees).
+     * 
+     * 
+     * 正交判定。Visio 连接线上的每一段要么平行于 X 轴，要么平行于 Y 轴。
      * @param {Array} v - an {Array} of {Point}s
      * @return {Boolean} - true if path is valid, false otherwise
      */
@@ -382,23 +397,23 @@ export default class VisioLink extends Polyline{
     /**
      * Tests if a a polyline defined by a set of points intersects a rectangle
      * @param {Array} points - and {Array} of {Point}s
-     * @param {Array} bounds - the bounds of the rectangle defined by (x1, y1, x2, y2)
+     * @param {Array} boundingRect - the boundingRect
      * @param {Boolean} closedPolyline - incase polyline is closed figure then true, else false
      * @return true - if line intersects the rectangle, false - if not
      */
-    polylineIntersectsRectangle(points, bounds, closedPolyline) {
-        //get the 4 lines/segments represented by the bounds
+    polylineIntersectsRectangle(points, boundingRect, closedPolyline) {
+        //get the 4 lines/segments represented by the boundingRect
         let lines = [];
 
-        lines.push(new GeoLine(new GeoPoint(bounds[0], bounds[1]), new GeoPoint(bounds[2], bounds[1])));
-        lines.push(new GeoLine(new GeoPoint(bounds[2], bounds[1]), new GeoPoint(bounds[2], bounds[3])));
-        lines.push(new GeoLine(new GeoPoint(bounds[2], bounds[3]), new GeoPoint(bounds[0], bounds[3])));
-        lines.push(new GeoLine(new GeoPoint(bounds[0], bounds[3]), new GeoPoint(bounds[0], bounds[1])));
+        lines.push(new GeoLine(new GeoPoint(boundingRect.x1, boundingRect.y1), new GeoPoint(boundingRect.x2, boundingRect.y1)));
+        lines.push(new GeoLine(new GeoPoint(boundingRect.x2, boundingRect.y1), new GeoPoint(boundingRect.x2, boundingRect.y2)));
+        lines.push(new GeoLine(new GeoPoint(boundingRect.x2, boundingRect.y2), new GeoPoint(boundingRect.x1, boundingRect.y2)));
+        lines.push(new GeoLine(new GeoPoint(boundingRect.x1, boundingRect.y2), new GeoPoint(boundingRect.x1, boundingRect.y1)));
 
         for (let k = 0; k < points.length - 1; k++) {
             //create a line out of each 2 consecutive points
             let tempLine = new GeoLine(points[k], points[k + 1]);
-            //see if that line intersect any of the line on bounds border
+            //see if that line intersect any of the line on boundingRect border
             for (let i = 0; i < lines.length; i++) {
                 if (this.lineIntersectsLine(tempLine, lines[i])) {
                     return true;
@@ -410,7 +425,7 @@ export default class VisioLink extends Polyline{
         if (closedPolyline) {
             //create a line out of each 2 consecutive points
             let tempLine1 = new GeoLine(points[points.length - 1], points[0]);
-            //see if that line intersect any of the line on bounds border
+            //see if that line intersect any of the line on boundingRect border
             for (let j = 0; j < lines.length; j++) {
                 if (this.lineIntersectsLine(tempLine1, lines[j])) {
                     return true;
@@ -549,15 +564,5 @@ export default class VisioLink extends Polyline{
             }
             return m;
         }
-    }
-
-    setStartPoint(startPoint, startBounding){
-        this.startPoint=startPoint;
-        this.startBounding=startBounding;
-    }
-
-    setEndPoint(endPoint, endBounding){
-        this.endPoint=endPoint;
-        this.__endBouding=endBounding;
     }
 }

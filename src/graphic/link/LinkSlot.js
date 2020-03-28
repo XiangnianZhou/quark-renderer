@@ -25,14 +25,14 @@ import guid from '../../utils/guid';
  */
 class LinkSlot {
     constructor(options={}){
-        this.id=guid();
-        this.el=null;
+        this.id = guid();
+        this.el = null;
         this.center = [0,0];
         this.radius = 6;
         this.name = 'T';                                //TOP, LEFT, RIGHT, BOTTOM
         this.cursor = 'crosshair';
         this.pointCache = new Map();
-        this.translate=[0,0];
+        this.translate = [0,0];
         this.hasTransformControls = false;
         this.lineWidth = 1;
         this.strokeStyle = '#000000';
@@ -107,7 +107,7 @@ class LinkSlot {
         return isInsideRect;
     }
 
-    getPosition(){
+    getGlobalPosition(){
         return matrixUtil.addVector(this.center,this.translate);
     }
 }

@@ -21,11 +21,13 @@ export {parseSVG};
 
 export {default as Group} from './graphic/Group';
 export {default as Path} from './graphic/Path';
+export {default as PathProxy} from './graphic/PathProxy';
 export {default as Image} from './graphic/Image';
 export {default as CompoundPath} from './graphic/CompoundPath';
 export {default as Text} from './graphic/Text';
 export {default as Line} from './graphic/line/Line';
 export {default as Polyline} from './graphic/line/Polyline';
+export {default as VisioLink} from './graphic/link/VisioLink';
 export {default as Trochoid} from './graphic/line/Trochoid';
 export {default as BezierCurve} from './graphic/line/BezierCurve';
 export {default as Arc} from './graphic/shape/Arc';

@@ -88,8 +88,8 @@ Linkable.prototype={
         let slots=[...this.linkSlots.values()];
         for(let i=0;i<slots.length;i++){
             let slot=slots[i];
-            let p1=slot.getPosition();
-            let p2=control.getPosition();
+            let p1=slot.getGlobalPosition();
+            let p2=control.getGlobalPosition();
             let distance=vectorUtil.distance(p1,p2);
             let radiusSum=slot.radius+control.radius;
             if(distance<radiusSum){

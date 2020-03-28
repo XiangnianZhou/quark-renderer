@@ -57,6 +57,18 @@ export default class GeoPoint{
         return newPoints;
     }
 
+    static pointsToArray(points){
+        let result = [];
+        for(let i=0; i< points.length; i++){
+            result.push([points[i].x,points[i].y]);
+        }
+        return result;
+    }
+
+    toArray(){
+        return [this.x,this.y];
+    }
+
     transform(matrix){
         let oldX = this.x;
         let oldY = this.y;

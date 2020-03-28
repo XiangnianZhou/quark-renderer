@@ -37,9 +37,7 @@ let hasTypedArray = typeof Float32Array !== 'undefined';
  * @method constructor PathProxy
  */
 let PathProxy = function (notSaveData) {
-
     this._saveData = !(notSaveData || false);
-
     if (this._saveData) {
         /**
          * Path data. Stored as flat array
@@ -47,7 +45,6 @@ let PathProxy = function (notSaveData) {
          */
         this.data = [];
     }
-
     this._ctx = null;
 };
 
@@ -56,26 +53,18 @@ let PathProxy = function (notSaveData) {
  * @return {Object}
  */
 PathProxy.prototype = {
-
     constructor: PathProxy,
-
     _xi: 0,
     _yi: 0,
-
     _x0: 0,
     _y0: 0,
     // Unit x, Unit y. Provide for avoiding drawing that too short line segment
     _ux: 0,
     _uy: 0,
-
     _len: 0,
-
     _lineDash: null,
-
     _dashOffset: 0,
-
     _dashIdx: 0,
-
     _dashSum: 0,
 
     /**
@@ -98,24 +87,17 @@ PathProxy.prototype = {
      * @return {PathProxy}
      */
     beginPath: function (ctx) {
-
         this._ctx = ctx;
-
         ctx && ctx.beginPath();
-
         ctx && (this.dpr = ctx.dpr);
-
         // Reset
         if (this._saveData) {
             this._len = 0;
         }
-
         if (this._lineDash) {
             this._lineDash = null;
-
             this._dashOffset = 0;
         }
-
         return this;
     },
 
@@ -135,10 +117,8 @@ PathProxy.prototype = {
         // 在 lineTo 方法中记录，这里先不考虑这种情况，dashed line 也只在 IE10- 中不支持
         this._x0 = x;
         this._y0 = y;
-
         this._xi = x;
         this._yi = y;
-
         return this;
     },
 
@@ -155,7 +135,6 @@ PathProxy.prototype = {
             || this._len < 5;
 
         this.addData(CMD.L, x, y);
-
         if (this._ctx && exceedUnit) {
             this._needsDash() ? this._dashedLineTo(x, y)
                 : this._ctx.lineTo(x, y);
@@ -164,7 +143,6 @@ PathProxy.prototype = {
             this._xi = x;
             this._yi = y;
         }
-
         return this;
     },
 
@@ -223,7 +201,6 @@ PathProxy.prototype = {
             CMD.A, cx, cy, r, r, startAngle, endAngle - startAngle, 0, anticlockwise ? 0 : 1
         );
         this._ctx && this._ctx.arc(cx, cy, r, startAngle, endAngle, anticlockwise);
-
         this._xi = mathCos(endAngle) * r + cx;
         this._yi = mathSin(endAngle) * r + cy;
         return this;
@@ -295,9 +272,7 @@ PathProxy.prototype = {
     setLineDash: function (lineDash) {
         if (lineDash instanceof Array) {
             this._lineDash = lineDash;
-
             this._dashIdx = 0;
-
             let lineDashSum = 0;
             for (let i = 0; i < lineDash.length; i++) {
                 lineDashSum += lineDash[i];
@@ -331,17 +306,13 @@ PathProxy.prototype = {
      * 直接设置 Path 数据
      */
     setData: function (data) {
-
         let len = data.length;
-
         if (!(this.data && this.data.length === len) && hasTypedArray) {
             this.data = new Float32Array(len);
         }
-
         for (let i = 0; i < len; i++) {
             this.data[i] = data[i];
         }
-
         this._len = len;
     },
 
@@ -421,7 +392,6 @@ PathProxy.prototype = {
         let offset = this._dashOffset;
         let lineDash = this._lineDash;
         let ctx = this._ctx;
-
         let x0 = this._xi;
         let y0 = this._yi;
         let dx = x1 - x0;
@@ -471,7 +441,6 @@ PathProxy.prototype = {
         let offset = this._dashOffset;
         let lineDash = this._lineDash;
         let ctx = this._ctx;
-
         let x0 = this._xi;
         let y0 = this._yi;
         let t;
@@ -481,10 +450,8 @@ PathProxy.prototype = {
         let bezierLen = 0;
         let idx = this._dashIdx;
         let nDash = lineDash.length;
-
         let x;
         let y;
-
         let tmpLen = 0;
 
         if (offset < 0) {
@@ -511,17 +478,13 @@ PathProxy.prototype = {
         t = (tmpLen - offset) / bezierLen;
 
         while (t <= 1) {
-
             x = cubicAt(x0, x1, x2, x3, t);
             y = cubicAt(y0, y1, y2, y3, t);
-
             // Use line to approximate dashed bezier
             // Bad result if dash is long
             idx % 2 ? ctx.moveTo(x, y)
                 : ctx.lineTo(x, y);
-
             t += lineDash[idx] / bezierLen;
-
             idx = (idx + 1) % nDash;
         }
 
@@ -540,7 +503,6 @@ PathProxy.prototype = {
         y2 = (y2 + 2 * y1) / 3;
         x1 = (this._xi + 2 * x1) / 3;
         y1 = (this._yi + 2 * y1) / 3;
-
         this._dashedBezierTo(x1, y1, x2, y2, x3, y3);
     },
 
@@ -583,7 +545,6 @@ PathProxy.prototype = {
                 // 第一个命令为 Arc 的情况下会在后面特殊处理
                 xi = data[i];
                 yi = data[i + 1];
-
                 x0 = xi;
                 y0 = yi;
             }
@@ -633,19 +594,16 @@ PathProxy.prototype = {
                     // TODO Arc 旋转
                     i += 1;
                     let anticlockwise = 1 - data[i++];
-
                     if (i === 1) {
                         // 直接使用 arc 命令
                         // 第一个命令起点还未定义
                         x0 = mathCos(startAngle) * rx + cx;
                         y0 = mathSin(startAngle) * ry + cy;
                     }
-
                     bbox.fromArc(
                         cx, cy, rx, ry, startAngle, endAngle,
                         anticlockwise, min2, max2
                     );
-
                     xi = mathCos(endAngle) * rx + cx;
                     yi = mathSin(endAngle) * ry + cy;
                     break;
@@ -764,11 +722,9 @@ PathProxy.prototype = {
                         ctx.scale(1 / scaleX, 1 / scaleY);
                         ctx.rotate(-psi);
                         ctx.translate(-cx, -cy);
-                    }
-                    else {
+                    }else {
                         ctx.arc(cx, cy, r, theta, endAngle, 1 - fs);
                     }
-
                     if (i === 1) {
                         // 直接使用 arc 命令
                         // 第一个命令起点还未定义
