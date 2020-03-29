@@ -229,13 +229,21 @@ function () {
 
     this.globalScaleRatio = 1;
 <span id='qrenderer-graphic-Element-property-animationProcessList'>    /**
-</span>     * All the AnimationProcesses on this Element.
-     * @property animationProcessList
+</span>     * @property {Array} animationProcessList
+     * All the AnimationProcesses on this Element.
      */
 
-    this.animationProcessList = []; //cache canvas context
+    this.animationProcessList = [];
+<span id='qrenderer-graphic-Element-property-ctx'>    /**
+</span>     * @property {CanvasRenderingContext2D} ctx
+     * Cache canvas context, this will set by Painter.
+     */
 
-    this.ctx = null; //cache previous element
+    this.ctx = null;
+<span id='qrenderer-graphic-Element-property-prevEl'>    /**
+</span>     * @property {Element} prevEl
+     * Cache previous element, this will set by Painter.
+     */
 
     this.prevEl = null;
     this.originalBoundingRect = null;
@@ -300,11 +308,11 @@ function () {
     classUtil.inheritProperties(this, Draggable, this.options);
     classUtil.inheritProperties(this, Transformable, this.options);
     classUtil.copyOwnProperties(this, this.options, [&#39;style&#39;, &#39;shape&#39;]);
-    this.on(&quot;addToStorage&quot;, this.addToStorageHandler);
-    this.on(&quot;delFromStorage&quot;, this.delFromStorageHandler);
+    this.on(&quot;addToStorage&quot;, this.addToStorageHandler, this);
+    this.on(&quot;delFromStorage&quot;, this.delFromStorageHandler, this);
     this.one(&quot;afterRender&quot;, function () {
       _this.originalBoundingRect = _this.getBoundingRect();
-    });
+    }, this);
   }
 <span id='qrenderer-graphic-Element-property-traverse'>  /**
 </span>   * @property {Function} traverse
@@ -450,27 +458,38 @@ function () {
 
   }, {
     key: &quot;render&quot;,
-    value: function render(ctx, prevEl) {
-      this.ctx = ctx;
-      this.prevEl = prevEl;
+    value: function render() {
+      var ctx = this.ctx;
+      var prevEl = this.prevEl;
 
       if (this.showTransformControls &amp;&amp; this.hasTransformControls) {
-        this.renderTransformControls(this.ctx, this.prevEl);
+        this.renderTransformControls();
+      } //FIXME:refactor the render system: element self -&gt; text -&gt; transform controls -&gt; link controls
+      // Draw rect text
+
+
+      if (this.style.text) {
+        // Only restore transform when needs draw text.
+        this.restoreTransform(ctx);
+        this.drawRectText(ctx, this.getBoundingRect());
+        this.applyTransform(ctx);
       }
     }
   }, {
     key: &quot;renderTransformControls&quot;,
-    value: function renderTransformControls(ctx, prevEl) {
+    value: function renderTransformControls() {
       var _this2 = this;
 
-      //draw transform controls
+      var ctx = this.ctx;
+      var prevEl = this.prevEl; //draw transform controls
+
       this.transformControls = [];
       var positions = [&#39;TL&#39;, &#39;T&#39;, &#39;TR&#39;, &#39;R&#39;, &#39;BR&#39;, &#39;B&#39;, &#39;BL&#39;, &#39;L&#39;, &#39;SPIN&#39;];
       positions.forEach(function (p, index) {
         var control = new Control({
           el: _this2,
           name: p
-        }).render(ctx, prevEl);
+        }).render();
 
         _this2.transformControls.push(control);
       }); //draw bounding rect

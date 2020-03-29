@@ -129,9 +129,19 @@ function (_Line) {
       }
     }
   }, {
+    key: &quot;firstPoint&quot;,
+    value: function firstPoint() {
+      return this.shape.points[0];
+    }
+  }, {
     key: &quot;firstTwoPoints&quot;,
     value: function firstTwoPoints() {
       return [_toConsumableArray(this.shape.points[0]), _toConsumableArray(this.shape.points[1])];
+    }
+  }, {
+    key: &quot;lastPoint&quot;,
+    value: function lastPoint() {
+      return this.shape.points[this.shape.points.length - 1];
     }
   }, {
     key: &quot;lastTwoPoints&quot;,

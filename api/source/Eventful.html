@@ -23,12 +23,13 @@
  * is similar to DOM events, the classes which need event support should mixin the functions
  * here.
  * 
+ * 
  * 为不支持事件机制的类提供事件支持，基本机制类似 DOM 事件，需要事件机制的类可以 mixin 此类中的工具函数。
  * 
  * @author @Kener-林峰 &lt;kener.linfeng@gmail.com&gt;
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
-var arrySlice = Array.prototype.slice;
+
 <span id='qrenderer-event-Eventful-method-constructor'>/**
 </span> * @method constructor Eventful
  * @param {Object} [eventProcessor] The object eventProcessor is the scope when
@@ -46,7 +47,6 @@ var arrySlice = Array.prototype.slice;
  * @param {Function} [eventProcessor.afterListenerChanged] Called when any listener added or removed.
  *        param: {String} eventType
  */
-
 var Eventful = function Eventful(eventProcessor) {
   this._$handlers = {};
   this._$eventProcessor = eventProcessor;
@@ -159,7 +159,7 @@ Eventful.prototype = {
       var argLen = args.length;
 
       if (argLen &gt; 3) {
-        args = arrySlice.call(args, 1);
+        args = Array.prototype.slice.call(args, 1);
       }
 
       var len = _h.length;
@@ -244,7 +244,7 @@ Eventful.prototype = {
       var argLen = args.length;
 
       if (argLen &gt; 4) {
-        args = arrySlice.call(args, 1, args.length - 1);
+        args = Array.prototype.slice.call(args, 1, args.length - 1);
       }
 
       var ctx = args[args.length - 1];

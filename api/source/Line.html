@@ -50,7 +50,10 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
  * Line.
  * 
  * 
- * 直线。
+ * 直线。所有线条的特征是：
+ * - 线条可以移动位置，但不能进行其它仿射变换，scale/rotate/skew 都不可以。所以计算线条的相关参数时可以做简化，只要计算 position 和 translate 就可以了。
+ * - 线条总是画在全局空间中。
+ * - 线条不能加到 Group 中。
  * @docauthor 大漠穷秋 &lt;damoqiongqiu@126.com&gt;
  */
 var Line =
@@ -85,8 +88,7 @@ function (_Path) {
      */
 
     _this.type = &#39;line&#39;;
-    classUtil.inheritProperties(_assertThisInitialized(_this), CableLike, _this.options); // If we don&#39;t need linkable feature, just remove this line.
-
+    classUtil.inheritProperties(_assertThisInitialized(_this), CableLike, _this.options);
     classUtil.copyOwnProperties(_assertThisInitialized(_this), _this.options, [&#39;style&#39;, &#39;shape&#39;]);
     _this.transformable = false;
     return _this;

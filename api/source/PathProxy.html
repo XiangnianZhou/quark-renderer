@@ -225,7 +225,7 @@ PathProxy.prototype = {
    * @param  {Number} r
    * @param  {Number} startAngle
    * @param  {Number} endAngle
-   * @param  {boolean} anticlockwise
+   * @param  {Boolean} anticlockwise
    * @return {PathProxy}
    */
   arc: function arc(cx, cy, r, startAngle, endAngle, anticlockwise) {
@@ -327,7 +327,7 @@ PathProxy.prototype = {
 
 <span id='qrenderer-core-PathProxy-method-len'>  /**
 </span>   * @method len
-   * @return {boolean}
+   * @return {Boolean}
    */
   len: function len() {
     return this._len;
@@ -373,8 +373,8 @@ PathProxy.prototype = {
       this.data = new Float32Array(offset + appendSize);
     }
 
-    for (var i = 0; i &lt; len; i++) {
-      var appendPathData = path[i].data;
+    for (var _i = 0; _i &lt; len; _i++) {
+      var appendPathData = path[_i].data;
 
       for (var k = 0; k &lt; appendPathData.length; k++) {
         this.data[offset++] = appendPathData[k];
@@ -425,7 +425,7 @@ PathProxy.prototype = {
 
 <span id='qrenderer-core-PathProxy-method-_needsDash'>  /**
 </span>   * If needs js implemented dashed line
-   * @return {boolean}
+   * @return {Boolean}
    * @private
    */
   _needsDash: function _needsDash() {
@@ -576,8 +576,9 @@ PathProxy.prototype = {
     var yi = 0;
     var x0 = 0;
     var y0 = 0;
+    var i = 0;
 
-    for (var i = 0; i &lt; data.length;) {
+    for (; i &lt; data.length;) {
       var cmd = data[i++];
 
       if (i === 1) {
@@ -672,7 +673,7 @@ PathProxy.prototype = {
       min1[0] = min1[1] = max1[0] = max1[1] = 0;
     }
 
-    return new BoundingRect(min1[0], min1[1], max1[0] - min1[0], max1[1] - min1[1]);
+    return new BoundingRect(min1[0], min1[1], max1[0], max1[1], max1[0] - min1[0], max1[1] - min1[1]);
   },
 
 <span id='qrenderer-core-PathProxy-method-rebuildPath'>  /**

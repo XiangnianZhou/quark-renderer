@@ -43,23 +43,41 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * Class QuarkRenderer is the global entry, every time you call qrenderer.init() will 
  * create an instance of QuarkRenderer class, each instance has an unique id.
  * 
+ * 
  * QuarkRenderer 是一款高性能的 2d 渲染引擎。
- * QuarkRenderer 类是全局入口，每次调用 qrenderer.init() 会创建一个实例，
- * 每个 QuarkRenderer 实例有自己唯一的 ID。
+ * QuarkRenderer 类是全局入口，每次调用 qrenderer.init() 会创建一个实例，每个 QuarkRenderer 实例有自己唯一的 ID。
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
 if (!env.canvasSupported) {
   throw new Error(&quot;Need Canvas Environment.&quot;);
-}
+} // 每种底层渲染技术的 Painter 都需要注册到这里，默认 CanvasPainter
+// Each type of Painters for different rendering techniques should be registered here, default to CanvasPainter.
+
 
 var painterMap = {
   canvas: CanvasPainter
-}; // QuarkRenderer 实例map索引，浏览器中同一个 window 下的 QuarkRenderer 实例都存在这里。
+};
+<span id='qrenderer-core-QuarkRenderer-static-method-registerPainter'>/**
+</span> * @static
+ * @method registerPainter
+ * Register the painter.
+ * 
+ * 
+ * 注册 Painter。
+ * @param {*} name 
+ * @param {*} PainterClass 
+ */
+
+function registerPainter(name, PainterClass) {
+  painterMap[name] = PainterClass;
+} // QuarkRenderer 实例map索引，浏览器中同一个 window 下的 QuarkRenderer 实例都会存在这里。
+// A map for caching QuarkRenderer instances, every instance of the same scope will be stored here.
+
 
 var instances = {};
 <span id='qrenderer-core-QuarkRenderer-property-version'>/**
-</span> * @property {String}
+</span> * @property {String} version
  */
 
 var version = &#39;1.0.26&#39;;
@@ -89,7 +107,7 @@ function init(host, options) {
   return qr;
 }
 <span id='qrenderer-core-QuarkRenderer-method-dispose'>/**
-</span> * TODO: 不要export这个全局函数看起来也没有问题。
+</span> * FIXME: 不要export这个全局函数看起来也没有问题。
  * Dispose qrenderer instance
  * @param {QuarkRenderer} qr
  */
@@ -114,6 +132,8 @@ function dispose(qr) {
 </span> * @static
  * @method getInstance
  * Get qrenderer instance by id.
+ * 
+ * 根据 id 获取 QuarkRenderer 的实例。
  * @param {String} id
  * @return {QuarkRenderer}
  */
@@ -121,10 +141,6 @@ function dispose(qr) {
 
 function getInstance(id) {
   return instances[id];
-}
-
-function registerPainter(name, PainterClass) {
-  painterMap[name] = PainterClass;
 }
 <span id='qrenderer-core-QuarkRenderer-method-constructor'>/**
 </span> * @method constructor QuarkRenderer
@@ -210,7 +226,7 @@ function () {
     });
     this.globalAnimationMgr.start();
 <span id='qrenderer-core-QuarkRenderer-property-_needRefresh'>    /**
-</span>     * @property {boolean}
+</span>     * @property {Boolean}
      * @private
      */
 
@@ -218,7 +234,10 @@ function () {
   }
 <span id='qrenderer-core-QuarkRenderer-method-'>  /**
 </span>   * @method
-   * 添加元素
+   * Add element.
+   * 
+   * 
+   * 添加元素。
    * @param  {qrenderer/Element} el
    */
 
@@ -232,7 +251,10 @@ function () {
     }
 <span id='qrenderer-core-QuarkRenderer-method-'>    /**
 </span>     * @method
-     * 删除元素
+     * Delete element.
+     * 
+     * 
+     * 删除元素。
      * @param  {qrenderer/Element} el
      */
 
@@ -263,23 +285,25 @@ function () {
         // Clear needsRefresh ahead to avoid something wrong happens in refresh
         // Or it will cause qrenderer refreshes again and again.
         this._needRefresh = this._needRefreshHover = false;
-        this.painter.refresh &amp;&amp; this.painter.refresh(); // Avoid trigger qr.refresh in Element#beforeUpdate hook
-
-        this._needRefresh = this._needRefreshHover = false;
-        this.trigger(&#39;rendered&#39;);
+        this.painter.refresh &amp;&amp; this.painter.refresh();
       }
 
       if (this._needRefreshHover) {
         //only try refreshing hovered elements
         this._needRefresh = this._needRefreshHover = false;
         this.painter.refreshHover &amp;&amp; this.painter.refreshHover();
-        this._needRefresh = this._needRefreshHover = false;
-        this.trigger(&#39;rendered&#39;);
-      }
+      } // Avoid trigger qr.refresh in Element#beforeUpdate hook
+
+
+      this._needRefresh = this._needRefreshHover = false;
+      this.eventDispatcher.trigger(&#39;rendered&#39;);
     }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @method
-     * Mark and repaint the canvas in the next frame of browser
+<span id='qrenderer-core-QuarkRenderer-method-refresh'>    /**
+</span>     * @method refresh
+     * Mark and repaint the canvas in the next animation frame.
+     * 
+     * 
+     * 标记，在下一个动画帧中重绘画布。
      */
 
   }, {
@@ -287,15 +311,17 @@ function () {
     value: function refresh() {
       this._needRefresh = true;
     }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
+<span id='qrenderer-core-QuarkRenderer-method-addHover'>    /**
 </span>     * @private
-     * @method
-     * 与 Hover 相关的6个方法用来处理浮动层，当鼠标悬停在 canvas 中的元素上方时，可能会需要
-     * 显示一些浮动的层来展现一些特殊的数据。
-     * TODO:这里可能有点问题，Hover 一词可能指的是遮罩层，而不是浮动层，如果确认是遮罩，考虑
-     * 把这里的 API 单词重构成 Mask。
+     * @method addHover
+     * Add element to a hover layer, the 6 methods below are related to hover layer, we may need a hover layer 
+     * to display some special data when the mouse is hovered over an element.
      * 
-     * Add element to hover layer
+     * 
+     * 把元素添加到浮动层。
+     * 以下与 Hover 相关的6个方法用来处理浮动层，当鼠标悬停在 canvas 中的元素上方时，可能会需要
+     * 显示一些浮动的层来展现一些特殊的数据。
+     * 
      * @param  {Element} el
      * @param {Object} style
      */
@@ -309,10 +335,13 @@ function () {
         return elMirror;
       }
     }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
+<span id='qrenderer-core-QuarkRenderer-method-removeHover'>    /**
 </span>     * @private
-     * @method
-     * Remove element from hover layer
+     * @method removeHover
+     * Remove element from hover layer.
+     * 
+     * 
+     * 从浮动层中删除元素。
      * @param  {Element} el
      */
 
@@ -324,10 +353,13 @@ function () {
         this.refreshHover();
       }
     }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
+<span id='qrenderer-core-QuarkRenderer-method-findHover'>    /**
 </span>     * @private
-     * @method
-     * Find hovered element
+     * @method findHover
+     * Find hovered element.
+     * 
+     * 
+     * 查找浮动的元素。
      * @param {Number} x
      * @param {Number} y
      * @return {Object} {target, topTarget}
@@ -338,10 +370,13 @@ function () {
     value: function findHover(x, y) {
       return this.eventDispatcher.findHover(x, y);
     }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
+<span id='qrenderer-core-QuarkRenderer-method-clearHover'>    /**
 </span>     * @private
-     * @method
-     * Clear all hover elements in hover layer
+     * @method clearHover
+     * Clear all hover elements in hover layer.
+     * 
+     * 
+     * 从浮动层中删掉所有元素。
      * @param  {Element} el
      */
 
@@ -353,10 +388,13 @@ function () {
         this.refreshHover();
       }
     }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
+<span id='qrenderer-core-QuarkRenderer-method-refreshHover'>    /**
 </span>     * @private
-     * @method
-     * Refresh hover in next frame
+     * @method refreshHover
+     * Refresh hover in next frame.
+     * 
+     * 
+     * 下一帧刷新浮动层。
      */
 
   }, {
@@ -364,10 +402,13 @@ function () {
     value: function refreshHover() {
       this._needRefreshHover = true;
     }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @method
+<span id='qrenderer-core-QuarkRenderer-method-resize'>    /**
+</span>     * @method resize
      * Resize the canvas.
-     * Should be invoked when container size is changed
+     * Should be invoked when container size is changed.
+     * 
+     * 
+     * 重设画布的尺寸，当外部容器的尺寸发生了变化时需要调用此方法来重新设置画布的大小。
      * @param {Object} [options]
      * @param {Number|String} [options.width] Can be &#39;auto&#39; (the same as null/undefined)
      * @param {Number|String} [options.height] Can be &#39;auto&#39; (the same as null/undefined)
@@ -380,9 +421,11 @@ function () {
       this.painter.resize(options.width, options.height);
       this.eventDispatcher.resize();
     }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @method
-     * Get container width
+<span id='qrenderer-core-QuarkRenderer-method-getWidth'>    /**
+</span>     * @method getWidth
+     * Get container width.
+     * 
+     * 获取容器的宽度。
      */
 
   }, {
@@ -390,9 +433,12 @@ function () {
     value: function getWidth() {
       return this.painter.getWidth();
     }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @method
-     * Get container height
+<span id='qrenderer-core-QuarkRenderer-method-getHeight'>    /**
+</span>     * @method getHeight
+     * Get container height.
+     * 
+     * 
+     * 获取容器的高度。
      */
 
   }, {
@@ -400,10 +446,13 @@ function () {
     value: function getHeight() {
       return this.painter.getHeight();
     }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
+<span id='qrenderer-core-QuarkRenderer-method-configLayer'>    /**
 </span>     * @private
-     * @method
-     * Change configuration of layer
+     * @method configLayer
+     * Change configuration of layer.
+     * 
+     * 
+     * 修改层属性。
      * @param {String} qLevel
      * @param {Object} [config]
      * @param {String} [config.clearColor=0] Clear color
@@ -420,9 +469,12 @@ function () {
 
       this.refresh();
     }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @method
-     * Set background color
+<span id='qrenderer-core-QuarkRenderer-method-setBackgroundColor'>    /**
+</span>     * @method setBackgroundColor
+     * Set background color.
+     * 
+     * 
+     * 设置背景颜色。
      * @param {String} backgroundColor
      */
 
@@ -435,10 +487,14 @@ function () {
 
       this.refresh();
     }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @method
+<span id='qrenderer-core-QuarkRenderer-method-pathToImage'>    /**
+</span>     * @method pathToImage
      * Converting a path to image.
      * It has much better performance of drawing image rather than drawing a vector path.
+     * 
+     * 
+     * 把路径导出成图片。
+     * 绘制图片的性能比绘制路径高很多。
      * @param {graphic/Path} e
      * @param {Number} width
      * @param {Number} height
@@ -449,9 +505,12 @@ function () {
     value: function pathToImage(e, dpr) {
       return this.painter.pathToImage(e, dpr);
     }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @method
-     * Set default cursor
+<span id='qrenderer-core-QuarkRenderer-method-setCursorStyle'>    /**
+</span>     * @method setCursorStyle
+     * Set default cursor.
+     * 
+     * 
+     * 设置默认的鼠标形状。
      * @param {String} [cursorStyle=&#39;move&#39;]
      */
 
@@ -460,48 +519,12 @@ function () {
     value: function setCursorStyle(cursorStyle) {
       this.eventDispatcher.setCursorStyle(cursorStyle);
     }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @method
-     * Bind event
-     *
-     * @param {String} eventName Event name
-     * @param {Function} eventDispatcher Handler function
-     * @param {Object} [context] Context object
-     */
-
-  }, {
-    key: &quot;on&quot;,
-    value: function on(eventName, eventDispatcher, context) {
-      this.eventDispatcher.on(eventName, eventDispatcher, context);
-    }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @method
-     * Unbind event
-     * @param {String} eventName Event name
-     * @param {Function} [eventDispatcher] Handler function
-     */
-
-  }, {
-    key: &quot;off&quot;,
-    value: function off(eventName, eventDispatcher) {
-      this.eventDispatcher.off(eventName, eventDispatcher);
-    }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @method
-     * Trigger event manually
-     *
-     * @param {String} eventName Event name
-     * @param {event=} event Event object
-     */
-
-  }, {
-    key: &quot;trigger&quot;,
-    value: function trigger(eventName, event) {
-      this.eventDispatcher.trigger(eventName, event);
-    }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @method
+<span id='qrenderer-core-QuarkRenderer-method-clear'>    /**
+</span>     * @method clear
      * Clear all objects and the canvas.
+     * 
+     * 
+     * 清空画布上的所有对象。
      */
 
   }, {
@@ -510,9 +533,12 @@ function () {
       this.storage.delFromRoot();
       this.painter.clear();
     }
-<span id='qrenderer-core-QuarkRenderer-method-'>    /**
-</span>     * @method
+<span id='qrenderer-core-QuarkRenderer-method-dispose'>    /**
+</span>     * @method dispose
      * Dispose self.
+     * 
+     * 
+     * 销毁自身。
      */
 
   }, {
@@ -532,94 +558,78 @@ function () {
 
   return QuarkRenderer;
 }(); // ---------------------------
-// Events of qrenderer instance.
+// Events on QuarkRenderer instance.
 // ---------------------------
 
 <span id='qrenderer-core-QuarkRenderer-event-onclick'>/**
 </span> * @event onclick
- * @param {Function} null
  */
 
 <span id='qrenderer-core-QuarkRenderer-event-onmouseover'>/**
 </span> * @event onmouseover
- * @param {Function} null
  */
 
 <span id='qrenderer-core-QuarkRenderer-event-onmouseout'>/**
 </span> * @event onmouseout
- * @param {Function} null
  */
 
 <span id='qrenderer-core-QuarkRenderer-event-onmousemove'>/**
 </span> * @event onmousemove
- * @param {Function} null
  */
 
 <span id='qrenderer-core-QuarkRenderer-event-onmousewheel'>/**
 </span> * @event onmousewheel
- * @param {Function} null
  */
 
 <span id='qrenderer-core-QuarkRenderer-event-onmousedown'>/**
 </span> * @event onmousedown
- * @param {Function} null
  */
 
 <span id='qrenderer-core-QuarkRenderer-event-onmouseup'>/**
 </span> * @event onmouseup
- * @param {Function} null
  */
 
 <span id='qrenderer-core-QuarkRenderer-event-ondrag'>/**
 </span> * @event ondrag
- * @param {Function} null
  */
 
 <span id='qrenderer-core-QuarkRenderer-event-ondragstart'>/**
 </span> * @event ondragstart
- * @param {Function} null
  */
 
 <span id='qrenderer-core-QuarkRenderer-event-ondragend'>/**
 </span> * @event ondragend
- * @param {Function} null
  */
 
 <span id='qrenderer-core-QuarkRenderer-event-ondragenter'>/**
 </span> * @event ondragenter
- * @param {Function} null
  */
 
 <span id='qrenderer-core-QuarkRenderer-event-ondragleave'>/**
 </span> * @event ondragleave
- * @param {Function} null
  */
 
 <span id='qrenderer-core-QuarkRenderer-event-ondragover'>/**
 </span> * @event ondragover
- * @param {Function} null
  */
 
 <span id='qrenderer-core-QuarkRenderer-event-ondrop'>/**
 </span> * @event ondrop
- * @param {Function} null
  */
 
 <span id='qrenderer-core-QuarkRenderer-event-onpagemousemove'>/**
 </span> * @event onpagemousemove
- * @param {Function} null
  */
 
 <span id='qrenderer-core-QuarkRenderer-event-onpagemouseup'>/**
 </span> * @event onpagemouseup
- * @param {Function} null
  */
 
 
+exports.registerPainter = registerPainter;
 exports.version = version;
 exports.init = init;
 exports.dispose = dispose;
-exports.getInstance = getInstance;
-exports.registerPainter = registerPainter;</pre>
+exports.getInstance = getInstance;</pre>
 </body>
 </html>

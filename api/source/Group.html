@@ -208,14 +208,14 @@ function (_Rect) {
       }
 
       if (group.resizeStrategy === &#39;restrict&#39;) {
-        var tempWidth = childRect.x + childRect.width - groupRect.x;
+        var tempWidth = childRect.x2 - groupRect.x1;
 
         if (tempWidth &gt; groupOriginalRect.width) {
           this.position[0] = groupOriginalRect.width - childRect.width;
           return false;
         }
 
-        var tempHeight = childRect.y + childRect.height - groupRect.y;
+        var tempHeight = childRect.y2 - groupRect.y1;
 
         if (tempHeight &gt; groupOriginalRect.height) {
           this.position[1] = groupOriginalRect.height - childRect.height;
@@ -235,7 +235,7 @@ function (_Rect) {
       var newHeight = groupOriginalRect.height;
 
       if (child.position[0] &gt;= 0) {
-        var temp = childRect.x + childRect.width - groupRect.x;
+        var temp = childRect.x2 - groupRect.x1;
 
         if (temp &gt; groupOriginalRect.width) {
           newWidth = temp;
@@ -243,7 +243,7 @@ function (_Rect) {
       }
 
       if (child.position[1] &gt;= 0) {
-        var _temp = childRect.y + childRect.height - groupRect.y;
+        var _temp = childRect.y2 - groupRect.y1;
 
         if (_temp &gt; groupOriginalRect.height) {
           newHeight = _temp;
@@ -362,7 +362,7 @@ function (_Rect) {
       }); //然后在调用父层的处理函数删除自身
 
       Element.prototype.delFromStorageHandler.call(this, storage);
-    } // /**
+    } // /**FIXME:refactor this method
     //  * @method getBoundingRect
     //  * @return {BoundingRect}
     //  */

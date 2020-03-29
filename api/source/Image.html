@@ -15,13 +15,17 @@
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js">var Element = require(&quot;./Element&quot;);
+  <pre class="prettyprint lang-js">var dataUtil = require(&quot;../utils/data_structure_util&quot;);
+
+var imageHelper = require(&quot;../utils/image_util&quot;);
+
+var classUtil = require(&quot;../utils/class_util&quot;);
+
+var Element = require(&quot;./Element&quot;);
 
 var BoundingRect = require(&quot;./BoundingRect&quot;);
 
-var dataUtil = require(&quot;../utils/data_structure_util&quot;);
-
-var imageHelper = require(&quot;../utils/image_util&quot;);
+var Linkable = require(&quot;./link/Linkable&quot;);
 
 function _typeof(obj) { &quot;@babel/helpers - typeof&quot;; if (typeof Symbol === &quot;function&quot; &amp;&amp; typeof Symbol.iterator === &quot;symbol&quot;) { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj &amp;&amp; typeof Symbol === &quot;function&quot; &amp;&amp; obj.constructor === Symbol &amp;&amp; obj !== Symbol.prototype ? &quot;symbol&quot; : typeof obj; }; } return _typeof(obj); }
 
@@ -33,9 +37,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call &amp;&amp; (_typeof(call) === &quot;object&quot; || typeof call === &quot;function&quot;)) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(&quot;this hasn&#39;t been initialised - super() hasn&#39;t been called&quot;); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError(&quot;this hasn&#39;t been initialised - super() hasn&#39;t been called&quot;); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== &quot;function&quot; &amp;&amp; superClass !== null) { throw new TypeError(&quot;Super expression must either be null or a function&quot;); } subClass.prototype = Object.create(superClass &amp;&amp; superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -65,18 +69,20 @@ function (_Element) {
      */
 
     _this.type = &#39;image&#39;;
+    classUtil.inheritProperties(_assertThisInitialized(_this), Linkable, _this.options);
+    classUtil.copyOwnProperties(_assertThisInitialized(_this), _this.options, [&#39;style&#39;, &#39;shape&#39;]);
     return _this;
   }
 <span id='qrenderer-graphic-QImage-method-render'>  /**
 </span>   * @method render
-   * @param {Object} ctx 
-   * @param {Element} prevEl 
    */
 
 
   _createClass(QImage, [{
     key: &quot;render&quot;,
-    value: function render(ctx, prevEl) {
+    value: function render() {
+      var ctx = this.ctx;
+      var prevEl = this.prevEl;
       var style = this.style;
       var src = style.image; // Must bind each time
 
@@ -117,13 +123,6 @@ function (_Element) {
         ctx.drawImage(image, _sx, _sy, sWidth, sHeight, x, y, width, height);
       } else {
         ctx.drawImage(image, x, y, width, height);
-      } // Draw rect text
-
-
-      if (style.text != null) {
-        // Only restore transform when needs draw text.
-        this.restoreTransform(ctx);
-        this.drawRectText(ctx, this.getBoundingRect());
       }
 
       Element.prototype.render.call(this, ctx, prevEl);
@@ -137,8 +136,24 @@ function (_Element) {
     value: function getBoundingRect() {
       var style = this.style;
 
+      if (!style.x) {
+        style.x = 0;
+      }
+
+      if (!style.y) {
+        style.y = 0;
+      }
+
+      if (!style.width) {
+        style.width = 0;
+      }
+
+      if (!style.height) {
+        style.height = 0;
+      }
+
       if (!this.__boundingRect) {
-        this.__boundingRect = new BoundingRect(style.x || 0, style.y || 0, style.width || 0, style.height || 0);
+        this.__boundingRect = new BoundingRect(style.x, style.y, style.width - style.x, style.height - style.y, style.width, style.height);
       }
 
       return this.__boundingRect;
@@ -148,6 +163,8 @@ function (_Element) {
   return QImage;
 }(Element);
 
-module.exports = QImage;</pre>
+classUtil.mixin(QImage, Linkable);
+var _default = QImage;
+module.exports = _default;</pre>
 </body>
 </html>

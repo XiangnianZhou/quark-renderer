@@ -72,10 +72,16 @@ function (_Element) {
     _this.type = &#39;text&#39;;
     return _this;
   }
+<span id='qrenderer-graphic-Text-method-render'>  /**
+</span>   * @method render
+   */
+
 
   _createClass(Text, [{
     key: &quot;render&quot;,
-    value: function render(ctx, prevEl) {
+    value: function render() {
+      var ctx = this.ctx;
+      var prevEl = this.prevEl;
       var style = this.style; // Optimize, avoid normalize every time.
 
       this.__dirty &amp;&amp; textUtil.normalizeTextStyle(style, true); // Use props with prefix &#39;text&#39;.
@@ -103,7 +109,6 @@ function (_Element) {
       this.applyTransform(ctx);
       textUtil.renderText(this, ctx, text, style, null, prevEl);
       this.restoreTransform(ctx);
-      Element.prototype.render.call(this, ctx, prevEl);
     }
 <span id='qrenderer-graphic-Text-method-getBoundingRect'>    /**
 </span>     * @method getBoundingRect
@@ -129,15 +134,17 @@ function (_Element) {
         var text = style.text;
         text != null ? text += &#39;&#39; : text = &#39;&#39;;
         var rect = textContain.getBoundingRect(style.text + &#39;&#39;, style.font, style.textAlign, style.textVerticalAlign, style.textPadding, style.textLineHeight, style.rich);
-        rect.x += style.x || 0;
-        rect.y += style.y || 0;
+        rect.x1 += style.x || 0;
+        rect.y1 += style.y || 0;
 
         if (textUtil.getStroke(style.textStroke, style.textStrokeWidth)) {
           var w = style.textStrokeWidth;
-          rect.x -= w / 2;
-          rect.y -= w / 2;
+          rect.x1 -= w / 2;
+          rect.y1 -= w / 2;
           rect.width += w;
           rect.height += w;
+          rect.x2 = rect.x1 + rect.width;
+          rect.y2 = rect.y1 + rect.height;
         }
 
         this.__boundingRect = rect;
