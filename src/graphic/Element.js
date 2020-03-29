@@ -403,6 +403,16 @@ class Element{
         if(this.showTransformControls&&this.hasTransformControls){
             this.renderTransformControls(this.ctx, this.prevEl);
         }
+
+        //FIXME:refactor the render system: element self -> text -> transform controls -> link controls
+        // Draw rect text
+        if (this.style.text) {
+            // Only restore transform when needs draw text.
+            this.ctx.save();
+            this.restoreTransform(ctx);
+            this.drawRectText(ctx, this.getBoundingRect());
+            this.ctx.restore();
+        }
     }
 
     renderTransformControls(ctx, prevEl){

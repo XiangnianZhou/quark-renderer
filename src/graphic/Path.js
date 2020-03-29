@@ -167,13 +167,6 @@ class Path extends Element{
         }
 
         Element.prototype.render.call(this,ctx,prevEl);
-        
-        // Draw rect text
-        if (this.style.text != null) {
-            // Only restore transform when needs draw text.
-            this.restoreTransform(ctx);
-            this.drawRectText(ctx, this.getBoundingRect());
-        }
     }
 
     /**
