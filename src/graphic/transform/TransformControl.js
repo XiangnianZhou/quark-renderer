@@ -50,7 +50,10 @@ export default class TransformControl {
         classUtil.copyOwnProperties(this,options);
     }
 
-    render(ctx,prevEl){
+    render(){
+        let ctx=this.el.ctx;
+        let prevEl=this.el.prevEl;
+
         this._renderSquareControl(ctx,prevEl);
         return this;
     }

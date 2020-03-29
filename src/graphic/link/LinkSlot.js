@@ -42,7 +42,10 @@ class LinkSlot {
         classUtil.copyOwnProperties(this,options);
     }
     
-    render(ctx,prevEl){
+    render(){
+        let ctx=this.el.ctx;
+        let prevEl=this.el.prevEl;
+
         let param=this.calcParameters();
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -113,7 +116,7 @@ class LinkSlot {
         let point=[...this.center];
         point[0]=point[0]/scale[0];
         point[1]=point[1]/scale[1];
-        
+
         let position = this.el.localToGlobal(...point);
         return position;
     }

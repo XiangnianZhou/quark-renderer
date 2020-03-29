@@ -69,8 +69,8 @@ CableLike.prototype={
      * @method renderTransformControls
      */
     renderLinkControls:function(){
-        this.startControl.render(this.ctx, this.prevEl);
-        this.endControl.render(this.ctx, this.prevEl);
+        this.startControl.render();
+        this.endControl.render();
     },
 
     renderStartArrow:function(){

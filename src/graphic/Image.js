@@ -27,10 +27,11 @@ class QImage extends Element{
 
     /**
      * @method render
-     * @param {Object} ctx 
-     * @param {Element} prevEl 
      */
-    render(ctx, prevEl) {
+    render() {
+        let ctx=this.ctx;
+        let prevEl=this.prevEl;
+
         let style = this.style;
         let src = style.image;
 

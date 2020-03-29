@@ -9,12 +9,11 @@
     <canvas id="main" width="1000px" height="600px" style="width:1000px;height:600px;"></canvas>
     <div id="counterDiv" style="font-size:32px;color:crimson;font-weight: bold;"></div>
     <script type="text/javascript">
-        var qr = QuarkRenderer.init(document.getElementById('main'));
-
+        let qr = QuarkRenderer.init(document.getElementById('main'));
         let counter=0;
         qr.globalAnimationMgr.on('frame', function ()  {
-            for (var i = 0; i < 2000; i++) {
-                var circleShape = new QuarkRenderer.Circle({
+            for (let i = 0; i < 2000; i++) {
+                let circleShape = new QuarkRenderer.Circle({
                     incremental:true,
                     shape: {
                         r: 1 + Math.random() * 2

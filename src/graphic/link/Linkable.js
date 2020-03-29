@@ -52,7 +52,7 @@ Linkable.prototype={
                 this.linkSlots.set(name,slot);
             }
             if(this.showLinkSlots){
-                slot.render(ctx, prevEl);
+                slot.render();
             }
         });
         this.trigger("afterSlotRender",this);

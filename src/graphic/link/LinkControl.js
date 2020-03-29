@@ -35,7 +35,10 @@ class LinkControl {
         classUtil.copyOwnProperties(this,options);
     }
 
-    render(ctx,prevEl){
+    render(){
+        let ctx=this.el.ctx;
+        let prevEl=this.el.prevEl;
+
         let param=this.calcParameters();
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);

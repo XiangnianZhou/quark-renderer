@@ -57,10 +57,11 @@ class Path extends Element{
 
     /**
      * @method render
-     * @param {Object} ctx 
-     * @param {Element} prevEl 
      */
-    render(ctx, prevEl) {
+    render() {
+        let ctx=this.ctx;
+        let prevEl=this.prevEl;
+
         let path = this.path || new PathProxy(true);
         let hasStroke = this.style.hasStroke();
         let hasFill = this.style.hasFill();

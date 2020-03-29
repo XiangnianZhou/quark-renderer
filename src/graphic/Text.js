@@ -22,7 +22,12 @@ export default class Text extends Element{
         this.type='text';
     }
 
-    render(ctx, prevEl) {
+    /**
+     * @method render
+     */
+    render() {
+        let ctx = this.ctx;
+        let prevEl=this.prevEl;
         let style = this.style;
 
         // Optimize, avoid normalize every time.
@@ -55,8 +60,6 @@ export default class Text extends Element{
         this.applyTransform(ctx);
         textUtil.renderText(this, ctx, text, style, null, prevEl);
         this.restoreTransform(ctx);
-        
-        Element.prototype.render.call(this,ctx,prevEl);
     }
 
     /**
