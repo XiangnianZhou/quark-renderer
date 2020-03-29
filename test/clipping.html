@@ -8,15 +8,14 @@
 <body>
     <div id="main" style="width:1000px;height:600px;"></div>
     <script type="text/javascript">
-        // 初始化qrenderer
-        var qr = QuarkRenderer.init(document.getElementById('main'));
-
-        var g1 = new QuarkRenderer.Group();
-        var g2 = new QuarkRenderer.Group();
+        //FIXME:fix the example
+        let qr = QuarkRenderer.init(document.getElementById('main'));
+        let g1 = new QuarkRenderer.Group();
+        let g2 = new QuarkRenderer.Group();
         g1.add(g2);
         qr.add(g1);
 
-        var circle = new QuarkRenderer.Circle({
+        let circle = new QuarkRenderer.Circle({
             shape: {
                 r: 0,
                 cx: 0,
@@ -27,7 +26,7 @@
 
         g2.setClipPath(circle);
 
-        var rect = new QuarkRenderer.Rect({
+        let rect = new QuarkRenderer.Rect({
             shape: {
                 width: 500,
                 height: 300,
@@ -38,9 +37,9 @@
         });
         g1.setClipPath(rect);
 
-        for (var i = 0; i < 50; i++) {
-            for( var j = 0; j < 50; j++){
-                var image = new QuarkRenderer.Image({
+        for (let i = 0; i < 50; i++) {
+            for( let j = 0; j < 50; j++){
+                let image = new QuarkRenderer.Image({
                     position: [i * 50, j * 50],
                     scale: [1, 1],
                     style: {

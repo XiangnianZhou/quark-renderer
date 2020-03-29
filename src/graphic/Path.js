@@ -1,10 +1,10 @@
-import Element from './Element';
 import * as dataUtil from '../utils/data_structure_util';
 import * as classUtil from '../utils/class_util';
-import PathProxy from './PathProxy';
 import * as pathContain from '../utils/contain/path';
-import Pattern from './Pattern';
 import {mathMax,mathAbs,mathSqrt} from '../utils/constants';
+import Element from './Element';
+import PathProxy from './PathProxy';
+import Pattern from './Pattern';
 
 /**
  * @class qrenderer.graphic.Path 
@@ -57,10 +57,11 @@ class Path extends Element{
 
     /**
      * @method render
-     * @param {Object} ctx 
-     * @param {Element} prevEl 
      */
-    render(ctx, prevEl) {
+    render() {
+        let ctx=this.ctx;
+        let prevEl=this.prevEl;
+
         let path = this.path || new PathProxy(true);
         let hasStroke = this.style.hasStroke();
         let hasFill = this.style.hasFill();
@@ -167,13 +168,6 @@ class Path extends Element{
         }
 
         Element.prototype.render.call(this,ctx,prevEl);
-        
-        // Draw rect text
-        if (this.style.text != null) {
-            // Only restore transform when needs draw text.
-            this.restoreTransform(ctx);
-            this.drawRectText(ctx, this.getBoundingRect());
-        }
     }
 
     /**
@@ -234,7 +228,7 @@ class Path extends Element{
             let rectWithStroke = this._boundingRectWithStroke || (this._boundingRectWithStroke = rect.clone());
             if (this.__dirty || needsUpdateRect) {
                 rectWithStroke.copy(rect);
-                // FIXME Must after composeLocalTransform
+                // FIXME Must after composeParentTransform
                 let w = this.style.lineWidth;
                 // PENDING, Min line width is needed when line is horizontal or vertical
                 let lineScale = this.style.strokeNoScale ? this.getLineScale() : 1;
@@ -248,8 +242,10 @@ class Path extends Element{
                 if (lineScale > 1e-10) {
                     rectWithStroke.width += w / lineScale;
                     rectWithStroke.height += w / lineScale;
-                    rectWithStroke.x -= w / lineScale / 2;
-                    rectWithStroke.y -= w / lineScale / 2;
+                    rectWithStroke.x1 -= w / lineScale / 2;
+                    rectWithStroke.y1 -= w / lineScale / 2;
+                    rectWithStroke.x2 = rectWithStroke.x1+rectWithStroke.width;
+                    rectWithStroke.y2 = rectWithStroke.y1+rectWithStroke.height;
                 }
             }
 

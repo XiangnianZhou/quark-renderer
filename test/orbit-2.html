@@ -8,35 +8,33 @@
 <body style="background-color:black; margin:0px;">
     <div id="main" style="width:1000px;height:600px;"></div>
     <script type="text/javascript">
-        var qr = QuarkRenderer.init(document.getElementById('main'));
+        let qr = QuarkRenderer.init(document.getElementById('main'));
+        let NUMBER = 5000;
 
-        var NUMBER = 5000;
-
-        for (var i = 0; i < NUMBER; i++) {
-            var circleShape = new QuarkRenderer.Circle({
+        for (let i = 0; i < NUMBER; i++) {
+            let circleShape = new QuarkRenderer.Circle({
                 shape: {
                     cx: 10,
                     cy: 10,
                     r: 5 + Math.random() * 10
                 },
                 style: {
-                    // stroke: 'red',
+                    stroke: 'red',
                     fill: 'white'
                 }
             });
-
             qr.add(circleShape);
-            var ap = circleShape.animate();
 
-            var points = [];
-            var point = [
+            let ap = circleShape.animate();
+            let points = [];
+            let point = [
                 Math.random() * qr.getWidth(),
                 Math.random() * qr.getHeight()
             ];
             //star.position = point;
             points.push(point);
-            for (var j = 1; j < 10; j++) {
-                var point = [
+            for (let j = 1; j < 10; j++) {
+                let point = [
                     Math.random() * qr.getWidth(),
                     Math.random() * qr.getHeight()
                 ];

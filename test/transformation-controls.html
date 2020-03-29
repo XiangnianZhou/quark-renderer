@@ -12,7 +12,7 @@
         let qr = QuarkRenderer.init(document.getElementById('main'));
         let circle=new QuarkRenderer.Rect({
             showTransformControls:true,
-            isLinkable:true,
+            linkable:true,
             draggable:true,
             position:[100,200],
             shape:{
@@ -27,7 +27,7 @@
 
         let image = new QuarkRenderer.Image({
             showTransformControls:true,
-            isLinkable:true,
+            linkable:true,
             position: [450,200],
             scale: [1, 1],
             style: {
@@ -56,7 +56,8 @@
             },
             style: {
                 stroke: 'rgba(220, 20, 60, 0.8)',
-                lineWidth: 5
+                lineWidth: 5,
+                text:'text on line'
             }
         });
         qr.add(curve);
@@ -70,11 +71,11 @@
             position: [100, 0],
             draggable: true,
             isCable:true,
-            showTransformControls:true,
             style: {
                 lineDash: [10, 10],
                 stroke: 'rgba(220, 20, 60, 0.8)',
-                lineWidth: 10
+                lineWidth: 10,
+                text:'text on line'
             },
             shape: {
                 points:points,
@@ -94,10 +95,10 @@
             position: [150, 700],
             draggable: true,
             isCable:true,
-            showTransformControls:true,
             style: {
                 stroke: 'rgba(220, 20, 60, 0.8)',
-                lineWidth: 5
+                lineWidth: 5,
+                text:'text on line'
             },
             shape: {
                 x1: 0,

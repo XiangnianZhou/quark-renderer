@@ -324,12 +324,12 @@ function applyTextRotation(ctx, style, rect, x, y) {
     if (rect && style.textRotation) {
         var origin = style.textOrigin;
         if (origin === 'center') {
-            x = rect.width / 2 + rect.x;
-            y = rect.height / 2 + rect.y;
+            x = rect.width / 2 + rect.x1;
+            y = rect.height / 2 + rect.y1;
         }
         else if (origin) {
-            x = origin[0] + rect.x;
-            y = origin[1] + rect.y;
+            x = origin[0] + rect.x1;
+            y = origin[1] + rect.y1;
         }
 
         ctx.translate(x, y);
@@ -427,8 +427,7 @@ function drawBackground(hostEl, ctx, style, x, y, width, height) {
         var textBorderRadius = style.textBorderRadius;
         if (!textBorderRadius) {
             ctx.rect(x, y, width, height);
-        }
-        else {
+        }else {
             roundRectHelper.buildPath(ctx, {
                 x: x, y: y, width: width, height: height, r: textBorderRadius
             });
@@ -444,8 +443,7 @@ function drawBackground(hostEl, ctx, style, x, y, width, height) {
             ctx.globalAlpha = style.fillOpacity * style.opacity;
             ctx.fill();
             ctx.globalAlpha = originalGlobalAlpha;
-        }
-        else {
+        }else {
             ctx.fill();
         }
     }
@@ -469,8 +467,7 @@ function drawBackground(hostEl, ctx, style, x, y, width, height) {
             ctx.globalAlpha = style.strokeOpacity * style.opacity;
             ctx.stroke();
             ctx.globalAlpha = originalGlobalAlpha;
-        }
-        else {
+        }else {
             ctx.stroke();
         }
     }
@@ -493,8 +490,8 @@ export function getBoxPosition(out, hostEl, style, rect) {
         var textPosition = style.textPosition;
         if (textPosition instanceof Array) {
             // Percent
-            baseX = rect.x + parsePercent(textPosition[0], rect.width);
-            baseY = rect.y + parsePercent(textPosition[1], rect.height);
+            baseX = rect.x1 + parsePercent(textPosition[0], rect.width);
+            baseY = rect.y1 + parsePercent(textPosition[1], rect.height);
         }
         else {
             var res = (hostEl && hostEl.calculateTextPosition)
@@ -575,7 +572,7 @@ function getTextXForPadding(x, textAlign, textPadding) {
 /**
  * @param {String} text
  * @param {Style} style
- * @return {boolean}
+ * @return {Boolean}
  */
 export function needDrawText(text, style) {
     return text != null

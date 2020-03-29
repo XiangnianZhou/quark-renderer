@@ -13,7 +13,7 @@ import Gradient from './Gradient';
  * @param {Number} [x2=1]
  * @param {Number} [y2=0]
  * @param {Array<Object>} colorStops
- * @param {boolean} [globalCoord=false]
+ * @param {Boolean} [globalCoord=false]
  */
 var LinearGradient = function (x, y, x2, y2, colorStops, globalCoord) {
     // Should do nothing more in this constructor. Because gradient can be

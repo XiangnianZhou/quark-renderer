@@ -30,7 +30,7 @@ Here are the key improvements compare to the original ZRender:
 - Removed VML engine, because the marketshare of IE is very small now. 
 - Added skew feature for transformation system.
 - Added transform control for elements.
-- Added link control for lines and shapes, so we can link these elements now.
+- Added link control for lines and shapes including a Microsoft Visio like link line, so we can link these elements now.
 - Refactored Group so that it can be nested and restrict the position of child nodes.
 
 ## Usage
@@ -208,6 +208,9 @@ The document is in /api directory, open /api/index.html in your browser then you
 <img src="./docs/images/8.gif">
 <br/>
 <img src="./docs/images/9.gif">
+<br/>
+<img src="./docs/images/10.gif">
+VisioLink like the line in Microsoft Visio.
 
 Wechat mini-program example:
 

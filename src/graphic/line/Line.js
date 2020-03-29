@@ -9,7 +9,10 @@ import Path from '../Path';
  * Line.
  * 
  * 
- * 直线。
+ * 直线。所有线条的特征是：
+ * - 线条可以移动位置，但不能进行其它仿射变换，scale/rotate/skew 都不可以。所以计算线条的相关参数时可以做简化，只要计算 position 和 translate 就可以了。
+ * - 线条总是画在全局空间中。
+ * - 线条不能加到 Group 中。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 class Line extends Path{
@@ -37,7 +40,7 @@ class Line extends Path{
          */
         this.type='line';
 
-        classUtil.inheritProperties(this,CableLike,this.options);           // If we don't need linkable feature, just remove this line.
+        classUtil.inheritProperties(this,CableLike,this.options);
         classUtil.copyOwnProperties(this,this.options,['style','shape']);
 
         this.transformable = false;

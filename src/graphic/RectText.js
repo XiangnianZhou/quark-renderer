@@ -8,11 +8,13 @@ import {WILL_BE_RESTORED} from '../utils/constants';
 
 let tmpRect = new BoundingRect();
 let RectText = function () {};
+
 /**
  * @method constructor RectText
  */
 RectText.prototype = {
     constructor: RectText,
+    
     /**
      * Draw text in a rect with specified position.
      * @param  {CanvasRenderingContext2D} ctx

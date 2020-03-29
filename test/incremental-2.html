@@ -8,7 +8,7 @@
 <body style="margin:0px;">
     <canvas id="main" width="1000px" height="600px" style="width:1000px;height:600px;"></canvas>
     <script type="text/javascript">
-        var qr = QuarkRenderer.init(document.getElementById('main'));
+        let qr = QuarkRenderer.init(document.getElementById('main'));
 
         qr.add(new QuarkRenderer.Rect({
             shape: {
@@ -22,7 +22,7 @@
             }
         }));
 
-        var countText = new QuarkRenderer.Text({
+        let countText = new QuarkRenderer.Text({
             zlevel: 1,
             style: {
                 text: 0,
@@ -36,14 +36,14 @@
         });
         qr.add(countText);
 
-        var count = 0;
+        let count = 0;
 
         qr.globalAnimationMgr.on('frame', function ()  {
             if (count > 2e4) {
                 return;
             }
-            for (var i = 0; i < 200; i++) {
-                var circleShape = new QuarkRenderer.Circle({
+            for (let i = 0; i < 200; i++) {
+                let circleShape = new QuarkRenderer.Circle({
                     shape: {
                         r: 5 + Math.random() * 5
                     },
@@ -59,7 +59,6 @@
 
             countText.style.text += 200;
             countText.dirty();
-
             count += 200;
         });
     </script>

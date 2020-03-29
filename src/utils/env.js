@@ -81,19 +81,11 @@ function detect(ua) {
     if (weChat) {
         browser.weChat = true;
     }
-
-    // os.tablet = !!(ipad || playbook || (android && !ua.match(/Mobile/)) ||
-    //     (firefox && ua.match(/Tablet/)) || (ie && !ua.match(/Phone/) && ua.match(/Touch/)));
-    // os.phone  = !!(!os.tablet && !os.ipod && (android || iphone || webos ||
-    //     (chrome && ua.match(/Android/)) || (chrome && ua.match(/CriOS\/([\d.]+)/)) ||
-    //     (firefox && ua.match(/Mobile/)) || (ie && ua.match(/Touch/))));
-
+    
     return {
         browser: browser,
         os: os,
         node: false,
-        // 原生canvas支持，改极端点了
-        // canvasSupported : !(browser.ie && parseFloat(browser.version) < 9)
         canvasSupported: !!document.createElement('canvas').getContext,
         svgSupported: typeof SVGRect !== 'undefined',
         // works on most browsers

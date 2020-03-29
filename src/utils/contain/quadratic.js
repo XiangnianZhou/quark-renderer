@@ -11,7 +11,7 @@ import {quadraticProjectPoint} from '../curve_util';
  * @param  {Number}  lineWidth
  * @param  {Number}  x
  * @param  {Number}  y
- * @return {boolean}
+ * @return {Boolean}
  */
 export function containStroke(x0, y0, x1, y1, x2, y2, lineWidth, x, y) {
     if (lineWidth === 0) {

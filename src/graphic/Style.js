@@ -20,10 +20,10 @@ function createLinearGradient(ctx, obj, rect) {
     let y2 = obj.y2 == null ? 0 : obj.y2;
 
     if (!obj.global) {
-        x = x * rect.width + rect.x;
-        x2 = x2 * rect.width + rect.x;
-        y = y * rect.height + rect.y;
-        y2 = y2 * rect.height + rect.y;
+        x = x * rect.width + rect.x1;
+        x2 = x2 * rect.width + rect.x1;
+        y = y * rect.height + rect.y1;
+        y2 = y2 * rect.height + rect.y1;
     }
 
     // Fix NaN when rect is Infinity
@@ -46,8 +46,8 @@ function createRadialGradient(ctx, obj, rect) {
     let y = obj.y == null ? 0.5 : obj.y;
     let r = obj.r == null ? 0.5 : obj.r;
     if (!obj.global) {
-        x = x * width + rect.x;
-        y = y * height + rect.y;
+        x = x * width + rect.x1;
+        y = y * height + rect.y1;
         r = r * min;
     }
 

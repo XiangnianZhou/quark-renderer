@@ -111,7 +111,7 @@ export function clone(source) {
 /**
  * @param {*} target
  * @param {*} source
- * @param {boolean} [overwrite=false]
+ * @param {Boolean} [overwrite=false]
  */
 export function merge(target, source, overwrite) {
     // We should escapse that source is string
@@ -152,7 +152,7 @@ export function merge(target, source, overwrite) {
 
 /**
  * @param {Array} targetAndSources The first item is target, and the rests are source.
- * @param {boolean} [overwrite=false]
+ * @param {Boolean} [overwrite=false]
  * @return {*} target
  */
 export function mergeAll(targetAndSources, overwrite) {
@@ -347,7 +347,7 @@ export function curry(func) {
 
 /**
  * @param {*} value
- * @return {boolean}
+ * @return {Boolean}
  */
 export function isArray(value) {
     return objToString.call(value) === '[object Array]';
@@ -355,7 +355,7 @@ export function isArray(value) {
 
 /**
  * @param {*} value
- * @return {boolean}
+ * @return {Boolean}
  */
 export function isFunction(value) {
     return typeof value === 'function';
@@ -363,7 +363,7 @@ export function isFunction(value) {
 
 /**
  * @param {*} value
- * @return {boolean}
+ * @return {Boolean}
  */
 export function isString(value) {
     return objToString.call(value) === '[object String]';
@@ -375,7 +375,7 @@ export function isNumeric(n) {
 
 /**
  * @param {*} value
- * @return {boolean}
+ * @return {Boolean}
  */
 export function isObject(value) {
     // Avoid a V8 JIT bug in Chrome 19-20.
@@ -387,7 +387,7 @@ export function isObject(value) {
 
 /**
  * @param {*} value
- * @return {boolean}
+ * @return {Boolean}
  */
 export function isBuiltInObject(value) {
     return !!BUILTIN_OBJECT[objToString.call(value)];
@@ -395,7 +395,7 @@ export function isBuiltInObject(value) {
 
 /**
  * @param {*} value
- * @return {boolean}
+ * @return {Boolean}
  */
 export function isTypedArray(value) {
     return !!TYPED_ARRAY[objToString.call(value)];
@@ -403,7 +403,7 @@ export function isTypedArray(value) {
 
 /**
  * @param {*} value
- * @return {boolean}
+ * @return {Boolean}
  */
 export function isDom(value) {
     return typeof value === 'object'
@@ -414,7 +414,7 @@ export function isDom(value) {
 /**
  * Whether is exactly NaN. Notice isNaN('a') returns true.
  * @param {*} value
- * @return {boolean}
+ * @return {Boolean}
  */
 export function eqNaN(value) {
     /* eslint-disable-next-line no-self-compare */
@@ -484,7 +484,7 @@ export function normalizeCssArray(val) {
 }
 
 /**
- * @param {boolean} condition
+ * @param {Boolean} condition
  * @param {String} message
  */
 export function assert(condition, message) {
@@ -684,7 +684,7 @@ export function fillArr(arr0, arr1, arrDim) {
  * @param  {Array} arr0
  * @param  {Array} arr1
  * @param  {Number} arrDim
- * @return {boolean}
+ * @return {Boolean}
  */
 export function isArraySame(arr0, arr1, arrDim) {
     if (arr0 === arr1) {

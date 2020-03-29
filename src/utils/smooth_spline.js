@@ -21,7 +21,7 @@ function interpolate(p0, p1, p2, p3, t, t2, t3) {
 /**
  * @alias smoothSpline
  * @param {Array} points 线段顶点数组
- * @param {boolean} isLoop
+ * @param {Boolean} isLoop
  * @return {Array}
  */
 export default function (points, isLoop) {

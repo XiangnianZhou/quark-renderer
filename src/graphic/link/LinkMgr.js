@@ -93,12 +93,6 @@ export default class LinkMgr{
                 this.lastHoveredControl=control;
                 this.currentCable.draggable=false;
                 this.dispatcher.interceptor.setCursor(control.cursor);
-                this.dispatcher.disableDrag();
-                this.dispatcher.disableTransform();
-            }else{
-                this.currentCable.draggable=true;
-                this.dispatcher.enableDrag();
-                this.dispatcher.enableTransform();
             }
         });
     }
@@ -111,6 +105,10 @@ export default class LinkMgr{
             this.dispatcher.off("mousemove",this.mouseMoveHandler1);            //lockdown current clicked control, do not look for hovered control
             this.dispatcher.on("pagemousemove",this.mouseMoveHandler2,this);
             this.dispatcher.on("pagemouseup",this.mouseUpHandler,this);
+
+            //disable drag-drop and transform to prevent trigger events accidentally
+            this.dispatcher.disableDrag();
+            this.dispatcher.disableTransform();
         }else if(target&&target.id&&target.id.indexOf("el-")!=-1){              //click on an element, FIXME:better way to determine whether the target is an element?
             this._clickElement(target);
         }else{                                                                  //click on anywhere else
@@ -123,10 +121,11 @@ export default class LinkMgr{
     mouseMoveHandler2(e){
         let mouseX=e.offsetX;
         let mouseY=e.offsetY;
-        this.lastHoveredControl.setPosition(mouseX,mouseY);
+        this.lastHoveredControl.setGlobalPosition(mouseX,mouseY);
         this.lastHoveredControl.dragging=true;
 
         linkables.forEach((el,key,index)=>{
+            this.lastHoveredControl.deleteSlot();
             el.trigger("linkControlDragging",el,this.lastHoveredControl);
         });
     }
@@ -143,5 +142,9 @@ export default class LinkMgr{
         this.dispatcher.off("pagemouseup",this.mouseUpHandler);
         this.dispatcher.on("mousemove",this.mouseMoveHandler1,this);
         this.dispatcher.on("mousedown",this.mouseDownHandler2,this);
+
+        //resume drag-drop and transfrom events
+        this.dispatcher.enableDrag();
+        this.dispatcher.enableTransform();
     }
 }

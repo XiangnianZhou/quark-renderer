@@ -483,7 +483,7 @@ under the License.
                             renderer: 'canvas'
                         });
                         var drawing = false;
-                        qr.on('click', function (e) {
+                        qr.eventDispatcher.on('click', function (e) {
                             var size = 10;
                             qr.add(new QuarkRenderer.Rect({
                                 shape: {
@@ -497,7 +497,7 @@ under the License.
                                 }
                             }));
                         });
-                        qr.on('mousedown', function (e) {
+                        qr.eventDispatcher.on('mousedown', function (e) {
                             drawing = new QuarkRenderer.Polyline({
                                 shape: {
                                     points: [[e.offsetX, e.offsetY]]
@@ -509,15 +509,15 @@ under the License.
                             });
                             qr.add(drawing);
                         });
-                        qr.on('mousemove', function (e) {
+                        qr.eventDispatcher.on('mousemove', function (e) {
                             if (drawing) {
                                 drawing.shape.points.push([e.offsetX, e.offsetY]);
                                 drawing.dirty();
                                 e.stop();
                             }
                         });
-                        qr.on('mouseup', stopDrawing);
-                        qr.on('globalout', stopDrawing);
+                        qr.eventDispatcher.on('mouseup', stopDrawing);
+                        qr.eventDispatcher.on('globalout', stopDrawing);
                         function stopDrawing() {
                             drawing = false;
                         }

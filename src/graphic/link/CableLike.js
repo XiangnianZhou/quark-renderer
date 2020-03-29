@@ -1,5 +1,6 @@
 import LinkControl from './LinkControl';
 import * as matrixUtil from '../../utils/affine_matrix_util';
+import {mathSin, mathCos} from '../../utils/constants';
 
 /**
  * @abstract
@@ -24,6 +25,11 @@ import * as matrixUtil from '../../utils/affine_matrix_util';
 function CableLike(){
     this.isCable=false;
     this.showLinkControls = false;
+    this.startBounding = null;      //bounding rect of start shape
+    this.endBounding = null;        //bounding rect of end shape
+    this.arrowType = 'both';         //end, start, both
+    this.arrowAngel = Math.PI/8;
+    this.arrowLength = 10;
 
     this.startControl = new LinkControl({
         el:this,
@@ -35,30 +41,96 @@ function CableLike(){
         name:'END'
     });
 
-    this.on("afterRender",()=>{
-        if(!this.isCable){
-            return;
-        }
-        if(this.showLinkControls){
-            this.renderLinkControls(this.ctx, this.prevEl);
-        }
-        this.startControl.trigger("afterRender",this.startControl);
-        this.endControl.trigger("afterRender",this.endControl);
-    });
+    this.on("afterRender",this.afterRenderHandler,this);
 }
 
 CableLike.prototype={
     constructor:CableLike,
 
+    afterRenderHandler:function(){
+        if(!this.isCable){
+            return;
+        }
+        if(this.arrowType==='start'||this.arrowType==='both'){
+            this.renderStartArrow();
+        }
+        if(this.arrowType==='end'||this.arrowType==='both'){
+            this.renderEndArrow();
+        }
+        if(this.showLinkControls){
+            this.renderLinkControls();
+        }
+        this.startControl.trigger("afterRender",this.startControl);
+        this.endControl.trigger("afterRender",this.endControl);
+    },
+
     /**
      * @protected
      * @method renderTransformControls
-     * @param {*} ctx 
-     * @param {*} prevEl 
      */
-    renderLinkControls:function(ctx, prevEl){
-        this.startControl.render(ctx,prevEl);
-        this.endControl.render(ctx,prevEl);
+    renderLinkControls:function(){
+        this.startControl.render();
+        this.endControl.render();
+    },
+
+    renderStartArrow:function(){
+        let firstTwoPoints=this.firstTwoPoints();
+        this.__doRenderArrow(firstTwoPoints);
+    },
+
+    renderEndArrow:function(){
+        let lastTwoPoints=this.lastTwoPoints();
+        this.__doRenderArrow(lastTwoPoints);
+    },
+
+    __doRenderArrow:function(twoPoints){
+        let p1=twoPoints[0];
+        let p2=twoPoints[1];
+
+        //step-1: move origin to end point
+        p2[0]=p2[0]-p1[0];
+        p2[1]=p2[1]-p1[1];
+
+        //step-2: cosp2 and sinp2
+        let cosp2=matrixUtil.cosx(...p2);
+        let sinp2=matrixUtil.sinx(...p2);
+
+        let cosArrow=mathCos(this.arrowAngel);
+        let sinArrow=mathSin(this.arrowAngel);
+
+        let x1=this.arrowLength*(cosp2*cosArrow-sinp2*sinArrow);
+        let y1=this.arrowLength*(sinp2*cosArrow+cosp2*sinArrow);
+
+        let x2=this.arrowLength*(cosp2*cosArrow+sinp2*sinArrow);
+        let y2=this.arrowLength*(sinp2*cosArrow-cosp2*sinArrow);
+
+        //step-3: move origin back to (0,0)
+        x1+=p1[0];
+        y1+=p1[1];
+
+        x2+=p1[0];
+        y2+=p1[1];
+
+        //step-4: draw arrow
+        this.ctx.save();
+        this.ctx.strokeStyle=this.style.stroke;
+        this.ctx.fillStyle=this.style.stroke;
+        this.ctx.beginPath();
+        this.ctx.moveTo(...p1);
+        this.ctx.lineTo(x1, y1);
+        this.ctx.lineTo(x2, y2);
+        this.ctx.closePath();
+        this.ctx.stroke();
+        this.ctx.fill();
+        this.ctx.restore();
+    },
+
+    setStartBounding(startBounding){
+        this.startBounding=startBounding;
+    },
+
+    setEndBounding(endBounding){
+        this.endBounding=endBounding;
     }
 }
 

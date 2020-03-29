@@ -8,7 +8,7 @@ import {PI2,mathSqrt,mathAbs,mathAtan2} from '../constants';
  * @param  {Number}  r
  * @param  {Number}  startAngle
  * @param  {Number}  endAngle
- * @param  {boolean}  anticlockwise
+ * @param  {Boolean}  anticlockwise
  * @param  {Number} lineWidth
  * @param  {Number}  x
  * @param  {Number}  y

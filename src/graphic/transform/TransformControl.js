@@ -50,7 +50,10 @@ export default class TransformControl {
         classUtil.copyOwnProperties(this,options);
     }
 
-    render(ctx,prevEl){
+    render(){
+        let ctx=this.el.ctx;
+        let prevEl=this.el.prevEl;
+
         this._renderSquareControl(ctx,prevEl);
         return this;
     }
@@ -74,8 +77,8 @@ export default class TransformControl {
         let rotation=this.el.rotation;
         let scale=this.el.scale;
         let boundingRect = this.el.getBoundingRect();
-        let x=boundingRect.x;
-        let y=boundingRect.y;
+        let x=boundingRect.x1;
+        let y=boundingRect.y1;
         let w=boundingRect.width;
         let h=boundingRect.height;
         let c=[w/2*scale[0],h/2*scale[1]];  //center point of bounding rect
@@ -169,7 +172,7 @@ export default class TransformControl {
         let m, xMin, xMax, yMin, yMax;
         let points=[[this.x1,this.y1],[this.x2,this.y2],[this.x3,this.y3],[this.x4,this.y4]];
         
-        //reverse scale
+        //Reverse scale because we have already considered the scale parameter when calculate the position.
         points.forEach((point,index)=>{
             point[0]=point[0]/scale[0];
             point[1]=point[1]/scale[1];

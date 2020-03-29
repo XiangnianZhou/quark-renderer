@@ -191,15 +191,21 @@ class Element{
         this.globalScaleRatio = 1;
 
         /**
+         * @property {Array} animationProcessList
          * All the AnimationProcesses on this Element.
-         * @property animationProcessList
          */
         this.animationProcessList = [];
 
-        //cache canvas context
+        /**
+         * @property {CanvasRenderingContext2D} ctx
+         * Cache canvas context, this will set by Painter.
+         */
         this.ctx=null;
 
-        //cache previous element
+        /**
+         * @property {Element} prevEl
+         * Cache previous element, this will set by Painter.
+         */
         this.prevEl=null;
 
         this.originalBoundingRect=null;
@@ -265,11 +271,11 @@ class Element{
         classUtil.inheritProperties(this,Transformable,this.options);
         classUtil.copyOwnProperties(this,this.options,['style','shape']);
 
-        this.on("addToStorage",this.addToStorageHandler);
-        this.on("delFromStorage",this.delFromStorageHandler);
+        this.on("addToStorage",this.addToStorageHandler,this);
+        this.on("delFromStorage",this.delFromStorageHandler,this);
         this.one("afterRender",()=>{
             this.originalBoundingRect=this.getBoundingRect();
-        });
+        },this);
     }
 
     /**
@@ -396,16 +402,28 @@ class Element{
      * @method render
      * Callback during render.
      */
-    render(ctx, prevEl) {
-        this.ctx=ctx;
-        this.prevEl=prevEl;
+    render() {
+        let ctx=this.ctx;
+        let prevEl=this.prevEl;
 
         if(this.showTransformControls&&this.hasTransformControls){
-            this.renderTransformControls(this.ctx, this.prevEl);
+            this.renderTransformControls();
+        }
+
+        //FIXME:refactor the render system: element self -> text -> transform controls -> link controls
+        // Draw rect text
+        if (this.style.text) {
+            // Only restore transform when needs draw text.
+            this.restoreTransform(ctx);
+            this.drawRectText(ctx, this.getBoundingRect());
+            this.applyTransform(ctx);
         }
     }
 
-    renderTransformControls(ctx, prevEl){
+    renderTransformControls(){
+        let ctx=this.ctx;
+        let prevEl=this.prevEl;
+
         //draw transform controls
         this.transformControls=[];
         let positions = ['TL','T','TR','R','BR','B','BL','L','SPIN'];
@@ -413,7 +431,7 @@ class Element{
             let control = new Control({
                 el:this,
                 name:p
-            }).render(ctx, prevEl);
+            }).render();
             this.transformControls.push(control);
         });
 

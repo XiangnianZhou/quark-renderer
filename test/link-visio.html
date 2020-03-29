@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Group Link</title>
+    <script src="../dist/quark-renderer.js"></script>
+</head>
+<body>
+    <div id="main" style="width:1024px;height:800px;"></div>
+    <script type="text/javascript">
+        let qr = QuarkRenderer.init(document.getElementById('main'));
+
+        let rect1 = new QuarkRenderer.Rect({
+            draggable:true,
+            linkable:true,
+            showTransformControls:true,
+            position: [50, 50],
+            shape: {
+                r: 0,
+                width: 50,
+                height: 50
+            },
+            style: {
+                fill: '#ff0000',
+                lineWidth: 5,
+                text:'rect-1',
+                textPosition:'inside'
+            }
+        });
+        qr.add(rect1);
+
+        let rect2 = new QuarkRenderer.Rect({
+            draggable:true,
+            linkable:true,
+            showTransformControls:true,
+            position: [300, 50],
+            shape: {
+                r: 0,
+                width: 50,
+                height: 50
+            },
+            style: {
+                fill: '#ff0000',
+                lineWidth: 5,
+                text:'rect-2',
+                textPosition:'inside'
+            }
+        });
+        qr.add(rect2);
+
+        let visioLink = new QuarkRenderer.VisioLink({
+            position: [100, 200],
+            draggable: true,
+            isCable:true,
+            showTransformControls:true,
+            style: {
+                // lineDash: [10, 10],
+                // stroke: 'rgba(20, 220, 60, 0.8)',
+                lineWidth: 3,
+                text: 'This is Visio link.'
+            },
+            shape: {
+                points:[
+                    [10,10],
+                    [500,10]
+                ]
+            }
+        });
+        qr.add(visioLink);
+
+    </script>
+    <div id="Main" style="width:600px;height:400px;"></div>
+</body>
+</html>

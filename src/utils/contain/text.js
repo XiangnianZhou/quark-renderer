@@ -73,13 +73,13 @@ function getPlainTextRect(text, font, textAlign, textVerticalAlign, textPadding,
         outerWidth += textPadding[1] + textPadding[3];
     }
     let outerHeight = contentBlock.outerHeight;
+    let x1 = adjustTextX(0, outerWidth, textAlign);
+    let y1 = adjustTextY(0, outerHeight, textVerticalAlign);
+    let x2 = x1+outerWidth;
+    let y2 = y1+outerHeight;
 
-    let x = adjustTextX(0, outerWidth, textAlign);
-    let y = adjustTextY(0, outerHeight, textVerticalAlign);
-
-    let rect = new BoundingRect(x, y, outerWidth, outerHeight);
+    let rect = new BoundingRect(x1, y1, x2, y2, outerWidth, outerHeight);
     rect.lineHeight = contentBlock.lineHeight;
-
     return rect;
 }
 
@@ -92,13 +92,15 @@ function getRichTextRect(text, font, textAlign, textVerticalAlign, textPadding, 
         textPadding: textPadding,
         textLineHeight: textLineHeight
     });
+
     let outerWidth = contentBlock.outerWidth;
     let outerHeight = contentBlock.outerHeight;
+    let x1 = adjustTextX(0, outerWidth, textAlign);
+    let y1 = adjustTextY(0, outerHeight, textVerticalAlign);
+    let x2 = x1+outerWidth;
+    let y2 = y1+outerHeight;
 
-    let x = adjustTextX(0, outerWidth, textAlign);
-    let y = adjustTextY(0, outerHeight, textVerticalAlign);
-
-    return new BoundingRect(x, y, outerWidth, outerHeight);
+    return new BoundingRect(x1, y1, x2, y2, outerWidth, outerHeight);
 }
 
 /**
@@ -141,15 +143,15 @@ export function adjustTextY(y, height, textVerticalAlign) {
  * @public
  * @param {Obejct} [out] Prepared out object. If not input, auto created in the method.
  * @param {Style} style where `textPosition` and `textDistance` are visited.
- * @param {Object} rect {x, y, width, height} Rect of the host elment, according to which the text positioned.
+ * @param {Object} rect {x1, y1, x2, y2, width, height} Rect of the host elment, according to which the text positioned.
  * @return {Object} The input `out`. Set: {x, y, textAlign, textVerticalAlign}
  */
 export function calculateTextPosition(out, style, rect) {
     let textPosition = style.textPosition;
     let distance = style.textDistance;
 
-    let x = rect.x;
-    let y = rect.y;
+    let x = rect.x1;
+    let y = rect.y1;
     distance = distance || 0;
 
     let height = rect.height;

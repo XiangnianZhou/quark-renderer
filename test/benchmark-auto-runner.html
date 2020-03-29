@@ -29,7 +29,7 @@
     </div>
     <div id="res">loading</div>
     <script type="text/javascript">
-            var  str = `
+            let  str = `
 　　——此开卷第一回也。作者自云：曾历过一番梦幻之后，故将真事隐去，而借
 通灵说此《石头记》一书也，故曰“甄士隐”云云。但书中所记何事何人?自己又
 云：“今风尘碌碌，一事无成，忽念及当日所有之女子：一一细考较去，觉其行止
@@ -245,8 +245,23 @@
 门响，许多人乱嚷，说：“本县太爷的差人来传人问话！”封肃听了，唬得目瞪口呆。
 　　不知有何祸事，且听下回分解。
             `;
+
+            let t1 = 0;
+            let t2 = 0;
+            let t3 = 0;
+            let isRunning;
+            let width;
+            let height;
+            let round;
+            let n;
+            let result=[];
+            let totalTime=0;
+            let shapeType;
+            let img = new Image();
+            img.src = './data/test.png';
+
             // 初始化qrenderer
-            qr = QuarkRenderer.init(document.getElementById("main"));
+            let qr = QuarkRenderer.init(document.getElementById("main"));
             width = qr.getWidth();
             height = qr.getHeight();
             isRunning = false;
@@ -254,7 +269,7 @@
             document.getElementById('run').onclick = start;
             document.getElementById('auto-run').onclick = autoStart;
 
-            var ShapeClasses = {
+            let ShapeClasses = {
                 circle: QuarkRenderer.Circle,
                 sector: QuarkRenderer.Sector,
                 ring: QuarkRenderer.Ring,
@@ -269,42 +284,25 @@
                 isogon: QuarkRenderer.Isogon
             };
 
-            var t1 = 0;
-            var t2 = 0;
-            var t3 = 0;
-            var qr;
-            var isRunning;
-            var width;
-            var height;
-            var round;
-            var n;
-            var result;
-            var total;
-            var shapeType;
-            var img = new Image();
-            img.src = './data/test.png';
-
             function start() {
                 if (isRunning) {
                     return;
                 }
                 isRunning = true;
-                document.getElementById('res').innerHTML += 'running ';
-
                 round = document.getElementById('round').value;
                 n = document.getElementById('count').value;
                 result = [];
-                total = 0;
+                totalTime = 0;
                 shapeType = document.getElementById('shape').value;
-                setTimeout(run,50);
+                setTimeout(run,0);
             }
 
-            var sList = [
+            let sList = [
                 'circle','sector','ring','ellipse','rect',
                 'text','heart','droplet','line','image','star','isogon'
             ];
-            var autoIdx = 0;
-            var autoRun = false;
+            let autoIdx = 0;
+            let autoRun = false;
             function autoStart() {
                 if (isRunning) {
                     return;
@@ -325,17 +323,17 @@
             }
 
             function randomColor() {
-                var r = Math.round(Math.random() * 255);
-                var g = Math.round(Math.random() * 255);
-                var b = Math.round(Math.random() * 255);
+                let r = Math.round(Math.random() * 255);
+                let g = Math.round(Math.random() * 255);
+                let b = Math.round(Math.random() * 255);
                 return 'rgb(' + [r, g, b].join(',') + ')';
             }
 
             function run(){
                 if (round--) {
                     qr.clear();
-                    for (var i = 0; i < n; i++) {
-                        var ShapeClass = ShapeClasses[shapeType];
+                    for (let i = 0; i < n; i++) {
+                        let ShapeClass = ShapeClasses[shapeType];
                         qr.add(new ShapeClass({
                             shape: {
                                 x: Math.round(Math.random() * width),
@@ -378,17 +376,26 @@
                             silent: true
                         }));
                     }
-                    //FIXME:fix the time calculation here
-                    var ticket = new Date();
-                    qr.refresh();
+
+                    let ticket = new Date();
+                    
+                    //--- This if for unit test, don't do this in production code. ---
+                    qr._needRefresh = true;
+                    qr.flush();
+                    //------
+
                     ticket = new Date() - ticket;
-                    total += ticket;
+                    totalTime += ticket;
                     result.push(ticket);
-                    setTimeout(run,50);
+                    setTimeout(run,0);
                 }else {
                     isRunning = false;
                     document.getElementById('res').innerHTML +=`
-                        ${n} 个 ${shapeType} 平均render时间: ${Math.round(total/result.length)}ms : [${result.join(',')}]<br/>
+                        Run ${document.getElementById('round').value} round, 
+                        ${n} ${shapeType} each round, 
+                        average render time is ${Math.round(totalTime/result.length)}ms.
+
+                        [${result.join(',')}]<br/>
                     `;
                     autoCheck();
                 }

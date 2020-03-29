@@ -49,7 +49,7 @@ class ClippathManager extends Definable{
      *
      * @param {Displayable} parentEl  parent element
      * @param {ClipPath[]}  clipPaths clipPaths of parent element
-     * @param {boolean}     isText    if parent element is Text
+     * @param {Boolean}     isText    if parent element is Text
      */
     updateDom(parentEl,clipPaths,isText) {
         if (clipPaths && clipPaths.length > 0) {

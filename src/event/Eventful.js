@@ -6,13 +6,12 @@
  * is similar to DOM events, the classes which need event support should mixin the functions
  * here.
  * 
+ * 
  * 为不支持事件机制的类提供事件支持，基本机制类似 DOM 事件，需要事件机制的类可以 mixin 此类中的工具函数。
  * 
  * @author @Kener-林峰 <kener.linfeng@gmail.com>
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
-let arrySlice = Array.prototype.slice;
 
 /**
  * @method constructor Eventful
@@ -138,7 +137,7 @@ Eventful.prototype = {
             let argLen = args.length;
 
             if (argLen > 3) {
-                args = arrySlice.call(args, 1);
+                args = Array.prototype.slice.call(args, 1);
             }
 
             let len = _h.length;
@@ -219,7 +218,7 @@ Eventful.prototype = {
             let argLen = args.length;
 
             if (argLen > 4) {
-                args = arrySlice.call(args, 1, args.length - 1);
+                args = Array.prototype.slice.call(args, 1, args.length - 1);
             }
             let ctx = args[args.length - 1];
 

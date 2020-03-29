@@ -107,7 +107,7 @@ export default class CanvasLayer{
         this.clearColor = 0;
 
         /**
-         * @property {boolean} 是否开启动态模糊
+         * @property {Boolean} 是否开启动态模糊
          */
         this.motionBlur = false;
         
@@ -182,7 +182,7 @@ export default class CanvasLayer{
     /**
      * @method clear
      * 清空该层画布
-     * @param {boolean} [clearAll=false] Clear all with out motion blur
+     * @param {Boolean} [clearAll=false] Clear all with out motion blur
      * @param {Color} [clearColor]
      */
     clear(clearAll, clearColor) {
@@ -192,10 +192,7 @@ export default class CanvasLayer{
         let dpr = this.dpr;
         let width=0;
         let height=0;
-
-        // console.log(this.motionBlur);
-        // console.log(!clearAll);
-        // console.log(haveMotionBLur);
+        let ctx = this.ctx;
 
         if (haveMotionBLur&&this.canvasInstance) {
             width = this.canvasInstance.width;
@@ -210,14 +207,14 @@ export default class CanvasLayer{
                 height / dpr
             );
         }
-
-        this.ctx.clearRect(0, 0, this.width,this.height);
+        
+        ctx.clearRect(0, 0, this.width,this.height);
         if (clearColor && clearColor !== 'transparent') {
             let clearColorGradientOrPattern;
             // Gradient
             if (clearColor.colorStops) {
                 // Cache canvasInstance gradient
-                clearColorGradientOrPattern = clearColor.__canvasGradient || Style.getGradient(this.ctx, clearColor, {
+                clearColorGradientOrPattern = clearColor.__canvasGradient || Style.getGradient(ctx, clearColor, {
                     x: 0,
                     y: 0,
                     width: width,
@@ -225,19 +222,19 @@ export default class CanvasLayer{
                 });
                 clearColor.__canvasGradient = clearColorGradientOrPattern;
             }else if (clearColor.image) {// Pattern
-                clearColorGradientOrPattern = Pattern.prototype.getCanvasPattern.call(clearColor, this.ctx);
+                clearColorGradientOrPattern = Pattern.prototype.getCanvasPattern.call(clearColor, ctx);
             }
-            this.ctx.save();
-            this.ctx.fillStyle = clearColorGradientOrPattern || clearColor;
-            this.ctx.fillRect(0, 0, width, height);
-            this.ctx.restore();
+            ctx.save();
+            ctx.fillStyle = clearColorGradientOrPattern || clearColor;
+            ctx.fillRect(0, 0, width, height);
+            ctx.restore();
         }
 
         if (haveMotionBLur&&this.hiddenCanvas) {
-            this.ctx.save();
-            this.ctx.globalAlpha = lastFrameAlpha;
-            this.ctx.drawImage(this.hiddenCanvas, 0, 0, width, height);
-            this.ctx.restore();
+            ctx.save();
+            ctx.globalAlpha = lastFrameAlpha;
+            ctx.drawImage(this.hiddenCanvas, 0, 0, width, height);
+            ctx.restore();
         }
     }
 }

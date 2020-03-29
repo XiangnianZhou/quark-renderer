@@ -467,11 +467,11 @@ function setTextTransform(textSvgEl, needTransformTextByHostEl, elTransform, sty
     if (hostRect && textRotation) {
         let origin = style.textOrigin;
         if (origin === 'center') {
-            baseX = hostRect.width / 2 + hostRect.x;
-            baseY = hostRect.height / 2 + hostRect.y;
+            baseX = hostRect.width / 2 + hostRect.x1;
+            baseY = hostRect.height / 2 + hostRect.y1;
         }else if (origin) {
-            baseX = origin[0] + hostRect.x;
-            baseY = origin[1] + hostRect.y;
+            baseX = origin[0] + hostRect.x1;
+            baseY = origin[1] + hostRect.y1;
         }
 
         _tmpTextTransform[4] -= baseX;

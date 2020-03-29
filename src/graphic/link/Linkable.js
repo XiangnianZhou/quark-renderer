@@ -1,5 +1,6 @@
 import LinkSlot from './LinkSlot';
 import LinkMgr from './LinkMgr';
+import Line from '../line/Line';
 import * as vectorUtil from '../../utils/vector_util';
 
 /**
@@ -13,26 +14,15 @@ import * as vectorUtil from '../../utils/vector_util';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 function Linkable(){
-    this.isLinkable=false;
+    this.linkable=false;
     this.showLinkSlots = false;
     this.linkSlots=new Map();
 
-    this.on("afterRender",()=>{
-        if(!this.isLinkable){
-            return;
-        }
-        if(this.showLinkSlots){
-            this.renderLinkSlots(this.ctx, this.prevEl);
-        }
-        this.linkSlots.forEach((slot,key,map)=>{
-            slot.calcParameters();
-            slot.trigger("afterRender",slot);
-        });
-    });
-    this.on('linkControlShowed',this.showSlots);//FIXME:remove these event listeners when destroy
-    this.on('linkControlHid',this.hideSlots);
-    this.on('linkControlDragging',this.linkControlDragging);
-    this.on('linkControlMouseUp',this.linkControlMouseUp);
+    this.on("afterRender",this.afterRenderHandler,this);
+    this.on('linkControlShowed', this.showSlots, this); //FIXME:remove these event listeners when destroy
+    this.on('linkControlHid', this.hideSlots, this);
+    this.on('linkControlDragging', this.linkControlDragging, this);
+    this.on('linkControlMouseUp', this.linkControlMouseUp, this);
 
     LinkMgr.registerLinkable(this);
 }
@@ -40,7 +30,18 @@ function Linkable(){
 Linkable.prototype={
     constructor:Linkable,
 
-    renderLinkSlots:function(ctx, prevEl){
+    afterRenderHandler:function(){
+        if(!this.linkable){
+            return;
+        }
+        this.createLinkSlots(this.ctx, this.prevEl);
+        this.linkSlots.forEach((slot,key,map)=>{
+            slot.calcParameters();
+            slot.trigger("afterRender",slot);
+        });
+    },
+
+    createLinkSlots:function(ctx, prevEl){
         ['T','R','B','L'].forEach((name,index)=>{
             let slot = this.linkSlots.get(name);
             if(!slot){
@@ -50,8 +51,11 @@ Linkable.prototype={
                 });
                 this.linkSlots.set(name,slot);
             }
-            slot.render(ctx, prevEl);
+            if(this.showLinkSlots){
+                slot.render();
+            }
         });
+        this.trigger("afterSlotRender",this);
     },
 
     showSlots:function(){
@@ -68,18 +72,13 @@ Linkable.prototype={
         let param=this.getOverlap(control);
         if(param.isOverlap){
             //TODO:add some highlight feature here...
-            // console.log("overlap...");
         }
     },
 
     linkControlMouseUp:function(scope,control){
         let param=this.getOverlap(control);
         if(param.isOverlap){
-            param.slot.plugLinkControl(param.control);
-        }else{
-            this.linkSlots.forEach((slot,key,map)=>{
-                slot.unPlugLinkControl(control);
-            });
+            control.setSlot(param.slot);
         }
     },
 
@@ -89,8 +88,8 @@ Linkable.prototype={
         let slots=[...this.linkSlots.values()];
         for(let i=0;i<slots.length;i++){
             let slot=slots[i];
-            let p1=slot.getPosition();
-            let p2=control.getPosition();
+            let p1=slot.getGlobalPosition();
+            let p2=control.getGlobalPosition();
             let distance=vectorUtil.distance(p1,p2);
             let radiusSum=slot.radius+control.radius;
             if(distance<radiusSum){
@@ -98,6 +97,49 @@ Linkable.prototype={
             }
         }
         return {isOverlap:false};;
+    },
+
+    /**
+     * @method createLink
+     * Link two linkables programmaticly.
+     * 
+     * 
+     * 用程序的方式把两个 linkable 元素连接起来。
+     * 
+     * @param {*} linkable1 
+     * @param {*} linkable2 
+     * @param {*} position1 
+     * @param {*} position2 
+     */
+    createLink(linkable1, linkable2, position1='R', position2='L'){
+        let line=new Line({
+            position: [0, 0],
+            draggable: true,
+            isCable:true,
+            style: {
+                stroke: 'rgba(220, 20, 60, 0.8)',
+                lineWidth: 2
+            },
+            shape: {
+                x1: 0,
+                y1: 0,
+                x2: 10,
+                y2: 0,
+                percent: 1
+            }
+        });
+        this.__qr.add(line);
+
+        this.__qr.eventDispatcher.one("rendered",()=>{
+            let slot1=this.linkSlots.get(position1);
+            let slot2=linkable2.linkSlots.get(position2);
+
+            let control1=line.startControl;
+            let control2=line.endControl;
+    
+            control1.setSlot(slot1);
+            control2.setSlot(slot2);
+        },this);
     }
 }
 

@@ -245,30 +245,25 @@ Transformable.prototype={
     },
 
     /**
-     * @method composeLocalTransform
-     * Compose all the parameters, including skew, scale, roration, position, 
-     * transform matrix of parent node, global scale,
-     * and generate a new transform matrix of local element.
+     * @method composeParentTransform
+     * This method is designed to compose the transform matrix from parent. 
+     * We needt this method to compose the transfromation from parent when the elements are nested.
      * 
      * 
-     * 把各项参数，包括：scale、position、skew、rotation、父层的变换矩阵、全局缩放，全部
-     * 结合在一起，计算出一个新的本地变换矩阵。
+     * 此方法的主要作用是复合父层的变换矩阵，当元素出现嵌套时，需要此方法来复合父层上的变换。
      */
-    composeLocalTransform:function () {
-        let parent = this.parent;
-        let parentHasTransform = parent && parent.transform;
+    composeParentTransform:function () {
         let needLocalTransform = this.needLocalTransform();
+        let m = matrixUtil.identity(this.transform);
 
-        let m = this.transform;
-
-        // aplly transform of self
+        // transformation of self
         if (needLocalTransform) {
             m=this.getLocalTransform();
-        }else {
-            matrixUtil.identity(m);
         }
 
-        // apply transform of parent element
+        // transformation of parent element
+        let parent = this.parent;
+        let parentHasTransform = parent && parent.transform;
         if (parentHasTransform) {
             if (needLocalTransform) {
                 m=matrixUtil.mul(parent.transform, m);
@@ -277,7 +272,7 @@ Transformable.prototype={
             }
         }
 
-        // apply global scale
+        // global scale
         if (this.globalScaleRatio != null && this.globalScaleRatio !== 1) {
             this.getGlobalScale(scaleTmp);
             let relX = scaleTmp[0] < 0 ? -1 : 1;
@@ -349,28 +344,27 @@ Transformable.prototype={
      */
     localToGlobal:function (x, y) {
         let v2 = [x, y];
-        let transform = this.transform;
-        if (transform) {
-            vectorUtil.applyTransform(v2, v2, transform);
-        }
+        let transform = this.composeParentTransform();
+        vectorUtil.applyTransform(v2, v2, transform);
         return v2;
     },
 
     /**
      * @method getOuterBoundingRect
+     * Get the bounding rect in global space, this rect will not apply transformation itself, but it will 
+     * surround the transformed element.
      * 
      * 
-     * 
-     * 全局坐标系中的边界矩形，此矩形本身不进行几何变换，但是会包裹变形之后的元素。
+     * 全局坐标系中的边界矩形，此矩形本身不进行几何变换，但是会包围变形之后的元素。
      */
     getOuterBoundingRect:function(){
         let rect=this.getBoundingRect();
         
         let points=[];
-        points[0]=[rect.x,rect.y];
-        points[1]=[rect.x+rect.width,rect.y];
-        points[2]=[rect.x+rect.width,rect.y+rect.height];
-        points[3]=[rect.x,rect.y+rect.height];
+        points[0]=[rect.x1,rect.y1];
+        points[1]=[rect.x2,rect.y1];
+        points[2]=[rect.x2,rect.y2];
+        points[3]=[rect.x1,rect.y2];
         
         points[0]=matrixUtil.transformVector(points[0],this.transform);
         points[1]=matrixUtil.transformVector(points[1],this.transform);
@@ -383,8 +377,10 @@ Transformable.prototype={
         let maxY=mathMax(points[0][1],points[1][1],points[2][1],points[3][1]);
 
         return {
-            x:minX,
-            y:minY,
+            x1:minX,
+            y1:minY,
+            x2:maxX,
+            y2:maxY,
             width:mathAbs(maxX-minX),
             height:mathAbs(maxY-minY)
         };

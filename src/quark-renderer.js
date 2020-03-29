@@ -13,9 +13,9 @@ import env from './utils/env';
  * Class QuarkRenderer is the global entry, every time you call qrenderer.init() will 
  * create an instance of QuarkRenderer class, each instance has an unique id.
  * 
+ * 
  * QuarkRenderer 是一款高性能的 2d 渲染引擎。
- * QuarkRenderer 类是全局入口，每次调用 qrenderer.init() 会创建一个实例，
- * 每个 QuarkRenderer 实例有自己唯一的 ID。
+ * QuarkRenderer 类是全局入口，每次调用 qrenderer.init() 会创建一个实例，每个 QuarkRenderer 实例有自己唯一的 ID。
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
@@ -24,15 +24,32 @@ if(!env.canvasSupported){
     throw new Error("Need Canvas Environment.");
 }
 
+// 每种底层渲染技术的 Painter 都需要注册到这里，默认 CanvasPainter
+// Each type of Painters for different rendering techniques should be registered here, default to CanvasPainter.
 let painterMap = {
     canvas: CanvasPainter
 };
 
-// QuarkRenderer 实例map索引，浏览器中同一个 window 下的 QuarkRenderer 实例都存在这里。
+/**
+ * @static
+ * @method registerPainter
+ * Register the painter.
+ * 
+ * 
+ * 注册 Painter。
+ * @param {*} name 
+ * @param {*} PainterClass 
+ */
+export function registerPainter(name, PainterClass) {
+    painterMap[name] = PainterClass;
+}
+
+// QuarkRenderer 实例map索引，浏览器中同一个 window 下的 QuarkRenderer 实例都会存在这里。
+// A map for caching QuarkRenderer instances, every instance of the same scope will be stored here.
 let instances = {};
 
 /**
- * @property {String}
+ * @property {String} version
  */
 export let version = '1.0.26';
 
@@ -62,7 +79,7 @@ export function init(host, options) {
 }
 
 /**
- * TODO: 不要export这个全局函数看起来也没有问题。
+ * FIXME: 不要export这个全局函数看起来也没有问题。
  * Dispose qrenderer instance
  * @param {QuarkRenderer} qr
  */
@@ -84,15 +101,13 @@ export function dispose(qr) {
  * @static
  * @method getInstance
  * Get qrenderer instance by id.
+ * 
+ * 根据 id 获取 QuarkRenderer 的实例。
  * @param {String} id
  * @return {QuarkRenderer}
  */
 export function getInstance(id) {
     return instances[id];
-}
-
-export function registerPainter(name, PainterClass) {
-    painterMap[name] = PainterClass;
 }
 
 /**
@@ -170,7 +185,7 @@ class QuarkRenderer{
         this.globalAnimationMgr.start();
     
         /**
-         * @property {boolean}
+         * @property {Boolean}
          * @private
          */
         this._needRefresh=false;  
@@ -178,7 +193,10 @@ class QuarkRenderer{
 
     /**
      * @method
-     * 添加元素
+     * Add element.
+     * 
+     * 
+     * 添加元素。
      * @param  {qrenderer/Element} el
      */
     add(el) {
@@ -189,7 +207,10 @@ class QuarkRenderer{
 
     /**
      * @method
-     * 删除元素
+     * Delete element.
+     * 
+     * 
+     * 删除元素。
      * @param  {qrenderer/Element} el
      */
     remove(el) {
@@ -215,21 +236,22 @@ class QuarkRenderer{
             // Or it will cause qrenderer refreshes again and again.
             this._needRefresh = this._needRefreshHover = false;
             this.painter.refresh && this.painter.refresh();
-            // Avoid trigger qr.refresh in Element#beforeUpdate hook
-            this._needRefresh = this._needRefreshHover = false;
-            this.trigger('rendered');
         }
         if (this._needRefreshHover) {//only try refreshing hovered elements
             this._needRefresh = this._needRefreshHover = false;
             this.painter.refreshHover && this.painter.refreshHover();
-            this._needRefresh = this._needRefreshHover = false;
-            this.trigger('rendered');
         }
+        // Avoid trigger qr.refresh in Element#beforeUpdate hook
+        this._needRefresh = this._needRefreshHover = false;
+        this.eventDispatcher.trigger('rendered');
     }
 
     /**
-     * @method
-     * Mark and repaint the canvas in the next frame of browser
+     * @method refresh
+     * Mark and repaint the canvas in the next animation frame.
+     * 
+     * 
+     * 标记，在下一个动画帧中重绘画布。
      */
     refresh() {
         this._needRefresh = true;
@@ -237,13 +259,15 @@ class QuarkRenderer{
 
     /**
      * @private
-     * @method
-     * 与 Hover 相关的6个方法用来处理浮动层，当鼠标悬停在 canvas 中的元素上方时，可能会需要
-     * 显示一些浮动的层来展现一些特殊的数据。
-     * TODO:这里可能有点问题，Hover 一词可能指的是遮罩层，而不是浮动层，如果确认是遮罩，考虑
-     * 把这里的 API 单词重构成 Mask。
+     * @method addHover
+     * Add element to a hover layer, the 6 methods below are related to hover layer, we may need a hover layer 
+     * to display some special data when the mouse is hovered over an element.
      * 
-     * Add element to hover layer
+     * 
+     * 把元素添加到浮动层。
+     * 以下与 Hover 相关的6个方法用来处理浮动层，当鼠标悬停在 canvas 中的元素上方时，可能会需要
+     * 显示一些浮动的层来展现一些特殊的数据。
+     * 
      * @param  {Element} el
      * @param {Object} style
      */
@@ -257,8 +281,11 @@ class QuarkRenderer{
 
     /**
      * @private
-     * @method
-     * Remove element from hover layer
+     * @method removeHover
+     * Remove element from hover layer.
+     * 
+     * 
+     * 从浮动层中删除元素。
      * @param  {Element} el
      */
     removeHover(el) {
@@ -270,8 +297,11 @@ class QuarkRenderer{
 
     /**
      * @private
-     * @method
-     * Find hovered element
+     * @method findHover
+     * Find hovered element.
+     * 
+     * 
+     * 查找浮动的元素。
      * @param {Number} x
      * @param {Number} y
      * @return {Object} {target, topTarget}
@@ -282,8 +312,11 @@ class QuarkRenderer{
 
     /**
      * @private
-     * @method
-     * Clear all hover elements in hover layer
+     * @method clearHover
+     * Clear all hover elements in hover layer.
+     * 
+     * 
+     * 从浮动层中删掉所有元素。
      * @param  {Element} el
      */
     clearHover() {
@@ -295,17 +328,23 @@ class QuarkRenderer{
 
     /**
      * @private
-     * @method
-     * Refresh hover in next frame
+     * @method refreshHover
+     * Refresh hover in next frame.
+     * 
+     * 
+     * 下一帧刷新浮动层。
      */
     refreshHover() {
         this._needRefreshHover = true;
     }
 
     /**
-     * @method
+     * @method resize
      * Resize the canvas.
-     * Should be invoked when container size is changed
+     * Should be invoked when container size is changed.
+     * 
+     * 
+     * 重设画布的尺寸，当外部容器的尺寸发生了变化时需要调用此方法来重新设置画布的大小。
      * @param {Object} [options]
      * @param {Number|String} [options.width] Can be 'auto' (the same as null/undefined)
      * @param {Number|String} [options.height] Can be 'auto' (the same as null/undefined)
@@ -317,16 +356,21 @@ class QuarkRenderer{
     }
 
     /**
-     * @method
-     * Get container width
+     * @method getWidth
+     * Get container width.
+     * 
+     * 获取容器的宽度。
      */
     getWidth() {
         return this.painter.getWidth();
     }
 
     /**
-     * @method
-     * Get container height
+     * @method getHeight
+     * Get container height.
+     * 
+     * 
+     * 获取容器的高度。
      */
     getHeight() {
         return this.painter.getHeight();
@@ -334,8 +378,11 @@ class QuarkRenderer{
 
     /**
      * @private
-     * @method
-     * Change configuration of layer
+     * @method configLayer
+     * Change configuration of layer.
+     * 
+     * 
+     * 修改层属性。
      * @param {String} qLevel
      * @param {Object} [config]
      * @param {String} [config.clearColor=0] Clear color
@@ -350,8 +397,11 @@ class QuarkRenderer{
     }
 
     /**
-     * @method
-     * Set background color
+     * @method setBackgroundColor
+     * Set background color.
+     * 
+     * 
+     * 设置背景颜色。
      * @param {String} backgroundColor
      */
     setBackgroundColor(backgroundColor) {
@@ -362,9 +412,13 @@ class QuarkRenderer{
     }
 
     /**
-     * @method
+     * @method pathToImage
      * Converting a path to image.
      * It has much better performance of drawing image rather than drawing a vector path.
+     * 
+     * 
+     * 把路径导出成图片。
+     * 绘制图片的性能比绘制路径高很多。
      * @param {graphic/Path} e
      * @param {Number} width
      * @param {Number} height
@@ -374,8 +428,11 @@ class QuarkRenderer{
     }
 
     /**
-     * @method
-     * Set default cursor
+     * @method setCursorStyle
+     * Set default cursor.
+     * 
+     * 
+     * 设置默认的鼠标形状。
      * @param {String} [cursorStyle='move']
      */
     setCursorStyle(cursorStyle) {
@@ -383,41 +440,11 @@ class QuarkRenderer{
     }
 
     /**
-     * @method
-     * Bind event
-     *
-     * @param {String} eventName Event name
-     * @param {Function} eventDispatcher Handler function
-     * @param {Object} [context] Context object
-     */
-    on(eventName, eventDispatcher, context) {
-        this.eventDispatcher.on(eventName, eventDispatcher, context);
-    }
-
-    /**
-     * @method
-     * Unbind event
-     * @param {String} eventName Event name
-     * @param {Function} [eventDispatcher] Handler function
-     */
-    off(eventName, eventDispatcher) {
-        this.eventDispatcher.off(eventName, eventDispatcher);
-    }
-
-    /**
-     * @method
-     * Trigger event manually
-     *
-     * @param {String} eventName Event name
-     * @param {event=} event Event object
-     */
-    trigger(eventName, event) {
-        this.eventDispatcher.trigger(eventName, event);
-    }
-
-    /**
-     * @method
+     * @method clear
      * Clear all objects and the canvas.
+     * 
+     * 
+     * 清空画布上的所有对象。
      */
     clear() {
         this.storage.delFromRoot();
@@ -425,8 +452,11 @@ class QuarkRenderer{
     }
     
     /**
-     * @method
+     * @method dispose
      * Dispose self.
+     * 
+     * 
+     * 销毁自身。
      */
     dispose() {
         this.globalAnimationMgr.clear();
@@ -444,69 +474,53 @@ class QuarkRenderer{
 }
 
 // ---------------------------
-// Events of qrenderer instance.
+// Events on QuarkRenderer instance.
 // ---------------------------
 /**
  * @event onclick
- * @param {Function} null
  */
 /**
  * @event onmouseover
- * @param {Function} null
  */
 /**
  * @event onmouseout
- * @param {Function} null
  */
 /**
  * @event onmousemove
- * @param {Function} null
  */
 /**
  * @event onmousewheel
- * @param {Function} null
  */
 /**
  * @event onmousedown
- * @param {Function} null
  */
 /**
  * @event onmouseup
- * @param {Function} null
  */
 /**
  * @event ondrag
- * @param {Function} null
  */
 /**
  * @event ondragstart
- * @param {Function} null
  */
 /**
  * @event ondragend
- * @param {Function} null
  */
 /**
  * @event ondragenter
- * @param {Function} null
  */
 /**
  * @event ondragleave
- * @param {Function} null
  */
 /**
  * @event ondragover
- * @param {Function} null
  */
 /**
  * @event ondrop
- * @param {Function} null
  */
 /**
  * @event onpagemousemove
- * @param {Function} null
  */
 /**
  * @event onpagemouseup
- * @param {Function} null
  */

@@ -68,8 +68,16 @@ export default class Polyline extends Line{
         }
     }
 
+    firstPoint(){
+        return this.shape.points[0];
+    }
+
     firstTwoPoints(){
         return [[...this.shape.points[0]],[...this.shape.points[1]]];
+    }
+
+    lastPoint(){
+        return this.shape.points[this.shape.points.length-1];
     }
 
     lastTwoPoints(){

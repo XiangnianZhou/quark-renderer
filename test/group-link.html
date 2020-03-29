@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Group Link</title>
+    <script src="../dist/quark-renderer.js"></script>
+</head>
+<body>
+    <div id="main" style="width:1024px;height:800px;"></div>
+    <script type="text/javascript">
+        let qr = QuarkRenderer.init(document.getElementById('main'));
+        let group1 = new QuarkRenderer.Group({
+            linkable:true,
+            draggable: true,
+            position: [50, 50],
+            shape: {
+                width:400,
+                height:200
+            },
+            style: {
+                fill:'#0033ff'
+            }
+        });
+
+        let group2 = new QuarkRenderer.Group({
+            linkable:true,
+            draggable: true,
+            position: [50, 360],
+            shape: {
+                width:400,
+                height:200
+            },
+            style: {
+                fill:'#ff3300'
+            }
+        });
+
+        let rect = new QuarkRenderer.Rect({
+            linkable:true,
+            draggable:true,
+            position:[10,10],
+            shape: {
+                r: 0,
+                width: 50,
+                height: 50
+            },
+            style: {
+                fill: '#FA8072',
+                lineWidth: 5,
+                text:'矩形',
+                textPosition:'inside'
+            }
+        });
+        group1.add(rect);
+
+        qr.add(group1);
+        qr.add(group2);
+
+
+        let line=new QuarkRenderer.Line({
+            position: [50, 20],
+            draggable: true,
+            isCable:true,
+            showTransformControls:true,
+            style: {
+                stroke: 'rgba(220, 20, 60, 0.8)',
+                lineWidth: 5
+            },
+            shape: {
+                x1: 0,
+                y1: 0,
+                x2: 500,
+                y2: 0,
+                percent: 1
+            }
+        });
+        qr.add(line);
+    </script>
+    <div id="Main" style="width:600px;height:400px;"></div>
+</body>
+</html>

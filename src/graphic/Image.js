@@ -1,13 +1,15 @@
-import Element from './Element';
-import BoundingRect from './BoundingRect';
 import * as dataUtil from '../utils/data_structure_util';
 import * as imageHelper from '../utils/image_util';
+import * as classUtil from '../utils/class_util';
+import Element from './Element';
+import BoundingRect from './BoundingRect';
+import Linkable from './link/Linkable';
 
 /**
  * @class qrenderer.graphic.QImage 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-export default class QImage extends Element{
+class QImage extends Element{
     /**
      * @method constructor QImage
      * @param {Object} options
@@ -18,14 +20,18 @@ export default class QImage extends Element{
          * @property {String}
          */
         this.type='image';
+
+        classUtil.inheritProperties(this,Linkable,this.options);
+        classUtil.copyOwnProperties(this,this.options,['style','shape']);
     }
 
     /**
      * @method render
-     * @param {Object} ctx 
-     * @param {Element} prevEl 
      */
-    render(ctx, prevEl) {
+    render() {
+        let ctx=this.ctx;
+        let prevEl=this.prevEl;
+
         let style = this.style;
         let src = style.image;
 
@@ -82,13 +88,6 @@ export default class QImage extends Element{
             ctx.drawImage(image, x, y, width, height);
         }
 
-        // Draw rect text
-        if (style.text != null) {
-            // Only restore transform when needs draw text.
-            this.restoreTransform(ctx);
-            this.drawRectText(ctx, this.getBoundingRect());
-        }
-
         Element.prototype.render.call(this,ctx,prevEl);
     }
 
@@ -97,11 +96,32 @@ export default class QImage extends Element{
      */
     getBoundingRect() {
         let style = this.style;
+        if(!style.x){
+            style.x=0;
+        }
+        if(!style.y){
+            style.y=0;
+        }
+        if(!style.width){
+            style.width=0;
+        }
+        if(!style.height){
+            style.height=0;
+        }
+
         if (!this.__boundingRect) {
             this.__boundingRect = new BoundingRect(
-                style.x || 0, style.y || 0, style.width || 0, style.height || 0
+                style.x, 
+                style.y,
+                style.width-style.x,
+                style.height-style.y, 
+                style.width, 
+                style.height
             );
         }
         return this.__boundingRect;
     }
 }
+
+classUtil.mixin(QImage, Linkable);
+export default QImage;

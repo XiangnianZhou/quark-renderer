@@ -38,7 +38,7 @@ export function inheritProperties(subInstance,SuperClass,opts){
  * 这里的 mixin 只拷贝 prototype 上的属性。
  * @param {Object|Function} target
  * @param {Object|Function} sorce
- * @param {boolean} overlay
+ * @param {Boolean} overlay
  */
 export function mixin(target, source, overlay) {
     target = 'prototype' in target ? target.prototype : target;
@@ -50,7 +50,7 @@ export function mixin(target, source, overlay) {
 /**
  * @param {*} target
  * @param {*} source
- * @param {boolean} [overlay=false]
+ * @param {Boolean} [overlay=false]
  */
 export function defaults(target, source, overlay) {
     for (var key in source) {
@@ -77,12 +77,9 @@ export function defaults(target, source, overlay) {
 export function copyOwnProperties(target,source,excludes=[]){
     for (let key in source) {
         if (source.hasOwnProperty(key)) {
-            if(excludes&&excludes.length){
-                if(excludes.indexOf(key)!=-1){
-                    continue;
-                }
+            if(!excludes.includes(key)){
+                target[key] = source[key];
             }
-            target[key] = source[key];
         }
     }
     return target;

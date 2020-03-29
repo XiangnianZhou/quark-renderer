@@ -518,8 +518,11 @@ export default class CanvasPainter{
                 }
             }
 
+            el.ctx = ctx;
+            el.prevEl = scope.prevEl || null;
+
             el.trigger("beforeRender",el);
-            el.render(ctx, scope.prevEl || null);
+            el.render();
             scope.prevEl = el;
             el.trigger("afterRender",el);
         }
@@ -1061,13 +1064,13 @@ export default class CanvasPainter{
             rotation: path.rotation,
             scale: path.scale
         };
-        path.position = [leftMargin - rect.x, topMargin - rect.y];
+        path.position = [leftMargin - rect.x1, topMargin - rect.y1];
         path.rotation = 0;
         path.scale = [1,1];
         path.skew = [0,0];
-        path.composeLocalTransform();
+        path.composeParentTransform();
         if (path) {
-            path.render(ctx);
+            path.render();
         }
 
         let ImageShape = Image;
