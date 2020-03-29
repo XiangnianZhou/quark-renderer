@@ -208,6 +208,9 @@ The document is in /api directory, open /api/index.html in your browser then you
 <img src="./docs/images/8.gif">
 <br/>
 <img src="./docs/images/9.gif">
+<br/>
+<img src="./docs/images/10.gif">
+VisioLink like the line in Microsoft Visio.
 
 Wechat mini-program example:
 
