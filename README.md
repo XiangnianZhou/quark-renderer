@@ -30,7 +30,7 @@ Here are the key improvements compare to the original ZRender:
 - Removed VML engine, because the marketshare of IE is very small now. 
 - Added skew feature for transformation system.
 - Added transform control for elements.
-- Added link control for lines and shapes, so we can link these elements now.
+- Added link control for lines and shapes including a Microsoft Visio like link line, so we can link these elements now.
 - Refactored Group so that it can be nested and restrict the position of child nodes.
 
 ## Usage
