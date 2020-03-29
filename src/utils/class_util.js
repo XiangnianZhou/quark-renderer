@@ -77,12 +77,9 @@ export function defaults(target, source, overlay) {
 export function copyOwnProperties(target,source,excludes=[]){
     for (let key in source) {
         if (source.hasOwnProperty(key)) {
-            if(excludes&&excludes.length){
-                if(excludes.indexOf(key)!=-1){
-                    continue;
-                }
+            if(!excludes.includes(key)){
+                target[key] = source[key];
             }
-            target[key] = source[key];
         }
     }
     return target;
