@@ -108,7 +108,14 @@ class LinkSlot {
     }
 
     getGlobalPosition(){
-        return matrixUtil.addVector(this.center,this.translate);
+        //Reverse scale because we have already considered the scale parameter when calculate the position.
+        let scale=this.el.scale;
+        let point=[...this.center];
+        point[0]=point[0]/scale[0];
+        point[1]=point[1]/scale[1];
+        
+        let position = this.el.localToGlobal(...point);
+        return position;
     }
 }
 

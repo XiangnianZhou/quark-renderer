@@ -169,7 +169,7 @@ export default class TransformControl {
         let m, xMin, xMax, yMin, yMax;
         let points=[[this.x1,this.y1],[this.x2,this.y2],[this.x3,this.y3],[this.x4,this.y4]];
         
-        //reverse scale
+        //Reverse scale because we have already considered the scale parameter when calculate the position.
         points.forEach((point,index)=>{
             point[0]=point[0]/scale[0];
             point[1]=point[1]/scale[1];

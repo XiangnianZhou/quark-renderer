@@ -344,10 +344,8 @@ Transformable.prototype={
      */
     localToGlobal:function (x, y) {
         let v2 = [x, y];
-        let transform = this.transform;
-        if (transform) {
-            vectorUtil.applyTransform(v2, v2, transform);
-        }
+        let transform = this.composeParentTransform();
+        vectorUtil.applyTransform(v2, v2, transform);
         return v2;
     },
 
