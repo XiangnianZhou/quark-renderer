@@ -248,10 +248,10 @@ class QuarkRenderer{
 
     /**
      * @method dirty
-     * Mark and repaint the canvas in the next animation frame.
+     * Mark the entire canvas as dirty, will be repaint in the next animation frame.
      * 
      * 
-     * 标记，在下一个动画帧中重绘画布。
+     * 把整个画布标记为 dirty，在下一帧中会全部重绘。
      */
     dirty() {
         this.__dirty = true;
