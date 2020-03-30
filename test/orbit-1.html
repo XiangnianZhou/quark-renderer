@@ -16,50 +16,35 @@
     </style>
     <div id="main"></div>
     <script type="text/javascript">
-        //FIXME:something might be wrong with pathToImage() or image animation.
         let qr = QuarkRenderer.init(document.getElementById('main'));
-        // let starShape = new QuarkRenderer.Star({
-        //     shape: {
-        //         x: 10,
-        //         y: 10,
-        //         r: 8,
-        //         n: 5
-        //     },
-        //     style: {
-        //         stroke: 'rgb(52,179,242)',
-        //         fill: '#fff',
-        //         shadowBlur: 10,
-        //         shadowOffsetX: 0,
-        //         shadowOffsetY: 0
-        //     }
-        // });
-        // let zImage = qr.pathToImage(starShape);
+        let starShape = new QuarkRenderer.Star({
+            shape: {
+                x: 10,
+                y: 10,
+                r: 8,
+                n: 5
+            },
+            style: {
+                stroke: 'rgb(52,179,242)',
+                fill: '#fff',
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowOffsetY: 0
+            }
+        });
+        //convert shape to image will improve the render performance dramatically
+        let zImage = qr.pathToImage(starShape);
 
-        let NUMBER = 1000;
+        let NUMBER = 10000;
 
         for (let i = 0; i < NUMBER; i++) {
-            // let star = new QuarkRenderer.Image({
-            //     scale: [1, 1],
-            //     zlevel: 1,
-            //     style: {
-            //         x: 0,
-            //         y: 0,
-            //         image: zImage.style.image
-            //     }
-            // });
-            let star=new QuarkRenderer.Star({
-                shape: {
-                    x: 10,
-                    y: 10,
-                    r: 8,
-                    n: 5
-                },
+            let star = new QuarkRenderer.Image({
+                scale: [1, 1],
+                zlevel: 1,
                 style: {
-                    stroke: 'rgb(52,179,242)',
-                    fill: '#fff',
-                    shadowBlur: 10,
-                    shadowOffsetX: 0,
-                    shadowOffsetY: 0
+                    x: 0,
+                    y: 0,
+                    image: zImage.style.image
                 }
             });
             qr.add(star);
@@ -104,15 +89,6 @@
             motionBlur: true,
             lastFrameAlpha: 0.5
         });
-
-        console.profile('render');
-        
-        //--- This if for unit test, don't do this in production code. ---
-        qr.dirty();
-        qr.flush();
-        //------
-
-        console.profileEnd('render');
     </script>
 </body>
 </html>
