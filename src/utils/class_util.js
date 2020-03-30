@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /**
  * 构造类继承关系
  *

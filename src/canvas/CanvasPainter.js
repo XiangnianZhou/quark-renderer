@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import * as dataUtil from '../utils/data_structure_util';
 import * as canvasUtil from '../utils/canvas_util';
 import {mathRandom,mathMax} from '../utils/constants';
@@ -5,7 +6,6 @@ import {devicePixelRatio} from '../config';
 import BoundingRect from '../graphic/BoundingRect';
 import CanvasLayer from './CanvasLayer';
 import Image from '../graphic/Image';
-import guid from '../utils/guid';
 import timsort from '../utils/timsort';
 import env from '../utils/env';
 import requestAnimationFrame from '../animation/request_animation_frame';
@@ -266,9 +266,8 @@ export default class CanvasPainter{
 
     /**
      * @method clearHover
-     * @param {*} el 
      */
-    clearHover(el) {
+    clearHover() {
         let hoverElements = this._hoverElements;
         for (let i = 0; i < hoverElements.length; i++) {
             let from = hoverElements[i].__from;
@@ -723,7 +722,7 @@ export default class CanvasPainter{
      */
     _updateLayerStatus(list) {
 
-        this.eachBuiltinLayer(function (layer, z) {
+        this.eachBuiltinLayer(function (layer) {
             layer.__dirty = layer.__used = false;
         });
 
@@ -798,7 +797,7 @@ export default class CanvasPainter{
 
         updatePrevLayer(i);
 
-        this.eachBuiltinLayer(function (layer, z) {
+        this.eachBuiltinLayer(function (layer) {
             // Used in last frame but not in this frame. Needs clear
             if (!layer.__used && layer.getElementCount() > 0) {
                 layer.__dirty = true;
@@ -1070,11 +1069,11 @@ export default class CanvasPainter{
         path.skew = [0,0];
         path.composeParentTransform();
         if (path) {
+            path.ctx = ctx;
             path.render();
         }
 
-        let ImageShape = Image;
-        let imgShape = new ImageShape({
+        let img = new Image({
             style: {
                 x: 0,
                 y: 0,
@@ -1083,18 +1082,18 @@ export default class CanvasPainter{
         });
 
         if (pathTransform.position != null) {
-            imgShape.position = path.position = pathTransform.position;
+            img.position = path.position = pathTransform.position;
         }
 
         if (pathTransform.rotation != null) {
-            imgShape.rotation = path.rotation = pathTransform.rotation;
+            img.rotation = path.rotation = pathTransform.rotation;
         }
 
         if (pathTransform.scale != null) {
-            imgShape.scale = path.scale = pathTransform.scale;
+            img.scale = path.scale = pathTransform.scale;
         }
 
-        return imgShape;
+        return img;
     }
 
     /**
@@ -1162,7 +1161,7 @@ export default class CanvasPainter{
      * @param {*} ctx 
      */
     doClip(clipPaths, ctx) {
-        clipPaths.forEach((clipPath,index)=>{
+        clipPaths.forEach((clipPath)=>{
             clipPath.applyTransform(ctx);
             ctx.beginPath();
             clipPath.buildPath(ctx, clipPath.shape);

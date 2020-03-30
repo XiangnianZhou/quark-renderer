@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Image</title>
+    <script src="../dist/quark-renderer.js"></script>
+</head>
+<body>
+    <style>
+        html, body, #main {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <div id="main"></div>
+    <script type="text/javascript">
+        let qr = QuarkRenderer.init(document.getElementById('main'));
+        qr.configLayer(0, {
+            motionBlur: true,
+            lastFrameAlpha: 0.5
+        });
+
+        let image = new QuarkRenderer.Image({
+            position: [20, 20],
+            scale: [1, 1],
+            style: {
+                x: 0,
+                y: 0,
+                image: './data/test.png',
+                width: 100,
+                height: 100
+            },
+            draggable: true
+        });
+
+        qr.add(image);
+
+        image.animate()
+        .when(5000,{
+            position:[500,500]
+        })
+        .start(true);
+    </script>
+</body>
+</html>

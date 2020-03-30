@@ -1,3 +1,6 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-prototype-builtins */
 import {mathFloor} from './constants';
 
 /**
@@ -44,7 +47,7 @@ var methods = {};
 export function $override(name, fn) {
     // Clear ctx instance for different environment
     if (name === 'createCanvas') {
-        _ctx = null;
+        _ctx = null;//FIXME:fix this ugly code.
     }
 
     methods[name] = fn;
@@ -73,11 +76,13 @@ export function clone(source) {
 
     var result = source;
     var typeStr = objToString.call(source);
+    var i = 0;
+    var len = 0;
 
     if (typeStr === '[object Array]') {
         if (!isPrimitive(source)) {
             result = [];
-            for (var i = 0, len = source.length; i < len; i++) {
+            for (i = 0, len = source.length; i < len; i++) {
                 result[i] = clone(source[i]);
             }
         }
@@ -90,7 +95,7 @@ export function clone(source) {
             }
             else {
                 result = new Ctor(source.length);
-                for (var i = 0, len = source.length; i < len; i++) {
+                for (i = 0, len = source.length; i < len; i++) {
                     result[i] = clone(source[i]);
                 }
             }
@@ -620,15 +625,16 @@ export function interpolateString(p0, p1, percent) {
  */
 export function interpolateArray(p0, p1, percent, out, arrDim) {
     var len = p0.length;
+    var i = 0;
     if(!len) return;
     if (arrDim === 1) {
-        for (var i = 0; i < len; i++) {
+        for (i = 0; i < len; i++) {
             out[i] = interpolateNumber(p0[i], p1[i], percent);
         }
     }else {
         var len2 = p0[0].length;
         if(!len2) return;
-        for (var i = 0; i < len; i++) {
+        for (i = 0; i < len; i++) {
             if(out[i]===undefined){
                 return;
             }
@@ -645,6 +651,7 @@ export function interpolateArray(p0, p1, percent, out, arrDim) {
 export function fillArr(arr0, arr1, arrDim) {
     var arr0Len = arr0.length;
     var arr1Len = arr1.length;
+    var i = 0;
     if (arr0Len !== arr1Len) {
         // FIXME Not work for TypedArray
         var isPreviousLarger = arr0Len > arr1Len;
@@ -654,7 +661,7 @@ export function fillArr(arr0, arr1, arrDim) {
         }
         else {
             // Fill the previous
-            for (var i = arr0Len; i < arr1Len; i++) {
+            for (i = arr0Len; i < arr1Len; i++) {
                 arr0.push(
                     arrDim === 1 ? arr1[i] : Array.prototype.slice.call(arr1[i])
                 );
@@ -663,7 +670,7 @@ export function fillArr(arr0, arr1, arrDim) {
     }
     // Handling NaN value
     var len2 = arr0[0] && arr0[0].length;
-    for (var i = 0; i < arr0.length; i++) {
+    for (i = 0; i < arr0.length; i++) {
         if (arrDim === 1) {
             if (isNaN(arr0[i])) {
                 arr0[i] = arr1[i];
@@ -691,11 +698,12 @@ export function isArraySame(arr0, arr1, arrDim) {
         return true;
     }
     var len = arr0.length;
+    var i = 0;
     if (len !== arr1.length) {
         return false;
     }
     if (arrDim === 1) {
-        for (var i = 0; i < len; i++) {
+        for (i = 0; i < len; i++) {
             if (arr0[i] !== arr1[i]) {
                 return false;
             }
@@ -703,7 +711,7 @@ export function isArraySame(arr0, arr1, arrDim) {
     }
     else {
         var len2 = arr0[0].length;
-        for (var i = 0; i < len; i++) {
+        for (i = 0; i < len; i++) {
             for (var j = 0; j < len2; j++) {
                 if (arr0[i][j] !== arr1[i][j]) {
                     return false;
@@ -726,12 +734,11 @@ export function isArraySame(arr0, arr1, arrDim) {
  * @param  {Array} out
  * @param  {Number} arrDim
  */
-export function catmullRomInterpolateArray(
-    p0, p1, p2, p3, t, t2, t3, out, arrDim
-) {
+export function catmullRomInterpolateArray(p0, p1, p2, p3, t, t2, t3, out, arrDim) {
     var len = p0.length;
+    var i = 0;
     if (arrDim === 1) {
-        for (var i = 0; i < len; i++) {
+        for (i = 0; i < len; i++) {
             out[i] = catmullRomInterpolate(
                 p0[i], p1[i], p2[i], p3[i], t, t2, t3
             );
@@ -739,7 +746,7 @@ export function catmullRomInterpolateArray(
     }
     else {
         var len2 = p0[0].length;
-        for (var i = 0; i < len; i++) {
+        for (i = 0; i < len; i++) {
             for (var j = 0; j < len2; j++) {
                 out[i][j] = catmullRomInterpolate(
                     p0[i][j], p1[i][j], p2[i][j], p3[i][j],

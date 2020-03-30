@@ -132,7 +132,7 @@ export default class GeoLine{
     }
 
     equals(anotherLine){
-        if(!anotherLine instanceof GeoLine){
+        if(!(anotherLine instanceof GeoLine)){
             return false;
         }
         return this.startPoint.equals(anotherLine.startPoint)&& this.endPoint.equals(anotherLine.endPoint)

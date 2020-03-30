@@ -1,4 +1,3 @@
-import * as dataUtil from '../utils/data_structure_util';
 import * as imageHelper from '../utils/image_util';
 import * as classUtil from '../utils/class_util';
 import Element from './Element';
@@ -59,7 +58,7 @@ class QImage extends Element{
             width = height * aspect;
         }else if (height == null && width != null) {
             height = width / aspect;
-        }else if (width == null && height == null) {
+        }else if ((!width) && (!height)) {
             width = image.width;
             height = image.height;
         }
@@ -81,8 +80,14 @@ class QImage extends Element{
             let sHeight = height - sy;
             ctx.drawImage(
                 image,
-                sx, sy, sWidth, sHeight,
-                x, y, width, height
+                sx, 
+                sy, 
+                sWidth, 
+                sHeight,
+                x, 
+                y, 
+                width, 
+                height
             );
         }else {
             ctx.drawImage(image, x, y, width, height);

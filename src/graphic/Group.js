@@ -1,8 +1,7 @@
-import * as classUtil from '../utils/class_util';
+/* eslint-disable no-unused-vars */
 import * as dataUtil from '../utils/data_structure_util';
 import Element from './Element';
 import Rect from './shape/Rect';
-import BoundingRect from './BoundingRect';
 
 /**
  * @class qrenderer.graphic.Group

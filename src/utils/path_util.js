@@ -144,15 +144,15 @@ function createPathProxyFromString(data) {
         while (off < pLen) {
             var ctlPtx;
             var ctlPty;
-
             var rx;
             var ry;
             var psi;
             var fa;
             var fs;
-
             var x1 = cpx;
             var y1 = cpy;
+            var len;
+            var pathData;
 
             // convert l, H, h, V, and v to L
             switch (cmdStr) {
@@ -228,8 +228,8 @@ function createPathProxyFromString(data) {
                 case 'S':
                     ctlPtx = cpx;
                     ctlPty = cpy;
-                    var len = path.len();
-                    var pathData = path.data;
+                    len = path.len();
+                    pathData = path.data;
                     if (prevCmd === CMD.C) {
                         ctlPtx += cpx - pathData[len - 4];
                         ctlPty += cpy - pathData[len - 3];
@@ -244,8 +244,8 @@ function createPathProxyFromString(data) {
                 case 's':
                     ctlPtx = cpx;
                     ctlPty = cpy;
-                    var len = path.len();
-                    var pathData = path.data;
+                    len = path.len();
+                    pathData = path.data;
                     if (prevCmd === CMD.C) {
                         ctlPtx += cpx - pathData[len - 4];
                         ctlPty += cpy - pathData[len - 3];
@@ -276,8 +276,8 @@ function createPathProxyFromString(data) {
                 case 'T':
                     ctlPtx = cpx;
                     ctlPty = cpy;
-                    var len = path.len();
-                    var pathData = path.data;
+                    len = path.len();
+                    pathData = path.data;
                     if (prevCmd === CMD.Q) {
                         ctlPtx += cpx - pathData[len - 4];
                         ctlPty += cpy - pathData[len - 3];
@@ -290,8 +290,8 @@ function createPathProxyFromString(data) {
                 case 't':
                     ctlPtx = cpx;
                     ctlPty = cpy;
-                    var len = path.len();
-                    var pathData = path.data;
+                    len = path.len();
+                    pathData = path.data;
                     if (prevCmd === CMD.Q) {
                         ctlPtx += cpx - pathData[len - 4];
                         ctlPty += cpy - pathData[len - 3];
@@ -352,19 +352,19 @@ function createPathProxyFromString(data) {
 
 // TODO Optimize double memory cost problem
 function createPathOptions(str, opts) {
+    var ctx;
     var pathProxy = createPathProxyFromString(str);
     opts = opts || {};
     opts.buildPath = function (path) {
         if (path.setData) {
             path.setData(pathProxy.data);
             // Svg renderer don't have context
-            var ctx = path.getContext();
+            ctx = path.getContext();
             if (ctx) {
                 path.rebuildPath(ctx);
             }
-        }
-        else {
-            var ctx = path;
+        } else {
+            ctx = path;
             pathProxy.rebuildPath(ctx);
         }
     };

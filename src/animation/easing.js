@@ -1,4 +1,4 @@
-import {mathAsin,mathCos,mathSin,mathPow,mathSqrt,PI,mathMin} from '../utils/constants';
+import {mathAsin,mathCos,mathSin,mathPow,mathSqrt,PI} from '../utils/constants';
 
 /**
  * 缓动代码来自 https://github.com/sole/tween.js/blob/master/src/Tween.js

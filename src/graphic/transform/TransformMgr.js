@@ -1,4 +1,5 @@
-import {EPSILON,mathAbs, mathLog} from '../../utils/constants';
+/* eslint-disable no-unused-vars */
+import {mathAbs} from '../../utils/constants';
 import * as matrixUtil from '../../utils/affine_matrix_util';
 
 /**

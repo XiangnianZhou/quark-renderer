@@ -6,7 +6,7 @@ import * as arc from './arc';
 import {normalizeRadian} from './radian_util';
 import * as curve from '../curve_util';
 import windingLine from './winding_line';
-import {PI2,mathAsin,mathCos,mathSin,mathPow,mathSqrt,PI,mathMin,mathMax, mathAtan2,mathAbs} from '../constants';
+import {PI2,mathCos,mathSin,mathSqrt,PI,mathAtan2,mathAbs} from '../constants';
 
 let CMD = PathProxy.CMD;
 let EPSILON = 1e-4;
@@ -238,6 +238,14 @@ function containPath(data, lineWidth, isStroke, x, y) {
         let y1;
         let width;
         let height;
+        let cx;
+        let cy;
+        let rx;
+        let ry;
+        let theta;
+        let dTheta;
+        let anticlockwise;
+        let _x;
 
         switch (cmd) {
             case CMD.M:
@@ -301,15 +309,15 @@ function containPath(data, lineWidth, isStroke, x, y) {
                 break;
             case CMD.A:
                 // TODO Arc 判断的开销比较大
-                let cx = data[i++];
-                let cy = data[i++];
-                let rx = data[i++];
-                let ry = data[i++];
-                let theta = data[i++];
-                let dTheta = data[i++];
+                cx = data[i++];
+                cy = data[i++];
+                rx = data[i++];
+                ry = data[i++];
+                theta = data[i++];
+                dTheta = data[i++];
                 // TODO Arc 旋转
                 i += 1;
-                let anticlockwise = 1 - data[i++];
+                anticlockwise = 1 - data[i++];
                 x1 = mathCos(theta) * rx + cx;
                 y1 = mathSin(theta) * ry + cy;
                 // 不是直接使用 arc 命令
@@ -322,7 +330,7 @@ function containPath(data, lineWidth, isStroke, x, y) {
                     y0 = y1;
                 }
                 // qr 使用scale来模拟椭圆, 这里也对x做一定的缩放
-                let _x = (x - cx) * ry / rx + cx;
+                _x = (x - cx) * ry / rx + cx;
                 if (isStroke) {
                     if (arc.containStroke(
                         cx, cy, ry, theta, theta + dTheta, anticlockwise,

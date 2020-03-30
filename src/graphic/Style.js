@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import fixShadow from '../utils/fix_shadow';
 import {ContextCachedBy} from '../utils/constants';
 import {mathMin} from '../utils/constants';

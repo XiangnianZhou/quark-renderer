@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-prototype-builtins */
 import * as dataUtil from '../utils/data_structure_util';
 import * as classUtil from '../utils/class_util';
-import * as matrixUtil from '../utils/affine_matrix_util';
 import Eventful from '../event/Eventful';
 import Transformable from './transform/Transformable';
 import Control from './transform/TransformControl';
@@ -277,13 +278,6 @@ class Element{
             this.originalBoundingRect=this.getBoundingRect();
         },this);
     }
-
-    /**
-     * @property {Function} traverse
-     * @param  {Function} cb
-     * @param  {Object}   context
-     */
-    traverse(cb, context) {}
 
     /**
      * @method hide

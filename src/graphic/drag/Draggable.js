@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import * as vectorUtil from '../../utils/vector_util';
 
 /**
@@ -10,7 +11,7 @@ import * as vectorUtil from '../../utils/vector_util';
  * @author 大漠穷秋 <damoqiongqiu@126.com>
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-let Draggable = function (options={}) {
+let Draggable = function () {
     /**
      * @property {Boolean} draggable
      * Whether it can be dragged.

@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import * as dataUtil from '../utils/data_structure_util';
 import Style from './Style';
 import {copy as vec2Copy} from '../utils/vector_util';

@@ -50,9 +50,8 @@ function makeEventPacket(eveType, targetInfo, event) {
 /**
  * @private
  * @method
- * @param {Event} event  
  */
-function stopEvent(event) {
+function stopEvent() {
     eventTool.stop(this.event);
 }
 
@@ -308,9 +307,8 @@ GlobalEventDispatcher.prototype = {
 
     /**
      * @method resize
-     * @param {Event} event 
      */
-    resize: function (event) {
+    resize: function () {
         this._hovered = {};
     },
 

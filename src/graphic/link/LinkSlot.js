@@ -1,7 +1,6 @@
+/* eslint-disable no-unused-vars */
 import * as classUtil from '../../utils/class_util';
-import * as matrixUtil from '../../utils/affine_matrix_util';
 import * as vectorUtil from '../../utils/vector_util';
-import * as colorUtil from '../../utils/color_util';
 import Eventful from '../../event/Eventful';
 import guid from '../../utils/guid';
 
@@ -44,8 +43,6 @@ class LinkSlot {
     
     render(){
         let ctx=this.el.ctx;
-        let prevEl=this.el.prevEl;
-
         let param=this.calcParameters();
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
