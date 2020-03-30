@@ -1,5 +1,5 @@
 import * as dataUtil from '../../utils/data_structure_util';
-import {PI2,mathSin,mathCos,mathMin,mathMax} from '../../utils/constants';
+import {PI2,mathSin,mathCos,mathMax} from '../../utils/constants';
 import Shape from './Shape';
 
 /**

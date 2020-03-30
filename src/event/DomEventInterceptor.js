@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import Eventful from './Eventful';
 import * as eventUtil from '../utils/event_util';
 import * as dataUtil from '../utils/data_structure_util';

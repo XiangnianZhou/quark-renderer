@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /**
  * echarts设备环境识别
  *

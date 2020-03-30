@@ -1,3 +1,6 @@
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-useless-escape */
 import Group from '../graphic/Group';
 import QImage from '../graphic/Image';
 import Text from '../graphic/Text';
@@ -576,6 +579,15 @@ function parseTransformAttribute(xmlNode, node) {
         transform.replace(transformRegex, function (str, type, value) {
             transformOps.push(type, value);
         });
+
+        let px = 0;
+        let py = 0;
+        let sx = 0;
+        let sy = 0;
+        let rotation = 0;
+        let skewX = 0;
+        let skewY = 0;
+
         for (let i = transformOps.length - 1; i > 0; i -= 2) {
             let value = transformOps[i];
             let type = transformOps[i - 1];
@@ -583,25 +595,25 @@ function parseTransformAttribute(xmlNode, node) {
             switch (type) {
                 case 'translate':
                     value = trim(value).split(DILIMITER_REG);
-                    let px=value[0]+parseFloat(value[0]);
-                    let py=value[1]+parseFloat(value[1] || 0);
+                    px=value[0]+parseFloat(value[0]);
+                    py=value[1]+parseFloat(value[1] || 0);
                     m=matrixUtil.translate(m,[px,py]);
                     break;
                 case 'scale':
                     value = trim(value).split(DILIMITER_REG);
-                    let sx=parseFloat(value[0]);
-                    let sy=parseFloat(value[1] || value[0]);
+                    sx=parseFloat(value[0]);
+                    sy=parseFloat(value[1] || value[0]);
                     m=matrixUtil.scale(m,[sx,sy]);
                     break;
                 case 'rotate':
                     value = trim(value).split(DILIMITER_REG);
-                    let rotation=parseFloat(value[0]);
+                    rotation=parseFloat(value[0]);
                     m=matrixUtil.rotate(m,rotation);
                     break;
                 case 'skew':
                     value = trim(value).split(DILIMITER_REG);
-                    let skewX=parseFloat(value[0]);
-                    let skewY=parseFloat(value[1] || value[0]);
+                    skewX=parseFloat(value[0]);
+                    skewY=parseFloat(value[1] || value[0]);
                     m=matrixUtil.scale(m,[skewX,skewY]);
                     break;
                 case 'matrix':

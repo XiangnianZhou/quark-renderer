@@ -1,4 +1,3 @@
-/* global Float32Array */
 import {mathSqrt,mathMin,mathMax} from './constants';
 
 let ArrayCtor = typeof Float32Array === 'undefined'

@@ -1,9 +1,7 @@
+/* eslint-disable no-unused-vars */
 import * as classUtil from './utils/class_util';
-import * as util from './utils/data_structure_util';
 import Eventful from './event/Eventful';
 import env from './utils/env';
-// Use timsort because in most case elements are partially sorted
-// https://jsfiddle.net/pissang/jr4x7mdm/8/
 import timsort from './utils/timsort';
 
 /**

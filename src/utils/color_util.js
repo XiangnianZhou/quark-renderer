@@ -184,10 +184,12 @@ export function parse(colorStr, rgbaArr) {
         return rgbaArr;
     }
 
+    var iv = 0;
+
     // #abc and #abc123 syntax.
     if (str.charAt(0) === '#') {
         if (str.length === 4) {
-            var iv = parseInt(str.substr(1), 16);  // TODO(deanm): Stricter parsing.
+            iv = parseInt(str.substr(1), 16);  // TODO(deanm): Stricter parsing.
             if (!(iv >= 0 && iv <= 0xfff)) {
                 setRgba(rgbaArr, 0, 0, 0, 1);
                 return;  // Covers NaN.
@@ -202,7 +204,7 @@ export function parse(colorStr, rgbaArr) {
             return rgbaArr;
         }
         else if (str.length === 7) {
-            var iv = parseInt(str.substr(1), 16);  // TODO(deanm): Stricter parsing.
+            iv = parseInt(str.substr(1), 16);  // TODO(deanm): Stricter parsing.
             if (!(iv >= 0 && iv <= 0xffffff)) {
                 setRgba(rgbaArr, 0, 0, 0, 1);
                 return;  // Covers NaN.

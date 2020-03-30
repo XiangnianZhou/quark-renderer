@@ -1,9 +1,7 @@
 import * as classUtil from '../../utils/class_util';
 import * as matrixUtil from '../../utils/affine_matrix_util';
 import * as vectorUtil from '../../utils/vector_util';
-import * as colorUtil from '../../utils/color_util';
 import Eventful from '../../event/Eventful';
-import {mathSin} from '../../utils/constants';
 import guid from '../../utils/guid';
 
 /**
@@ -37,8 +35,6 @@ class LinkControl {
 
     render(){
         let ctx=this.el.ctx;
-        let prevEl=this.el.prevEl;
-
         let param=this.calcParameters();
         ctx.save();
         ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -65,7 +61,6 @@ class LinkControl {
     }
 
     isHover(x,y){
-        let m, xMin, xMax, yMin, yMax;
         let [centerX,centerY]=this.center;
         let points=[
             [centerX-this.radius+this.translate[0],centerY-this.radius+this.translate[1]],

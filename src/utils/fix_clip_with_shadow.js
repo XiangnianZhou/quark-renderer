@@ -31,9 +31,11 @@ export default function (orignalBrush) {
             var clipPaths = this.__clipPaths;
             var style = this.style;
             var modified;
+            var i = 0;
+            var j = 0;
 
             if (clipPaths) {
-                for (var i = 0; i < clipPaths.length; i++) {
+                for (i = 0; i < clipPaths.length; i++) {
                     var clipPath = clipPaths[i];
                     var shape = clipPath && clipPath.shape;
                     var type = clipPath && clipPath.type;
@@ -42,7 +44,7 @@ export default function (orignalBrush) {
                         (type === 'sector' && shape.startAngle === shape.endAngle)
                         || (type === 'rect' && (!shape.width || !shape.height))
                     )) {
-                        for (var j = 0; j < shadowTemp.length; j++) {
+                        for (j = 0; j < shadowTemp.length; j++) {
                             // It is save to put shadowTemp static, because shadowTemp
                             // will be all modified each item render() called.
                             shadowTemp[j][2] = style[shadowTemp[j][0]];
@@ -57,7 +59,7 @@ export default function (orignalBrush) {
             orignalBrush.apply(this, arguments);
 
             if (modified) {
-                for (var j = 0; j < shadowTemp.length; j++) {
+                for (j = 0; j < shadowTemp.length; j++) {
                     style[shadowTemp[j][0]] = shadowTemp[j][2];
                 }
             }

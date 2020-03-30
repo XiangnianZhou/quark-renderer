@@ -1,4 +1,3 @@
-import * as dataUtil from '../utils/data_structure_util';
 import * as imageHelper from '../utils/image_util';
 import * as classUtil from '../utils/class_util';
 import Element from './Element';

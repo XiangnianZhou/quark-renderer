@@ -1,6 +1,5 @@
 import Definable from './Definable';
 import * as dataUtil from '../utils/data_structure_util';
-import * as classUtil from '../utils/class_util';
 import * as colorTool from '../utils/color_util';
 
 /**

@@ -37,10 +37,13 @@ export default function (points, smooth, isLoop, constraint) {
 
     var min;
     var max;
+    var i=0;
+    var len=0;
+
     if (constraint) {
         min = [Infinity, Infinity];
         max = [-Infinity, -Infinity];
-        for (var i = 0, len = points.length; i < len; i++) {
+        for (i = 0, len = points.length; i < len; i++) {
             v2Min(min, min, points[i]);
             v2Max(max, max, points[i]);
         }
@@ -49,7 +52,7 @@ export default function (points, smooth, isLoop, constraint) {
         v2Max(max, max, constraint[1]);
     }
 
-    for (var i = 0, len = points.length; i < len; i++) {
+    for (i = 0, len = points.length; i < len; i++) {
         var point = points[i];
 
         if (isLoop) {

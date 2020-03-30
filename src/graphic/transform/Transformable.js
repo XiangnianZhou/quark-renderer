@@ -1,7 +1,6 @@
-import {mathSqrt, mathAtan2, mathMin, mathMax, mathAbs} from '../../utils/constants';
+import {mathSqrt, mathMin, mathMax, mathAbs} from '../../utils/constants';
 import * as matrixUtil from '../../utils/affine_matrix_util';
 import * as vectorUtil from '../../utils/vector_util';
-import * as classUtil from '../../utils/class_util';
 import * as dataUtil from '../../utils/data_structure_util';
 
 /**

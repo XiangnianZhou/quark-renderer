@@ -1,5 +1,5 @@
-import Line from './Line';
 import * as dataUtil from '../../utils/data_structure_util';
+import Line from './Line';
 import {mathSin,mathCos} from '../../utils/constants';
 
 /**

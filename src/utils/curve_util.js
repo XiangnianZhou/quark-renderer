@@ -80,13 +80,16 @@ export function cubicRootAt(p0, p1, p2, p3, val, roots) {
     var C = c * c - 3 * b * d;
 
     var n = 0;
+    var t1 = 0;
+    var t2 = 0;
+    var t3 = 0;
 
     if (isAroundZero(A) && isAroundZero(B)) {
         if (isAroundZero(b)) {
             roots[0] = 0;
         }
         else {
-            var t1 = -c / b;  //t1, t2, t3, b is not zero
+            t1 = -c / b;  //t1, t2, t3, b is not zero
             if (t1 >= 0 && t1 <= 1) {
                 roots[n++] = t1;
             }
@@ -97,8 +100,8 @@ export function cubicRootAt(p0, p1, p2, p3, val, roots) {
 
         if (isAroundZero(disc)) {
             var K = B / A;
-            var t1 = -b / a + K;  // t1, a is not zero
-            var t2 = -K / 2;  // t2, t3
+            t1 = -b / a + K;  // t1, a is not zero
+            t2 = -K / 2;  // t2, t3
             if (t1 >= 0 && t1 <= 1) {
                 roots[n++] = t1;
             }
@@ -122,7 +125,7 @@ export function cubicRootAt(p0, p1, p2, p3, val, roots) {
             else {
                 Y2 = mathPow(Y2, ONE_THIRD);
             }
-            var t1 = (-b - (Y1 + Y2)) / (3 * a);
+            t1 = (-b - (Y1 + Y2)) / (3 * a);
             if (t1 >= 0 && t1 <= 1) {
                 roots[n++] = t1;
             }
@@ -133,9 +136,9 @@ export function cubicRootAt(p0, p1, p2, p3, val, roots) {
             var ASqrt = mathSqrt(A);
             var tmp = mathCos(theta);
 
-            var t1 = (-b - 2 * ASqrt * tmp) / (3 * a);
-            var t2 = (-b + ASqrt * (tmp + THREE_SQRT * mathSin(theta))) / (3 * a);
-            var t3 = (-b + ASqrt * (tmp - THREE_SQRT * mathSin(theta))) / (3 * a);
+            t1 = (-b - 2 * ASqrt * tmp) / (3 * a);
+            t2 = (-b + ASqrt * (tmp + THREE_SQRT * mathSin(theta))) / (3 * a);
+            t3 = (-b + ASqrt * (tmp - THREE_SQRT * mathSin(theta))) / (3 * a);
             if (t1 >= 0 && t1 <= 1) {
                 roots[n++] = t1;
             }
@@ -165,9 +168,12 @@ export function cubicExtrema(p0, p1, p2, p3, extrema) {
     var c = 3 * p1 - 3 * p0;
 
     var n = 0;
+    var t1 = 0;
+    var t2 = 0;
+    
     if (isAroundZero(a)) {
         if (isNotAroundZero(b)) {
-            var t1 = -c / b;
+            t1 = -c / b;
             if (t1 >= 0 && t1 <= 1) {
                 extrema[n++] = t1;
             }
@@ -180,8 +186,8 @@ export function cubicExtrema(p0, p1, p2, p3, extrema) {
         }
         else if (disc > 0) {
             var discSqrt = mathSqrt(disc);
-            var t1 = (-b + discSqrt) / (2 * a);
-            var t2 = (-b - discSqrt) / (2 * a);
+            t1 = (-b + discSqrt) / (2 * a);
+            t2 = (-b - discSqrt) / (2 * a);
             if (t1 >= 0 && t1 <= 1) {
                 extrema[n++] = t1;
             }
@@ -348,9 +354,12 @@ export function quadraticRootAt(p0, p1, p2, val, roots) {
     var c = p0 - val;
 
     var n = 0;
+    var t1 = 0;
+    var t2 = 0;
+    
     if (isAroundZero(a)) {
         if (isNotAroundZero(b)) {
-            var t1 = -c / b;
+            t1 = -c / b;
             if (t1 >= 0 && t1 <= 1) {
                 roots[n++] = t1;
             }
@@ -359,15 +368,15 @@ export function quadraticRootAt(p0, p1, p2, val, roots) {
     else {
         var disc = b * b - 4 * a * c;
         if (isAroundZero(disc)) {
-            var t1 = -b / (2 * a);
+            t1 = -b / (2 * a);
             if (t1 >= 0 && t1 <= 1) {
                 roots[n++] = t1;
             }
         }
         else if (disc > 0) {
             var discSqrt = mathSqrt(disc);
-            var t1 = (-b + discSqrt) / (2 * a);
-            var t2 = (-b - discSqrt) / (2 * a);
+            t1 = (-b + discSqrt) / (2 * a);
+            t2 = (-b - discSqrt) / (2 * a);
             if (t1 >= 0 && t1 <= 1) {
                 roots[n++] = t1;
             }
@@ -443,6 +452,7 @@ export function quadraticProjectPoint(
     var t;
     var interval = 0.005;
     var d = Infinity;
+    var d1 = 0;
 
     _v0[0] = x;
     _v0[1] = y;
@@ -452,7 +462,7 @@ export function quadraticProjectPoint(
     for (var _t = 0; _t < 1; _t += 0.05) {
         _v1[0] = quadraticAt(x0, x1, x2, _t);
         _v1[1] = quadraticAt(y0, y1, y2, _t);
-        var d1 = v2DistSquare(_v0, _v1);
+        d1 = v2DistSquare(_v0, _v1);
         if (d1 < d) {
             t = _t;
             d = d1;
@@ -471,7 +481,7 @@ export function quadraticProjectPoint(
         _v1[0] = quadraticAt(x0, x1, x2, prev);
         _v1[1] = quadraticAt(y0, y1, y2, prev);
 
-        var d1 = v2DistSquare(_v1, _v0);
+        d1 = v2DistSquare(_v1, _v0);
 
         if (prev >= 0 && d1 < d) {
             t = prev;

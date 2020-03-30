@@ -535,8 +535,21 @@ PathProxy.prototype = {
         let y0 = 0;
         let i = 0;
 
+        let cx = 0;
+        let cy = 0;
+        let rx = 0;
+        let ry = 0;
+        let startAngle = 0;
+        let endAngle = 0;
+        let anticlockwise = 0;
+
+        let width = 0;
+        let height = 0;
+
+        let cmd = 0;
+
         for (; i < data.length;) {
-            let cmd = data[i++];
+            cmd = data[i++];
 
             if (i === 1) {
                 // 如果第一个命令是 L, C, Q
@@ -585,15 +598,15 @@ PathProxy.prototype = {
                     break;
                 case CMD.A:
                     // TODO Arc 判断的开销比较大
-                    let cx = data[i++];
-                    let cy = data[i++];
-                    let rx = data[i++];
-                    let ry = data[i++];
-                    let startAngle = data[i++];
-                    let endAngle = data[i++] + startAngle;
+                    cx = data[i++];
+                    cy = data[i++];
+                    rx = data[i++];
+                    ry = data[i++];
+                    startAngle = data[i++];
+                    endAngle = data[i++] + startAngle;
                     // TODO Arc 旋转
                     i += 1;
-                    let anticlockwise = 1 - data[i++];
+                    anticlockwise = 1 - data[i++];
                     if (i === 1) {
                         // 直接使用 arc 命令
                         // 第一个命令起点还未定义
@@ -610,8 +623,8 @@ PathProxy.prototype = {
                 case CMD.R:
                     x0 = xi = data[i++];
                     y0 = yi = data[i++];
-                    let width = data[i++];
-                    let height = data[i++];
+                    width = data[i++];
+                    height = data[i++];
                     // Use fromLine
                     bbox.fromLine(x0, y0, x0 + width, y0 + height, min2, max2);
                     break;
@@ -658,6 +671,20 @@ PathProxy.prototype = {
         let ux = this._ux;
         let uy = this._uy;
         let len = this._len;
+        let cx = 0;
+        let cy = 0;
+        let rx = 0;
+        let ry = 0;
+        let theta = 0;
+        let dTheta = 0;
+        let psi = 0;
+        let fs = 0;
+        let r = 0;
+        let scaleX = 0;
+        let scaleY = 0;
+        let isEllipse = 0;
+        let endAngle = 0;
+
         for (let i = 0; i < len;) {
             let cmd = d[i++];
 
@@ -701,19 +728,19 @@ PathProxy.prototype = {
                     yi = d[i - 1];
                     break;
                 case CMD.A:
-                    let cx = d[i++];
-                    let cy = d[i++];
-                    let rx = d[i++];
-                    let ry = d[i++];
-                    let theta = d[i++];
-                    let dTheta = d[i++];
-                    let psi = d[i++];
-                    let fs = d[i++];
-                    let r = (rx > ry) ? rx : ry;
-                    let scaleX = (rx > ry) ? 1 : rx / ry;
-                    let scaleY = (rx > ry) ? ry / rx : 1;
-                    let isEllipse = mathAbs(rx - ry) > 1e-3;
-                    let endAngle = theta + dTheta;
+                    cx = d[i++];
+                    cy = d[i++];
+                    rx = d[i++];
+                    ry = d[i++];
+                    theta = d[i++];
+                    dTheta = d[i++];
+                    psi = d[i++];
+                    fs = d[i++];
+                    r = (rx > ry) ? rx : ry;
+                    scaleX = (rx > ry) ? 1 : rx / ry;
+                    scaleY = (rx > ry) ? ry / rx : 1;
+                    isEllipse = mathAbs(rx - ry) > 1e-3;
+                    endAngle = theta + dTheta;
                     if (isEllipse) {
                         ctx.translate(cx, cy);
                         ctx.rotate(psi);

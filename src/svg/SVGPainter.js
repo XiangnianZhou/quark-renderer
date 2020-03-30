@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {createElement} from './core';
 import * as dataUtil from '../utils/data_structure_util';
 import Path from '../graphic/Path';

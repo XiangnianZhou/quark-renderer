@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 
 var SHADOW_PROPS = {
     'shadowBlur': 1,

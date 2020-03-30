@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 //Because there is no static properties in ES6 now, we put the list here.
 let linkables=new Map();
 

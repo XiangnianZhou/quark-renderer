@@ -1,8 +1,7 @@
+/* eslint-disable no-unused-vars */
 import * as classUtil from '../../utils/class_util';
 import * as matrixUtil from '../../utils/affine_matrix_util';
 import * as vectorUtil from '../../utils/vector_util';
-import * as colorUtil from '../../utils/color_util';
-import {mathSin} from '../../utils/constants';
 
 /**
  * @class qrenderer.graphic.transform.TransformControl

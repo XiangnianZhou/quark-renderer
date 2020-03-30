@@ -11,8 +11,6 @@ import {mathSin,mathCos,mathSqrt,mathAtan, mathAsin} from './constants';
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
-/* global Float32Array */
-
 let ArrayConstructor = typeof Float32Array === 'undefined'
     ? Array
     : Float32Array;

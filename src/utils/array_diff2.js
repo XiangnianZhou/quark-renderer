@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // Myers' Diff Algorithm
 // Modified from https://github.com/kpdecker/jsdiff/blob/master/src/diff/base.js
 
@@ -137,11 +138,11 @@ function buildValues(diff, components, newArr, oldArr) {
     var componentLen = components.length;
     var newPos = 0;
     var oldPos = 0;
-
+    var indices = [];
+    
     for (; componentPos < componentLen; componentPos++) {
         var component = components[componentPos];
         if (!component.removed) {
-            var indices = [];
             for (var i = newPos; i < newPos + component.count; i++) {
                 indices.push(i);
             }
@@ -151,11 +152,9 @@ function buildValues(diff, components, newArr, oldArr) {
             if (!component.added) {
                 oldPos += component.count;
             }
-        }
-        else {
-            var indices = [];
-            for (var i = oldPos; i < oldPos + component.count; i++) {
-                indices.push(i);
+        } else {
+            for (var j = oldPos; j < oldPos + component.count; j++) {
+                indices.push(j);
             }
             component.indices = indices;
             oldPos += component.count;

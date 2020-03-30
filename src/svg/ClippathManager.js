@@ -1,7 +1,7 @@
 import Definable from './Definable';
 import * as dataUtil from '../utils/data_structure_util';
-import * as classUtil from '../utils/class_util';
 import * as matrixUtil from '../utils/affine_matrix_util';
+
 /**
  * @class qrenderer.svg.helper.ClippathManager
  * 

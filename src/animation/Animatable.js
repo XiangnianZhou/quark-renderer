@@ -1,10 +1,13 @@
 import AnimationProcess from './AnimationProcess';
-import * as dataUtil from '../utils/data_structure_util';
 
 /**
+ * @abstract
  * @class qrenderer.animation.Animatable
+ * This is abstract class for animation. Any class need animation can minxin this implementation.
+ * Animatable need Eventful class to provide event mechanics.
  * 
- * 动画接口类，在 Element 类中 mixin 此类提供的功能，为元素提供动画功能。
+ * 
+ * 动画抽象类。任何需要动画功能的类都可以 mixin 此实现。
  * 混入 Animatable 的类必须同时混入 Eventful ，因为动画过程中需要使用事件机制。
  * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
@@ -55,7 +58,7 @@ Animatable.prototype = {
      * @param {Boolean} forwardToLast If move to last frame before stop
      */
     stopAnimation: function (forwardToLast=false) {
-        this.animationProcessList.forEach((ap,index)=>{
+        this.animationProcessList.forEach((ap)=>{
             ap.stop(forwardToLast);
         });
         this.animationProcessList.length=0;

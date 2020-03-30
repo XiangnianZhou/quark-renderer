@@ -175,9 +175,10 @@ function renderPlainText(hostEl, ctx, text, style, rect, prevEl) {
     ctx.textBaseline = 'middle';
     // Set text opacity
     ctx.globalAlpha = style.opacity || 1;
+    var i = 0;
 
     // Always set shadowBlur and shadowOffset to avoid leak from displayable.
-    for (var i = 0; i < SHADOW_STYLE_COMMON_PROPS.length; i++) {
+    for (i = 0; i < SHADOW_STYLE_COMMON_PROPS.length; i++) {
         var propItem = SHADOW_STYLE_COMMON_PROPS[i];
         var styleProp = propItem[0];
         var ctxProp = propItem[1];
@@ -196,7 +197,7 @@ function renderPlainText(hostEl, ctx, text, style, rect, prevEl) {
     var strokeChanged = !checkCache || strokeWidthChanged || style.textStroke !== prevStyle.textStroke;
     var textStroke = getStroke(style.textStroke, textStrokeWidth);
     var textFill = getFill(style.textFill);
-
+    
     if (textStroke) {
         if (strokeWidthChanged) {
             ctx.lineWidth = textStrokeWidth;
@@ -218,7 +219,7 @@ function renderPlainText(hostEl, ctx, text, style, rect, prevEl) {
         textFill && ctx.fillText(textLines[0], textX, textY);
     }
     else {
-        for (var i = 0; i < textLines.length; i++) {
+        for (i = 0; i < textLines.length; i++) {
             // Fill after stroke so the outline will not cover the main part.
             textStroke && ctx.strokeText(textLines[i], textX, textY);
             textFill && ctx.fillText(textLines[i], textX, textY);
@@ -416,6 +417,7 @@ function drawBackground(hostEl, ctx, style, x, y, width, height) {
     var textBorderWidth = style.textBorderWidth;
     var textBorderColor = style.textBorderColor;
     var isPlainBg = dataUtil.isString(textBackgroundColor);
+    var originalGlobalAlpha;
 
     setCtx(ctx, 'shadowBlur', style.textBoxShadowBlur || 0);
     setCtx(ctx, 'shadowColor', style.textBoxShadowColor || 'transparent');
@@ -439,7 +441,7 @@ function drawBackground(hostEl, ctx, style, x, y, width, height) {
         setCtx(ctx, 'fillStyle', textBackgroundColor);
 
         if (style.fillOpacity != null) {
-            var originalGlobalAlpha = ctx.globalAlpha;
+            originalGlobalAlpha = ctx.globalAlpha;
             ctx.globalAlpha = style.fillOpacity * style.opacity;
             ctx.fill();
             ctx.globalAlpha = originalGlobalAlpha;
@@ -463,7 +465,7 @@ function drawBackground(hostEl, ctx, style, x, y, width, height) {
         setCtx(ctx, 'strokeStyle', textBorderColor);
 
         if (style.strokeOpacity != null) {
-            var originalGlobalAlpha = ctx.globalAlpha;
+            originalGlobalAlpha = ctx.globalAlpha;
             ctx.globalAlpha = style.strokeOpacity * style.opacity;
             ctx.stroke();
             ctx.globalAlpha = originalGlobalAlpha;

@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import * as eventUtil from '../utils/event_util';
 
 /**

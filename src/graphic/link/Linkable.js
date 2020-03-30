@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import LinkSlot from './LinkSlot';
 import LinkMgr from './LinkMgr';
 import Line from '../line/Line';
@@ -97,7 +98,7 @@ Linkable.prototype={
                 return {isOverlap:true,slot:slot,control:control};
             }
         }
-        return {isOverlap:false};;
+        return {isOverlap:false};
     },
 
     /**

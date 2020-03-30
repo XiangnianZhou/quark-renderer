@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import * as dataUtil from '../../utils/data_structure_util';
 import * as classUtil from '../../utils/class_util';
 import {subPixelOptimizeLine} from '../../utils/sub_pixel_optimize';

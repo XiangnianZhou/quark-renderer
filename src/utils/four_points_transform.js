@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import {mathLog,mathRound} from './constants';
 
 /**

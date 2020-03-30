@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import * as textContain from './utils/contain/text';
 import GlobalEventDispatcher from './event/GlobalEventDispatcher';
 import CanvasPainter from './canvas/CanvasPainter';

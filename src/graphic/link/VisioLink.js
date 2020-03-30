@@ -1,4 +1,3 @@
-import * as vectorUtil from '../../utils/vector_util';
 import * as classUtil from '../../utils/class_util';
 import * as matrixUtil from '../../utils/affine_matrix_util';
 import Polyline from '../line/Polyline';
@@ -301,7 +300,6 @@ export default class VisioLink extends Polyline{
          */
         let solIndex = 0;
         for (let i = 0; i < solutions.length; i++) {
-            let solution = solutions[i][2];
             if (this.scorePath(solutions[solIndex][2]) < this.scorePath(solutions[i][2])) {
                 solIndex = i;
             }
@@ -387,8 +385,8 @@ export default class VisioLink extends Polyline{
                  * => x0 = (b2 - b1) / (a1 - a2)
                  * => y0 = a1 * x0 + b1
                  */
-                x0 = (b2 - b1) / (a1 - a2);
-                y0 = a1 * x0 + b1;
+                let x0 = (b2 - b1) / (a1 - a2);
+                let y0 = a1 * x0 + b1;
                 return l1.contains(x0, y0) && l2.contains(x0, y0);
             }
         }

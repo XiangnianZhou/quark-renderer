@@ -13,6 +13,11 @@ export default function (path, m) {
     var j;
     var k;
     var p;
+    var x;
+    var y;
+    var sx;
+    var sy;
+    var angle;
 
     var M = CMD.M;
     var C = CMD.C;
@@ -40,11 +45,11 @@ export default function (path, m) {
                 nPoint = 2;
                 break;
             case A:
-                var x = m[4];
-                var y = m[5];
-                var sx = mathSqrt(m[0] * m[0] + m[1] * m[1]);
-                var sy = mathSqrt(m[2] * m[2] + m[3] * m[3]);
-                var angle = mathAtan2(-m[1] / sy, m[0] / sx);
+                x = m[4];
+                y = m[5];
+                sx = mathSqrt(m[0] * m[0] + m[1] * m[1]);
+                sy = mathSqrt(m[2] * m[2] + m[3] * m[3]);
+                angle = mathAtan2(-m[1] / sy, m[0] / sx);
                 // cx
                 data[i] *= sx;
                 data[i++] += x;
@@ -80,7 +85,7 @@ export default function (path, m) {
         }
 
         for (k = 0; k < nPoint; k++) {
-            var p = points[k];
+            p = points[k];
             p[0] = data[i++];
             p[1] = data[i++];
 

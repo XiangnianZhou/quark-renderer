@@ -1,9 +1,10 @@
+/* eslint-disable no-constant-condition */
+/* eslint-disable no-fallthrough */
+// Use timsort because in most case elements are partially sorted
+// https://jsfiddle.net/pissang/jr4x7mdm/8/
 // https://github.com/mziccard/node-timsort
 var DEFAULT_MIN_MERGE = 32;
-
 var DEFAULT_MIN_GALLOPING = 7;
-
-var DEFAULT_TMP_STORAGE_LENGTH = 256;
 
 function minRunLength(n) {
     var r = 0;
@@ -76,11 +77,9 @@ function binaryInsertionSort(array, lo, hi, start, compare) {
 
         switch (n) {
             case 3:
-                array[left + 3] = array[left + 2];
-
+                array[left + 3] = array[left + 2];//FIXME:fix this ugly code
             case 2:
-                array[left + 2] = array[left + 1];
-
+                array[left + 2] = array[left + 1];//FIXME:fix this ugly code
             case 1:
                 array[left + 1] = array[left];
                 break;
@@ -215,25 +214,10 @@ function gallopRight(value, array, start, length, hint, compare) {
 
 function TimSort(array, compare) {
     var minGallop = DEFAULT_MIN_GALLOPING;
-    var length = 0;
-    var tmpStorageLength = DEFAULT_TMP_STORAGE_LENGTH;
-    var stackLength = 0;
-    var runStart;
-    var runLength;
+    var runStart=[];
+    var runLength=[];
     var stackSize = 0;
-
-    length = array.length;
-
-    if (length < 2 * DEFAULT_TMP_STORAGE_LENGTH) {
-        tmpStorageLength = length >>> 1;
-    }
-
     var tmp = [];
-
-    stackLength = length < 120 ? 5 : length < 1542 ? 10 : length < 119151 ? 19 : 40;
-
-    runStart = [];
-    runLength = [];
 
     function pushRun(_runStart, _runLength) {
         runStart[stackSize] = _runStart;
@@ -342,7 +326,7 @@ function TimSort(array, compare) {
         var count2;
         var exit;
 
-        while (1) {
+        while (true) {
             count1 = 0;
             count2 = 0;
             exit = false;
