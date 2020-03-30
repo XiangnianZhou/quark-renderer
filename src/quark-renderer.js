@@ -1,9 +1,9 @@
+import * as textContain from './utils/contain/text';
 import GlobalEventDispatcher from './event/GlobalEventDispatcher';
 import CanvasPainter from './canvas/CanvasPainter';
 import GlobalAnimationMgr from './animation/GlobalAnimationMgr';
 import DomEventInterceptor from './event/DomEventInterceptor';
 import Storage from './Storage';
-import * as textContain from './utils/contain/text';
 import guid from './utils/guid';
 import env from './utils/env';
 
@@ -419,12 +419,11 @@ class QuarkRenderer{
      * 
      * 把路径导出成图片。
      * 绘制图片的性能比绘制路径高很多。
-     * @param {graphic/Path} e
-     * @param {Number} width
-     * @param {Number} height
+     * @param {Path} path
+     * @param {Number} dpr
      */
-    pathToImage(e, dpr) {
-        return this.painter.pathToImage(e, dpr);
+    pathToImage(path, dpr) {
+        return this.painter.pathToImage(path, dpr);
     }
 
     /**

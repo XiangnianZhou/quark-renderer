@@ -70,7 +70,7 @@ export default class DragDropMgr{
         this.dispatcher.on('pagemousemove', this.dragging, this);
         this.dispatcher.on('pagemouseup', this.dragEnd, this);
 
-        this.selectionMap.forEach((el,key)=>{
+        this.selectionMap.forEach((el)=>{
             this.dispatcher.dispatchToElement(this.normalizeParam(el, e), 'dragstart', e.event);
         });
     }
@@ -92,7 +92,7 @@ export default class DragDropMgr{
         this._x = x;
         this._y = y;
 
-        this.selectionMap.forEach((el,key)=>{
+        this.selectionMap.forEach((el)=>{
             if(el.beforeMove(dx,dy,e,el)){
                 el.move(dx, dy, e);
                 el.afterMove(dx,dy,e,el)
@@ -124,7 +124,7 @@ export default class DragDropMgr{
      * @param {Event} e 
      */
     dragEnd(e) {
-        this.selectionMap.forEach((el,key)=>{
+        this.selectionMap.forEach((el)=>{
             el.dragging=false;
             this.dispatcher.dispatchToElement(this.normalizeParam(el, e), 'dragend', e.event);
         });
@@ -168,7 +168,7 @@ export default class DragDropMgr{
      * 清除选中。
      */
     clearSelectionMap(){
-        this.selectionMap.forEach((el,key)=>{el.dragging=false;});
+        this.selectionMap.forEach((el)=>{el.dragging=false;});
         this.selectionMap.clear();
     }
 }
