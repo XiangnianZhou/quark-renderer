@@ -210,8 +210,10 @@ API 文档位于 /api 目录下，在你的浏览器中打开 /api/index.html �
 <br/>
 <img src="./docs/images/10.gif">
 VisioLink， 像 Microsoft Visio 中的那种连接线效果。
+<br/>
+<img src="./docs/images/1.png">
 
-Wechat mini-program example:
+微信小程序示例：
 
 <img src="./docs/images/4.gif">
 

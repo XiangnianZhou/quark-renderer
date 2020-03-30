@@ -380,7 +380,7 @@
                     let ticket = new Date();
                     
                     //--- This if for unit test, don't do this in production code. ---
-                    qr._needRefresh = true;
+                    qr.dirty();
                     qr.flush();
                     //------
 

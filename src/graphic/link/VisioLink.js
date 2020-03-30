@@ -1,9 +1,9 @@
+import * as vectorUtil from '../../utils/vector_util';
+import * as classUtil from '../../utils/class_util';
+import * as matrixUtil from '../../utils/affine_matrix_util';
 import Polyline from '../line/Polyline';
 import GeoPoint from '../../geometric/GeoPoint';
 import GeoLine from '../../geometric/GeoLine';
-import * as classUtil from '../../utils/class_util';
-import * as matrixUtil from '../../utils/affine_matrix_util';
-import { vectorUtil } from '../../export';
 
 /**
  * @class qrenderer.graphic.link.VisioLink

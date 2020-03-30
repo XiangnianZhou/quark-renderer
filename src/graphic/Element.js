@@ -294,7 +294,7 @@ class Element{
      */
     hide() {
         this.ignore = true;
-        this.__qr && this.__qr.refresh();
+        this.__qr && this.__qr.dirty();
     }
 
     /**
@@ -306,7 +306,7 @@ class Element{
      */
     show() {
         this.ignore = false;
-        this.__qr && this.__qr.refresh();
+        this.__qr && this.__qr.dirty();
     }
 
     /**
@@ -360,7 +360,7 @@ class Element{
     dirty() {
         this.__dirty = this.__dirtyText = true;
         this.__boundingRect = null;
-        this.__qr && this.__qr.refresh();
+        this.__qr && this.__qr.dirty();
     }
 
     /**
