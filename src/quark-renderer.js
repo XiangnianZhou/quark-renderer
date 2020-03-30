@@ -188,7 +188,7 @@ class QuarkRenderer{
          * @property {Boolean}
          * @private
          */
-        this._needRefresh=false;  
+        this.__dirty=false;  
     }
 
     /**
@@ -202,7 +202,7 @@ class QuarkRenderer{
     add(el) {
         el.__qr=this;
         this.storage.addToRoot(el);
-        this.refresh();
+        this.dirty();
     }
 
     /**
@@ -216,7 +216,7 @@ class QuarkRenderer{
     remove(el) {
         this.storage.delFromRoot(el);
         el.__qr=null;
-        this.refresh();
+        this.dirty();
     }
 
     /**
@@ -231,30 +231,30 @@ class QuarkRenderer{
      * 这个方法什么都不做。请不要直接调用此方法。
      */
     flush() {
-        if (this._needRefresh) {//try refreshing all elements
+        if (this.__dirty) {//try refreshing all elements
             // Clear needsRefresh ahead to avoid something wrong happens in refresh
             // Or it will cause qrenderer refreshes again and again.
-            this._needRefresh = this._needRefreshHover = false;
+            this.__dirty = this.__hoverLayerDirty = false;
             this.painter.refresh && this.painter.refresh();
         }
-        if (this._needRefreshHover) {//only try refreshing hovered elements
-            this._needRefresh = this._needRefreshHover = false;
+        if (this.__hoverLayerDirty) {//only try refreshing hovered elements
+            this.__dirty = this.__hoverLayerDirty = false;
             this.painter.refreshHover && this.painter.refreshHover();
         }
         // Avoid trigger qr.refresh in Element#beforeUpdate hook
-        this._needRefresh = this._needRefreshHover = false;
+        this.__dirty = this.__hoverLayerDirty = false;
         this.eventDispatcher.trigger('rendered');
     }
 
     /**
-     * @method refresh
+     * @method dirty
      * Mark and repaint the canvas in the next animation frame.
      * 
      * 
      * 标记，在下一个动画帧中重绘画布。
      */
-    refresh() {
-        this._needRefresh = true;
+    dirty() {
+        this.__dirty = true;
     }
 
     /**
@@ -335,7 +335,7 @@ class QuarkRenderer{
      * 下一帧刷新浮动层。
      */
     refreshHover() {
-        this._needRefreshHover = true;
+        this.__hoverLayerDirty = true;
     }
 
     /**
@@ -393,7 +393,7 @@ class QuarkRenderer{
         if (this.painter.configLayer) {
             this.painter.configLayer(qLevel, config);
         }
-        this.refresh();
+        this.dirty();
     }
 
     /**
@@ -408,7 +408,7 @@ class QuarkRenderer{
         if (this.painter.setBackgroundColor) {
             this.painter.setBackgroundColor(backgroundColor);
         }
-        this.refresh();
+        this.dirty();
     }
 
     /**

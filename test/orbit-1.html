@@ -106,7 +106,12 @@
         });
 
         console.profile('render');
-        qr.refresh();
+        
+        //--- This if for unit test, don't do this in production code. ---
+        qr.dirty();
+        qr.flush();
+        //------
+
         console.profileEnd('render');
     </script>
 </body>
