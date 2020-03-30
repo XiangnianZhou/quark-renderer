@@ -47,6 +47,44 @@
         qr.add(rect2);
 
         rect1.createLink(rect1,rect2);
+
+        let rect3 = new QuarkRenderer.Rect({
+            draggable:true,
+            linkable:true,
+            position: [300, 200],
+            shape: {
+                r: 0,
+                width: 50,
+                height: 50
+            },
+            style: {
+                fill: '#ff0000',
+                lineWidth: 5,
+                text:'矩形',
+                textPosition:'inside'
+            }
+        });
+        qr.add(rect3);
+
+        let rect4 = new QuarkRenderer.Rect({
+            draggable:true,
+            linkable:true,
+            position: [50, 300],
+            shape: {
+                r: 0,
+                width: 50,
+                height: 50
+            },
+            style: {
+                fill: '#ff0000',
+                lineWidth: 5,
+                text:'矩形',
+                textPosition:'inside'
+            }
+        });
+        qr.add(rect4);
+
+        rect3.createLink(rect3,rect4,'visio');
         
     </script>
     <div id="Main" style="width:600px;height:400px;"></div>
