@@ -3,23 +3,27 @@ import {mathMin} from '../utils/constants';
 
 /**
  * @class qrenderer.animation.Timeline
- * Timeline，时间线，用来计算元素上的某个属性在指定时间点的数值。
+ * Timeline, designed to calculate the value of an attribute at a specified point.
+ * 
+ * 
+ * 时间线，用来计算元素上的某个属性在指定时间点上的数值。
+ * 
+ * @author 大漠穷秋 <damoqiongqiu@126.com>
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-
 export default class Timeline{
     /**
      * @method constructor Timeline
      * @param {Object} options 
-     * @param {Element} options.element 正在进行动画的元素
-     * @param {Number} options.life(1000) 动画时长
-     * @param {Number} options.delay(0) 动画延迟时间
-     * @param {Boolean} options.loop(true)
-     * @param {Number} options.gap(0) 循环的间隔时间
+     * @param {Element} options.element
+     * @param {Number} options.life
+     * @param {Number} options.delay
+     * @param {Boolean} options.loop
+     * @param {Number} options.gap
      * @param {Function} options.onframe
-     * @param {String} options.easing(optional)
-     * @param {Function} options.ondestroy(optional)
-     * @param {Function} options.onrestart(optional)
+     * @param {String} options.easing
+     * @param {Function} options.ondestroy
+     * @param {Function} options.onrestart
      */
     constructor(options){
         this.element = options.element;
@@ -31,7 +35,6 @@ export default class Timeline{
         this.onframe = options.onframe;
         this.ondestroy = options.ondestroy;
         this.onrestart = options.onrestart;
-        
         this._initialized = false;
         this._pausedTime = 0;
         this._paused = false;
@@ -39,10 +42,12 @@ export default class Timeline{
 
     /**
      * @method nextFrame
-     * 进入下一帧
+     * Enter next frame.
+     * 
+     * 
+     * 进入下一帧。
      * @param {Number} globalTime 当前时间
      * @param {Number} deltaTime  时间偏移量
-     * //TODO:try move this into webworker
      */
     nextFrame(globalTime, deltaTime) {
         // Set startTime on first frame, or _startTime may has milleseconds different between clips
@@ -58,7 +63,6 @@ export default class Timeline{
         }
 
         let percent = (globalTime - this._startTime - this._pausedTime) / this.lifeTime;
-        // 还没开始
         if (percent < 0) {
             return;
         }
@@ -72,7 +76,7 @@ export default class Timeline{
             ? easingFunc(percent)
             : percent;
         
-        if (percent === 1) {// animation 100% finished
+        if (percent === 1) {
             if (this.loop) {
                 this.restart(globalTime);
                 return 'restart';
@@ -86,7 +90,10 @@ export default class Timeline{
 
     /**
      * @method restart
-     * 重新开始
+     * Restart the animation.
+     * 
+     * 
+     * 重新开始动画。
      * @param {Number} globalTime 
      */
     restart(globalTime) {
@@ -97,7 +104,10 @@ export default class Timeline{
 
     /**
      * @method fire
-     * 触发事件
+     * Fire an event.
+     * 
+     * 
+     * 触发事件。
      * @param {String} eventType 
      * @param {Object} arg 
      */
@@ -110,7 +120,10 @@ export default class Timeline{
 
     /**
      * @method pause
-     * 暂停
+     * Pause the animation.
+     * 
+     * 
+     * 暂停动画。
      */
     pause() {
         this._paused = true;
@@ -118,7 +131,10 @@ export default class Timeline{
 
     /**
      * @method resume
-     * 恢复运行
+     * Resume the animation.
+     * 
+     * 
+     * 恢复运行。
      */
     resume() {
         this._paused = false;
