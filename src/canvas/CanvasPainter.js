@@ -12,8 +12,11 @@ import requestAnimationFrame from '../animation/request_animation_frame';
 
 /**
  * @class qrenderer.canvas.CanvasPainter
- * 这是基于 canvas 接口的 CanvasPainter 类
- * @see 基于 SVG 接口的 SVGPainter 类在 svg 目录下
+ * This CanvasPainter class is based on canvas.
+ * 
+ * 
+ * 这是基于 canvas 接口的 CanvasPainter 类。
+ * 
  */
 
 const HOVER_LAYER_QLEVEL = 1e5;
@@ -84,8 +87,8 @@ export default class CanvasPainter{
         this.storage = storage;
     
         /**
-         * @property {Array<Number>}
          * @private
+         * @property {Array<Number>}
          */
         let qlevelList = this._qlevelList = [];
     
@@ -124,9 +127,8 @@ export default class CanvasPainter{
         this._viewRect = new BoundingRect(0, 0, 0, 0);
 
         /**
-         * @property {Boolean} _singleCanvas
-         * In node environment using node-canvas
          * @private
+         * @property {Boolean} _singleCanvas
          */
         this._singleCanvas = !this.host.nodeName || this.host.nodeName.toUpperCase() === 'CANVAS';
     
@@ -179,6 +181,9 @@ export default class CanvasPainter{
      * @method getHost
      * Do NOT use this method in Wechat mini-program, because we can not get HTMLElement 
      * nor canvas instance.
+     * 
+     * 
+     * 在微信小程序中不要使用此方法，以为在小程序中无法获取 HTMLElement 或者 Canvas 实例。
      * @return {HTMLDivElement}
      */
     getHost() {
@@ -189,6 +194,9 @@ export default class CanvasPainter{
      * @method getViewportRootOffset
      * Do NOT use this method in Wechat mini-program, because we can not get HTMLElement 
      * nor canvas instance.
+     * 
+     * 
+     * 在微信小程序中不要使用此方法，以为在小程序中无法获取 HTMLElement 或者 Canvas 实例。
      * @return {Object}
      */
     getViewportRootOffset() {
@@ -202,9 +210,12 @@ export default class CanvasPainter{
     }
 
     /**
-     * @method
-     * 刷新
-     * @param {Boolean} [paintAll=false] 是否强制绘制所有displayable
+     * @method refresh
+     * @param {Boolean} [paintAll=false] 
+     * Wether force repaint all the elements.
+     * 
+     * 
+     * 是否强制绘制所有元素。
      */
     refresh(paintAll) {
         let list = this.storage.getDisplayList(true);
@@ -335,6 +346,7 @@ export default class CanvasPainter{
     }
 
     /**
+     * @private
      * @method _paintList
      * @param {*} list 
      * @param {*} paintAll 
@@ -367,6 +379,7 @@ export default class CanvasPainter{
     }
 
     /**
+     * @private
      * @method _compositeManually
      */
     _compositeManually() {
@@ -383,6 +396,7 @@ export default class CanvasPainter{
     }
 
     /**
+     * @private
      * @method _doPaintList
      */
     _doPaintList(list, paintAll) {
@@ -474,8 +488,8 @@ export default class CanvasPainter{
     }
 
     /**
+     * @private
      * @method _doPaintEl
-     * 绘制一个元素
      * @param {*} el 
      * @param {*} currentLayer 
      * @param {*} forcePaint 
@@ -529,7 +543,10 @@ export default class CanvasPainter{
 
     /**
      * @method getLayer
-     * 获取 qlevel 所在层，如果不存在则会创建一个新的层
+     * Get the canvas layer of a qlevel, auto create a canvas layer when does not exist.
+     * 
+     * 
+     * 获取 qlevel 所在层，如果不存在则会创建一个新的 canvas 层。
      * @param {Number} qlevel
      * @param {Boolean} virtual Virtual layer will not be inserted into dom.
      * @return {CanvasLayer}
@@ -565,9 +582,13 @@ export default class CanvasPainter{
 
     /**
      * @method insertLayer
-     * Insert layer dynamicly during runtime.
+     * Insert one canvas layer dynamicly during runtime.
      * Do NOT use this method in Wechat mini-program, because we can neither get HTMLElement 
      * nor canvas instance.
+     * 
+     * 
+     * 在运行时动态创建一个 canvas 层。
+     * 在微信小程序中不要使用此方法，以为在小程序中无法获取 HTMLElement 或者 Canvas 实例。
      * @param {*} qlevel 
      * @param {*} layer 
      */
@@ -629,8 +650,7 @@ export default class CanvasPainter{
 
     /**
      * @method delLayer
-     * 删除指定层
-     * @param {Number} qlevel 层所在的zlevel
+     * @param {Number} qlevel
      */
     delLayer(qlevel) {
         let layers = this._layers;
@@ -650,7 +670,10 @@ export default class CanvasPainter{
     /**
      * @private
      * @method eachLayer
-     * Iterate each layer
+     * Iterate each canvas layer.
+     * 
+     * 
+     * 遍历所有画布层。
      * @param {Function} cb 
      * @param {Object} context 
      */
@@ -667,7 +690,6 @@ export default class CanvasPainter{
     /**
      * @private
      * @method eachBuiltinLayer
-     * Iterate each buildin layer
      * @param {Function} cb 
      * @param {Object} context 
      */
@@ -688,7 +710,10 @@ export default class CanvasPainter{
     /**
      * @private
      * @method eachOtherLayer
-     * Iterate each other layer except buildin layer
+     * Iterate each other layer except buildin layer.
+     * 
+     * 
+     * 遍历所有画布层，内置的层除外。
      * @param {Function} cb 
      * @param {Object} context 
      */
@@ -708,7 +733,10 @@ export default class CanvasPainter{
 
     /**
      * @method getLayers
-     * 获取所有已创建的层
+     * Get all the canvas layers.
+     * 
+     * 
+     * 获取所有画布层。
      * @param {Array<CanvasLayer>} [prevLayer]
      */
     getLayers() {
@@ -777,15 +805,18 @@ export default class CanvasPainter{
                 if (layer.__startIndex !== i) {
                     layer.__dirty = true;
                 }
+
                 layer.__startIndex = i;
                 if (!layer.incremental) {
                     layer.__drawIndex = i;
                 }else {
                     layer.__drawIndex = -1;
                 }
+
                 updatePrevLayer(i);
                 prevLayer = layer;
             }
+
             if (el.__dirty) {
                 layer.__dirty = true;
                 if (layer.incremental && layer.__drawIndex < 0) {
@@ -812,7 +843,6 @@ export default class CanvasPainter{
 
     /**
      * @method clear
-     * 清除hover层外所有内容
      */
     clear() {
         this.eachBuiltinLayer(this._clearLayer);
@@ -836,13 +866,12 @@ export default class CanvasPainter{
 
     /**
      * @method configLayer
-     * 修改指定zlevel的绘制参数
      *
      * @param {String} qlevel
-     * @param {Object} [config] 配置对象
-     * @param {String} [config.clearColor=0] 每次清空画布的颜色
-     * @param {String} [config.motionBlur=false] 是否开启动态模糊
-     * @param {Number} [config.lastFrameAlpha=0.7] 在开启动态模糊的时候使用，与上一帧混合的alpha值，值越大尾迹越明显
+     * @param {Object} [config]
+     * @param {String} [config.clearColor=0]
+     * @param {String} [config.motionBlur=false]
+     * @param {Number} [config.lastFrameAlpha=0.7]
      */
     configLayer(qlevel, config) {
         if (config) {
@@ -865,7 +894,6 @@ export default class CanvasPainter{
 
     /**
      * @method resize
-     * 区域大小变化后重绘
      * @param {Number} width
      * @param {Number} height
      */
@@ -916,7 +944,6 @@ export default class CanvasPainter{
 
     /**
      * @method clearLayer
-     * 清除单独的一个层
      * @param {Number} qlevel
      */
     clearLayer(qlevel) {
@@ -928,7 +955,6 @@ export default class CanvasPainter{
 
     /**
      * @method dispose
-     * 释放
      */
     dispose() {
         this.host.innerHTML = '';
@@ -984,7 +1010,6 @@ export default class CanvasPainter{
 
     /**
      * @method getWidth
-     * 获取绘图区域宽度
      * @return {Number}
      */
     getWidth() {
@@ -993,7 +1018,6 @@ export default class CanvasPainter{
 
     /**
      * @method getHeight
-     * 获取绘图区域高度
      * @return {Number}
      */
     getHeight() {
@@ -1143,9 +1167,11 @@ export default class CanvasPainter{
         if (clipPaths === prevClipPaths) {
             return false;
         }
+
         if (!clipPaths || !prevClipPaths || (clipPaths.length !== prevClipPaths.length)) {
             return true;
         }
+
         for (let i = 0; i < clipPaths.length; i++) {
             if (clipPaths[i] !== prevClipPaths[i]) {
                 return true;
@@ -1173,8 +1199,12 @@ export default class CanvasPainter{
     /**
      * @private
      * @method createDomRoot
-     * 在浏览器环境中，不会直接在传入的 dom 节点内部创建 canvas 标签，而是再内嵌一层div。
-     * 目的是加上一些必须的 CSS 样式，方便实现特定的功能。
+     * In the browser environment, we will not insert the canvas markup into the dom directly but into a nested div.
+     * The purpose for doing this is to add some necessary CSS sytles, facilitate the implementation of specific functions.
+     * 
+     * 
+     * 在浏览器环境中，不会直接插入 canvas 标签，而是再内嵌一层div。
+     * 这样做的目的是加上一些必要的 CSS 样式，方便实现特定的功能。
      * @param {Number} width 
      * @param {Number} height 
      */
