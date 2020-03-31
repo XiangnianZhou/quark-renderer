@@ -190,6 +190,8 @@ onReady: function () {
 
 API 文档位于 /api 目录下，在你的浏览器中打开 /api/index.html 就可以看到很漂亮的 API 文档了，风格与 Sencha(ExtJS) 相同。
 
+<img src="./docs/images/2.png">
+
 ## 屏幕截图
 
 <img src="./docs/images/1.gif">
