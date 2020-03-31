@@ -191,6 +191,8 @@ onReady: function () {
 
 The document is in /api directory, open /api/index.html in your browser then you can see a beautiful API document just like Sencha(ExtJS).
 
+<img src="./docs/images/2.png">
+
 ## ScreenShots
 
 <img src="./docs/images/1.gif">
