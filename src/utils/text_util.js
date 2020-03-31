@@ -8,27 +8,24 @@ import { getContext } from './canvas_util';
 import { mathMax, mathFloor } from './constants';
 import BoundingRect from '../graphic/BoundingRect';
 
-export let DEFAULT_FONT = '12px sans-serif';
-
-// TODO: Have not support 'start', 'end' yet.
-let VALID_TEXT_ALIGN = {left: 1, right: 1, center: 1};
-let VALID_TEXT_VERTICAL_ALIGN = {top: 1, bottom: 1, middle: 1};
+export const DEFAULT_FONT = '12px sans-serif';
+export const VALID_TEXT_ALIGN = {left: 1, right: 1, center: 1};// FIXME: support 'start', 'end'.
+export const VALID_TEXT_VERTICAL_ALIGN = {top: 1, bottom: 1, middle: 1};
 // Different from `STYLE_COMMON_PROPS` of `graphic/Style`,
 // the default value of shadowColor is `'transparent'`.
-let SHADOW_STYLE_COMMON_PROPS = [
+export const SHADOW_STYLE_COMMON_PROPS = [
     ['textShadowBlur', 'shadowBlur', 0],
     ['textShadowOffsetX', 'shadowOffsetX', 0],
     ['textShadowOffsetY', 'shadowOffsetY', 0],
     ['textShadowColor', 'shadowColor', 'transparent']
 ];
+
 let _tmpTextPositionResult = {};
 let _tmpBoxPositionResult = {};
-
 let textWidthCache = {};
 let textWidthCacheCounter = 0;
 let TEXT_CACHE_MAX = 5000;
 let STYLE_REG = /\{([a-zA-Z0-9_]+)\|([^}]*)\}/g;
-
 // Avoid assign to an exported variable, for transforming to cjs.
 let methods = {};
 
@@ -48,9 +45,7 @@ export function normalizeTextStyle(style) {
 
 function normalizeStyle(style) {
     if (style) {
-
         style.font = makeFont(style);
-
         let textAlign = style.textAlign;
         textAlign === 'middle' && (textAlign = 'center');
         style.textAlign = (
@@ -88,10 +83,7 @@ export function renderText(hostEl, ctx, text, style, rect, prevEl) {
 // Avoid setting to ctx according to prevEl if possible for
 // performance in scenarios of large amount text.
 function renderPlainText(hostEl, ctx, text, style, rect, prevEl) {
-    'use strict';
-
     let needDrawBg = needDrawBackground(style);
-
     let prevStyle;
     let checkCache = false;
     let cachedByMe = ctx.__attrCachedBy === ContextCachedBy.PLAIN_TEXT;
@@ -102,7 +94,6 @@ function renderPlainText(hostEl, ctx, text, style, rect, prevEl) {
             prevStyle = prevEl.style;
             checkCache = !needDrawBg && cachedByMe && prevStyle;
         }
-
         // Prevent from using cache in `Style::bind`, because of the case:
         // ctx property is modified by other properties than `Style::bind`
         // used, and Style::bind is called next.
@@ -149,10 +140,8 @@ function renderPlainText(hostEl, ctx, text, style, rect, prevEl) {
     }
 
     let outerHeight = contentBlock.outerHeight;
-
     let textLines = contentBlock.lines;
     let lineHeight = contentBlock.lineHeight;
-
     let boxPos = getBoxPosition(_tmpBoxPositionResult, hostEl, style, rect);
     let baseX = boxPos.baseX;
     let baseY = boxPos.baseY;
@@ -264,7 +253,6 @@ function drawRichText(hostEl, ctx, contentBlock, style, rect) {
     let outerWidth = contentBlock.outerWidth;
     let outerHeight = contentBlock.outerHeight;
     let textPadding = style.textPadding;
-
     let boxPos = getBoxPosition(_tmpBoxPositionResult, hostEl, style, rect);
     let baseX = boxPos.baseX;
     let baseY = boxPos.baseY;
@@ -394,12 +382,10 @@ function placeToken(hostEl, ctx, token, style, lineHeight, lineTop, x, textAlign
     setCtx(ctx, 'shadowColor', tokenStyle.textShadowColor || style.textShadowColor || 'transparent');
     setCtx(ctx, 'shadowOffsetX', dataUtil.retrieve3(tokenStyle.textShadowOffsetX, style.textShadowOffsetX, 0));
     setCtx(ctx, 'shadowOffsetY', dataUtil.retrieve3(tokenStyle.textShadowOffsetY, style.textShadowOffsetY, 0));
-
     setCtx(ctx, 'textAlign', textAlign);
     // Force baseline to be "middle". Otherwise, if using "top", the
     // text will offset downward a little bit in font "Microsoft YaHei".
     setCtx(ctx, 'textBaseline', 'middle');
-
     setCtx(ctx, 'font', token.font || DEFAULT_FONT);
 
     let textStrokeWidth = dataUtil.retrieve2(tokenStyle.textStrokeWidth, style.textStrokeWidth);
@@ -509,8 +495,7 @@ export function getBoxPosition(out, hostEl, style, rect) {
             // Percent
             baseX = rect.x1 + parsePercent(textPosition[0], rect.width);
             baseY = rect.y1 + parsePercent(textPosition[1], rect.height);
-        }
-        else {
+        } else {
             let res = (hostEl && hostEl.calculateTextPosition)
                 ? hostEl.calculateTextPosition(_tmpTextPositionResult, style, rect)
                 : calculateTextPosition(_tmpTextPositionResult, style, rect);
@@ -696,8 +681,7 @@ export function adjustTextX(x, width, textAlign) {
     // FIXME: Right to left language
     if (textAlign === 'right') {
         x -= width;
-    }
-    else if (textAlign === 'center') {
+    } else if (textAlign === 'center') {
         x -= width / 2;
     }
     return x;
@@ -713,8 +697,7 @@ export function adjustTextX(x, width, textAlign) {
 export function adjustTextY(y, height, textVerticalAlign) {
     if (textVerticalAlign === 'middle') {
         y -= height / 2;
-    }
-    else if (textVerticalAlign === 'bottom') {
+    } else if (textVerticalAlign === 'bottom') {
         y -= height;
     }
     return y;
@@ -730,16 +713,12 @@ export function adjustTextY(y, height, textVerticalAlign) {
  */
 export function calculateTextPosition(out, style, rect) {
     let textPosition = style.textPosition;
-    let distance = style.textDistance;
-
+    let distance = style.textDistance || 0;
     let x = rect.x1;
     let y = rect.y1;
-    distance = distance || 0;
-
     let height = rect.height;
     let width = rect.width;
     let halfHeight = height / 2;
-
     let textAlign = 'left';
     let textVerticalAlign = 'top';
 
@@ -874,7 +853,6 @@ export function truncateText(text, containerWidth, font, ellipsis, options) {
 
 function prepareTruncateOptions(containerWidth, font, ellipsis, options) {
     options = extend({}, options);
-
     options.font = font;
     ellipsis = retrieve2(ellipsis, '...');
     options.maxIterations = retrieve2(options.maxIterations, 2);
@@ -901,7 +879,6 @@ function prepareTruncateOptions(containerWidth, font, ellipsis, options) {
     }
 
     contentWidth = containerWidth - ellipsisWidth;
-
     options.ellipsis = ellipsis;
     options.ellipsisWidth = ellipsisWidth;
     options.contentWidth = contentWidth;
@@ -1016,8 +993,7 @@ export function parsePlainText(text, font, padding, textLineHeight, truncate) {
         if (truncOuterHeight != null && outerHeight > truncOuterHeight) {
             text = '';
             lines = [];
-        }
-        else if (truncOuterWidth != null) {
+        } else if (truncOuterWidth != null) {
             let options = prepareTruncateOptions(
                 truncOuterWidth - (padding ? padding[1] + padding[3] : 0),
                 font,
@@ -1098,11 +1074,8 @@ export function parseRichText(text, style) {
     let lines = contentBlock.lines;
     let contentHeight = 0;
     let contentWidth = 0;
-    // For `textWidth: 100%`
-    let pendingList = [];
-
+    let pendingList = [];// For `textWidth: 100%`
     let stlPadding = style.textPadding;
-
     let truncate = style.truncate;
     let truncateWidth = truncate && truncate.outerWidth;
     let truncateHeight = truncate && truncate.outerHeight;
@@ -1194,8 +1167,7 @@ export function parseRichText(text, style) {
                     if (!tokenWidthNotSpecified || remianTruncWidth < paddingW) {
                         token.text = '';
                         token.textWidth = tokenWidth = 0;
-                    }
-                    else {
+                    } else {
                         token.text = truncateText(
                             token.text, remianTruncWidth - paddingW, font, truncate.ellipsis,
                             {minChar: truncate.minChar}
