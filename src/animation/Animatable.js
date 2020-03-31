@@ -19,7 +19,7 @@ import AnimationProcess from './AnimationProcess';
  */
 let Animatable = function () {
     /**
-     * @readOnly
+     * @readonly
      * @property {qrenderer.animation.AnimationProcess} animationProcessList
      * A list to store the animation processes on current element instance.
      * 

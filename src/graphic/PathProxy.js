@@ -68,7 +68,7 @@ PathProxy.prototype = {
     _dashSum: 0,
 
     /**
-     * @readOnly
+     * @readonly
      */
     setScale: function (sx, sy, segmentIgnoreThreshold) {
         // Compat. Previously there is no segmentIgnoreThreshold.

@@ -26,7 +26,7 @@ class Path extends Element{
 
         /**
          * @property {PathProxy}
-         * @readOnly
+         * @readonly
          */
         this.path = null;
 
