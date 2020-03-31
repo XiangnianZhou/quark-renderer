@@ -3,8 +3,8 @@ import AnimationProcess from './AnimationProcess';
 /**
  * @abstract
  * @class qrenderer.animation.Animatable
- * This is abstract class for animation. Any class need animation can minxin this implementation.
- * Animatable need Eventful class to provide event mechanics.
+ * This is an abstract class for animating. Any class needes animation functions can minxin this implementation.
+ * The class mixines Animatable should also mixin Eventful to provide the event functions.
  * 
  * 
  * 动画抽象类。任何需要动画功能的类都可以 mixin 此实现。
@@ -19,8 +19,12 @@ import AnimationProcess from './AnimationProcess';
  */
 let Animatable = function () {
     /**
-     * @property {qrenderer.animation.AnimationProcess}
      * @readOnly
+     * @property {qrenderer.animation.AnimationProcess} animationProcessList
+     * A list to store the animation processes on current element instance.
+     * 
+     * 
+     * 当前元素上的动画过程列表。
      */
     this.animationProcessList = [];
 };
@@ -30,10 +34,21 @@ Animatable.prototype = {
     constructor: Animatable,
 
     /**
-     * @method 
-     * 创建动画实例
-     * @param {String} path The path to fetch value from object, like 'a.b.c'.
-     * @param {Boolean} [loop=false] Whether to loop animation.
+     * @method animate
+     * Creat the AnimationProcess instance.
+     * 
+     * 
+     * 创建 AnimationProcess 实例。
+     * @param {String} path 
+     * The path to fetch value from object, like 'a.b.c'.
+     * 
+     * 
+     * 从对象上获取属性的路径，例如 'a.b.c'。
+     * @param {Boolean} [loop=false] 
+     * Whether to loop animation.
+     * 
+     * 
+     * 动画是否循环播放。
      * @return {qrenderer.animation.AnimationProcess}
      */
     animate: function () {
@@ -46,16 +61,23 @@ Animatable.prototype = {
             animatable.removeAnimationProcess(animationProcess);
         });
         animatable.animationProcessList.push(animationProcess);
-        if (animatable.__qr) {// If animate after added to the qrenderer
+        if (animatable.__qr) {
             animatable.__qr.globalAnimationMgr.addAnimatable(animatable);
         }
         return animationProcess;
     },
     
     /**
-     * @method
-     * 停止动画
-     * @param {Boolean} forwardToLast If move to last frame before stop
+     * @method stopAnimation
+     * Stop the animation.
+     * 
+     * 
+     * 停止动画。
+     * @param {Boolean} forwardToLast 
+     * If move to last frame before stop.
+     * 
+     * 
+     * 在停止动画之前是否强制移动到最后一帧。
      */
     stopAnimation: function (forwardToLast=false) {
         this.animationProcessList.forEach((ap)=>{
@@ -67,7 +89,10 @@ Animatable.prototype = {
 
     /**
      * @method removeAnimationProcess
-     * 删除动画片段
+     * Remove the AnimationProcess。
+     * 
+     * 
+     * 删除动画过程。
      * @param {AnimationProcess} animationProcess
      */
     removeAnimationProcess(animationProcess) {
