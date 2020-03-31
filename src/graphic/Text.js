@@ -1,5 +1,4 @@
 import Element from './Element';
-import * as textContain from '../utils/contain/text';
 import * as textUtil from '../utils/text_util';
 import {ContextCachedBy} from '../utils/constants';
 
@@ -80,7 +79,7 @@ export default class Text extends Element{
         if (!this.__boundingRect) {
             let text = style.text;
             text != null ? (text += '') : (text = '');
-            let rect = textContain.getBoundingRect(
+            let rect = textUtil.getBoundingRect(
                 style.text + '',
                 style.font,
                 style.textAlign,

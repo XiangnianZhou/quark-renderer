@@ -1,10 +1,9 @@
-import {createElement} from './core';
+import * as matrixUtil from '../utils/affine_matrix_util';
+import * as textUtil from '../utils/text_util';
 import PathProxy from '../graphic/PathProxy';
 import BoundingRect from '../graphic/BoundingRect';
-import * as matrixUtil from '../utils/affine_matrix_util';
-import * as textContain from '../utils/contain/text';
-import * as textUtil from '../utils/text_util';
 import Text from '../graphic/Text';
+import {createElement} from './core';
 import {PI,PI2,mathRound,mathAbs,mathCos,mathSin} from '../utils/constants';
 
 // TODO
@@ -383,7 +382,7 @@ let svgTextDrawRectText = function (el, hostRect) {
 
     // style.font has been normalized by `normalizeTextStyle`.
     let textSvgElStyle = textSvgEl.style;
-    let font = style.font || textContain.DEFAULT_FONT;
+    let font = style.font || textUtil.DEFAULT_FONT;
     let computedFont = textSvgEl.__computedFont;
     if (font !== textSvgEl.__styleFont) {
         textSvgElStyle.font = textSvgEl.__styleFont = font;
@@ -396,7 +395,7 @@ let svgTextDrawRectText = function (el, hostRect) {
 
     let contentBlock = el.__textCotentBlock;
     if (!contentBlock || el.__dirtyText) {
-        contentBlock = el.__textCotentBlock = textContain.parsePlainText(
+        contentBlock = el.__textCotentBlock = textUtil.parsePlainText(
             text, computedFont, textPadding, textLineHeight, style.truncate
         );
     }
@@ -414,7 +413,7 @@ let svgTextDrawRectText = function (el, hostRect) {
         textSvgEl, needTransformTextByHostEl, elTransform, style, hostRect, baseX, baseY
     );
 
-    let boxY = textContain.adjustTextY(baseY, outerHeight, textVerticalAlign);
+    let boxY = textUtil.adjustTextY(baseY, outerHeight, textVerticalAlign);
     let textX = baseX;
     let textY = boxY;
 

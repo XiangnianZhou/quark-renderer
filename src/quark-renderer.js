@@ -1,5 +1,5 @@
 /* eslint-disable no-prototype-builtins */
-import * as textContain from './utils/contain/text';
+import * as textUtil from './utils/text_util';
 import GlobalEventDispatcher from './event/GlobalEventDispatcher';
 import CanvasPainter from './canvas/CanvasPainter';
 import GlobalAnimationMgr from './animation/GlobalAnimationMgr';
@@ -163,8 +163,8 @@ class QuarkRenderer{
             }
         }else{
             // host is Context instance, override function.
-            textContain.$override('measureText', function (text, font){
-                self.font = font || textContain.DEFAULT_FONT;
+            textUtil.$override('measureText', function (text, font){
+                self.font = font || textUtil.DEFAULT_FONT;
                 return self.host.measureText(text);
             });
         }

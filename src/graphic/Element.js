@@ -80,7 +80,7 @@ class Element{
         /**
          * The String value of `textPosition` needs to be calculated to a real postion.
          * For example, `'inside'` is calculated to `[rect.width/2, rect.height/2]`
-         * by default. See `contain/text.js#calculateTextPosition` for more details.
+         * by default. See `contain/text_util.js#calculateTextPosition` for more details.
          * But some coutom shapes like "pin", "flag" have center that is not exactly
          * `[width/2, height/2]`. So we provide this hook to customize the calculation
          * for those shapes. It will be called if the `style.textPosition` is a String.

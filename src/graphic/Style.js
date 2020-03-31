@@ -142,7 +142,7 @@ Style.prototype = {
      * If `fontSize` or `fontFamily` exists, `font` will be reset by
      * `fontSize`, `fontStyle`, `fontWeight`, `fontFamily`.
      * So do not visit it directly in upper application (like echarts),
-     * but use `contain/text#makeFont` instead.
+     * but use `contain/text_util#makeFont` instead.
      */
     font: null,
 
