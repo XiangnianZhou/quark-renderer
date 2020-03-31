@@ -8,13 +8,15 @@ import guid from '../utils/guid';
  * 
  * CanvasLayer is designed to create canvas layers, it will be used in CanvasPainter.
  * CanvasPainter will create several canvas instances during the paint process, some 
- * of them are invisiable, such as the one used for export a image.
+ * of them are invisiable, such as the one used for export a image. There is at least one 
+ * canvas layer in the whole system.
  * Attention: we can NOT create canvas dynamicly in Wechat mini-program, because Wechat
  * does not allow us to manipulate DOM.
  * 
  * 该类被设计用来创建 canvas 层，在 CanvasPainter 类中会引用此类。
  * 在绘图过程中， CanvasPainter 会创建多个 canvas 实例来辅助操作，
  * 某些 canvas 实例是隐藏的，比如用来导出图片的 canvas。
+ * 在整个系统中至少有一个 canvas 层。
  * 注意：在微信小程序中不能动态创建 canvas 标签，因为微信小程序不允许 DOM 操作。
  * 
  * @author pissang(https://www.github.com/pissang)
@@ -36,27 +38,31 @@ export default class CanvasLayer{
      */
     constructor(host,width,height,dpr){
         /**
-         * @property {String|Object} CanvasLayer id
+         * @property {String} id
          */
         this.id = guid();
 
         /**
-         * @property {Number} CanvasLayer width
+         * @property {Number} width
          */
         this.width=width;
         
         /**
-         * @property {Number} CanvasLayer height
+         * @property {Number} height
          */
         this.height=height;
         
         /**
-         * @property {Number} CanvasLayer dpr
+         * @property {Number} dpr
          */
         this.dpr = dpr;
         
         /**
-         * @property {Context} ctx Canvas context, this property will be initialized after calling initContext() method.
+         * @property {Context} ctx 
+         * Canvas context, this property will be initialized after calling initContext() method.
+         * This property will be null before initializing.
+         * 
+         * Canvas 绘图上下文，此属性在调用 initContext() 方法之后初始化，初始化之前此属性为 null。
          */
         this.ctx;
 
@@ -85,42 +91,76 @@ export default class CanvasLayer{
 
         /**
          * @property {Canvas} canvasInstance
-         * 注意：this.canvasInstance 可能为null，因为在微信小程序中，没有办法获取 canvas 实例，只能获取到 Context 对象。
+         * Note: this property may be null because under some circumstances we can't get the canvas instance but Context instance. 
+         * 
+         * 
+         * 注意：this.canvasInstance 可能为null，因为在某些环境下，比如微信小程序中，没有办法获取 canvas 实例，只能获取到 Context 对象。
          */
         this.canvasInstance = canvasInstance;
 
         /**
-         * @property {Canvas} hiddenCanvas 隐藏的画布实例
+         * @property {Canvas} hiddenCanvas 
+         * A hidden canvas instance, we will use this to do some operations under some circumstances.
+         * 
+         * 
+         * 隐藏的画布实例，在某些情况下会用隐藏的画布来进行一些操作。
          */
         this.hiddenCanvas = null;
 
         /**
-         * @property {Context} hiddenContext 隐藏的画布上下文
+         * @property {Context} hiddenContext 
+         * The hidden canvas context.
+         * 
+         * 
+         * 隐藏的画布上下文。
          */
         this.hiddenContext = null;
+
+        
         this.config = null;
 
         /**
-         * @property {String} 每次清空画布的颜色
+         * @property {String} clearColor
+         * The default color for the empty canvas.
+         * 
+         * 
+         * 空画布的默认颜色。
          */
         this.clearColor = 0;
 
         /**
-         * @property {Boolean} 是否开启动态模糊
+         * @property {Boolean} motionBlur
+         * Wether to open the monion blur.
+         * 
+         * 
+         * 是否开启动态模糊。
          */
         this.motionBlur = false;
         
         /**
-         * @property {Number} 在开启动态模糊的时候使用，与上一帧混合的alpha值，值越大尾迹越明显
+         * @property {Number} lastFrameAlpha
+         * This property is valid when this.motionBlur is true, the alpha value mixed with previous frame.
+         * The larger the value, the more obvious the wake.
+         * 
+         * 
+         * 在开启动态模糊的时候使用，与上一帧混合的 alpha 值，值越大尾迹越明显。
          */
         this.lastFrameAlpha = 0.7;
+        
+        /**
+         * @property {Boolean} incremental
+         * Wether to use incremental rendering, if incremental is true, the canvas will not be cleared before rendering.
+         * 
+         * 
+         * 是否启用增量渲染，启用增量渲染的时候，在绘制每一帧之前都不会清空画布。
+         */
+        this.incremental=false;
 
         this.__dirty=true;
         this.__used=false;
         this.__drawIndex=0;
         this.__startIndex=0;
         this.__endIndex=0;
-        this.incremental=false;
     }
     
     /**
@@ -180,7 +220,10 @@ export default class CanvasLayer{
 
     /**
      * @method clear
-     * 清空该层画布
+     * Clear the canvas.
+     * 
+     * 
+     * 清空该层画布。
      * @param {Boolean} [clearAll=false] Clear all with out motion blur
      * @param {Color} [clearColor]
      */
