@@ -69,7 +69,7 @@ class Element{
          * 
          * 用于裁剪的路径，所有 Group 内的路径在绘制时都会被这个路径裁剪，该路径会继承被裁减对象的变换。
          * 
-         * @readOnly
+         * @readonly
          * @see http://www.w3.org/TR/2dcontext/#clipping-region
          */
         this.clipPath = null;
