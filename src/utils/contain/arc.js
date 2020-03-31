@@ -1,4 +1,4 @@
-import {normalizeRadian} from './radian_util';
+import {normalizeRadian} from '../radian_util';
 import {PI2,mathSqrt,mathAbs,mathAtan2} from '../constants';
 
 /**
