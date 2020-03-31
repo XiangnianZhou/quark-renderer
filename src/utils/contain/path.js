@@ -1,11 +1,11 @@
-import PathProxy from '../../graphic/PathProxy';
 import * as line from './line';
 import * as cubic from './cubic';
 import * as quadratic from './quadratic';
 import * as arc from './arc';
-import {normalizeRadian} from './radian_util';
 import * as curve from '../curve_util';
+import PathProxy from '../../graphic/PathProxy';
 import windingLine from './winding_line';
+import {normalizeRadian} from '../radian_util';
 import {PI2,mathCos,mathSin,mathSqrt,PI,mathAtan2,mathAbs} from '../constants';
 
 let CMD = PathProxy.CMD;

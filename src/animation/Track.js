@@ -5,11 +5,16 @@ import {mathMin} from '../utils/constants';
 
 /**
  * @class qrenderer.animation.Track
+ * There is an one-to-one correspondence between a track and a property of an element.
+ * There are many properties on an element, multiple properties can change at the same time during the animation process.
+ * Each property naturally becomes a track, all these changing processes will be encapsulated in the Track class.
+ * 
  * 
  * Track, 轨道，与元素（Element）上可以用来进行动画的属性一一对应。
  * 元素上存在很多种属性，在动画过程中，可能会有多种属性同时发生变化，
- * 每一种属性天然成为一条动画轨道，把这些轨道上的变化过程封装在 Timeline 中。
+ * 每一种属性天然成为一条动画轨道，把这些轨道上的变化过程封装在 Track 类中。
  * 
+ * @author 大漠穷秋 <damoqiongqiu@126.com>
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
@@ -30,7 +35,10 @@ export default class Track{
 
     /**
      * @method addKeyFrame
-     * 添加关键帧
+     * Add a key frame.
+     * 
+     * 
+     * 添加关键帧。
      * @param {Object} kf 数据结构为 {time:0,value:0}
      */
     addKeyFrame(kf){
@@ -39,7 +47,10 @@ export default class Track{
 
     /**
      * @method nextFrame
-     * 进入下一帧
+     * Enter the next frame.
+     * 
+     * 
+     * 进入下一帧。
      * @param {Number} time  当前时间
      * @param {Number} delta 时间偏移量
      */
@@ -57,7 +68,10 @@ export default class Track{
 
     /**
      * @method fire
-     * 触发事件
+     * Fire an event.
+     * 
+     * 
+     * 触发事件。
      * @param {String} eventType 
      * @param {Object} arg 
      */
@@ -67,7 +81,10 @@ export default class Track{
 
     /**
      * @method start
-     * 开始动画
+     * Start the animation.
+     * 
+     * 
+     * 开始动画。
      * @param {String} easing 缓动函数名称
      * @param {Boolean} forceAnimate 是否强制开启动画 
      */
@@ -89,7 +106,10 @@ export default class Track{
 
     /**
      * @method stop
-     * 停止动画
+     * Stop the animation
+     * 
+     * 
+     * 停止动画。
      * @param {Boolean} forwardToLast 是否快进到最后一帧 
      */
     stop(forwardToLast){
@@ -101,7 +121,10 @@ export default class Track{
 
     /**
      * @method pause
-     * 暂停
+     * Pause the animation
+     * 
+     * 
+     * 暂停。
      */
     pause(){
         this.timeline.pause();
@@ -109,7 +132,10 @@ export default class Track{
 
     /**
      * @method resume
-     * 重启
+     * Resume the animation.
+     * 
+     * 
+     * 重启。
      */
     resume(){
         this.timeline.resume();
@@ -118,11 +144,13 @@ export default class Track{
     /**
      * @private
      * @method _parseKeyFrames
-     * 解析关键帧，创建时间线
-     * @param {String} easing 缓动函数名称
-     * @param {String} path 属性设置路径，例如："shape.width"
-     * @param {Boolean} forceAnimate 是否强制开启动画 
-     * //TODO:try move this into webworker
+     * Parse the keyframes, create the timelines.
+     * 
+     * 
+     * 解析关键帧，创建时间线。
+     * @param {String} easing
+     * @param {String} path
+     * @param {Boolean} forceAnimate 
      */
     _parseKeyFrames(easing,path,loop,forceAnimate) {
         let self=this;
@@ -209,7 +237,6 @@ export default class Track{
         let p3;
         let rgba = [0, 0, 0, 0];
     
-        //Timeline 每一帧都会回调此方法。
         let onframe = function (element, percent) {
             // Find the range keyframes
             // kf1-----kf2---------current--------kf3

@@ -8,9 +8,9 @@ import requestAnimationFrame from './request_animation_frame';
  * @singleton
  * @class qrenderer.animation.GlobalAnimationMgr
  * 
- * Animation manager, global singleton, controls all the animation process.
+ * Animation manager, global singleton, controls all the animation processes.
  * Each QRenderer instance has a GlobalAnimationMgr instance. GlobalAnimationMgr 
- * is designed to manage all the elements which are animating.
+ * is designed to manage all the elements that are animating.
  * 
  * 动画管理器，全局单例，控制和调度所有动画过程。每个 qrenderer 实例中会持有一个 
  * GlobalAnimationMgr 实例。GlobalAnimationMgr 会管理 qrenderer 实例中的所有
@@ -39,10 +39,18 @@ class GlobalAnimationMgr{
         Dispatcher.call(this);
     }
 
+    /**
+     * @method addAnimatable
+     * @param {*} animatable 
+     */
     addAnimatable(animatable){
         this._animatableMap.set(animatable.id,animatable);
     }
 
+    /**
+     * @method removeAnimatable
+     * @param {*} animatable 
+     */
     removeAnimatable(animatable) {
         this._animatableMap.delete(animatable.id);
     }
@@ -71,9 +79,14 @@ class GlobalAnimationMgr{
     /**
      * @private
      * @method _startLoop
-     * 这里开始利用requestAnimationFrame递归执行，如果这里的 _update() 不能在16ms的
-     * 时间内完成一轮动画，就会出现明显的卡顿。
-     * 按照 W3C 的推荐标准 60fps，这里的 step 函数大约每隔 16ms 被调用一次
+     * Execute recursively with requestAnimationFrame.
+     * The 60fps is a recommended standard of W3C, the nextFrame function
+     * here will be called every 16ms.
+     * If the _update() method here can't finish a round of animations in 16ms, there will be significant lags. 
+     * 
+     * 这里开始利用 requestAnimationFrame 递归执行，
+     * 按照 W3C 的推荐标准 60fps，这里的 nextFrame 函数大约每隔 16ms 被调用一次，
+     * 如果这里的 _update() 不能在 6ms 的时间内完成一轮动画，就会出现明显的卡顿。
      * @see https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
      */
     _startLoop() {
@@ -90,7 +103,10 @@ class GlobalAnimationMgr{
 
     /**
      * @method start
-     * Start all the animations.
+     * Start animating.
+     * 
+     * 
+     * 启动动画。
      */
     start() {
         this._timestamp = new Date().getTime();
@@ -100,7 +116,10 @@ class GlobalAnimationMgr{
 
     /**
      * @method pause
-     * Pause all the animations.
+     * Pause the animations.
+     * 
+     * 
+     * 暂停动画。
      */
     pause() {
         if (!this._paused) {
@@ -111,7 +130,10 @@ class GlobalAnimationMgr{
 
     /**
      * @method resume
-     * Resume all the animations.
+     * Resume the animations.
+     * 
+     * 
+     * 恢复动画。
      */
     resume() {
         if (this._paused) {
@@ -122,7 +144,10 @@ class GlobalAnimationMgr{
 
     /**
      * @method clear
-     * Clear all the animations.
+     * Clear the animations.
+     * 
+     * 
+     * 清除动画。
      */
     clear() {
         this._animatableMap.forEach((animatable,index)=>{
