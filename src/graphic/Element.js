@@ -364,7 +364,7 @@ class Element{
      * 
      * 把当前对象添加到 qrenderer 实例中去。
      * 不会递归添加，因为当元素被添加到 storage 中的时候会执行递归操作。
-     * @param {Storage} storage
+     * @param {qrenderer.core.Storage} storage
      */
     addToStorageHandler(storage) {
         this.__storage = storage;
@@ -378,7 +378,7 @@ class Element{
      * Remove self from qrenderer instance.
      * 
      * 把当前对象从 qrenderer 实例中删除。
-     * @param {Storage} storage
+     * @param {qrenderer.core.Storage} storage
      */
     delFromStorageHandler(storage) {
         this.animationProcessList.forEach((item,index)=>{

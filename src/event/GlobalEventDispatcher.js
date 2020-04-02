@@ -120,7 +120,7 @@ function afterListenerChanged(handlerInstance) {
 
 /**
  * @method constructor GlobalEventDispatcher
- * @param {Storage} storage Storage instance.
+ * @param {qrenderer.core.Storage} storage Storage instance.
  * @param {Painter} painter Painter instance.
  * @param {HandlerProxy} interceptor HandlerProxy instance.
  * @param {HTMLElement} painterRoot painter.root (not painter.getViewportRoot()).

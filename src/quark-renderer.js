@@ -144,7 +144,7 @@ class QuarkRenderer{
     
         /**
          * @private
-         * @property {Storage} storage
+         * @property {qrenderer.core.Storage} storage
          */
         this.storage = new Storage();
 

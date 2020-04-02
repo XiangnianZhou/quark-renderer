@@ -12,10 +12,10 @@ import requestAnimationFrame from '../animation/request_animation_frame';
 
 /**
  * @class qrenderer.canvas.CanvasPainter
- * This CanvasPainter class is based on canvas.
+ * This CanvasPainter class is based on canvas api of W3C. https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas
  * 
  * 
- * 这是基于 canvas 接口的 CanvasPainter 类。
+ * 这是基于 W3C canvas 接口的 CanvasPainter 类。 https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas
  * 
  */
 
@@ -33,7 +33,7 @@ export default class CanvasPainter{
      * 
      * 此属性可以是 HTMLDomElement ，比如 DIV 标签；也可以是 Canvas 实例；或者是 Context 实例，因为在某些
      * 运行环境中，不能获得 Canvas 实例的引用，只能获得 Context。
-     * @param {Storage} storage
+     * @param {qrenderer.core.Storage} storage
      * @param {Object} options
      */
     constructor(host, storage, options={}){
@@ -46,6 +46,10 @@ export default class CanvasPainter{
 
         /**
          * @property {Number} dpr
+         * Device pixel ratio.
+         * 
+         * 
+         * 设备像素比。
          */
         this.dpr = this.options.devicePixelRatio || devicePixelRatio;
 
@@ -82,7 +86,7 @@ export default class CanvasPainter{
         this._host=null;
     
         /**
-         * @property {Storage} storage
+         * @property {qrenderer.core.Storage} storage
          */
         this.storage = storage;
     
@@ -107,7 +111,7 @@ export default class CanvasPainter{
         /**
          * @private
          * @property _needsManuallyCompositing
-         * qrenderer will do compositing when host is a canvas and have multiple zlevels.
+         * Qrenderer will do compositing when host is a canvas and have multiple zlevels.
          */
         this._needsManuallyCompositing = false;
 
@@ -123,8 +127,8 @@ export default class CanvasPainter{
          */
         this._hoverElements = [];
     
-        this._tmpRect = new BoundingRect(0, 0, 0, 0);
-        this._viewRect = new BoundingRect(0, 0, 0, 0);
+        this._tmpRect = new BoundingRect();
+        this._viewRect = new BoundingRect();
 
         /**
          * @private
@@ -132,20 +136,11 @@ export default class CanvasPainter{
          */
         this._singleCanvas = !this.host.nodeName || this.host.nodeName.toUpperCase() === 'CANVAS';
     
-        //The code below is used to compatible with various runtime environments like browser, node-canvas, and Wechat mini-program.
+        //The code below is used to compatible with various runtime environments like browser, node-canvas, and WeChat mini-program.
         if (this._singleCanvas) {
-            let width = this.host.width;
-            let height = this.host.height;
-    
-            if (this.options.width != null) {
-                width = this.options.width;
-            }
-            if (this.options.height != null) {
-                height = this.options.height;
-            }
             this.dpr = this.options.devicePixelRatio || 1;
-    
-            // Use canvas width and height directly
+            let width = this.host.width || this.options.width || 0;
+            let height = this.host.height || this.options.height || 0;
             this.host.width = width * this.dpr;
             this.host.height = height * this.dpr;
     
@@ -157,10 +152,12 @@ export default class CanvasPainter{
             let mainLayer = new CanvasLayer(this.host,this._width,this._height,this.dpr);
             mainLayer.__builtin__ = true;
             mainLayer.initContext();
-            // FIXME Use canvas width and height
+
+            // FIXME: Use canvas width and height
             // mainLayer.resize(width, height);
             layers[CANVAS_QLEVEL] = mainLayer;
             mainLayer.qlevel = CANVAS_QLEVEL;
+
             // Not use common qlevel.
             qlevelList.push(CANVAS_QLEVEL);
     
@@ -168,11 +165,9 @@ export default class CanvasPainter{
         }else {
             this._width = this._getSize(0);
             this._height = this._getSize(1);
-    
-            let canvasContainer = this.createDomRoot(// Craete a new div inside the host element.
-                this._width, this._height
-            );
-            this._host =canvasContainer;// In this case, this._host is different from this.host.
+
+            let canvasContainer = this.createDomRoot(this._width, this._height);    // Craete a new div inside the host element.
+            this._host =canvasContainer;        // In this case, this._host is different from this.host.
             this.host.appendChild(canvasContainer);
         }
     }
@@ -303,8 +298,7 @@ export default class CanvasPainter{
         }
         timsort(hoverElements, this.storage.displayableSortFunc);
 
-        // Use a extream large qlevel
-        // FIXME?
+        // FIXME: Use a extream large qlevel?
         if (!hoverLayer) {
             hoverLayer = this._hoverlayer = this.getLayer(HOVER_LAYER_QLEVEL);
         }
@@ -421,12 +415,11 @@ export default class CanvasPainter{
             ctx.save();
 
             let start = paintAll ? layer.__startIndex : layer.__drawIndex;
-
             let useTimer = !paintAll && layer.incremental && Date.now;
             let startTime = useTimer && Date.now();
-
             let clearColor = layer.qlevel === this._qlevelList[0]
                 ? this._backgroundColor : null;
+
             // All elements in this layer are cleared.
             if (layer.__startIndex === layer.__endIndex) {
                 layer.clear(false, clearColor);
