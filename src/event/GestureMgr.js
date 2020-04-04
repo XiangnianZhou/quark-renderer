@@ -1,4 +1,5 @@
 /* eslint-disable no-prototype-builtins */
+import {dist, center} from '../utils/vector_util';
 import * as eventUtil from '../utils/event_util';
 
 /**
@@ -6,21 +7,11 @@ import * as eventUtil from '../utils/event_util';
  * 
  * Implement necessary gestures for mobile platform.
  * 
+ * 
+ * 手势管理器，用来兼容移动端操作。
+ * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
-function dist(pointPair) {
-    let dx = pointPair[1][0] - pointPair[0][0];
-    let dy = pointPair[1][1] - pointPair[0][1];
-
-    return Math.sqrt(dx * dx + dy * dy);
-}
-
-function center(pointPair) {
-    return [
-        (pointPair[0][0] + pointPair[1][0]) / 2,
-        (pointPair[0][1] + pointPair[1][1]) / 2
-    ];
-}
 
 let recognizers = {
     pinch(track, event) {
@@ -37,12 +28,12 @@ let recognizers = {
             && pinchEnd
             && pinchEnd.length > 1
         ) {
-            let pinchScale = dist(pinchEnd) / dist(pinchPre);
+            let pinchScale = dist(pinchEnd[0],pinchEnd[1]) / dist(pinchPre[0],pinchPre[1]);
             !isFinite(pinchScale) && (pinchScale = 1);
 
             event.pinchScale = pinchScale;
 
-            let pinchCenter = center(pinchEnd);
+            let pinchCenter = center(pinchEnd[0],pinchEnd[1]);
             event.pinchX = pinchCenter[0];
             event.pinchY = pinchCenter[1];
 

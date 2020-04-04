@@ -195,6 +195,13 @@ export function distance(v1, v2) {
 }
 export let dist = distance;
 
+export function center(v1, v2) {
+    return [
+        (v1[0]+v2[0])/2,
+        (v1[1]+v2[1])/2
+    ];
+}
+
 /**
  * 向量距离平方
  * @param {Vector2} v1
