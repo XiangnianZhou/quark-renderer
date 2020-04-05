@@ -10,16 +10,21 @@ import GestureMgr from './GestureMgr';
 
 /**
  * @class qrenderer.event.GlobalEventDispatcher
+ * There is no build-in event system inside canvas, so we need GlobalEventDispatcher to provide these functions.
+ * The implementation here is consistent with W3C DOM event. The core idea of GlobalEventDispatcher is dispathing 
+ * the mouse, keyboard, and touch events intercepted by DomEventInterceptor to the elements inside canvas.
  * 
  * 
- * Canvas API 没有提供画布内部的事件系统，GlobalEventDispatcher.js 用来封装画布内部元素的事件处理逻辑，
- * 此实现的整体概念模型与 W3C 定义的 DOM 事件系统一致。
+ * Canvas API 没有提供画布内部的事件系统， GlobalEventDispatcher 用来封装画布内部元素的事件处理逻辑。
+ * 此实现的整体概念模型与 W3C 定义的 DOM 事件系统一致。GlobalEventDispatcher 的核心处理逻辑是：
+ * 把 DomEventInterceptor 所拦截到的鼠标、键盘、触摸事件派发给 canvas 内部的元素。
+ * 
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 
 /**
  * @private
- * @method
+ * @method makeEventPacket
  * @param {String} eveType 
  * @param {Object} targetInfo 
  * @param {Event} event 
@@ -66,8 +71,8 @@ let handlerNames = [
 ];
 
 /**
- * @method
- * 监听页面上触发的事件，转换成当前实例自己触发的事件
+ * @method pageEventHandler
+ * 监听页面上触发的事件，转换成当前实例自己触发的事件。
  * @param {String} pageEventName 
  * @param {Event} event 
  */
@@ -76,7 +81,7 @@ function pageEventHandler(pageEventName, event) {
 }
 
 /**
- * @method
+ * @method isHover
  * 鼠标是否在指定的元素上方。
  * @param {Element} element 
  * @param {Number} x 
@@ -105,7 +110,7 @@ function isHover(element, x, y) {
 
 /**
  * @private
- * @method
+ * @method afterListenerChanged
  * @param {Function} handlerInstance 
  */
 function afterListenerChanged(handlerInstance) {
