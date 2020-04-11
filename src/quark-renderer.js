@@ -52,7 +52,7 @@ let instances = {};
 /**
  * @property {String} version
  */
-export let version = '1.0.26';
+export let version = '1.0.33';
 
 /**
  * @method qrenderer.init()
