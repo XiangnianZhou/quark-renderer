@@ -1,12 +1,12 @@
 
 /**
  * @class qrenderer.geometric.GeoPoint
- * 
+ * A geometrically point, invisible, no dimension, just used for mathematical operations.
+ * This implementation is improved from http://diagramo.com/ .
  * 
  *  
- * 几何学意义上的点，它不可见，没有大小，用来进行数学运算。
+ * 几何学意义上的点，它不可见，没有大小，用来进行数学运算。此实现从 diagramo 改进而来：http://diagramo.com/ 。
  * 
- * @author 大漠穷秋 <damoqiongqiu@126.com>
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 export default class GeoPoint{
@@ -21,7 +21,12 @@ export default class GeoPoint{
     }
 
     /**
-     * Creates a {GeoPoint} out of JSON parsed object
+     * @static
+     * @method load
+     * Creates a {GeoPoint} out of JSON parsed object.
+     * 
+     * 
+     * 从 JSON 对象创建 {GeoPoint} 实例。
      * @param {JSONObject} o the JSON parsed object
      * @return {GeoPoint} a newly constructed GeoPoint
      */
@@ -29,9 +34,13 @@ export default class GeoPoint{
         return new GeoPoint(Number(o.x), Number(o.y));
     }
 
-
     /**
-     * Creates an array of points from an array of {JSONObject}s
+     * @static
+     * @method loadArray
+     * Creates an array of points from an array of {JSONObject}s.
+     * 
+     * 
+     * 从 {JSONObject} 数组创建实例。
      * @param {Array} v the array of JSONObjects
      * @return an {Array} of {GeoPoint}s
      */
@@ -43,9 +52,13 @@ export default class GeoPoint{
         return newPoints;
     }
 
-
     /**
-     * Clones an array of points
+     * @static
+     * @method cloneArray
+     * Clones an array of points.
+     * 
+     * 
+     * 克隆一组点。
      * @param {Array} v - the array of {GeoPoint}s
      * @return an {Array} of {GeoPoint}s
      */
@@ -57,6 +70,11 @@ export default class GeoPoint{
         return newPoints;
     }
 
+    /**
+     * @static
+     * @method pointsToArray
+     * @param {*} points 
+     */
     static pointsToArray(points){
         let result = [];
         for(let i=0; i< points.length; i++){
@@ -65,10 +83,17 @@ export default class GeoPoint{
         return result;
     }
 
+    /**
+     * @method toArray
+     */
     toArray(){
         return [this.x,this.y];
     }
 
+    /**
+     * @method transform
+     * @param {*} matrix 
+     */
     transform(matrix){
         let oldX = this.x;
         let oldY = this.y;
@@ -77,7 +102,11 @@ export default class GeoPoint{
     }
 
     /**
-     * Tests if this point is similar to other point
+     * @method equals
+     * Tests if this point is equals to other point.
+     * 
+     * 
+     * 测试当前点是否与另一个点相等。
      * @param {GeoPoint} anotherPoint - the other point
      */
     equals(anotherPoint){
@@ -85,13 +114,21 @@ export default class GeoPoint{
     }
 
     /**
-     * Clone current GeoPoint
+     * @method clone
+     * Clone current GeoPoint.
+     * 
+     * 
+     * 克隆当前点。
      */
     clone(){
         let newPoint = new GeoPoint(this.x, this.y);
         return newPoint;
     }
 
+    /**
+     * @method add
+     * @param {*} point 
+     */
     add(point) {
         this.x = this.x + point.x;
         this.y = this.y + point.y;
@@ -99,7 +136,11 @@ export default class GeoPoint{
     }
 
     /**
-     * Tests to see if a point (x, y) is within a range of current GeoPoint
+     * @method near
+     * Tests to see if a point (x, y) is within a range of current GeoPoint.
+     * 
+     * 
+     * 测试某个点 (x,y) 是否处于当前 GeoPoint 的某个范围内。
      * @param {Numeric} x - the x coordinate of tested point
      * @param {Numeric} y - the x coordinate of tested point
      * @param {Numeric} radius - the radius of the vicinity
@@ -109,6 +150,9 @@ export default class GeoPoint{
         return (distance <= radius);
     }
 
+    /**
+     * @method toString
+     */
     toString(){
         return '[' + this.x + ',' + this.y + ']';
     }

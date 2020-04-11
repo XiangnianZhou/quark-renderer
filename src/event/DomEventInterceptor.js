@@ -7,7 +7,14 @@ import env from '../utils/env';
 
 /**
  * @class qrenderer.event.DomEventInterceptor
- * DomEventInterceptor 的主要功能是：拦截 DOM 标签上的原生事件，转发到 QuarkRender 实例上，
+ * The core functions of DomEventInterceptor are intercepting the native events on DOM element, forward them to the QuarkRenderer instance, 
+ * then QuarkRendererEventHandler will dispatch them to the elements inside canvas.
+ * Most of the DOM events that need to be dispatched are attached to the wrapper div of canvas, like click, dbclick, contextmenu.
+ * Few of the DOM evnets are attached to the document directly, like mousemove, mouseout, because the mouse may be out of the canvas area
+ * when dragging or interacting with the keyboard.
+ * 
+ * 
+ * DomEventInterceptor 的主要功能是：拦截 DOM 标签上的原生事件，转发到 QuarkRenderer 实例上，
  * 在 QuarkRendererEventHandler 类中会把事件进一步分发给 canvas 内部的元素。
  * 需要转发的大部分 DOM 事件挂载在 canvas 的外层容器 div 上面，例如：click, dbclick, contextmenu 等；
  * 少部分 DOM 事件直接挂载在 document 对象上，例如：mousemove, mouseout。因为在实现拖拽和
@@ -22,16 +29,12 @@ let pageEventSupported = env.domSupported;
  * [Page Event]
  * "page events" are `pagemousemove` and `pagemouseup`.
  * They are triggered when a user pointer interacts on the whole webpage
- * rather than only inside the qrenderer area.
+ * rather than only inside the canvas area.
  *
  * The use case of page events can be, for example, if we are implementing a dragging feature:
  * ```js
  * qr.eventDispatcher.on('mousedown', function (event) {
  *     let dragging = true;
- *
- *     // Listen to `pagemousemove` and `pagemouseup` rather than `mousemove` and `mouseup`,
- *     // because `mousemove` and `mouseup` will not be triggered when the pointer is out
- *     // of the qrenderer area.
  *     qr.eventDispatcher.on('pagemousemove', handleMouseMove);
  *     qr.eventDispatcher.on('pagemouseup', handleMouseUp);
  *
@@ -47,17 +50,41 @@ let pageEventSupported = env.domSupported;
  * ```
  *
  * [NOTICE]:
- * (1) There are cases that `pagemousexxx` will not be triggered when the pointer is out of
- * qrenderer area:
+ * 1. There are cases that `pagemousexxx` will not be triggered when the pointer is out of
+ * canvas area:
  * "document.eventUtil.addEventListener" is not available in the current runtime environment,
  * or there is any `stopPropagation` called at some user defined listeners on the ancestors
- * of the qrenderer dom.
- * (2) Although those bad cases exist, users do not need to worry about that. That is, if you
+ * of the canvas dom.
+ * 2. Although those bad cases exist, users do not need to worry about that. That is, if you
  * listen to `pagemousexxx`, you do not need to listen to the correspoinding event `mousexxx`
  * any more.
- * Becuase inside qrenderer area, `pagemousexxx` will always be triggered, where they are
- * triggered just after `mousexxx` triggered and sharing the same event object. Those bad
- * cases only happen when the pointer is out of qrenderer area.
+ * 
+ * 
+ * [Page Event]
+ * “页面事件”指的是`pagemousemove` 和 `pagemouseup`。
+ * 这两个事件会在整个页面范围内触发，而不仅仅在 canvas 区域。
+ * 页面事件的一个案例如下：
+ * 
+ * ```js
+ * qr.eventDispatcher.on('mousedown', function (event) {
+ *     let dragging = true;
+ *     qr.eventDispatcher.on('pagemousemove', handleMouseMove);
+ *     qr.eventDispatcher.on('pagemouseup', handleMouseUp);
+ *
+ *     function handleMouseMove(event) {
+ *         if (dragging) { ... }
+ *     }
+ *     function handleMouseUp(event) {
+ *         dragging = false; ...
+ *         qr.eventDispatcher.off('pagemousemove', handleMouseMove);
+ *         qr.eventDispatcher.off('pagemouseup', handleMouseUp);
+ *     }
+ * });
+ * ```
+ * [注意]:
+ * 1. 在某些情况下，当鼠标不在 canvas 区域中时，`pagemousexxx` 之类的事件不会触发，例如："document.eventUtil.addEventListener" 在当前环境中
+ * 不可用；或者当使用者在 canvas 的父层标签上挂载事件时调用了 `stopPropagation`  方法。
+ * 2. 虽然以上这些糟糕的情况是存在的，但是使用者不需要操心它们，因为你可以监听 `pagemousexxx` 之类的事件，而不是对应的 `mousexxx` 系列。
  */
 let localNativeListenerNames = (function () {
     let mouseHandlerNames = [
@@ -105,6 +132,13 @@ function isPointerFromTouch(event) {
  * 2. Chrome for Android dispatch mousedown for long-touch about 650ms
  * Result: Blocking Mouse Events for 700ms.
  *
+ * 
+ * 防止鼠标事件在 Touch 事件之后触发
+ * @see <https://github.com/deltakosh/handjs/blob/master/src/hand.base.js>
+ * 1. 移动端的浏览器会在触摸之后 300ms 派发鼠标事件。
+ * 2. Android 上的 Chrome 浏览器会在长按约 650ms 之后派发 mousedown 事件。
+ * 所以最终结果就是：禁止鼠标事件 700ms。
+ * 
  * @param {DOMHandlerScope} scope
  */
 function setTouchTimer(scope) {
@@ -230,7 +264,7 @@ let localDOMHandlers = {
     },
 
     pointermove: function (event) {
-        // FIXME
+        // FIXME:
         // pointermove is so sensitive that it always triggered when
         // tap(click) on touch screen, which affect some judgement in
         // upper application. So, we dont support mousemove on MS touch
@@ -297,7 +331,7 @@ let globalDOMHandlers = {
     },
 
     pointermove: function (event) {
-        // FIXME
+        // FIXME:
         // pointermove is so sensitive that it always triggered when
         // tap(click) on touch screen, which affect some judgement in
         // upper application. So, we dont support mousemove on MS touch

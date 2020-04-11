@@ -78,7 +78,7 @@ function getSvgElement(displayable) {
 /**
  * @method constructor SVGPainter
  * @param {HTMLElement} host
- * @param {Storage} storage
+ * @param {qrenderer.core.Storage} storage
  * @param {Object} opts
  */
 let SVGPainter = function (host, storage, opts={}, qrId) {

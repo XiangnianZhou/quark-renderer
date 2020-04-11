@@ -254,7 +254,7 @@ class Group extends Rect{
     /**
      * @method addToStorage
      * Override addToStorage method of super class.
-     * @param {Storage} storage 
+     * @param {qrenderer.core.Storage} storage 
      */
     addToStorageHandler(storage) {
         //首先把子元素添加到 storage
@@ -270,7 +270,7 @@ class Group extends Rect{
     /**
      * @method delFromStorageHandler
      * Override delFromStorageHandler method of super class.
-     * @param {Storage} storage 
+     * @param {qrenderer.core.Storage} storage 
      */
     delFromStorageHandler(storage) {
         //首先把子元素从 storage 中删除
