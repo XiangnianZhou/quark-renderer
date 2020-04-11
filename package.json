@@ -1,6 +1,6 @@
 {
   "name": "quark-renderer",
-  "version": "1.0.31",
+  "version": "1.0.32",
   "description": "A lightweight yet powerful canvas (&svg) render engine improved from ZRender.",
   "keywords": [
     "canvas",
@@ -13,7 +13,8 @@
   },
   "scripts": {
     "clean": "del-cli -f api dist lib",
-    "prepublish": "npm run clean && node build/build-quark-renderer/build.js --prepublish",
+    "pre-publish-clean": "del-cli -f dist",
+    "prepublish": "npm run pre-publish-clean && node build/build-quark-renderer/build.js --prepublish",
     "build": "npm run clean && npm install && node build/build-quark-renderer/build.js --release",
     "dev": "node build/build-quark-renderer/build.js --watch",
     "test": "node build/build-quark-renderer/build.js",
