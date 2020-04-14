@@ -4,10 +4,10 @@ import * as classUtil from '../../utils/class_util';
 
 /**
  * @class qrenderer.graphic.shape.Shape 
- * Shape.
+ * Base class of all the shapes.
  * 
  * 
- * 形状。
+ * 所有形状类的基类。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 class Shape extends Path{
