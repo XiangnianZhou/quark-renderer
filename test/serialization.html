@@ -133,7 +133,7 @@
             }
         });
 
-        let link = qr.createLink({
+        let link1 = qr.createLink({
             type:'line',
             fromEl:rect1,
             toEl:rect2,
@@ -155,9 +155,124 @@
             }
         });
 
-        let data=[rect1.toJSONObject(),rect2.toJSONObject(),link.toJSONObject()];
+        let data=[rect1.toJSONObject(),rect2.toJSONObject(),link1.toJSONObject()];
         console.log(data);
         qr.fromJSONObject(data);
+
+
+        let rect3 = new QuarkRenderer.Rect({
+            draggable:true,
+            linkable:true,
+            position: [300, 200],
+            shape: {
+                r: 0,
+                width: 50,
+                height: 50
+            },
+            style: {
+                fill: '#ff0000',
+                lineWidth: 5,
+                text:'矩形',
+                textPosition:'inside'
+            }
+        });
+
+        let rect4 = new QuarkRenderer.Rect({
+            draggable:true,
+            linkable:true,
+            position: [50, 300],
+            shape: {
+                r: 0,
+                width: 50,
+                height: 50
+            },
+            style: {
+                fill: '#ff0000',
+                lineWidth: 5,
+                text:'矩形',
+                textPosition:'inside'
+            }
+        });
+
+        let link2 = qr.createLink({
+            type:'visio',
+            fromEl:rect3,
+            toEl:rect4,
+            fromPosition:'R',
+            toPosition:'L',
+            position: [0, 0],
+            draggable: true,
+            isCable:true,
+            style: {
+                lineWidth: 2
+            },
+            shape: {
+                points:[
+                    [0,10],
+                    [10,10]
+                ]
+            }
+        });
+        let data1=[rect3.toJSONObject(),rect4.toJSONObject(),link2.toJSONObject()];
+        console.log(data1);
+        qr.fromJSONObject(data1);
+
+        let rect5 = new QuarkRenderer.Rect({
+            draggable:true,
+            linkable:true,
+            position: [50, 500],
+            shape: {
+                r: 0,
+                width: 50,
+                height: 50
+            },
+            style: {
+                fill: '#ff0000',
+                lineWidth: 5,
+                text:'矩形',
+                textPosition:'inside'
+            }
+        });
+        qr.add(rect5);
+
+        let rect6 = new QuarkRenderer.Rect({
+            draggable:true,
+            linkable:true,
+            position: [300, 400],
+            shape: {
+                r: 0,
+                width: 50,
+                height: 50
+            },
+            style: {
+                fill: '#ff0000',
+                lineWidth: 5,
+                text:'矩形',
+                textPosition:'inside'
+            }
+        });
+        qr.add(rect6);
+
+        let link3 = qr.createLink({
+            type:'visio',
+            fromEl:rect5,
+            toEl:rect6,
+            fromPosition:'R',
+            toPosition:'L',
+            position: [0, 0],
+            draggable: true,
+            isCable:true,
+            style: {
+                lineWidth: 2
+            },
+            shape: {
+                points:[
+                    [0,10],
+                    [10,10]
+                ]
+            }
+        });
+        console.log(qr.toJSONObject());
     </script>
 </body>
 </html>

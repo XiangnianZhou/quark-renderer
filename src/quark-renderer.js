@@ -94,6 +94,7 @@ export function registerPainter(name, PainterClass) {
 let instances = {};
 
 let links=[];
+let linkParamCache=[];
 
 /**
  * @property {String} version
@@ -220,7 +221,8 @@ class QuarkRenderer{
          * QuarkRenderer 自己封装的事件机制，这是画布内部的事件系统。
          */
         this.eventDispatcher = new GlobalEventDispatcher(this.storage, this.painter, eventInterceptor, this.painter.root);
-    
+        this.eventDispatcher.on("rendered",this.afterRenderHandler,this);
+
         /**
          * @property {GlobalAnimationMgr}
          * 利用 GlobalAnimationMgr 的 frame 事件刷新画布上的元素。
@@ -509,63 +511,65 @@ class QuarkRenderer{
      * 
      */
     createLink(config){
-        this.config=config;
-        this.linkable1=null;
-        this.linkable2=null;
+        let linkable1=null;
+        let linkable2=null;
 
-        if(this.config&&dataUtil.isString(this.config.fromId)){
-            this.linkable1=this.getElement(this.config.fromId);
+        if(config&&dataUtil.isString(config.fromId)){
+            linkable1=this.getElement(config.fromId);
         }else{
-            this.linkable1=this.config.fromEl;
-            this.config.fromId=this.linkable1.id;
+            linkable1=config.fromEl;
+            config.fromId=linkable1.id;
         }
 
-        if(this.config&&dataUtil.isString(this.config.toId)){
-            this.linkable2=this.getElement(this.config.toId);
+        if(config&&dataUtil.isString(config.toId)){
+            linkable2=this.getElement(config.toId);
         }else{
-            this.linkable2=this.config.toEl;
-            this.config.toId=this.linkable2.id;
+            linkable2=config.toEl;
+            config.toId=linkable2.id;
         }
 
-        if(!this.linkable1||!this.linkable2){
+        if(!linkable1||!linkable2){
             return;
         }
 
-        delete this.config.fromEl;
-        delete this.config.toEl;
+        delete config.fromEl;
+        delete config.toEl;
 
-        let typeInfo = classMapping[this.config.type];
-        this.cable = new typeInfo.clazz(this.config);
+        let typeInfo = classMapping[config.type];
+        let cable = new typeInfo.clazz(config);
 
-        if(this.linkable1.__qr&&this.linkable2.__qr){ // Both this.linkable1 and linkable2 are rendered.
-            this.add(this.cable);
-            this.eventDispatcher.on("rendered",this.renderHandler,this);
+        linkParamCache.push({
+            linkable1:linkable1,
+            linkable2:linkable2,
+            cable:cable,
+            config:config
+        });
+
+        if(linkable1.__qr&&linkable2.__qr){ // Both this.linkable1 and linkable2 are rendered.
+            this.add(cable);
         }
 
-        return this.cable;
+        return cable;
     }
 
-    renderHandler(){
-        if(!this.linkable1.linkSlots
-            ||!this.linkable1.linkSlots.size
-            ||!this.linkable2.linkSlots
-            ||!this.linkable2.linkSlots.size){
-            return;
-        }
-        let slot1=this.linkable1.linkSlots.get(this.config.fromPosition);
-        let slot2=this.linkable2.linkSlots.get(this.config.toPosition);
-
-        let control1=this.cable.startControl;
-        let control2=this.cable.endControl;
-
-        control1.setSlot(slot1);
-        control2.setSlot(slot2);
-        this.eventDispatcher.off("rendered",this.renderHandler,this);
-        
-        delete this.linkable1;
-        delete this.linkable2;
-        delete this.cable;
-        delete this.config;
+    afterRenderHandler(){
+        linkParamCache.forEach((item,index)=>{
+            if(!item.linkable1.linkSlots
+                ||!item.linkable1.linkSlots.size
+                ||!item.linkable2.linkSlots
+                ||!item.linkable2.linkSlots.size){
+                return;
+            }
+            let slot1=item.linkable1.linkSlots.get(item.config.fromPosition);
+            let slot2=item.linkable2.linkSlots.get(item.config.toPosition);
+    
+            let control1=item.cable.startControl;
+            let control2=item.cable.endControl;
+    
+            control1.setSlot(slot1);
+            control2.setSlot(slot2);
+        });
+        linkParamCache=[];
     }
 
     /**
