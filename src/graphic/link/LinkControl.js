@@ -104,6 +104,15 @@ class LinkControl {
             return;
         }
         this.slot=slot;
+        
+        if(this.name==='START'){
+            this.el.fromId=this.slot.el.id;
+            this.el.fromPosition=this.slot.name;
+        }else if(this.name==='END'){
+            this.el.toId=this.slot.el.id;
+            this.el.toPosition=this.slot.name;
+        }
+
         this.updateGlobalPosition();
         slot.on("afterRender",this.updateGlobalPosition,this);
     }
@@ -111,8 +120,12 @@ class LinkControl {
     deleteSlot(){
         if(this.name==='START'){
             this.el.setStartBounding(null);
+            this.el.fromId='';
+            this.el.fromPosition='';
         }else{
             this.el.setEndBounding(null);
+            this.el.toId='';
+            this.el.toPosition='';
         }
         this.slot&&this.slot.off("afterRender",this.updateGlobalPosition,this);
         this.slot=null;

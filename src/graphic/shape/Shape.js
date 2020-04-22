@@ -4,18 +4,26 @@ import * as classUtil from '../../utils/class_util';
 
 /**
  * @class qrenderer.graphic.shape.Shape 
- * Shape.
+ * Base class of all the shapes.
  * 
  * 
- * 形状。
+ * 所有形状类的基类。
  * @docauthor 大漠穷秋 <damoqiongqiu@126.com>
  */
 class Shape extends Path{
     constructor(options){
         super(options);
+        
+        this.type='shape';
 
         classUtil.inheritProperties(this,Linkable,this.options);
         classUtil.copyOwnProperties(this,this.options,['style','shape']);
+    }
+
+    toJSONObject(){
+        let result=Path.prototype.toJSONObject.call(this);
+        result.linkable=this.linkable;
+        return result;
     }
 }
 

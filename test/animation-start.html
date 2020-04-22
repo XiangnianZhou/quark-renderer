@@ -33,17 +33,11 @@
 
         function init() {
             qr = QuarkRenderer.init(document.getElementById('main'));
-
             var lastTrigger = +new Date();
             var timer;
             var record = window.record = [];
             var recordLimit = 300;
             var lastTick = 0;
-
-            var gradient = new QuarkRenderer.LinearGradient();
-            gradient.addColorStop(0, 'red');
-            gradient.addColorStop(1, 'black');
-
             var viewWidth = qr.getWidth();
             var viewHeight = qr.getHeight();
             var center = [viewWidth / 2, viewHeight / 2];
@@ -63,7 +57,13 @@
                         r: 3
                     },
                     style: {
-                        fill: gradient
+                        fill:{
+                            type:'linear',
+                            colorStops:[
+                                {offset:0,color:'red'},
+                                {offset:1,color:'black'}
+                            ]
+                        }
                     },
                     onclick: (function (i) {
                         return function () {

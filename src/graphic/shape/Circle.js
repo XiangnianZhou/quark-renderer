@@ -20,6 +20,7 @@ export default class Circle extends Shape{
                 r: 0
             }
         },options,true));
+        
         /**
          * @property {String} type
          */

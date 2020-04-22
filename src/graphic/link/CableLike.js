@@ -25,11 +25,16 @@ import {mathSin, mathCos} from '../../utils/constants';
 function CableLike(){
     this.isCable=false;
     this.showLinkControls = false;
-    this.startBounding = null;      //bounding rect of start shape
-    this.endBounding = null;        //bounding rect of end shape
-    this.arrowType = 'both';         //end, start, both
+    this.startBounding = null;      // bounding rect of start shape
+    this.endBounding = null;        // bounding rect of end shape
+    this.arrowType = 'both';        // end, start, both
     this.arrowAngel = Math.PI/8;
     this.arrowLength = 10;
+
+    this.fromId = '';           // ID of start element.
+    this.toId = '';             // ID of end element.
+    this.fromPosition = '';     // link position of start element
+    this.toPosition= '';        // link position of end element
 
     this.startControl = new LinkControl({
         el:this,

@@ -46,7 +46,27 @@
         });
         qr.add(rect2);
 
-        rect1.createLink(rect1,rect2);
+        qr.createLink({
+            type:'line',
+            fromId:rect1.id,
+            toId:rect2.id,
+            fromPosition:'R',
+            toPosition:'L',
+            position: [0, 0],
+            draggable: true,
+            isCable:true,
+            style: {
+                stroke: 'rgba(220, 20, 60, 0.8)',
+                lineWidth: 2
+            },
+            shape: {
+                x1: 0,
+                y1: 0,
+                x2: 10,
+                y2: 0,
+                percent: 1
+            }
+        });
 
         let rect3 = new QuarkRenderer.Rect({
             draggable:true,
@@ -84,7 +104,25 @@
         });
         qr.add(rect4);
 
-        rect3.createLink(rect3,rect4,'visio');
+        qr.createLink({
+            type:'visio',
+            fromId:rect3.id,
+            toId:rect4.id,
+            fromPosition:'R',
+            toPosition:'L',
+            position: [0, 0],
+            draggable: true,
+            isCable:true,
+            style: {
+                lineWidth: 2
+            },
+            shape: {
+                points:[
+                    [0,10],
+                    [10,10]
+                ]
+            }
+        });
         
     </script>
     <div id="Main" style="width:600px;height:400px;"></div>

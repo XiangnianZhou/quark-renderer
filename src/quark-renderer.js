@@ -1,5 +1,6 @@
 /* eslint-disable no-prototype-builtins */
 import * as textUtil from './utils/text_util';
+import * as dataUtil from './utils/data_structure_util';
 import GlobalEventDispatcher from './event/GlobalEventDispatcher';
 import CanvasPainter from './canvas/CanvasPainter';
 import GlobalAnimationMgr from './animation/GlobalAnimationMgr';
@@ -7,6 +8,25 @@ import DomEventInterceptor from './event/DomEventInterceptor';
 import Storage from './Storage';
 import guid from './utils/guid';
 import env from './utils/env';
+
+import Circle from './graphic/shape/Circle';
+import Rect from './graphic/shape/Rect';
+import Arc from './graphic/shape/Arc';
+import Droplet from './graphic/shape/Droplet';
+import Ellipse from './graphic/shape/Ellipse';
+import Heart from './graphic/shape/Heart';
+import Isogon from './graphic/shape/Isogon';
+import Polygon from './graphic/shape/Polygon';
+import Ring from './graphic/shape/Ring';
+import Rose from './graphic/shape/Rose';
+import Sector from './graphic/shape/Sector';
+import Star from './graphic/shape/Star';
+import Group from './graphic/Group';
+import Path from './graphic/Path';
+import Line from './graphic/line/Line';
+import Polyline from './graphic/line/Polyline';
+import Trochoid from './graphic/line/Trochoid';
+import VisioLink from './graphic/link/VisioLink';
 
 /**
  * @class qrenderer.core.QuarkRenderer
@@ -20,6 +40,30 @@ import env from './utils/env';
  * 
  * @docauthor 大漠穷秋 damoqiongqiu@126.com
  */
+
+let classMapping = {
+    'circle': {clazz:Circle,isLink:false},
+    'rect': {clazz:Rect,isLink:false},
+    'arc': {clazz:Arc,isLink:false},
+    'droplet':{clazz:Droplet,isLink:false},
+    'ellipse':{clazz:Ellipse,isLink:false},
+    'heart':{clazz:Heart,isLink:false},
+    'isogon':{clazz:Isogon,isLink:false},
+    'polygon':{clazz:Polygon,isLink:false},
+    'ring':{clazz:Ring,isLink:false},
+    'rose':{clazz:Rose,isLink:false},
+    'sector':{clazz:Sector,isLink:false},
+    'star':{clazz:Star,isLink:false},
+    'text':{clazz:Text,isLink:false},
+    'image':{clazz:Image,isLink:false},
+    'group':{clazz:Group,isLink:false},
+    'path':{clazz:Path,isLink:false},
+    
+    'line':{clazz:Line,isLink:true},
+    'polyline':{clazz:Polyline,isLink:true},
+    'rrochoid':{clazz:Trochoid,isLink:true},
+    'visio':{clazz:VisioLink,isLink:true},
+};
 
 if(!env.canvasSupported){
     throw new Error("Need Canvas Environment.");
@@ -49,10 +93,13 @@ export function registerPainter(name, PainterClass) {
 // A map for caching QuarkRenderer instances, every instance of the same scope will be stored here.
 let instances = {};
 
+let links=[];
+let linkParamCache=[];
+
 /**
  * @property {String} version
  */
-export let version = '1.0.26';
+export let version = '1.0.34';
 
 /**
  * @method qrenderer.init()
@@ -174,7 +221,8 @@ class QuarkRenderer{
          * QuarkRenderer 自己封装的事件机制，这是画布内部的事件系统。
          */
         this.eventDispatcher = new GlobalEventDispatcher(this.storage, this.painter, eventInterceptor, this.painter.root);
-    
+        this.eventDispatcher.on("rendered",this.afterRenderHandler,this);
+
         /**
          * @property {GlobalAnimationMgr}
          * 利用 GlobalAnimationMgr 的 frame 事件刷新画布上的元素。
@@ -191,7 +239,7 @@ class QuarkRenderer{
          */
         this.__dirty=false;  
     }
-
+    
     /**
      * @method
      * Add element.
@@ -375,6 +423,153 @@ class QuarkRenderer{
      */
     getHeight() {
         return this.painter.getHeight();
+    }
+
+    registerType(name, clazz, isLink=false){
+        classMapping[name]={clazz:clazz,isLink:isLink};
+    }
+
+    getElement(id){
+        return this.storage.getElement(id);
+    }
+
+    /**
+     * @method toJSONObject
+     * Convert all the elements to JSON Array.
+     * Each subclasses of Element has a toJSONObject() method.
+     * 
+     * 
+     * 把所有元素输出成 JSON 数组。
+     * Element 的所有子类都有 toJSONObject() 方法。
+     * 
+     * @returns {Object} result
+     */
+    toJSONObject(){
+        let result=[];
+        this.storage._roots.forEach((value,key,map)=>{
+            result.push(value.toJSONObject());
+        });
+        return result;
+    }
+
+    /**
+     * @method fromJSONObject
+     * Parse and creat elements from JSON object. The JSON object can be an Array or an Object.
+     * 
+     * 
+     * 从 JSON 对象解析并创建图形元素。JSON 对象可以是一个数组，也可以是一个对象。
+     * 
+     * @param {Object} jsonObj
+     */
+    fromJSONObject(jsonObj){
+        // Recover all the elements first, then the links.
+        if(dataUtil.isArray(jsonObj)){
+            jsonObj.forEach((item,index)=>{
+                this.creatInstance(item,this);
+            });
+        }else{
+            this.creatInstance(jsonObj,this);
+        }
+
+        links.forEach((config,index)=>{
+            this.createLink(config);
+        });
+        links=[];
+        return this;
+    }
+
+    /**
+     * @private
+     * @method creatInstance
+     * @param {*} config 
+     * @param {*} parent 
+     */
+    creatInstance(config,parent){
+        let type = config.type;
+        let typeInfo = classMapping[type];
+        if(typeInfo.isLink){
+            links.push(config);
+            return;
+        }
+
+        let instance = new typeInfo.clazz(config);
+        parent.add(instance);
+
+        if(config.children){
+            config.children.forEach((item,index)=>{
+                this.creatInstance(item,instance); // create child node recursively for groups
+            });
+        }
+    }
+
+    /**
+     * @method createLink
+     * Link two linkables programmaticly.
+     * 
+     * 
+     * 用编程的方式把两个 linkable 元素连接起来。
+     * 
+     */
+    createLink(config){
+        let linkable1=null;
+        let linkable2=null;
+
+        if(config&&dataUtil.isString(config.fromId)){
+            linkable1=this.getElement(config.fromId);
+        }else{
+            linkable1=config.fromEl;
+            config.fromId=linkable1.id;
+        }
+
+        if(config&&dataUtil.isString(config.toId)){
+            linkable2=this.getElement(config.toId);
+        }else{
+            linkable2=config.toEl;
+            config.toId=linkable2.id;
+        }
+
+        if(!linkable1||!linkable2){
+            return;
+        }
+
+        delete config.fromEl;
+        delete config.toEl;
+
+        let typeInfo = classMapping[config.type];
+        let cable = new typeInfo.clazz(config);
+
+        linkParamCache.push({
+            linkable1:linkable1,
+            linkable2:linkable2,
+            cable:cable,
+            config:config
+        });
+
+        if(linkable1.__qr&&linkable2.__qr){ // Both this.linkable1 and linkable2 are rendered.
+            this.add(cable);
+        }
+
+        return cable;
+    }
+
+    afterRenderHandler(){
+        linkParamCache.forEach((item,index)=>{
+            if(!item.linkable1.linkSlots
+                ||!item.linkable1.linkSlots.size
+                ||!item.linkable2.linkSlots
+                ||!item.linkable2.linkSlots.size){
+                return;
+            }
+            let slot1=item.linkable1.linkSlots.get(item.config.fromPosition);
+            let slot2=item.linkable2.linkSlots.get(item.config.toPosition);
+    
+            let control1=item.cable.startControl;
+            let control2=item.cable.endControl;
+    
+            control1.setSlot(slot1);
+            control2.setSlot(slot2);
+        });
+        linkParamCache=[];
     }
 
     /**
