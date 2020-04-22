@@ -282,6 +282,15 @@ class Group extends Rect{
         Element.prototype.delFromStorageHandler.call(this,storage);
     }
 
+    toJSONObject(){
+        let result=Element.prototype.toJSONObject.call(this);
+        result.children=[];
+        this.children.forEach((child,index)=>{
+            result.children.push(child.toJSONObject());
+        });
+        return result;
+    }
+
     // /**FIXME:refactor this method
     //  * @method getBoundingRect
     //  * @return {BoundingRect}

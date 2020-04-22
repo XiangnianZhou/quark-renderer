@@ -38,14 +38,14 @@ class Element{
         this.id = 'el-'+guid();
 
         /**
-         * @property {String} type 元素类型
-         */
-        this.type = 'element';
-    
-        /**
          * @property {String} name 元素名字
          */
         this.name = '';
+        
+        /**
+         * @property {String} type 元素类型
+         */
+        this.type = 'element';
 
         /**
          * @property {Element} parent 父节点，添加到 Group 的元素存在父节点。
@@ -564,6 +564,31 @@ class Element{
         }
         this.dirty();
         return this;
+    }
+
+    /**
+     * @method toJSONObject
+     * The subclass of Element can provide its own implementation.
+     * 
+     * 
+     * Element 的子类可以覆盖此方法提供自己的实现。
+     */
+    toJSONObject(){
+        let result = {
+            id: this.id,
+            name: this.name,
+            type: this.type,
+            ignore: this.ignore,
+            invisible: this.invisible,
+            draggable: this.draggable,
+            transformable: this.transformable,
+            hasTransformControls: this.hasTransformControls,
+            showTransformControls: this.showTransformControls,
+            position: this.position,
+            shape: this.shape,
+            style: this.style
+        };
+        return result;
     }
 }
 

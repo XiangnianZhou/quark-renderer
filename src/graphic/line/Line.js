@@ -146,6 +146,16 @@ class Line extends Path{
         this.shape.x2=x;
         this.shape.y2=y;
     }
+
+    toJSONObject(){
+        let result=Path.prototype.toJSONObject.call(this);
+        result.fromId=this.fromId;
+        result.toId=this.toId;
+        result.fromPosition=this.fromPosition;
+        result.toPosition=this.toPosition;
+        result.isCable=this.isCable;
+        return result;
+    }
 }
 
 classUtil.mixin(Line, CableLike);

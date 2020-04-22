@@ -2,6 +2,9 @@
 import fixShadow from '../utils/fix_shadow';
 import {ContextCachedBy} from '../utils/constants';
 import {mathMin} from '../utils/constants';
+import * as dataUtil from '../utils/data_structure_util';
+import RadialGradient from '../graphic/gradient/RadialGradient';
+import LinearGradient from '../graphic/gradient/LinearGradient';
 
 /**
  * @class qrenderer.graphic.Style
@@ -58,6 +61,13 @@ function createRadialGradient(ctx, obj, rect) {
 }
 
 let Style = function (opts) {
+    if(opts&&dataUtil.isObject(opts.fill)){
+        if(opts.fill.type==='radial'){
+            this.fill=new RadialGradient(opts.fill.x||0.5, opts.fill.y||0.5, opts.fill.r||0.5, opts.fill.colorStops||[], opts.fill.globalCoord||false);
+        }else if(opts.fill.type==='linear'){
+            this.fill=new LinearGradient(opts.fill.x||0, opts.fill.y||0, opts.fill.x1||1, opts.fill.y1||0, opts.fill.colorStops||[], opts.fill.globalCoord||false);
+        }
+    }
     this.extendStyle(opts, false);
 };
 
@@ -501,7 +511,6 @@ Style.prototype = {
         }
         return canvasGradient;
     }
-
 };
 
 let styleProto = Style.prototype;

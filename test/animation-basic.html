@@ -17,10 +17,6 @@
     <script type="text/javascript">
         let main = document.getElementById('main');
         let qr = QuarkRenderer.init(main);
-        
-        let gradient = new QuarkRenderer.LinearGradient();
-        gradient.addColorStop(0, 'red');
-        gradient.addColorStop(1, 'black');
 
         let circle = new QuarkRenderer.Circle({
             position: [0, 0],
@@ -31,7 +27,13 @@
                 r: 50
             },
             style: {
-                fill: gradient,
+                fill:{
+                    type:'linear',
+                    colorStops:[
+                        {offset:0,color:'red'},
+                        {offset:1,color:'black'}
+                    ]
+                },
                 lineWidth: 5,
                 text:'circle',
                 textPosition:'inside'

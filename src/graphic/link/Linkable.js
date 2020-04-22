@@ -99,68 +99,6 @@ Linkable.prototype={
             }
         }
         return {isOverlap:false};
-    },
-
-    /**
-     * @method createLink
-     * Link two linkables programmaticly.
-     * 
-     * 
-     * 用程序的方式把两个 linkable 元素连接起来。
-     * 
-     * @param {Linkable} linkable1 
-     * @param {Linkable} linkable2 
-     * @param {String} type //line, visio
-     * @param {*} position1 
-     * @param {*} position2 
-     */
-    createLink(linkable1, linkable2, type='line', position1='R', position2='L'){
-        let cable = null;
-        if(type==='line'){
-            cable = new Line({
-                position: [0, 0],
-                draggable: true,
-                isCable:true,
-                style: {
-                    stroke: 'rgba(220, 20, 60, 0.8)',
-                    lineWidth: 2
-                },
-                shape: {
-                    x1: 0,
-                    y1: 0,
-                    x2: 10,
-                    y2: 0,
-                    percent: 1
-                }
-            });
-        }else if(type==='visio'){
-            cable = new VisioLink({
-                position: [0, 0],
-                draggable: true,
-                isCable:true,
-                style: {
-                    lineWidth: 2
-                },
-                shape: {
-                    points:[
-                        [0,10],
-                        [10,10]
-                    ]
-                }
-            });
-        }
-        this.__qr.add(cable);
-
-        this.__qr.eventDispatcher.one("rendered",()=>{
-            let slot1=this.linkSlots.get(position1);
-            let slot2=linkable2.linkSlots.get(position2);
-
-            let control1=cable.startControl;
-            let control2=cable.endControl;
-    
-            control1.setSlot(slot1);
-            control2.setSlot(slot2);
-        },this);
     }
 }
 

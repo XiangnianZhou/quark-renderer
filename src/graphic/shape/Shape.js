@@ -13,9 +13,17 @@ import * as classUtil from '../../utils/class_util';
 class Shape extends Path{
     constructor(options){
         super(options);
+        
+        this.type='shape';
 
         classUtil.inheritProperties(this,Linkable,this.options);
         classUtil.copyOwnProperties(this,this.options,['style','shape']);
+    }
+
+    toJSONObject(){
+        let result=Path.prototype.toJSONObject.call(this);
+        result.linkable=this.linkable;
+        return result;
     }
 }
 

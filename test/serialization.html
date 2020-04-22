@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Serialization</title>
+    <script src="../dist/quark-renderer.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+    <div id="main" style="width:800px;height:600px;"></div>
+
+    <script type="text/javascript">
+        let qr = QuarkRenderer.init(document.getElementById('main'));
+        
+        // single object
+        // let circle = new QuarkRenderer.Circle({
+        //     position: [0, 0],
+        //     scale: [1, 1],
+        //     shape: {
+        //         cx: 50,
+        //         cy: 50,
+        //         r: 50
+        //     },
+        //     style: {
+        //         fill:{
+        //             type:'linear',
+        //             colorStops:[
+        //                 {offset:0,color:'red'},
+        //                 {offset:1,color:'black'}
+        //             ]
+        //         },
+        //         // fill:'#ff0000',
+        //         lineWidth: 5,
+        //         text:'circle',
+        //         textPosition:'inside'
+        //     },
+        //     draggable:true
+        // });
+
+        // let jsonObj=circle.toJSONObject();
+        // console.log(jsonObj);
+        // qr.fromJSONObject(jsonObj);
+
+        // nested groups
+        // let group1 = new QuarkRenderer.Group({
+        //     draggable: true,
+        //     position: [100, 100],
+        //     shape: {
+        //         width:400,
+        //         height:300
+        //     },
+        //     style: {
+        //         fill:'#ccc'
+        //     }
+        // });
+        // let group2 = new QuarkRenderer.Group({
+        //     draggable: true,
+        //     position: [0, 0],
+        //     shape: {
+        //         width:300,
+        //         height:200
+        //     },
+        //     style: {
+        //         fill:'#ff3300'
+        //     }
+        // });
+        // let group3 = new QuarkRenderer.Group({
+        //     draggable: true,
+        //     position: [0, 0],
+        //     shape: {
+        //         width:200,
+        //         height:100
+        //     },
+        //     style: {
+        //         fill:'#0033ff'
+        //     }
+        // });
+        // let rect = new QuarkRenderer.Rect({
+        //     draggable:true,
+        //     position:[10,10],
+        //     shape: {
+        //         r: 0,
+        //         width: 50,
+        //         height: 50
+        //     },
+        //     style: {
+        //         fill: '#00ff00',
+        //         lineWidth: 5,
+        //         text:'矩形',
+        //         textPosition:'inside'
+        //     }
+        // });
+        // group3.add(rect);
+        // group2.add(group3);
+        // group1.add(group2);
+
+        // let json=group1.toJSONObject();
+        // console.log(json);
+        // qr.fromJSONObject(json);
+
+        // links
+        let rect1 = new QuarkRenderer.Rect({
+            draggable:true,
+            linkable:true,
+            position: [50, 50],
+            shape: {
+                r: 0,
+                width: 50,
+                height: 50
+            },
+            style: {
+                fill: '#ff0000',
+                lineWidth: 5,
+                text:'矩形',
+                textPosition:'inside'
+            }
+        });
+
+        let rect2 = new QuarkRenderer.Rect({
+            draggable:true,
+            linkable:true,
+            position: [300, 50],
+            shape: {
+                r: 0,
+                width: 50,
+                height: 50
+            },
+            style: {
+                fill: '#ff0000',
+                lineWidth: 5,
+                text:'矩形',
+                textPosition:'inside'
+            }
+        });
+
+        let link = qr.createLink({
+            type:'line',
+            fromEl:rect1,
+            toEl:rect2,
+            fromPosition:'R',
+            toPosition:'L',
+            position: [0, 0],
+            draggable: true,
+            isCable:true,
+            style: {
+                stroke: 'rgba(20, 220, 60, 0.8)',
+                lineWidth: 2
+            },
+            shape: {
+                x1: 0,
+                y1: 0,
+                x2: 10,
+                y2: 0,
+                percent: 1
+            }
+        });
+
+        let data=[rect1.toJSONObject(),rect2.toJSONObject(),link.toJSONObject()];
+        console.log(data);
+        qr.fromJSONObject(data);
+    </script>
+</body>
+</html>

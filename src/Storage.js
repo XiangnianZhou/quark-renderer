@@ -257,6 +257,10 @@ Storage.prototype = {
         return this;
     },
 
+    getElement:function(id){
+        return this._roots.get(id);
+    },
+
     /**
      * @method delFromStorage
      * Delete element from Storage.
