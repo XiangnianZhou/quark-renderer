@@ -284,6 +284,7 @@ class Group extends Rect{
 
     toJSONObject(){
         let result=Element.prototype.toJSONObject.call(this);
+        result.linkable=this.linkable;
         result.children=[];
         this.children.forEach((child,index)=>{
             result.children.push(child.toJSONObject());
