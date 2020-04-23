@@ -22,6 +22,7 @@ import Rose from './graphic/shape/Rose';
 import Sector from './graphic/shape/Sector';
 import Star from './graphic/shape/Star';
 import Group from './graphic/Group';
+import Image from './graphic/Image';
 import Path from './graphic/Path';
 import Line from './graphic/line/Line';
 import Polyline from './graphic/line/Polyline';

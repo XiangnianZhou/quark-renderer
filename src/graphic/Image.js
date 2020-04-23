@@ -126,6 +126,12 @@ class QImage extends Element{
         }
         return this.__boundingRect;
     }
+
+    toJSONObject(){
+        let result=Element.prototype.toJSONObject.call(this);
+        result.linkable=this.linkable;
+        return result;
+    }
 }
 
 classUtil.mixin(QImage, Linkable);
