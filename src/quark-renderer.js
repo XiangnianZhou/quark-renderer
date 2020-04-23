@@ -100,7 +100,7 @@ let linkParamCache=[];
 /**
  * @property {String} version
  */
-export let version = '1.0.34';
+export let version = '1.0.35';
 
 /**
  * @method qrenderer.init()
