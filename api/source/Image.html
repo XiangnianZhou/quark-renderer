@@ -156,6 +156,13 @@ function (_Element) {
 
       return this.__boundingRect;
     }
+  }, {
+    key: &quot;toJSONObject&quot;,
+    value: function toJSONObject() {
+      var result = Element.prototype.toJSONObject.call(this);
+      result.linkable = this.linkable;
+      return result;
+    }
   }]);
 
   return QImage;
