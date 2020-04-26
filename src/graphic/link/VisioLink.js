@@ -23,7 +23,7 @@ export default class VisioLink extends Polyline{
         /**
          * @property {String} type
          */
-        this.type = 'vosiolink';
+        this.type = 'visio';
         this.escapeDistance = 30;
         this.startPoint = null;     //start point in global space
         this.endPoint = null;       //end point in global space
