@@ -1,4 +1,8 @@
-<h1 align="center">Quark Renderer</h1>
+<p align="center">
+    <img width="150" src="./docs/images/nautilus.png">
+</p>
+
+<h1 align="center">QuarkRenderer</h1>
 
 一款轻量且强大的 Canvas(&SVG) 渲染引擎，从 [ZRender](https://github.com/ecomfe/zrender) 改进而来。
 
