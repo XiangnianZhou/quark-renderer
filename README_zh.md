@@ -6,6 +6,8 @@
 
 一款轻量且强大的 Canvas(&SVG) 渲染引擎，从 [ZRender](https://github.com/ecomfe/zrender) 改进而来。
 
+主页：https://quark-renderer.gitee.io
+
 ## 背景
 
 **重要：Quark Renderer 不是从零开始构建的，它是从 ZRender 魔改而来，ZRender 是 ECharts 底层的渲染引擎。**

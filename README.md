@@ -6,6 +6,8 @@
 
 A lightweight yet powerful Canvas(&SVG) render engine improved from [ZRender](https://github.com/ecomfe/zrender)
 
+Home page https://quark-renderer.gitee.io
+
 ## Background
 
 **Important: Quark Renderer is not built from scratch, but improved from ZRender, which is the render engine behind ECharts.**
