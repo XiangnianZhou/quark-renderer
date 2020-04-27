@@ -1,3 +1,7 @@
+<p align="center">
+    <img width="150" src="./src/docs/images/nautilus.png">
+</p>
+
 <h1 align="center">Quark Renderer</h1>
 
 A lightweight yet powerful Canvas(&SVG) render engine improved from [ZRender](https://github.com/ecomfe/zrender)
