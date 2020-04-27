@@ -1,5 +1,5 @@
 <p align="center">
-    <img width="150" src="./src/docs/images/nautilus.png">
+    <img width="150" src="./docs/images/nautilus.png">
 </p>
 
 <h1 align="center">Quark Renderer</h1>
